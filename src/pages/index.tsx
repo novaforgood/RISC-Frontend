@@ -1,4 +1,3 @@
-import { gql, useLazyQuery, useQuery } from "@apollo/client";
 import { useState } from "react";
 import { useGetUsersLazyQuery, useGetUsersQuery } from "../generated/graphql";
 
