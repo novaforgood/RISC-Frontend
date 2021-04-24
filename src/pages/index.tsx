@@ -1,4 +1,5 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { Button } from "../components/atomic/Button";
 import { useGetUsersLazyQuery, useGetUsersQuery } from "../generated/graphql";
 
 const IndexPage = () => {
@@ -7,7 +8,9 @@ const IndexPage = () => {
 
   return (
     <>
-      <button
+      <Button
+        size="medium"
+        variant="solid"
         onClick={() => {
           getUser();
           console.log("hi");
@@ -15,7 +18,7 @@ const IndexPage = () => {
         }}
       >
         Get users
-      </button>
+      </Button>
       <p>{JSON.stringify(data)}</p>
     </>
   );
