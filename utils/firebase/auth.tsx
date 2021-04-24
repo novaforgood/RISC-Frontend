@@ -36,11 +36,6 @@ function useProvideAuth() {
     const [auth, setAuth] = useState<Auth | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
-    /**
-     * Callback function used for firebase.auth.onAuthStateChanged().
-     * Takes the user object returned and formats it for my state.
-     * We fetch the idToken and append it to my auth state and store it.
-     */
     const authStateChanged = async (authState: firebase.User | null) => {
         if (authState) {
             const formattedAuth = formatAuth(authState);
@@ -51,6 +46,7 @@ function useProvideAuth() {
     };
 
     /**
+     * KEVIN I NEED HELP
      * Callback function used for response from firebase OAuth.
      * Store user object returned in firestore.
      * @param firebase User Credential
@@ -62,10 +58,6 @@ function useProvideAuth() {
         // createUser(storeUser.uid, storeUser); // TODO: Ask Kevin how this should be actually implemented
     };
 
-    /**
-     * Callback for when firebase signOut.
-     * Sets auth state to null and loading to true.
-     */
     const clear = () => {
         setAuth(null);
         setLoading(true);
