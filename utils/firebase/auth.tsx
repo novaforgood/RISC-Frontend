@@ -59,7 +59,7 @@ function useProvideAuth() {
         // Format user into my required state.
         const storeUser = formatAuth(resp.user);
         // firestore database function
-        createUser(storeUser.uid, storeUser); // TODO: Ask Kevin how this should be actually implemented
+        // createUser(storeUser.uid, storeUser); // TODO: Ask Kevin how this should be actually implemented
     };
 
     /**
