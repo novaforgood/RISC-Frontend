@@ -9,8 +9,13 @@
     "generate": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@apollo/client": "^3.3.14",
     "graphql": "^15.5.0",
+=======
+    "firebase": "^8.4.2",
+    "firebase-admin": "^9.6.0",
+>>>>>>> initial firebase setup
     "next": "latest",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
