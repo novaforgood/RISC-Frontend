@@ -9,6 +9,7 @@ module.exports = {
         dark: "#021859",
       },
       white: { DEFAULT: "#FFFFFF" },
+      gray: { DEFAULT: "#707070" },
       black: { DEFAULT: "#000000" },
     },
     extend: {
@@ -17,6 +18,21 @@ module.exports = {
         41: "10.25rem",
         86: "21.5rem",
       },
+    },
+    fontFamily: {
+      sans: ["Inter", "sans-serif"],
+    },
+    fontSize: {
+      // Styleguide in px, tailwind in rem
+      h1: "48px",
+      h2: "36px",
+      h3: "24px",
+      "body-1": "22px",
+      "body-2": "16px",
+    },
+    fontWeight: {
+      normal: 400,
+      bold: 700,
     },
   },
   variants: {
