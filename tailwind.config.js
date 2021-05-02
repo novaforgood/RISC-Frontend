@@ -29,11 +29,16 @@ module.exports = {
       h3: "24px",
       "body-1": "22px",
       "body-2": "16px",
+      caption: "12px",
     },
     fontWeight: {
       normal: 400,
       bold: 700,
     },
+    // textColor: {
+    //   black: "#2C2C2C",
+    //   gray: "#707070",
+    // },
   },
   variants: {
     extend: {
