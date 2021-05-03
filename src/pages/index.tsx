@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { useGetUsersLazyQuery, useGetUsersQuery } from "../generated/graphql";
 
+const getSubdomain = () => {
+  if (typeof window === "undefined") {
+    return null;
+  }
+  return window.location.href.split(".")[0].split("//")[1];
+};
+
 const IndexPage = () => {
   const [getUser, { loading, data }] = useGetUsersLazyQuery();
   const [text, setText] = useState("");
