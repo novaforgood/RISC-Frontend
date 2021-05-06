@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "../components/atomic/Button";
 import { useGetUsersLazyQuery, useGetUsersQuery } from "../generated/graphql";
-import { Text } from "../components/atomic/Text";
+import { Text } from "../components/atomic";
 
 const IndexPage = () => {
   const [getUser, { loading, data }] = useGetUsersLazyQuery();

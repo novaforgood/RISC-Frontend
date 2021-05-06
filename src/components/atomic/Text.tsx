@@ -1,6 +1,7 @@
 import React from "react";
+import classNames from "classnames";
 
-export const Text = (props) => {
+const Text = (props) => {
   let {
     /* Size */
     h1 = false,
@@ -9,8 +10,6 @@ export const Text = (props) => {
     b1 = false,
     b2 = false,
     caption = false,
-    /* Color */
-    placeholder = false,
     /* Style */
     b = false,
     i = false,
@@ -19,23 +18,22 @@ export const Text = (props) => {
     ...args
   } = props;
 
-  let classNames = "";
-
-  classNames += h1 ? "text-h1 " : "";
-  classNames += h2 ? "text-h2 " : "";
-  classNames += h3 ? "text-h3 " : "";
-  classNames += b1 ? "text-body-1 " : "";
-  classNames += b2 ? "text-body-2 " : "";
-  classNames += caption ? "text-caption " : "";
-
-  classNames += placeholder ? "text-gray " : "text-black ";
-
-  classNames += b ? "font-bold " : "";
-  classNames += i ? "italic " : "";
+  let styles = classNames(
+    { "text-h1": h1 },
+    { "text-h2": h2 },
+    { "text-h3": h3 },
+    { "text-body-1": b1 },
+    { "text-body-2": b2 },
+    { "text-caption": caption },
+    { "font-bold": b },
+    { italic: i } // Styling needs to be pollished
+  );
 
   return (
-    <div {...args} className={classNames}>
+    <div {...args} className={styles}>
       {children}
     </div>
   );
 };
+
+export default Text;
