@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import { LineInput } from "../components/atomic/LineInput";
+import React from "react";
+import { Input } from "../components/atomic/Input";
 
 const IndexPage = () => {
 
   return (
     <>
       <div>No placeholder</div>
-      <LineInput />
+      <Input />
       <br />
       <div>Placeholder</div>
-      <LineInput placeholder="e.g. Nova Mentorship"/>
+      <Input placeholder="e.g. Nova Mentorship"/>
       <br />
       <div>Focus</div>
-      <LineInput />
+      <Input />
     </>
   );
 };
