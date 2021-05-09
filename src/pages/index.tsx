@@ -1,25 +1,18 @@
 import React, { useState } from "react";
-import { Button } from "../components/atomic/Button";
-import { useGetUsersLazyQuery, useGetUsersQuery } from "../generated/graphql";
+import { LineInput } from "../components/atomic/LineInput";
 
 const IndexPage = () => {
-  const [getUser, { loading, data }] = useGetUsersLazyQuery();
-  const [text, setText] = useState("");
 
   return (
     <>
-      <Button
-        size="medium"
-        variant="solid"
-        onClick={() => {
-          getUser();
-          console.log("hi");
-          console.log(data);
-        }}
-      >
-        Get users
-      </Button>
-      <p>{JSON.stringify(data)}</p>
+      <div>No placeholder</div>
+      <LineInput />
+      <br />
+      <div>Placeholder</div>
+      <LineInput placeholder="e.g. Nova Mentorship"/>
+      <br />
+      <div>Focus</div>
+      <LineInput />
     </>
   );
 };
