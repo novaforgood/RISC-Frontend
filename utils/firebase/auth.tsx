@@ -14,7 +14,6 @@ interface AuthContext {
   signUpUser: (e: string, p: string) => Promise<void>;
   signInWithEmail: (e: string, p: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
-  signedIn: () => Promise<void>;
   signOut: () => Promise<void>;
 }
 
