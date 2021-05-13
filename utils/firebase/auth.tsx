@@ -6,28 +6,31 @@ interface Auth {
   email: string | null;
   firstName: string | null;
   lastName: string | null;
-  token: string | null;
 }
 
 interface AuthContext {
   auth: Auth | null;
   loading: boolean;
+  signUpUser: (e: string, p: string) => Promise<void>;
+  signInWithEmail: (e: string, p: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
+  signedIn: () => Promise<void>;
   signOut: () => Promise<void>;
 }
 
 const formatAuth = (user: firebase.User): Auth => ({
   uid: user.uid,
   email: user.email,
-  firstName: user.firstName,
-  lastName: user.lastName,
-  token: null,
+  firstName: user.displayName ? user.displayName.split(" ")[0] : "",
+  lastName: user.displayName ? user.displayName.split(" ")[1] : "",
 });
 
 // Create context with a default state.
 const authContext: Context<AuthContext> = createContext<AuthContext>({
   auth: null,
   loading: true,
+  signUpUser: async () => {},
+  signInWithEmail: async () => {},
   signInWithGoogle: async () => {},
   signedIn: async () => {},
   signOut: async () => {},
@@ -43,7 +46,7 @@ function useProvideAuth() {
   };
 
   /**
-   * used to be called after signInWithGoogle
+   * may be irrelevant. used to be called after signInWithGoogle
    * Callback function used for response from firebase OAuth.
    * Store user object returned in firestore.
    * @param firebase User Credential
@@ -53,6 +56,16 @@ function useProvideAuth() {
     const storeUser = formatAuth(resp.user);
     // firestore database function
     // createUser(storeUser.uid, storeUser);
+  };
+
+  const signUpUser = async (email: string, password: string) => {
+    setLoading(true);
+    return firebase.auth().createUserWithEmailAndPassword(email, password);
+  };
+
+  const signInWithEmail = async (email: string, password: string) => {
+    setLoading(true);
+    return firebase.auth().signInWithEmailAndPassword(email, password);
   };
 
   const signInWithGoogle = () => {
@@ -70,12 +83,9 @@ function useProvideAuth() {
     const unsubscribe = firebase
       .auth()
       .onAuthStateChanged(async (authState: firebase.User | null) => {
-        if (authState) {
-          const formattedAuth = formatAuth(authState);
-          formattedAuth.token = await authState.getIdToken();
-          setAuth(formattedAuth);
-          setLoading(false);
-        }
+        const formattedAuth = authState ? formatAuth(authState) : null;
+        setAuth(formattedAuth);
+        setLoading(false);
       });
     return () => unsubscribe();
   }, []);
@@ -84,6 +94,8 @@ function useProvideAuth() {
   return {
     auth,
     loading,
+    signUpUser,
+    signInWithEmail,
     signInWithGoogle,
     signedIn,
     signOut,
