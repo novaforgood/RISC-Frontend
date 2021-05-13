@@ -19,7 +19,7 @@ const IndexPage = () => {
         Get users
       </button>
       <p>{JSON.stringify(data)}</p>
-      {auth ? <p>Hi, {auth.firstName}</p> : <p>Join us!</p>}
+      {auth ? <p>Hi, {auth.displayName}</p> : <p>Join us!</p>}
       {auth ? (
         <button onClick={() => signOut()}>Sign Out</button>
       ) : (

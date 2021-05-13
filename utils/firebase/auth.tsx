@@ -9,7 +9,7 @@ interface Auth {
 }
 
 interface AuthContext {
-  auth: Auth | null;
+  auth: firebase.User | null;
   loading: boolean;
   signUpUser: (e: string, p: string) => Promise<void>;
   signInWithEmail: (e: string, p: string) => Promise<void>;
@@ -17,13 +17,6 @@ interface AuthContext {
   signedIn: () => Promise<void>;
   signOut: () => Promise<void>;
 }
-
-const formatAuth = (user: firebase.User): Auth => ({
-  uid: user.uid,
-  email: user.email,
-  firstName: user.displayName ? user.displayName.split(" ")[0] : "",
-  lastName: user.displayName ? user.displayName.split(" ")[1] : "",
-});
 
 // Create context with a default state.
 const authContext: Context<AuthContext> = createContext<AuthContext>({
@@ -45,34 +38,28 @@ function useProvideAuth() {
     setLoading(true);
   };
 
-  /**
-   * may be irrelevant. used to be called after signInWithGoogle
-   * Callback function used for response from firebase OAuth.
-   * Store user object returned in firestore.
-   * @param firebase User Credential
-   */
-  const signedIn = async (resp: firebase.auth.UserCredential) => {
-    // Format user into my required state.
-    const storeUser = formatAuth(resp.user);
-    // firestore database function
-    // createUser(storeUser.uid, storeUser);
-  };
-
   const signUpUser = async (email: string, password: string) => {
     setLoading(true);
-    return firebase.auth().createUserWithEmailAndPassword(email, password);
+    return firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .catch(() => setLoading(false));
   };
 
   const signInWithEmail = async (email: string, password: string) => {
     setLoading(true);
-    return firebase.auth().signInWithEmailAndPassword(email, password);
+    return firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .catch(() => setLoading(false));
   };
 
   const signInWithGoogle = () => {
     setLoading(true);
     return firebase
       .auth()
-      .signInWithPopup(new firebase.auth.GoogleAuthProvider()); //.then(signedIn));
+      .signInWithPopup(new firebase.auth.GoogleAuthProvider())
+      .catch(() => setLoading(false));
   };
 
   const signOut = () => {
@@ -83,8 +70,7 @@ function useProvideAuth() {
     const unsubscribe = firebase
       .auth()
       .onAuthStateChanged(async (authState: firebase.User | null) => {
-        const formattedAuth = authState ? formatAuth(authState) : null;
-        setAuth(formattedAuth);
+        setAuth(authState);
         setLoading(false);
       });
     return () => unsubscribe();
@@ -97,7 +83,6 @@ function useProvideAuth() {
     signUpUser,
     signInWithEmail,
     signInWithGoogle,
-    signedIn,
     signOut,
   };
 }
@@ -108,3 +93,11 @@ export function AuthProvider({ children }: any) {
 }
 
 export const useAuth = () => useContext(authContext);
+
+// mostly leaving this to get firstName lastName, likely not necessary tho
+export const formatAuth = (user: firebase.User): Auth => ({
+  uid: user.uid,
+  email: user.email,
+  firstName: user.displayName ? user.displayName.split(" ")[0] : "",
+  lastName: user.displayName ? user.displayName.split(" ")[1] : "",
+});
