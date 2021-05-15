@@ -1,12 +1,11 @@
-import React, { useState } from "react";
-import { Button } from "../components/atomic/Button";
-import { useGetUsersLazyQuery, useGetUsersQuery } from "../generated/graphql";
+import React from "react";
 import { useAuth } from "../../utils/firebase/auth";
+import { Button } from "../components/atomic/Button";
+import { useGetUsersLazyQuery } from "../generated/graphql";
 
 const IndexPage = () => {
-  const [getUser, { loading, data }] = useGetUsersLazyQuery();
-  const { auth, signInWithGoogle, signOut } = useAuth();
-  const [text, setText] = useState("");
+  const [getUser, { data }] = useGetUsersLazyQuery();
+  const { auth, signOut } = useAuth();
 
   return (
     <>
