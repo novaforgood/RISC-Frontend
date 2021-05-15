@@ -5,7 +5,7 @@ import { AuthProvider } from "../../utils/firebase/auth";
 import "tailwindcss/tailwind.css";
 
 const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql",
+  uri: process.env.NEXT_PUBLIC_API_URL,
   cache: new InMemoryCache(),
 });
 
