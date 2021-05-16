@@ -6,7 +6,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   size?: "small" | "medium" | "large"; // Default medium
 };
 
-export const Button = ({
+const Button = ({
   variant = "solid",
   size = "medium",
   className,
@@ -14,13 +14,26 @@ export const Button = ({
 }: ButtonProps) => {
   const styles = classNames({
     // Universal button styles
-    "box-border rounded-md focus:outline-none focus:ring-1 focus:ring-blue focus:ring-opacity-50": true,
+    [`${classNames(
+      "box-border rounded-md focus:outline-none focus:ring-1 focus:ring-black focus:ring-opacity-50 duration-75",
+      "disabled:cursor-not-allowed"
+    )}`]: true,
 
     // Variant styles
-    "bg-blue hover:bg-blue-light active:bg-blue-dark text-white disabled:opacity-50":
-      variant === "solid",
-    "bg-transparent active:bg-blue text-blue active:text-white border border-blue hover:border-2":
-      variant === "inverted",
+    [`${classNames(
+      "bg-primary text-white",
+      "hover:bg-secondary",
+      "active:bg-white active:text-primary active:border active:border-primary",
+      "disabled:bg-inactive"
+    )}`]: variant === "solid",
+
+    [`${classNames(
+      "bg-white text-black border border-black",
+      "hover:ring-primary hover:font-bold",
+      "active:bg-primary active:text-white",
+      "disabled:text-inactive disabled:border disabled:border-inactive ",
+      "focus:ring-opacity-100"
+    )}`]: variant === "inverted",
 
     // Size styles
     "h-14 w-41": size === "medium",
@@ -33,3 +46,5 @@ export const Button = ({
 
   return <button className={styles} {...props} />;
 };
+
+export default Button;

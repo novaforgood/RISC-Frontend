@@ -1,10 +1,7 @@
 import React, { useState } from "react";
-import { Button } from "../components/atomic/Button";
+import { Button, Text } from "../components/atomic";
 import { useGetUsersLazyQuery, useGetUsersQuery } from "../generated/graphql";
-import { Text } from "../components/atomic";
 import { useAuth } from "../../utils/firebase/auth";
-import { Button } from "../components/atomic/Button";
-import { useGetUsersLazyQuery } from "../generated/graphql";
 
 const IndexPage = () => {
   const [getUser, { data }] = useGetUsersLazyQuery();
@@ -22,6 +19,15 @@ const IndexPage = () => {
         }}
       >
         Get users
+      </Button>
+      <Button size="medium" variant="inverted" disabled={true}>
+        Disabled inverted
+      </Button>
+      <Button size="medium" variant="solid" disabled={true}>
+        Disabled solid
+      </Button>
+      <Button size="medium" variant="inverted">
+        Inverted
       </Button>
       <p>{JSON.stringify(data)}</p>
       {auth ? <p>Hi, {auth.displayName}</p> : <p>Join us!</p>}
