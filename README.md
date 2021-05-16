@@ -22,6 +22,7 @@ NEXT_PUBLIC_API_URL=[GraphQL endpoint URL]
 
 ```
   yarn install
+  yarn generate
   yarn dev
 ```
 
