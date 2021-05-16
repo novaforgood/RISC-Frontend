@@ -32,6 +32,26 @@ module.exports = {
         86: "21.5rem",
       },
     },
+    fontFamily: {
+      sans: ["Inter", "sans-serif"],
+    },
+    fontSize: {
+      // Styleguide in px, tailwind in rem
+      h1: "48px",
+      h2: "36px",
+      h3: "24px",
+      "body-1": "22px",
+      "body-2": "16px",
+      caption: "12px",
+    },
+    fontWeight: {
+      normal: 400,
+      bold: 700,
+    },
+    // textColor: {
+    //   black: "#2C2C2C",
+    //   gray: "#707070",
+    // },
   },
   fontFamily: {
     sans: ["Inter", "sans-serif"],

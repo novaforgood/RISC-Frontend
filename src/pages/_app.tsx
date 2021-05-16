@@ -1,6 +1,7 @@
 import { AppProps } from "next/app";
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { ApolloProvider } from "@apollo/client/react";
+import { AuthProvider } from "../../utils/firebase/auth";
 import "tailwindcss/tailwind.css";
 
 const client = new ApolloClient({
@@ -11,7 +12,9 @@ const client = new ApolloClient({
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ApolloProvider client={client}>
-      <Component {...pageProps} />
+      <AuthProvider>
+        <Component {...pageProps} />
+      </AuthProvider>
     </ApolloProvider>
   );
 }
