@@ -1,20 +1,19 @@
-import { useState } from "react";
+import { MouseEvent, useState } from "react";
 import { useAuth } from "../../utils/firebase/auth";
 
 const SignUpPage = () => {
-  const { auth, signUpUser, signInWithGoogle, signOut } = useAuth();
+  const { auth, signUpWithEmail, signInWithGoogle, signOut } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayError, setError] = useState("");
 
-  const signup = async (e: Event) => {
+  const signup = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    await signUpUser(email, password)
+    signUpWithEmail(email, password)
       .catch((error) => {
         setError(error.message);
       })
       .then(() => {
-        console.log("ur in");
         console.log(auth?.email);
       });
   };
@@ -38,8 +37,8 @@ const SignUpPage = () => {
         <button
           onClick={() =>
             signInWithGoogle()
-              .catch((e) => setError(""))
-              .then((user) => {})
+              .catch((e) => setError(e.message))
+              .then((_) => {})
           }
         >
           Sign Up with Google
@@ -49,8 +48,8 @@ const SignUpPage = () => {
           <input
             name="Email"
             placeholder="Email Address"
-            type="email"
-            onChange={(e: Event) => {
+            // type="email"
+            onChange={(e) => {
               setEmail(e.target.value);
             }}
           />
@@ -58,7 +57,7 @@ const SignUpPage = () => {
             name="Password"
             placeholder="password"
             type="password"
-            onChange={(e: Event) => {
+            onChange={(e) => {
               setPassword(e.target.value);
             }}
           />

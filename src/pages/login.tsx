@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { MouseEvent, useState } from "react";
 import { useAuth } from "../../utils/firebase/auth";
 
 const LoginPage = () => {
@@ -7,7 +7,8 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [displayError, setError] = useState("");
 
-  const login = async (e: Event) => {
+  const login = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     await signInWithEmail(email, password).catch((error) => {
       setError(error.message);
     });
@@ -36,7 +37,7 @@ const LoginPage = () => {
             name="Email"
             placeholder="email address"
             type="email"
-            onChange={(e: Event) => {
+            onChange={(e) => {
               setEmail(e.target.value);
             }}
           />
@@ -45,12 +46,12 @@ const LoginPage = () => {
             name="Password"
             placeholder="password"
             type="password"
-            onChange={(e: Event) => {
+            onChange={(e) => {
               setPassword(e.target.value);
             }}
           />
           {displayError ? <p>{displayError}</p> : <></>}
-          <button onClick={() => login(e)}>Login</button>
+          <button onClick={(e) => login(e)}>Login</button>
 
           <br />
           {auth ? (
