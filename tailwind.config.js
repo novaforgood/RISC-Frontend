@@ -11,6 +11,11 @@ module.exports = {
       white: { DEFAULT: "#FFFFFF" },
       gray: { DEFAULT: "#707070" },
       black: { DEFAULT: "#000000" },
+      gray: {
+        light: "#E3E3E3",
+        DEFAULT: "#707070",
+        dark: "#999999",
+      }
     },
     extend: {
       spacing: {
