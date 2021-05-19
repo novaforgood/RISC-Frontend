@@ -1,9 +1,7 @@
 import React, { InputHTMLAttributes } from "react";
 import classNames from "classnames";
 
-type InputProps = {
-  className?: string;
-} & InputHTMLAttributes<HTMLInputElement>;
+type InputProps = InputHTMLAttributes<HTMLInputElement>;
 
 //TODO: Implement color depending on theme
 const Input = ({ className = "", ...props }: InputProps) => {

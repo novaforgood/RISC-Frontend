@@ -11,11 +11,21 @@ type SpacerProps = HTMLAttributes<HTMLDivElement> & {
 const Spacer = ({ x, y, className, ...props }: SpacerProps) => {
   //You can override width, height, and padding like this.
   const styles = classNames({
-    [`w-${x}`]: x,
-    [`h-${y}`]: y,
+    // [`w-${x}`]: x,
+    // [`h-${y}`]: y,
     [`${className}`]: true,
   });
-  return <div {...props} className={styles}></div>;
+  return (
+    <div
+      {...props}
+      style={{
+        ...props.style,
+        height: `${(y || 0) / 4}rem`,
+        width: `${(x || 0) / 4}rem`,
+      }}
+      className={styles}
+    ></div>
+  );
 };
 
 export default Spacer;

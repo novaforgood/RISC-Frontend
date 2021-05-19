@@ -30,7 +30,7 @@ const Text = ({
   className,
   /* Etc */
   children,
-  ...args
+  ...props
 }: TextProps) => {
   let styles = classNames(
     "font-sans",
@@ -47,7 +47,7 @@ const Text = ({
   );
 
   return (
-    <span {...args} className={styles}>
+    <span {...props} className={styles}>
       {children}
     </span>
   );

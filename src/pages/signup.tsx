@@ -1,4 +1,4 @@
-import { MouseEvent, useState, Fragment, InputHTMLAttributes } from "react";
+import { useState, InputHTMLAttributes } from "react";
 import { useAuth } from "../../utils/firebase/auth";
 import { Text, Input, Button, Spacer } from "../components/atomic";
 import Link from "next/link";
@@ -29,7 +29,7 @@ const TitledInput = ({ title, className, ...props }: TitledInputProps) => {
 };
 
 const SignUpPage = () => {
-  const { auth, signUpWithEmail, signInWithGoogle, signOut } = useAuth();
+  const { signUpWithEmail, signInWithGoogle } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -45,19 +45,15 @@ const SignUpPage = () => {
       </div>
       <div className="w-full md:w-2/3 flex justify-center items-center min-h-screen">
         <div className="flex flex-col w-full px-4 py-12 md:w-120">
-          <div className="w-full flex justify-start">
-            <Text h1 b>
-              Sign Up
+          <Text h1 b>
+            Sign Up
+          </Text>
+          <Text b2>
+            Already have an account?{" "}
+            <Text u className="cursor-pointer">
+              <Link href="/login">Login</Link>
             </Text>
-          </div>
-          <div className="w-full flex justify-start">
-            <Text b2>
-              Already have an account?{" "}
-              <Text u className="cursor-pointer">
-                <Link href="/login">Login</Link>
-              </Text>
-            </Text>
-          </div>
+          </Text>
           <Spacer y={6} />
           <div
             onClick={() =>
@@ -67,7 +63,7 @@ const SignUpPage = () => {
             }
             className="h-16 w-full bg-tertiary flex items-center justify-center cursor-pointer"
           >
-            <div className="flex-1 flex justify-start">
+            <div className="flex-1">
               <img className="h-10 w-10 ml-6" src="/GoogleLogo.svg"></img>
             </div>
             <Text b className="text-secondary">
@@ -136,15 +132,10 @@ const SignUpPage = () => {
           </Text>
           <Spacer y={6} />
           <Button
-            onClick={(e) => {
-              e.preventDefault();
-              signUpWithEmail(email, password)
-                .catch((error) => {
-                  setError(error.message);
-                })
-                .then(() => {
-                  console.log(auth?.email);
-                });
+            onClick={() => {
+              signUpWithEmail(email, password).catch((error) => {
+                setError(error.message);
+              });
             }}
           >
             Sign Up

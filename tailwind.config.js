@@ -13,21 +13,7 @@ module.exports = {
       skyblue: { DEFAULT: "#7AC5F8" },
       darkblue: { DEFAULT: "#2B4B7B" },
     },
-    extend: {
-      borderWidth: {
-        1.5: "1.5px",
-      },
-      boxShadow: {
-        border: "0px 0px 2px 2px #BFBFBD, inset 0px 0px 2px 2px #BFBFBD",
-      },
-      spacing: {
-        0.25: "0.0625rem",
-        13.5: "3.375rem",
-        41: "10.25rem",
-        86: "21.5rem",
-        120: "30rem",
-      },
-    },
+
     fontFamily: {
       sans: ["Inter", "sans-serif"],
     },
@@ -44,41 +30,35 @@ module.exports = {
       normal: 400,
       bold: 700,
     },
-    // textColor: {
-    //   black: "#2C2C2C",
-    //   gray: "#707070",
-    // },
-  },
-  fontFamily: {
-    sans: ["Inter", "sans-serif"],
-  },
-  fontSize: {
-    // Styleguide in px, tailwind in rem
-    h1: "48px",
-    h2: "36px",
-    h3: "24px",
-    "body-1": "22px",
-    "body-2": "16px",
-    caption: "12px",
-  },
-  fontWeight: {
-    normal: 400,
-    bold: 700,
-  },
-  variants: {
+    variants: {
+      extend: {
+        backgroundColor: ["active", "disabled"],
+        borderWidth: ["hover", "active", "disabled"],
+        borderColor: ["hover", "active", "disabled"],
+        cursor: ["disabled"],
+        opacity: ["disabled"],
+        pointerEvents: ["disabled"],
+        textColor: ["active", "disabled"],
+        ringWidth: ["active"],
+        ringColor: ["active"],
+      },
+    },
     extend: {
-      backgroundColor: ["active", "disabled"],
-      borderWidth: ["hover", "active", "disabled"],
-      borderColor: ["hover", "active", "disabled"],
-      cursor: ["disabled"],
-      opacity: ["disabled"],
-      pointerEvents: ["disabled"],
-      textColor: ["active", "disabled"],
-      ringWidth: ["active"],
-      ringColor: ["active"],
+      borderWidth: {
+        1.5: "1.5px",
+      },
+      boxShadow: {
+        border: "0px 0px 2px 2px #BFBFBD, inset 0px 0px 2px 2px #BFBFBD",
+      },
+      spacing: {
+        0.25: "0.0625rem",
+        13.5: "3.375rem",
+        41: "10.25rem",
+        86: "21.5rem",
+        120: "30rem",
+      },
     },
   },
-
   plugins: [
     // require("@tailwindcss/typography"),
     // require("@tailwindcss/forms"),
