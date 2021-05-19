@@ -9,7 +9,7 @@ const BlobCircle = () => {
     <div
       className={`${sizes} rounded-full bg-darkblue overflow-hidden flex justify-center items-end pointer-events-none`}
     >
-      <img src="/HappyBlobs.svg" className="w-11/12 select-none" />
+      <img src="/static/HappyBlobs.svg" className="w-11/12 select-none" />
     </div>
   );
 };
@@ -64,7 +64,7 @@ const SignUpPage = () => {
             className="h-16 w-full bg-tertiary flex items-center justify-center cursor-pointer"
           >
             <div className="flex-1">
-              <img className="h-10 w-10 ml-6" src="/GoogleLogo.svg"></img>
+              <img className="h-10 w-10 ml-6" src="/static/GoogleLogo.svg" />
             </div>
             <Text b className="text-secondary">
               Sign Up with Google
