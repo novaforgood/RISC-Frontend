@@ -1,6 +1,6 @@
 import { useState, InputHTMLAttributes } from "react";
 import { useAuth } from "../../utils/firebase/auth";
-import { Text, Input, Button, Spacer } from "../components/atomic";
+import { Text, Input, Button } from "../components/atomic";
 import Link from "next/link";
 
 const BlobCircle = () => {
@@ -22,7 +22,7 @@ const TitledInput = ({ title, className, ...props }: TitledInputProps) => {
   return (
     <div className={className}>
       <Text b>{title}</Text>
-      <Spacer y={1} />
+      <div className="h-1" />
       <Input className="w-full" {...props}></Input>
     </div>
   );
@@ -54,7 +54,7 @@ const SignUpPage = () => {
               <Link href="/login">Login</Link>
             </Text>
           </Text>
-          <Spacer y={6} />
+          <div className="h-6" />
           <div
             onClick={() =>
               signInWithGoogle()
@@ -71,7 +71,7 @@ const SignUpPage = () => {
             </Text>
             <div className="flex-1"></div>
           </div>
-          <Spacer y={6} />
+          <div className="h-6" />
           <div className="w-full h-3 flex justify-center items-center">
             <div className="h-0.25 flex-1 bg-inactive"></div>
             <Text b className="text-secondary px-4">
@@ -79,7 +79,8 @@ const SignUpPage = () => {
             </Text>
             <div className="h-0.25 flex-1 bg-inactive"></div>
           </div>
-          <Spacer y={6} />
+          <div className="h-6" />
+
           <div className="flex w-full">
             <TitledInput
               title="First Name"
@@ -91,7 +92,7 @@ const SignUpPage = () => {
                 setFirstName(e.target.value);
               }}
             />
-            <Spacer x={2} />
+            <div className="w-2" />
             <TitledInput
               title="Last Name"
               name="Last Name"
@@ -102,7 +103,8 @@ const SignUpPage = () => {
               }}
             />
           </div>
-          <Spacer y={3} />
+          <div className="h-3" />
+
           <TitledInput
             title="Email"
             name="Email"
@@ -112,7 +114,8 @@ const SignUpPage = () => {
               setEmail(e.target.value);
             }}
           />
-          <Spacer y={3} />
+          <div className="h-3" />
+
           <TitledInput
             title="Password"
             name="Password"
@@ -122,15 +125,16 @@ const SignUpPage = () => {
               setPassword(e.target.value);
             }}
           />
+          <div className="h-6" />
 
-          <Spacer y={6} />
           <Text>
             TODO: I read and agree to the{" "}
             <Text u b>
               Terms and Conditions
             </Text>
           </Text>
-          <Spacer y={6} />
+          <div className="h-6" />
+
           <Button
             onClick={() => {
               signUpWithEmail(email, password).catch((error) => {
@@ -140,16 +144,17 @@ const SignUpPage = () => {
           >
             Sign Up
           </Button>
-          <Spacer y={6} />
+          <div className="h-6" />
+
           <Text className="text-error">
             {displayError + "TODO: Proper error box"}
           </Text>
 
           {/* {auth ? (
-          <button onClick={() => signOut()}>Sign Out</button>
-        ) : (
-          <button>Sign In</button>
-        )} */}
+            <button onClick={() => signOut()}>Sign Out</button>
+          ) : (
+            <button>Sign In</button>
+          )} */}
         </div>
       </div>
     </div>
