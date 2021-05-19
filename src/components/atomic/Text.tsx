@@ -11,7 +11,6 @@ type TextProps = HTMLAttributes<HTMLDivElement> & {
   b?: boolean;
   i?: boolean;
   u?: boolean;
-  className?: string;
 };
 
 const Text = ({
@@ -29,7 +28,6 @@ const Text = ({
   /* Custom styles */
   className,
   /* Etc */
-  children,
   ...props
 }: TextProps) => {
   let styles = classNames(
@@ -46,11 +44,7 @@ const Text = ({
     { [`${className}`]: true }
   );
 
-  return (
-    <span {...props} className={styles}>
-      {children}
-    </span>
-  );
+  return <span {...props} className={styles}></span>;
 };
 
 export default Text;

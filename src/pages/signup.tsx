@@ -1,4 +1,4 @@
-import { useState, InputHTMLAttributes } from "react";
+import { useState, ComponentProps } from "react";
 import { useAuth } from "../../utils/firebase/auth";
 import { Text, Input, Button } from "../components/atomic";
 import Link from "next/link";
@@ -16,8 +16,7 @@ const BlobCircle = () => {
 
 type TitledInputProps = {
   title: string;
-  className?: string;
-} & InputHTMLAttributes<HTMLInputElement>;
+} & ComponentProps<typeof Input>;
 const TitledInput = ({ title, className, ...props }: TitledInputProps) => {
   return (
     <div className={className}>
@@ -55,7 +54,7 @@ const SignUpPage = () => {
             </Text>
           </Text>
           <div className="h-6" />
-          <div
+          <button
             onClick={() =>
               signInWithGoogle()
                 .catch((e) => setError(e.message))
@@ -67,10 +66,10 @@ const SignUpPage = () => {
               <img className="h-10 w-10 ml-6" src="/static/GoogleLogo.svg" />
             </div>
             <Text b className="text-secondary">
-              Sign Up with Google
+              Sign up with Google
             </Text>
             <div className="flex-1"></div>
-          </div>
+          </button>
           <div className="h-6" />
           <div className="w-full h-3 flex justify-center items-center">
             <div className="h-0.25 flex-1 bg-inactive"></div>

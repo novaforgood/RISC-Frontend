@@ -14,26 +14,23 @@ const Button = ({
 }: ButtonProps) => {
   const styles = classNames({
     // Universal button styles
-    [`${classNames(
-      "box-border rounded-md focus:outline-none focus:ring-1 focus:ring-black focus:ring-opacity-50 duration-75",
-      "disabled:cursor-not-allowed"
-    )}`]: true,
+    ["box-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:ring-opacity-50 duration-75 \
+      disabled:cursor-not-allowed"]:
+      true,
 
     // Variant styles
-    [`${classNames(
-      "bg-primary text-white",
-      "hover:bg-secondary",
-      "active:bg-white active:text-primary active:border active:border-primary",
-      "disabled:bg-inactive"
-    )}`]: variant === "solid",
+    ["bg-primary text-white \
+      hover:bg-secondary \
+      active:bg-white active:text-primary active:border active:border-primary \
+      disabled:bg-inactive"]:
+      variant === "solid",
 
-    [`${classNames(
-      "bg-white text-black border border-black",
-      "hover:ring-primary hover:font-bold",
-      "active:bg-primary active:text-white",
-      "disabled:text-inactive disabled:border disabled:border-inactive ",
-      "focus:ring-opacity-100"
-    )}`]: variant === "inverted",
+    ["bg-white text-black border border-black \
+      hover:ring-primary hover:font-bold \
+      active:bg-primary active:text-white \
+      disabled:text-inactive disabled:border disabled:border-inactive \
+      focus:ring-opacity-100"]:
+      variant === "inverted",
 
     // Size styles
     "h-14 w-41": size === "medium",
