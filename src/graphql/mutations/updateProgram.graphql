@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 mutation updateProgram($programId: String!, $data: UpdateProgramInput!) {
   updateProgram(programId: $programId, data: $data) {
     programId
+=======
+mutation updateProgram($data: UpdateProgramInput!, $programId: String!) {
+  updateProgram(data: $data, programId: $programId) {
+    homepage
+>>>>>>> cb16a3c (Text-Editing)
   }
 }
