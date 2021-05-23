@@ -1020,6 +1020,36 @@
     "@babel/helper-validator-identifier" "^7.14.5"
     to-fast-properties "^2.0.0"
 
+<<<<<<< HEAD
+=======
+"@draft-js-plugins/alignment@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@draft-js-plugins/alignment/-/alignment-4.1.0.tgz#5285389d03bde78d9dd3eaf5cbc0ce4f75c9d664"
+  integrity sha512-pGdW7noIfBIxeFTt8PmQFGS7R5l/Bbxt/8KcZK1gb3CPKOYu9xaFdj9o1eIPBCx9UOfoIz2ccGICiuOANhMSWg==
+  dependencies:
+    "@draft-js-plugins/buttons" "^4.0.0"
+    "@draft-js-plugins/utils" "^4.0.0"
+
+"@draft-js-plugins/buttons@^4.0.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@draft-js-plugins/buttons/-/buttons-4.1.0.tgz#8a330fc93aa302caac9df9f888821ddacc975459"
+  integrity sha512-sGt5mSo6TwX53EYCHgF7KnwTJCT0OBHbWlvB0UG7aUSK2oiT2QD+z51o3d/BvM7105m/rdLA8WCeWW23tw771Q==
+  dependencies:
+    clsx "^1.0.4"
+
+"@draft-js-plugins/drag-n-drop-upload@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@draft-js-plugins/drag-n-drop-upload/-/drag-n-drop-upload-4.1.0.tgz#111ce413a934302050cb933aba21cc8927466ee1"
+  integrity sha512-+HcPZEWy3DBurtKlGLcVhIqDmylrzSrIU6+XPVPWxmZ12F/p2mGhnMsYJ3oY+x7t4QLBWNnfCDMI3eY3kFWC5g==
+
+"@draft-js-plugins/drag-n-drop@^4.2.0":
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@draft-js-plugins/drag-n-drop/-/drag-n-drop-4.2.0.tgz#f81d639b84fba3d0cd5bccfc9c5772dca39abd34"
+  integrity sha512-xwV/l20LvyMt4ixbLxMx0uPqHA8+MGSc+x/wnNqKiDLKySCdVKFq2xmsJBgFzHGS1FomeDgHbNoR5BMazaVAtw==
+  dependencies:
+    immutable "~3.7.4"
+
+>>>>>>> feeb55f (Image Upload)
 "@draft-js-plugins/editor@^4.1.0":
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/@draft-js-plugins/editor/-/editor-4.1.0.tgz#1861fb257ba51ecbd031b8a3d84ee0809de1504e"
@@ -1028,6 +1058,26 @@
     immutable "~3.7.4"
     prop-types "^15.5.8"
 
+<<<<<<< HEAD
+=======
+"@draft-js-plugins/image@^4.1.1":
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/@draft-js-plugins/image/-/image-4.1.1.tgz#6f2078364317c29ff0dd13d4a9d5dd57a9447ce4"
+  integrity sha512-pNVuYpwduUZDkDIByo6Yasvb8GIMNjxP66X12G4XTjD/nf+YyxtOu+JmhAjpK5qPLjNyvkzf+D2zMZywEs/JLQ==
+  dependencies:
+    clsx "^1.0.4"
+
+"@draft-js-plugins/resizeable@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@draft-js-plugins/resizeable/-/resizeable-4.1.0.tgz#52cfa749d3d1cb11fdbeacbff5bc70876c0cee57"
+  integrity sha512-37lRI+qOYtiWG3Xk4P1f2l7tT6kEqxJYAxiHlDhGwKZ4kB20FKHKlAlY0eXRhQQ4W7k4RceLBh/HrkxX4PeQ5g==
+
+"@draft-js-plugins/utils@^4.0.0":
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@draft-js-plugins/utils/-/utils-4.2.0.tgz#ee3c643c94d548fd9460541881a7554c5b077988"
+  integrity sha512-tQhf7a0S9ZDtOb0Mje5a+xTOT6LVDRv2LueEqqVdX4aI+oh0jjkAuP0oTiZBv6h7K9XSPgsQ08q9+kwHc3EyUg==
+
+>>>>>>> feeb55f (Image Upload)
 "@endemolshinegroup/cosmiconfig-typescript-loader@3.0.2":
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/@endemolshinegroup/cosmiconfig-typescript-loader/-/cosmiconfig-typescript-loader-3.0.2.tgz#eea4635828dde372838b0909693ebd9aafeec22d"
@@ -2843,6 +2893,7 @@ clone-response@^1.0.2:
   dependencies:
     mimic-response "^1.0.0"
 
+<<<<<<< HEAD
 coa@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/coa/-/coa-2.0.2.tgz#43f6c21151b4ef2bf57187db0d73de229e3e7ec3"
@@ -2851,6 +2902,12 @@ coa@^2.0.2:
     "@types/q" "^1.5.1"
     chalk "^2.4.1"
     q "^1.1.2"
+=======
+clsx@^1.0.4:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/clsx/-/clsx-1.1.1.tgz#98b3134f9abbdf23b2663491ace13c5c03a73188"
+  integrity sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==
+>>>>>>> 79ad891 (Program Homepage)
 
 code-point-at@^1.0.0:
   version "1.1.0"
