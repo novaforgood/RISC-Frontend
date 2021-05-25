@@ -30,19 +30,6 @@ module.exports = {
       normal: 400,
       bold: 700,
     },
-    variants: {
-      extend: {
-        backgroundColor: ["active", "disabled"],
-        borderWidth: ["hover", "active", "disabled"],
-        borderColor: ["hover", "active", "disabled"],
-        cursor: ["disabled"],
-        opacity: ["disabled"],
-        pointerEvents: ["disabled"],
-        textColor: ["active", "disabled"],
-        ringWidth: ["active"],
-        ringColor: ["active"],
-      },
-    },
     extend: {
       borderWidth: {
         1.5: "1.5px",
@@ -57,6 +44,19 @@ module.exports = {
         86: "21.5rem",
         120: "30rem",
       },
+    },
+  },
+  variants: {
+    extend: {
+      backgroundColor: ["active", "disabled"],
+      borderWidth: ["hover", "active", "disabled"],
+      borderColor: ["hover", "active", "disabled"],
+      cursor: ["disabled"],
+      opacity: ["disabled"],
+      pointerEvents: ["disabled"],
+      textColor: ["active", "disabled"],
+      ringWidth: ["active"],
+      ringColor: ["active"],
     },
   },
   plugins: [
