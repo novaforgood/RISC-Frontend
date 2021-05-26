@@ -3,79 +3,66 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     colors: {
-      blue: {
-        light: "#0B9ED9",
-        DEFAULT: "#0433BF",
-        dark: "#021859",
-      },
+      primary: { DEFAULT: "#262626" },
+      secondary: { DEFAULT: "#737373" },
+      tertiary: { DEFAULT: "#F2F2F2" },
+      inactive: { DEFAULT: "#E3E3E3" },
+      error: { DEFAULT: "#DB3B25" },
       white: { DEFAULT: "#FFFFFF" },
-      black: { 
-        light: "#262626",
-        DEFAULT: "#000000" 
-      },
-      gray: {
-        light: "#E3E3E3",
-        DEFAULT: "#707070",
-        dark: "#999999",
-      }
+      black: { DEFAULT: "#000000" },
+      skyblue: { DEFAULT: "#7AC5F8" },
+      darkblue: { DEFAULT: "#2B4B7B" },
     },
-    extend: {
-      borderWidth: {
-        "1.5": "1.5px",
-      },
-      boxShadow: {
-        "border": '0px 0px 2px 2px #BFBFBD, inset 0px 0px 2px 2px #BFBFBD',
-      },
-      spacing: {
-        13.5: "3.375rem",
-        41: "10.25rem",
-        86: "21.5rem",
-      },
-    },
+
     fontFamily: {
       sans: ["Inter", "sans-serif"],
     },
     fontSize: {
       // Styleguide in px, tailwind in rem
-      h1: "48px",
-      h2: "36px",
-      h3: "24px",
-      "body-1": "22px",
-      "body-2": "16px",
-      caption: "12px",
+      h1: "3rem",
+      h2: "2.25rem",
+      h3: "1.5",
+      "body-1": "1.375rem",
+      "body-2": "1rem",
+      caption: "0.75",
     },
     fontWeight: {
       normal: 400,
       bold: 700,
     },
-    // textColor: {
-    //   black: "#2C2C2C",
-    //   gray: "#707070",
-    // },
-  },
-  fontFamily: {
-    sans: ["Inter", "sans-serif"],
-  },
-  fontSize: {
-    // Styleguide in px, tailwind in rem
-    h1: "48px",
-    h2: "36px",
-    h3: "24px",
-    "body-1": "22px",
-    "body-2": "16px",
-    caption: "12px",
-  },
-  fontWeight: {
-    normal: 400,
-    bold: 700,
+    extend: {
+      borderWidth: {
+        1.5: "1.5px",
+      },
+      boxShadow: {
+        border: "0px 0px 2px 2px #BFBFBD, inset 0px 0px 2px 2px #BFBFBD",
+      },
+      spacing: {
+        0.25: "0.0625rem",
+        13.5: "3.375rem",
+        41: "10.25rem",
+        86: "21.5rem",
+        120: "30rem",
+      },
+    },
   },
   variants: {
     extend: {
-      backgroundColor: ["active"],
-      borderWidth: ["hover"],
+      backgroundColor: ["active", "disabled"],
+      borderWidth: ["hover", "active", "disabled"],
+      borderColor: ["hover", "active", "disabled"],
+      cursor: ["disabled"],
       opacity: ["disabled"],
-      textColor: ["active"],
+      pointerEvents: ["disabled"],
+      textColor: ["active", "disabled"],
+      ringWidth: ["active"],
+      ringColor: ["active"],
     },
   },
-  plugins: [],
+  plugins: [
+    // require("@tailwindcss/typography"),
+    // require("@tailwindcss/forms"),
+    // require("@tailwindcss/line-clamp"),
+    // require("@tailwindcss/aspect-ratio"),
+  ],
 };

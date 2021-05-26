@@ -8,9 +8,9 @@ type TextProps = HTMLAttributes<HTMLDivElement> & {
   b1?: boolean;
   b2?: boolean;
   caption?: boolean;
-  b?: false;
-  i?: false;
-  className?: string;
+  b?: boolean;
+  i?: boolean;
+  u?: boolean;
 };
 
 const Text = ({
@@ -24,13 +24,14 @@ const Text = ({
   /* Style */
   b = false,
   i = false,
+  u = false,
   /* Custom styles */
   className,
   /* Etc */
-  children,
-  ...args
+  ...props
 }: TextProps) => {
   let styles = classNames(
+    "font-sans",
     { "text-h1": h1 },
     { "text-h2": h2 },
     { "text-h3": h3 },
@@ -39,14 +40,11 @@ const Text = ({
     { "text-caption": caption },
     { "font-bold": b },
     { italic: i }, // Styling needs to be polished
+    { underline: u },
     { [`${className}`]: true }
   );
 
-  return (
-    <div {...args} className={styles}>
-      {children}
-    </div>
-  );
+  return <span {...props} className={styles}></span>;
 };
 
 export default Text;
