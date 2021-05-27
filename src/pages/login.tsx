@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { useAuth } from "../../utils/firebase/auth";
-import { Text, Button, Input } from "../components/atomic";
 import Link from "next/link";
+import { useState } from "react";
+import { Button, Input, Text } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
+import { useAuth } from "../utils/firebase/auth";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24 md:h-64 md:w-64 lg:h-80 lg:w-80";

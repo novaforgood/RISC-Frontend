@@ -3,8 +3,8 @@ import { setContext } from "@apollo/client/link/context";
 import { ApolloProvider } from "@apollo/client/react";
 import { AppProps } from "next/app";
 import "tailwindcss/tailwind.css";
-import { AuthProvider } from "../../utils/firebase/auth";
-import firebase from "../../utils/firebase/firebase";
+import firebase from "../utils/firebase/firebase";
+import { AuthProvider } from "../utils/firebase/auth";
 
 const httpLink = new HttpLink({ uri: process.env.NEXT_PUBLIC_API_URL });
 
