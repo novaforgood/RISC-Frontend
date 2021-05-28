@@ -1,28 +1,16 @@
-import { useState, ComponentProps } from "react";
+import { useState } from "react";
 import { useAuth } from "../../utils/firebase/auth";
-import { Text, Input, Button } from "../components/atomic";
+import { Text, Button } from "../components/atomic";
 import Link from "next/link";
+import TitledInput from "../components/TitledInput";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24 md:h-64 md:w-64 lg:h-80 lg:w-80";
   return (
     <div
-      className={`${sizes} rounded-full bg-darkblue overflow-hidden flex justify-center items-end pointer-events-none`}
+      className={`${sizes} rounded-full bg-skyblue overflow-hidden flex justify-center items-end pointer-events-none`}
     >
       <img src="/static/HappyBlobs.svg" className="w-11/12 select-none" />
-    </div>
-  );
-};
-
-type TitledInputProps = {
-  title: string;
-} & ComponentProps<typeof Input>;
-const TitledInput = ({ title, className, ...props }: TitledInputProps) => {
-  return (
-    <div className={className}>
-      <Text b>{title}</Text>
-      <div className="h-1" />
-      <Input className="w-full" {...props}></Input>
     </div>
   );
 };
@@ -37,7 +25,11 @@ const SignUpPage = () => {
 
   return (
     <div className="flex w-screen min-h-screen">
-      <div className="hidden md:grid md:w-1/3 bg-primary min-h-screen">
+      <div className="hidden md:grid md:w-1/3 bg-primary min-h-screen relative">
+        <img
+          src="/static/TextLogo.svg"
+          className="absolute p-6 select-none pointer-events-none"
+        />
         <div className="place-self-center">
           <BlobCircle />
         </div>

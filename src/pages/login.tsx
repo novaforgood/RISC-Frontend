@@ -1,78 +1,122 @@
-import { MouseEvent, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../../utils/firebase/auth";
-import { Text } from "../components/atomic";
+import { Text, Button, Input } from "../components/atomic";
+import Link from "next/link";
+import TitledInput from "../components/TitledInput";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24 md:h-64 md:w-64 lg:h-80 lg:w-80";
   return (
     <div
-      className={`${sizes} rounded-full bg-skyblue overflow-hidden flex justify-center items-end pointer-events-none`}
+      className={`${sizes} rounded-full bg-darkblue overflow-hidden flex justify-center items-end pointer-events-none`}
     >
-      <img src="/HappyBlobs.svg" className="w-11/12 select-none" />
+      <img src="/static/HappyBlobs.svg" className="w-11/12 select-none" />
     </div>
   );
 };
 
 const LoginPage = () => {
-  const { auth, signInWithEmail, signInWithGoogle, signOut } = useAuth();
+  const { signInWithEmail, signInWithGoogle } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayError, setError] = useState("");
 
-  const login = async (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    await signInWithEmail(email, password).catch((error) => {
-      setError(error.message);
-    });
-  };
-
   return (
-    <div className="flex w-screen h-screen">
-      <div className="w-1/3 bg-primary h-full grid">
+    <div className="flex w-screen min-h-screen relative">
+      <img
+        src="/static/TextLogo.svg"
+        className="absolute p-6 select-none pointer-events-none"
+      />
+      <div className="hidden md:grid md:w-1/3 bg-primary min-h-screen">
         <div className="place-self-center">
           <BlobCircle />
         </div>
       </div>
-      <div className="flex flex-col justify-start w-2/3 h-full">
-        <Text h1>Login</Text>
-        <h2>
-          Don't have an account? <a href="/signup">Sign up now</a>
-        </h2>
-        <button onClick={() => signInWithGoogle()} className="text-blue">
-          Login with Google
-        </button>
-        <h2>- Or -</h2>
-        <form>
-          <input
-            style={{ width: "100%" }}
+      <div className="w-full md:w-2/3 flex justify-center items-center min-h-screen">
+        <div className="flex flex-col w-full px-4 py-12 md:w-120">
+          <Text h1 b>
+            Login
+          </Text>
+          <Text b2>
+            Don't have an account?{" "}
+            <Text u className="cursor-pointer">
+              <Link href="/signup">Sign up now</Link>
+            </Text>
+          </Text>
+          <div className="h-6" />
+          <button
+            onClick={() =>
+              signInWithGoogle()
+                .catch((e) => setError(e.message))
+                .then((_) => {})
+            }
+            className="h-16 w-full bg-tertiary flex items-center justify-center cursor-pointer"
+          >
+            <div className="flex-1">
+              <img className="h-10 w-10 ml-6" src="/static/GoogleLogo.svg" />
+            </div>
+            <Text b className="text-secondary">
+              Login with Google
+            </Text>
+            <div className="flex-1"></div>
+          </button>
+          <div className="h-6" />
+          <div className="w-full h-3 flex justify-center items-center">
+            <div className="h-0.25 flex-1 bg-inactive"></div>
+            <Text b className="text-secondary px-4">
+              Or
+            </Text>
+            <div className="h-0.25 flex-1 bg-inactive"></div>
+          </div>
+          <div className="h-6" />
+          <TitledInput
+            title="Email"
             name="Email"
-            placeholder="email address"
-            type="email"
+            // type="email"
+            value={email}
             onChange={(e) => {
               setEmail(e.target.value);
             }}
           />
-          <input
-            style={{ width: "100%" }}
-            name="Password"
-            placeholder="password"
-            type="password"
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-          />
-          {displayError ? <p>{displayError}</p> : <></>}
-          <button onClick={(e) => login(e)}>Login</button>
+          <div className="h-3" />
+          <div>
+            <div className="flex justify-between">
+              <Text b>Password</Text>
+              <Text>TODO: Forgot password?</Text>
+            </div>
+            <div className="h-1" />
+            <Input
+              className="w-full"
+              title="Password"
+              name="Password"
+              type="password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+            ></Input>
+          </div>
+          <div className="h-6" />
 
-          <br />
-          {auth ? (
-            <p>
-              u in. <button onClick={() => signOut()}>Sign Out</button>
-            </p>
+          <Button
+            onClick={() => {
+              signInWithEmail(email, password).catch((error) => {
+                setError(error.message);
+              });
+            }}
+          >
+            Login
+          </Button>
+          <div className="h-6" />
+          <Text className="text-error">
+            {displayError + "TODO: Proper error box"}
+          </Text>
+          {/* {auth ? (
+            <button onClick={() => signOut()}>Sign Out</button>
           ) : (
-            <p>not signed in</p>
-          )}
-        </form>
+            <button>Sign In</button>
+          )} */}
+        </div>
       </div>
     </div>
   );
