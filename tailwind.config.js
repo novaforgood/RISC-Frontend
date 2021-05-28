@@ -56,17 +56,20 @@ module.exports = {
       transitionProperty: {
         background: "background-color",
       },
+      zIndex: {
+        "-1": "-1",
+      },
     },
   },
   variants: {
     extend: {
-      backgroundColor: ["active", "disabled"],
+      backgroundColor: ["active", "disabled", "checked"],
       borderWidth: ["hover", "active", "disabled"],
-      borderColor: ["hover", "active", "disabled"],
+      borderColor: ["hover", "active", "disabled", "checked"],
       cursor: ["disabled"],
       opacity: ["disabled"],
       pointerEvents: ["disabled"],
-      textColor: ["active", "disabled"],
+      textColor: ["active", "disabled", "checked"],
       ringWidth: ["active"],
       ringColor: ["active"],
     },
