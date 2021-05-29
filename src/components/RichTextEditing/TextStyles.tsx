@@ -1,6 +1,4 @@
 import React from "react";
-import { Text } from "../atomic";
-import Immutable from "immutable";
 
 export const INLINE_STYLES = [
   {
@@ -35,17 +33,3 @@ export const BLOCK_STYLES = [
     type: "unstyled",
   },
 ];
-
-export const myBlockRenderer = Immutable.Map({
-  "header-one": {
-    element: "section",
-    wrapper: <Text h1 />,
-  },
-  "header-two": {
-    element: "section",
-    wrapper: <Text h2 />,
-  },
-  unstyled: {
-    element: "div",
-  },
-});
