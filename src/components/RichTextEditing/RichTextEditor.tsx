@@ -1,31 +1,39 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import ToolBar from "./ToolBar";
-import { Text } from "../atomic";
 import Immutable from "immutable";
 import { useEditor } from "./EditorContext";
 import Editor from "@draft-js-plugins/editor";
 import Draft, { RichUtils, DraftHandleValue } from "draft-js";
-// import createAlignmentPlugin from "@draft-js-plugins/alignment";
-// import createBlockDndPlugin from "@draft-js-plugins/drag-n-drop";
-// import createDragNDropUploadPlugin from "@draft-js-plugins/drag-n-drop-upload";
-import "draft-js/dist/Draft.css";
-import "@draft-js-plugins/image/lib/plugin.css";
-import { useRef } from "react";
 
-export const myBlockRenderer = Immutable.Map({
+import "draft-js/dist/Draft.css";
+
+// const keyBindingFn = (e: React.KeyboardEvent<{}>) => {
+//     if(KeyBindingUtil.hasCommandModifier(e) && e.shiftKey) {
+//         if(e.key === 'x')
+//             return 'strikethrough';
+//         if(e.key === '7')
+//             return 'ordered-list';
+//         if(e.key === '8')
+//             return 'unordered-list';
+//         if(e.key === '9')
+//             return 'blockquote';
+
+//         return getDefaultKeyBinding(e);
+//     }
+// }
+const myBlockRenderer = Immutable.Map({
   "header-one": {
-    element: "div",
-    wrapper: <Text h1 b />,
+    element: "h1",
   },
   "header-two": {
-    element: "div",
-    wrapper: <Text h2 b />,
+    element: "h2",
   },
   unstyled: {
-    element: "div",
+    element: "p",
   },
 });
-//TO-DO: CREATE EDITOR CONTEXT so that it doesn't need to be sent into every child as a prop
+const extendedBlockRendererMap =
+  Draft.DefaultDraftBlockRenderMap.merge(myBlockRenderer);
 
 // const keyBindingFn = (e: React.KeyboardEvent<{}>) => {
 //     if(KeyBindingUtil.hasCommandModifier(e) && e.shiftKey) {
@@ -42,25 +50,26 @@ export const myBlockRenderer = Immutable.Map({
 //     }
 // }
 
-// const resizeablePlugin = createResizeablePlugin({});
-// const blockDndPlugin = createBlockDndPlugin();
-// const alignmentPlugin = createAlignmentPlugin();
-// const { AlignmentTool } = alignmentPlugin;
-// const decorator = composeDecorators(
-//   resizeablePlugin.decorator
-//   // alignmentPlugin.decorator,
-//   // blockDndPlugin.decorator
-// );
-
-const extendedBlockRenderMap =
-  Draft.DefaultDraftBlockRenderMap.merge(myBlockRenderer);
-
 const TextEditor = () => {
   const { editorState, setEditorState, plugins } = useEditor();
   let editor = useRef<Editor>(null);
   const handleKeyCommand = (command: string): DraftHandleValue => {
     var newState = RichUtils.handleKeyCommand(editorState, command);
 
+    // if(!editorState){
+    //     if(command === 'strikethrough'){
+    //         newState = RichUtils.toggleInlineStyle(editorState, 'STRIKETHROUGH');
+    //     }
+    //     else if (command === 'blockquote'){
+    //         newState = RichUtils.toggleBlockType(editorState, 'blockquote');
+    //     }
+    //     else if (command === 'ordered-list'){
+    //         newState = RichUtils.toggleBlockType(editorState, 'ordered-list-item');
+    //     }
+    //     else if (command === 'unordered-list'){
+    //         newState = RichUtils.toggleBlockType(editorState, 'unordered-list-item');
+    //     }
+    // }
     if (newState) {
       setEditorState(newState);
       return "handled";
@@ -107,7 +116,7 @@ const TextEditor = () => {
       <ToolBar />
       <Editor
         plugins={plugins}
-        blockRenderMap={extendedBlockRenderMap}
+        blockRenderMap={extendedBlockRendererMap}
         editorState={editorState}
         handleKeyCommand={handleKeyCommand}
         onChange={setEditorState}
@@ -119,5 +128,4 @@ const TextEditor = () => {
     <></>
   );
 };
-
 export default TextEditor;

@@ -10,11 +10,7 @@ type TextProps = HTMLAttributes<HTMLDivElement> & {
   caption?: boolean;
   b?: boolean;
   i?: boolean;
-<<<<<<< HEAD
   u?: boolean;
-=======
-  className?: string;
->>>>>>> caf4566 (Picture Upload and Focus)
 };
 
 const Text = ({
