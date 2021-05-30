@@ -22,7 +22,11 @@ const SignUpPage = () => {
   const [programName, setProgramName] = useState("");
   const [programLogo, setProgramLogo] = useState("");
   const [programIdentifier, setProgramIdentifier] = useState("");
+<<<<<<< HEAD
   //const [programPublic, setPublic] = useState(true); // TODO: add checkbox on form for setting program public or not
+=======
+  const [programPublic, setPublic] = useState(true); // TODO: add checkbox on form for setting program public or not
+>>>>>>> c4693a5 (connect createProgram mutation)
   const [createProgram] = useCreateProgramMutation();
   const [displayError, setError] = useState("");
 
@@ -129,7 +133,11 @@ const SignUpPage = () => {
                   mentorProfileSchemaJson: "",
                   menteeProfileSchemaJson: "",
                   mentorApplicationSchemaJson: "",
+<<<<<<< HEAD
                   public: true,
+=======
+                  public: programPublic,
+>>>>>>> c4693a5 (connect createProgram mutation)
                 };
                 createProgram({ variables: { data: programInput } });
                 setStage(stage + 1);
