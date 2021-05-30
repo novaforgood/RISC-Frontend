@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { useAuth } from "../../utils/firebase/auth";
 import { Text, Button, Input } from "../components/atomic";
-import { createProgram } from "../generated/graphql";
+import {
+  useCreateProgramMutation,
+  CreateProgramInput,
+} from "../generated/graphql";
 import TitledInput from "../components/TitledInput";
 
 const BlobCircle = () => {
@@ -20,6 +22,8 @@ const SignUpPage = () => {
   const [programName, setProgramName] = useState("");
   const [programLogo, setProgramLogo] = useState("");
   const [programIdentifier, setProgramIdentifier] = useState("");
+  //const [programPublic, setPublic] = useState(true); // TODO: add checkbox on form for setting program public or not
+  const [createProgram] = useCreateProgramMutation();
   const [displayError, setError] = useState("");
 
   const stepOne = () => {
@@ -114,14 +118,20 @@ const SignUpPage = () => {
           <Button
             onClick={() => {
               if (displayError) {
-                // error, check identifier, bad file?
+                // TODO: error, check identifier, bad file?
               } else {
-                const data = {
+                const programInput: CreateProgramInput = {
                   name: programName,
+                  description: "", // a lotta dummy strings for now since the form doesn't specify them
                   slug: programIdentifier,
                   iconUrl: programLogo,
+                  homepage: programIdentifier,
+                  mentorProfileSchemaJson: "",
+                  menteeProfileSchemaJson: "",
+                  mentorApplicationSchemaJson: "",
+                  public: true,
                 };
-                // useCreateProgram(data); TODO: actually plug this into backend
+                createProgram({ variables: { data: programInput } });
                 setStage(stage + 1);
                 setError("");
               }
