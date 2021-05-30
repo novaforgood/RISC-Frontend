@@ -2,6 +2,8 @@ import { ApolloClient, concat, HttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { ApolloProvider } from "@apollo/client/react";
 import { AppProps } from "next/app";
+import { ReactElement } from "react";
+import Page from "../types/Page";
 import "tailwindcss/tailwind.css";
 import { AuthProvider } from "../utils/firebase/auth";
 import firebase from "../utils/firebase/firebase";
@@ -26,12 +28,16 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-function MyApp({ Component, pageProps }: AppProps) {
+type CustomAppProps = AppProps & {
+  Component: Page;
+};
+
+function MyApp({ Component, pageProps }: CustomAppProps) {
+  const getLayout = Component.getLayout || ((page: ReactElement) => page);
+
   return (
     <ApolloProvider client={client}>
-      <AuthProvider>
-        <Component {...pageProps} />
-      </AuthProvider>
+      <AuthProvider>{getLayout(<Component {...pageProps} />)}</AuthProvider>
     </ApolloProvider>
   );
 }
