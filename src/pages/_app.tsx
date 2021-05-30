@@ -1,7 +1,6 @@
 import { ApolloClient, concat, HttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { ApolloProvider } from "@apollo/client/react";
-import { AuthProvider } from "../../utils/firebase/auth";
 import { ReactElement } from "react";
 import Page from "../types/Page";
 import { AppProps } from "next/app";
