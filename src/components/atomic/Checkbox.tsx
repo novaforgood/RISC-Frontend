@@ -23,8 +23,14 @@ const Checkbox = ({ className = "", ...props }: CheckboxProps) => {
       <svg className={svgStyles}>
         <path
           xmlns="http://www.w3.org/2000/svg"
-          d="M 3,13 7,17 17,3"
-          style={{ stroke: "#fff", height: 20, strokeWidth: 2, fill: "none" }}
+          d="M 4,11 8,14.5 16,5"
+          style={{
+            stroke: "#fff",
+            height: 20,
+            strokeWidth: 2,
+            fill: "none",
+            strokeLinecap: "round",
+          }}
         />
       </svg>
       <input
