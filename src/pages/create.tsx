@@ -74,7 +74,7 @@ const SignUpPage = () => {
         <Text h1 b>
           Program Details
         </Text>
-        <Text p>
+        <Text>
           Let's set up some basic information! You can also do these later.
         </Text>
         <div className="h-6" />
