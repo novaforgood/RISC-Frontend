@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { useAuth } from "../../utils/firebase/auth";
-import { Text, Button } from "../components/atomic";
 import Link from "next/link";
+import { useState } from "react";
+import { useAuth } from "../utils/firebase/auth";
+import { Button, Text } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
 import type { GetServerSideProps } from "next";
 
