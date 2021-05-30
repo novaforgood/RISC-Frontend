@@ -71,7 +71,7 @@ TabLayout.PageItem = ({ label, Icon, path }) => {
   const active = router.pathname === path;
 
   const pageItemStyles = classNames({
-    "w-full px-4 flex items-center text-secondary cursor-pointer hover:bg-tertiary duration-200 select-none":
+    "w-full pr-6 pl-4 py-2 flex items-center text-secondary cursor-pointer hover:bg-tertiary duration-200 select-none":
       true,
     "text-white bg-black hover:bg-black": active,
   });
@@ -96,7 +96,7 @@ TabLayout.Dropdown = ({ children, label }) => {
   const [open, setOpen] = useState(false);
 
   const dropdownStyles = classNames({
-    "flex cursor-pointer text-secondary py-4 px-4 hover:bg-tertiary duration-200 \
+    "flex cursor-pointer text-secondary py-3 px-6 hover:bg-tertiary duration-200 \
      justify-between items-center select-none":
       true,
     "hover:bg-tertiary": open,
