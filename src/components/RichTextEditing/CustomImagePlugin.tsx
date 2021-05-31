@@ -1,4 +1,10 @@
-import React, { ImgHTMLAttributes, ComponentType, ReactElement } from "react";
+import React, {
+  ImgHTMLAttributes,
+  ComponentType,
+  ReactElement,
+  useEffect,
+  useRef,
+} from "react";
 import {
   EditorState,
   AtomicBlockUtils,
@@ -7,6 +13,12 @@ import {
 } from "draft-js";
 import classNames from "classnames";
 import { EditorPlugin } from "@draft-js-plugins/editor";
+
+/**
+ * THIS IS AN EDIT OF THE CODE FOUND AT https://github.com/draft-js-plugins/draft-js-plugins/tree/f4b5e696ed1c8354d98ac53bc58372486589cf83/packages/image
+ *
+ * Rights reserved by the MIT License; Code creation by Facebook
+ */
 
 interface ImageProps extends ImgHTMLAttributes<HTMLImageElement> {
   block: ContentBlock;
@@ -49,10 +61,12 @@ const addImage = (
   const contentStateWithEntity = contentState.createEntity(
     urlType,
     "IMMUTABLE",
-    { src: url }
+    { src: url, ...extraData }
   );
   imgProps = extraData;
   const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+  contentState.mergeEntityData(entityKey, { entityKey: entityKey });
+  console.log(entityKey);
   const newEditorState = AtomicBlockUtils.insertAtomicBlock(
     editorState,
     entityKey,
@@ -71,6 +85,7 @@ export type ImageEditorPlugin = EditorPlugin & {
 const defaultTheme: ImagePluginTheme = {};
 
 const ImageComponent = React.forwardRef<HTMLImageElement, ImageProps>(
+  /**This forwarded ref returns null: need to figure out why */
   (props, ref): ReactElement => {
     const { block, className, theme = {}, ...otherProps } = props;
     // leveraging destructuring to omit certain properties from props
@@ -94,16 +109,67 @@ const ImageComponent = React.forwardRef<HTMLImageElement, ImageProps>(
       className,
       imgProps?.className
     );
-    const { src } = contentState.getEntity(block.getEntityAt(0)).getData();
+    const { src, entityKey } = contentState
+      .getEntity(block.getEntityAt(0))
+      .getData();
+    const imageRef = useRef<HTMLImageElement | null>(null);
+
+    const clickedOutside = (e: MouseEvent) => {
+      if (imageRef.current && !imageRef.current?.contains(e.target as Node)) {
+        imageRef.current.style.border = "none";
+        imageRef.current.style.cursor = "default";
+      }
+      document.removeEventListener("click", clickedOutside);
+    };
+
+    const resize = () => {
+      if (!imageRef.current) return;
+      imageRef.current.focus();
+      imageRef.current.style.border = "1px solid #707070";
+      imageRef.current.style.cursor = "col-resize";
+      document.addEventListener("click", clickedOutside);
+      imageRef.current.onmousedown = (e_mousedown: MouseEvent) => {
+        const start_x = e_mousedown.clientX;
+        console.log(entityKey);
+        if (!imageRef.current) return;
+        const imgProperties = imageRef.current.getBoundingClientRect();
+        const originalWidth = imgProperties.width;
+        const move = (e_mousemove: MouseEvent) => {
+          const dif = (e_mousemove.clientX - start_x) / 100;
+          if (!imageRef.current) return;
+          imageRef.current.style.width = `calc(${originalWidth} * ${dif}%)`;
+        };
+        document.addEventListener("mousemove", move);
+        document.addEventListener("mouseup", function up() {
+          if (entityKey)
+            contentState.mergeEntityData(entityKey, {
+              width: imageRef.current?.style.width,
+            });
+          document.removeEventListener("mouseup", up);
+          document.removeEventListener("mousemove", move);
+        });
+      };
+    };
+
+    useEffect(() => {
+      if (!imageRef.current) return;
+      imageRef.current.ondragstart = () => false;
+      imageRef.current.onclick = resize;
+      return () => {
+        document.removeEventListener("click", clickedOutside);
+      };
+    }, [imageRef]);
+
     return (
       <img
+        onClick={resize}
         {...elementProps}
         {...imgProps}
-        ref={ref}
+        ref={imageRef}
         src={src}
         style={{
-          minWidth: "30%",
-          minHeight: "30%",
+          minWidth: "25vw",
+          maxWidth: "80vw",
           margin: "0 auto",
           objectFit: "cover",
           ...style,

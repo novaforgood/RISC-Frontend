@@ -4,11 +4,11 @@ import TextEditor from "../components/RichTextEditing/RichTextEditor";
 
 const Test = () => (
   <>
+    <h1>hello</h1>
     <EditorProvider>
       <TextEditor />
-
-      <h1>hello</h1>
     </EditorProvider>
+    <h1>hello</h1>
   </>
 );
 

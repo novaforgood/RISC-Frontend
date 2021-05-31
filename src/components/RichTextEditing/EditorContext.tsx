@@ -53,7 +53,7 @@ export const EditorProvider = (props: ContextProps) => {
 export const useEditor = () => {
   const context = useContext(EditorContext);
   if (context === undefined) {
-    throw new Error("useEditor() must be within AuthProvider");
+    throw new Error("useEditor() must be within EditorProvider");
   }
   return context;
 };

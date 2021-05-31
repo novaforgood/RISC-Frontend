@@ -1,75 +1,20 @@
 import React, { useEffect, useRef } from "react";
 import ToolBar from "./ToolBar";
-import Immutable from "immutable";
+import { blockRenderMap } from "./TextStyles";
 import { useEditor } from "./EditorContext";
 import Editor from "@draft-js-plugins/editor";
-import Draft, { RichUtils, DraftHandleValue } from "draft-js";
+import { RichUtils, DraftHandleValue } from "draft-js";
 
 import "draft-js/dist/Draft.css";
-
-// const keyBindingFn = (e: React.KeyboardEvent<{}>) => {
-//     if(KeyBindingUtil.hasCommandModifier(e) && e.shiftKey) {
-//         if(e.key === 'x')
-//             return 'strikethrough';
-//         if(e.key === '7')
-//             return 'ordered-list';
-//         if(e.key === '8')
-//             return 'unordered-list';
-//         if(e.key === '9')
-//             return 'blockquote';
-
-//         return getDefaultKeyBinding(e);
-//     }
-// }
-const myBlockRenderer = Immutable.Map({
-  "header-one": {
-    element: "h1",
-  },
-  "header-two": {
-    element: "h2",
-  },
-  unstyled: {
-    element: "p",
-  },
-});
-const extendedBlockRendererMap =
-  Draft.DefaultDraftBlockRenderMap.merge(myBlockRenderer);
-
-// const keyBindingFn = (e: React.KeyboardEvent<{}>) => {
-//     if(KeyBindingUtil.hasCommandModifier(e) && e.shiftKey) {
-//         if(e.key === 'x')
-//             return 'strikethrough';
-//         if(e.key === '7')
-//             return 'ordered-list';
-//         if(e.key === '8')
-//             return 'unordered-list';
-//         if(e.key === '9')
-//             return 'blockquote';
-
-//         return getDefaultKeyBinding(e);
-//     }
-// }
+import ReactDOM from "react-dom";
 
 const TextEditor = () => {
-  const { editorState, setEditorState, plugins } = useEditor();
-  let editor = useRef<Editor>(null);
+  const { editorState, setEditorState, imagePlugin, plugins } = useEditor();
+  const editor = useRef<HTMLDivElement | null>(null);
+  const forwardRef = useRef<Editor | null>(null);
   const handleKeyCommand = (command: string): DraftHandleValue => {
     var newState = RichUtils.handleKeyCommand(editorState, command);
 
-    // if(!editorState){
-    //     if(command === 'strikethrough'){
-    //         newState = RichUtils.toggleInlineStyle(editorState, 'STRIKETHROUGH');
-    //     }
-    //     else if (command === 'blockquote'){
-    //         newState = RichUtils.toggleBlockType(editorState, 'blockquote');
-    //     }
-    //     else if (command === 'ordered-list'){
-    //         newState = RichUtils.toggleBlockType(editorState, 'ordered-list-item');
-    //     }
-    //     else if (command === 'unordered-list'){
-    //         newState = RichUtils.toggleBlockType(editorState, 'unordered-list-item');
-    //     }
-    // }
     if (newState) {
       setEditorState(newState);
       return "handled";
@@ -79,11 +24,12 @@ const TextEditor = () => {
   };
 
   let contentState = editorState.getCurrentContent();
+
   const focus = () => {
     if (editor.current) editor.current.focus();
   };
+
   useEffect(() => {
-    console.log(editorState);
     if (!contentState.hasText()) {
       const placeholder = document.getElementsByClassName(
         "public-DraftEditorPlaceholder-inner"
@@ -111,17 +57,73 @@ const TextEditor = () => {
     }
   }, [contentState.getFirstBlock()]);
 
+  const getToolBar = () => {
+    const toolBarNode = document.getElementById("inline-toolbar");
+    if (toolBarNode) {
+      return toolBarNode;
+    } else {
+      const newToolBarNode = document.createElement("div");
+      newToolBarNode.setAttribute("id", "inline-toolbar");
+      editor.current?.appendChild(newToolBarNode);
+      return newToolBarNode;
+    }
+  };
+
+  useEffect(() => {
+    const textBlocks = document.querySelectorAll(
+      "#__next > div > div > div > div > div > div > span > div"
+    );
+    for (let i = 0; i < textBlocks.length; i++) {
+      const textBlock = textBlocks[i] as HTMLElement;
+      textBlock.onclick = () => {
+        const toolBarNode = getToolBar();
+        textBlock.parentNode?.insertBefore(toolBarNode, textBlock);
+
+        ReactDOM.render(
+          <ToolBar
+            editorState={editorState}
+            setEditorState={setEditorState}
+            imagePlugin={imagePlugin}
+          />,
+          document.getElementById("inline-toolbar")
+        );
+      };
+      textBlock.onfocus = () => {
+        console.log("focus");
+      };
+      textBlock.onkeypress = () => {
+        console.log("key pressed");
+      };
+    }
+  }, [contentState]);
+
+  const clickedOutside = (e: MouseEvent) => {
+    if (!editor.current?.contains(e.target as Node)) {
+      const toolBarNode = getToolBar();
+      if (!toolBarNode.contains(e.target as Node)) {
+        toolBarNode.remove();
+      }
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", clickedOutside);
+  }, [editor]);
+
+  /**Receiving the following warning:
+   * Expected server HTML to contain a matching <div> in <div>.
+   */
   return typeof window !== "undefined" ? (
-    <div onClick={focus}>
-      <ToolBar />
+    <div onClick={focus} ref={editor}>
+      <div id="inline-toolbar" />
       <Editor
         plugins={plugins}
-        blockRenderMap={extendedBlockRendererMap}
+        blockRenderMap={blockRenderMap}
         editorState={editorState}
         handleKeyCommand={handleKeyCommand}
         onChange={setEditorState}
         placeholder="Edit here..."
-        ref={editor}
+        ref={forwardRef}
       />
     </div>
   ) : (
