@@ -10,30 +10,27 @@ const BlobCircle = () => {
   const sizes = "h-24 w-24 md:h-64 md:w-64 lg:h-80 lg:w-80";
   return (
     <div
-      className={`${sizes} rounded-full bg-skyblue overflow-hidden flex justify-center items-end pointer-events-none`}
+      className={`${sizes} rounded-full bg-primary flex justify-center items-end pointer-events-none`}
     >
-      <img src="/static/HappyBlobs.svg" className="w-11/12 select-none" />
+      <img src="/static/CreateBlobs.svg" className="w-11/12 select-none" />
     </div>
   );
 };
 
-const SignUpPage = () => {
+const CreateProgramPage = () => {
   const [stage, setStage] = useState(0);
   const [programName, setProgramName] = useState("");
   const [programLogo, setProgramLogo] = useState("");
   const [programIdentifier, setProgramIdentifier] = useState("");
-<<<<<<< HEAD
-  //const [programPublic, setPublic] = useState(true); // TODO: add checkbox on form for setting program public or not
-=======
-  const [programPublic, setPublic] = useState(true); // TODO: add checkbox on form for setting program public or not
->>>>>>> c4693a5 (connect createProgram mutation)
+
+  //const [programIsPublic, setProgramIsPublic] = useState(true); // TODO: add checkbox on form for setting program public or not
   const [createProgram] = useCreateProgramMutation();
   const [displayError, setError] = useState("");
 
   const stepOne = () => {
     return (
-      <div className="flex flex-col w-full px-4 py-12 md:w-120">
-        <Text h1 b>
+      <div className="flex flex-col w-full px-4 py-12 md:w-152">
+        <Text h1 b className="whitespace no-wrap">
           Create your mentorship!
         </Text>
         <div className="h-6" />
@@ -56,7 +53,7 @@ const SignUpPage = () => {
           disabled={programName.length == 0}
           onClick={() => {
             if (programName) {
-              setStage(stage + 1);
+              setStage((prev) => prev + 1);
               setError("");
             } else setError("Please enter a program name.");
           }}
@@ -82,7 +79,7 @@ const SignUpPage = () => {
           Let's set up some basic information! You can also do these later.
         </Text>
         <div className="h-6" />
-        <div className="">
+        <div>
           <Text b>Logo</Text>
           <div className="h-1" />
           <Button variant="inverted" size="small">
@@ -124,7 +121,7 @@ const SignUpPage = () => {
               if (displayError) {
                 // TODO: error, check identifier, bad file?
               } else {
-                const programInput: CreateProgramInput = {
+                const createProgramInput: CreateProgramInput = {
                   name: programName,
                   description: "", // a lotta dummy strings for now since the form doesn't specify them
                   slug: programIdentifier,
@@ -139,8 +136,8 @@ const SignUpPage = () => {
                   public: programPublic,
 >>>>>>> c4693a5 (connect createProgram mutation)
                 };
-                createProgram({ variables: { data: programInput } });
-                setStage(stage + 1);
+                createProgram({ variables: { data: createProgramInput } });
+                setStage((prev) => prev + 1);
                 setError("");
               }
             }}
@@ -176,4 +173,4 @@ const SignUpPage = () => {
   );
 };
 
-export default SignUpPage;
+export default CreateProgramPage;
