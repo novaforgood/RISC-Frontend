@@ -1,12 +1,18 @@
-import Input from "./atomic/Input";
-import Text from "./atomic/Text";
+import Input from "../atomic/Input";
+import Text from "../atomic/Text";
 import React, { Fragment } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import _ from "lodash";
 import { nanoid } from "nanoid";
-import { DraggableLocation, DropResult } from "react-beautiful-dnd";
-import { Button, Card } from "./atomic";
+import { DropResult } from "react-beautiful-dnd";
+import { Button, Card } from "../atomic";
 import dynamic from "next/dynamic";
+import {
+  mergeArraysByID,
+  moveQuestionBetweenSections,
+  reindexItemInList,
+} from "./utils";
+import FormQuestionSchemaEditor from "./FormQuestionSchemaEditor";
 
 const NoSSRComponent = (props: any) => (
   <React.Fragment>{props.children}</React.Fragment>
@@ -18,106 +24,37 @@ const NoSSR = dynamic(() => Promise.resolve(NoSSRComponent), {
 
 // Types
 
-type RecursivePartial<T> = {
+export type RecursivePartial<T> = {
   [P in keyof T]?: RecursivePartial<T[P]>;
 };
 
-// interface TextQuestion extends Question {
-//   type: "single-line" | "paragraph";
-// }
-// interface MultipleChoiceQuestion extends Question {
-//   type: "multiple-choice";
-//   choices: string[]; // TODO: Multiple choice data structure
-// }
-
-export interface Question {
+type QuestionBase = {
   readonly id: string;
   title: string;
   type: string;
-}
+};
 
-type Section = {
+type TextQuestion = QuestionBase & {
+  type: "single-line" | "paragraph";
+};
+type MultipleChoiceQuestion = QuestionBase & {
+  type: "multiple-choice";
+  choices: Set<string>; // TODO: Multiple choice data structure
+};
+
+export type Question = MultipleChoiceQuestion | TextQuestion;
+
+export type Section = {
   readonly id: string;
   title: string;
   questions: Question[];
 };
 
-type Form = {
+export type Form = {
   sections: Section[];
 };
 
 // Components
-
-interface FormQuestionSchemaEditorProps {
-  question: Question;
-  index: number;
-  onChange: (question: Question) => void;
-  onDelete: () => void;
-}
-const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
-  question,
-  index,
-  onChange = () => {},
-  onDelete = () => {},
-}) => {
-  const { id: questionID, title } = question;
-
-  const updateQuestion = (changes: RecursivePartial<Question>) => {
-    return { ..._.mergeWith(question, changes, mergeArraysByID) };
-  };
-
-  return (
-    <Draggable key={questionID} draggableId={questionID} index={index}>
-      {(provided, _) => {
-        return (
-          <div
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            style={{
-              // some basic styles to make the items look a bit nicer
-              userSelect: "none",
-
-              // change background colour if dragging
-              // background: snapshot.isDragging ? "lightgreen" : "white",
-
-              // styles we need to apply on draggables
-              ...provided.draggableProps.style,
-            }}
-          >
-            <div {...provided.dragHandleProps} id={questionID}>
-              handle
-            </div>
-
-            <div className="flex items-end">
-              <div>
-                <div>
-                  <Input
-                    value={title || ""}
-                    onChange={(e) => {
-                      onChange(updateQuestion({ title: e.target.value }));
-                    }}
-                  />
-                  <div className="w-4" />
-                </div>
-                <Button
-                  size="small"
-                  onClick={() => {
-                    onDelete();
-                  }}
-                >
-                  Delete
-                </Button>
-
-                <div className="h-4" />
-              </div>
-            </div>
-            <div className="h-12" />
-          </div>
-        );
-      }}
-    </Draggable>
-  );
-};
 
 interface FormSectionSchemaEditorProps {
   section: Section;
@@ -298,7 +235,7 @@ const FormEditor: React.FC<FormEditorProps> = ({
 
       onChange(
         updateForm({
-          sections: reindexItem(
+          sections: reindexItemInList(
             form.sections,
             result.source.index,
             result.destination.index
@@ -311,7 +248,7 @@ const FormEditor: React.FC<FormEditorProps> = ({
       const sectionID =
         result.destination.droppableId.split("---SEPARATOR---")[1];
 
-      const newQuestions = reindexItem(
+      const newQuestions = reindexItemInList(
         form.sections.find((v) => v.id == sectionID)!.questions,
         result.source.index,
         result.destination!.index
@@ -385,67 +322,3 @@ const FormEditor: React.FC<FormEditorProps> = ({
 };
 
 export default FormEditor;
-
-// Utility
-
-/**
- *
- * @param list
- * @param startIndex
- * @param endIndex
- * @returns [list] but with the rearranged item
- *
- * Moves item from [startIndex] to [endIndex]
- */
-const reindexItem = (list: any[], startIndex: number, endIndex: number) => {
-  const result = Array.from(list);
-  const [removed] = result.splice(startIndex, 1);
-  result.splice(endIndex, 0, removed);
-  return result;
-};
-
-/**
- *
- * @param source
- * @param destination
- * @param droppableSource
- * @param droppableDestination
- * @returns a dictionary: sectionID => new set of questions in that section
- *
- * Moves a question from [source] to [destination] based on drag parameters.
- */
-const moveQuestionBetweenSections = (
-  source: Question[],
-  destination: Question[],
-  droppableSource: DraggableLocation,
-  droppableDestination: DraggableLocation
-) => {
-  const sourceClone = Array.from(source);
-  const destClone = Array.from(destination);
-  const [removed] = sourceClone.splice(droppableSource.index, 1);
-  destClone.splice(droppableDestination.index, 0, removed);
-
-  const result: Record<string, Question[]> = {};
-  result[droppableSource.droppableId] = sourceClone;
-  result[droppableDestination.droppableId] = destClone;
-
-  return result;
-};
-
-function mergeButOverwriteArrays(oldValue: any, newValue: any) {
-  if (_.isArray(oldValue)) {
-    return newValue;
-  }
-}
-
-function mergeArraysByID(oldValue: any, newValue: any) {
-  if (_.isArray(oldValue)) {
-    var merged = _.mergeWith(
-      _.keyBy(oldValue, "id"),
-      _.keyBy(newValue, "id"),
-      mergeButOverwriteArrays
-    );
-    var values = _.values(merged);
-    return [...values];
-  }
-}
