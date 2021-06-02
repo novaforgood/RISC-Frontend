@@ -44,8 +44,8 @@ module.exports = {
         86: "21.5rem",
         120: "30rem",
       },
-      transitionProperty: {
-        background: "background-color",
+      cursor: {
+        grab: "grab",
       },
     },
   },
