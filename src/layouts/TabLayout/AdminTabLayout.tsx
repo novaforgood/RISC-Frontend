@@ -1,11 +1,11 @@
-import TabLayout from "./TabLayout";
 import {
-  Home,
   Clipboard,
+  Home,
   Settings,
   Smile,
   Users,
 } from "../../components/icons";
+import TabLayout from "./TabLayout";
 
 const AdminTabLayout: React.FC = ({ children }) => {
   return (
@@ -16,7 +16,7 @@ const AdminTabLayout: React.FC = ({ children }) => {
         path="/test/testtablayout"
       />
       <TabLayout.Separator />
-      <TabLayout.Dropdown label="Dropdown 1">
+      <TabLayout.Dropdown label="Dropdown 1" id="dropdown1">
         <TabLayout.PageItem
           label="Subpage 1"
           Icon={Settings}
@@ -29,7 +29,7 @@ const AdminTabLayout: React.FC = ({ children }) => {
         />
       </TabLayout.Dropdown>
       <TabLayout.Separator />
-      <TabLayout.Dropdown label="Dropdown 2">
+      <TabLayout.Dropdown label="Dropdown 2" id="dropdown2">
         <TabLayout.PageItem
           label="Subpage 3"
           Icon={Smile}

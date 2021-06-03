@@ -38,6 +38,7 @@ function MyApp({ Component, pageProps }: CustomAppProps) {
   return (
     <ApolloProvider client={client}>
       <AuthProvider>{getLayout(<Component {...pageProps} />)}</AuthProvider>
+      <script> </script>
     </ApolloProvider>
   );
 }
