@@ -1,8 +1,9 @@
 import classNames from "classnames";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { Text } from "../../components/atomic";
+import LocalStorage from "../../utils/localstorage";
 
 interface ArrowProps {
   down: boolean;
@@ -90,8 +91,8 @@ TabLayout.PageItem = ({ label, Icon, path }) => {
   );
 };
 
-TabLayout.Dropdown = ({ children, label }) => {
-  const [open, setOpen] = useState(true);
+TabLayout.Dropdown = ({ children, label, id }) => {
+  const [open, setOpen] = useState(false);
 
   const dropdownStyles = classNames({
     "flex cursor-pointer text-secondary py-3 px-3 hover:bg-tertiary duration-100 \
@@ -100,11 +101,24 @@ TabLayout.Dropdown = ({ children, label }) => {
     "hover:bg-tertiary": open,
   });
 
+  useEffect(() => {
+    const initState = LocalStorage.get(`tablayout-${id}`);
+    if (initState !== null) {
+      setOpen(initState);
+    } else {
+      setOpen(true);
+    }
+    return () => {};
+  }, []);
+
   return (
     <div>
       <div
         onClick={() => {
-          setOpen((prev) => !prev);
+          setOpen((prev) => {
+            LocalStorage.set(`tablayout-${id}`, !prev);
+            return !prev;
+          });
         }}
         className={dropdownStyles}
       >
