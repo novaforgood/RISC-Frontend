@@ -1,6 +1,6 @@
 import _ from "lodash";
-import { Question } from "./index";
 import { DraggableLocation } from "react-beautiful-dnd";
+import { Question } from "./index";
 
 /**
  *
@@ -56,14 +56,20 @@ function mergeButOverwriteArrays(oldValue: any, newValue: any) {
   }
 }
 
-export function mergeArraysByID(oldValue: any, newValue: any) {
-  if (_.isArray(oldValue)) {
-    var merged = _.mergeWith(
-      _.keyBy(oldValue, "id"),
-      _.keyBy(newValue, "id"),
-      mergeButOverwriteArrays
-    );
-    var values = _.values(merged);
-    return [...values];
-  }
+type RecursivePartial<T> = {
+  [P in keyof T]?: RecursivePartial<T[P]>;
+};
+export function getUpdateFunction<T>(item: T) {
+  const update = (
+    arg: RecursivePartial<T> | ((item: T) => RecursivePartial<T>)
+  ) => {
+    let changes;
+    if (typeof arg === "function") {
+      changes = arg(item);
+    } else {
+      changes = arg;
+    }
+    return { ..._.mergeWith(item, changes, mergeButOverwriteArrays) };
+  };
+  return update;
 }
