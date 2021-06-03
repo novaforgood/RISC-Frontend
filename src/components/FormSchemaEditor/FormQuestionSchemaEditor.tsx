@@ -46,7 +46,7 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
   }, []);
 
   const singlelinePreviewStyles = classNames({
-    "w-full h-8 rounded-md p-3 placeholder-secondary border-1.5 border-inactive resize-none box-border \
+    "w-full px-1.5 py-1 rounded-md placeholder-secondary border-1.5 border-inactive resize-none box-border \
     focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none":
       true,
     "hover:border-secondary hover:border-2": !focused,
@@ -54,7 +54,7 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
   });
 
   const paragraphPreviewStyles = classNames({
-    "w-full h-16 rounded-md p-3 placeholder-secondary border-1.5 border-inactive resize-none box-border \
+    "w-full px-1.5 py-1 rounded-md placeholder-secondary border-1.5 border-inactive resize-none box-border \
     focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none":
       true,
     "hover:border-secondary hover:border-2": !focused,
@@ -102,9 +102,9 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
   };
 
   const wrapperStyles = classNames({
-    "w-full p-6 rounded cursor-pointer hover:bg-tertiary duration-100": true,
-    "bg-white": !focused,
-    "cursor-grab bg-tertiary": focused,
+    "bg-white w-full p-6 rounded cursor-pointer hover:bg-tertiary transition-background duration-100":
+      true,
+    "cursor-grab border-2 border-inactive hover:bg-white": focused,
   });
 
   return (
@@ -134,7 +134,7 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
               className={wrapperStyles}
             >
               <VisibleGuard show={focused}>
-                <div className="flex items-center pb-2 border-b border-b-secondary">
+                <div className="flex items-center pb-2 border-b border-secondary">
                   <DragHandle className="cursor-grab" />
                   <div className="w-2"></div>
                   <select
@@ -184,7 +184,7 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
                     placeholder="Question"
                     className={`${
                       !focused && "hidden"
-                    } w-full h-8 rounded-md p-3 placeholder-secondary border-1.5 border-inactive 
+                    } w-full px-1.5 py-1 rounded-md placeholder-secondary border-1.5 border-inactive 
                       resize-none box-border font-bold
                       hover:border-secondary hover:border-2
                       focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none`}
@@ -193,12 +193,12 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
                       onChange(updateQuestion({ title: e.target.value }));
                     }}
                   />
-                  <div className="h-2"></div>
+                  <div className="h-1"></div>
                   <input
                     placeholder="Helper text"
                     className={`${
                       !focused && "hidden"
-                    } w-full h-8 rounded-md p-3 placeholder-secondary border-1.5 border-inactive 
+                    } w-full px-1.5 py-1 rounded-md placeholder-secondary border-1.5 border-inactive 
                       resize-none box-border text-secondary
                       hover:border-secondary hover:border-2
                       focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none`}
