@@ -83,7 +83,8 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
   };
 
   const wrapperStyles = classNames({
-    "w-full p-6 rounded cursor-pointer bg-white hover:bg-tertiary": true,
+    "w-full p-6 rounded cursor-pointer bg-white hover:bg-tertiary duration-100":
+      true,
     "cursor-grab": focused,
   });
 
