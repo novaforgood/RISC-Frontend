@@ -1,18 +1,21 @@
+import { nanoid } from "nanoid";
+import dynamic from "next/dynamic";
+import React, { Fragment } from "react";
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  DropResult,
+} from "react-beautiful-dnd";
+import { Button, Card } from "../atomic";
 import Input from "../atomic/Input";
 import Text from "../atomic/Text";
-import React, { Fragment } from "react";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import _ from "lodash";
-import { nanoid } from "nanoid";
-import { DropResult } from "react-beautiful-dnd";
-import { Button, Card } from "../atomic";
-import dynamic from "next/dynamic";
+import FormQuestionSchemaEditor from "./FormQuestionSchemaEditor";
 import {
-  mergeArraysByID,
+  getUpdateFunction,
   moveQuestionBetweenSections,
   reindexItemInList,
 } from "./utils";
-import FormQuestionSchemaEditor from "./FormQuestionSchemaEditor";
 
 const NoSSRComponent = (props: any) => (
   <React.Fragment>{props.children}</React.Fragment>
@@ -70,11 +73,7 @@ const FormSectionSchemaEditor: React.FC<FormSectionSchemaEditorProps> = ({
 }) => {
   const { id: sectionID, title, questions } = section;
 
-  const updateSection = (changes: RecursivePartial<Section>) => {
-    console.log(section);
-    console.log(changes);
-    return { ..._.mergeWith(section, changes, mergeArraysByID) };
-  };
+  const updateSection = getUpdateFunction(section);
 
   return (
     <Draggable key={sectionID} draggableId={sectionID} index={index}>
@@ -127,11 +126,13 @@ const FormSectionSchemaEditor: React.FC<FormSectionSchemaEditorProps> = ({
                             question={question}
                             index={index}
                             onChange={(newQuestion) => {
-                              console.log("NEW QUESTION");
-                              console.log(newQuestion);
-
+                              const newQuestions = questions.map((question) => {
+                                if (question.id === newQuestion.id)
+                                  return newQuestion;
+                                else return question;
+                              });
                               onChange(
-                                updateSection({ questions: [newQuestion] })
+                                updateSection({ questions: newQuestions })
                               );
                             }}
                             onDelete={() => {
@@ -154,10 +155,17 @@ const FormSectionSchemaEditor: React.FC<FormSectionSchemaEditorProps> = ({
             <Button
               onClick={() => {
                 onChange(
-                  updateSection({
-                    questions: [
-                      { id: nanoid(), type: "single-line", title: "Question" },
-                    ],
+                  updateSection((section) => {
+                    return {
+                      questions: [
+                        ...section.questions,
+                        {
+                          id: nanoid(),
+                          type: "single-line",
+                          title: "Question",
+                        },
+                      ],
+                    };
                   })
                 );
               }}
@@ -180,9 +188,7 @@ const FormEditor: React.FC<FormEditorProps> = ({
   form,
   onChange = () => {},
 }) => {
-  const updateForm = (changes: RecursivePartial<Form>) => {
-    return { ..._.mergeWith(form, changes, mergeArraysByID) };
-  };
+  const updateForm = getUpdateFunction(form);
 
   const _onDragEnd = (result: DropResult) => {
     if (!result.destination) {
@@ -231,7 +237,7 @@ const FormEditor: React.FC<FormEditorProps> = ({
     }
 
     if (result.type === "sections") {
-      // Drop section somewhere else.
+      // Drop section somewhere else. (Reordering section list)
 
       onChange(
         updateForm({
@@ -254,8 +260,17 @@ const FormEditor: React.FC<FormEditorProps> = ({
         result.destination!.index
       );
       onChange(
-        updateForm({
-          sections: [{ id: sectionID, questions: newQuestions }],
+        updateForm((oldForm) => {
+          const newSections = oldForm.sections.map((section) => {
+            if (section.id === sectionID) {
+              return { ...section, questions: newQuestions };
+            } else {
+              return section;
+            }
+          });
+          return {
+            sections: newSections,
+          };
         })
       );
     }
@@ -282,9 +297,11 @@ const FormEditor: React.FC<FormEditorProps> = ({
                         section={section}
                         index={index}
                         onChange={(newSection) => {
-                          console.log("NEW SECTION");
-                          console.log(newSection);
-                          onChange(updateForm({ sections: [newSection] }));
+                          const newSections = form.sections.map((section) => {
+                            if (section.id === newSection.id) return newSection;
+                            else return section;
+                          });
+                          onChange(updateForm({ sections: newSections }));
                         }}
                         onDelete={() => {
                           onChange({
@@ -306,10 +323,13 @@ const FormEditor: React.FC<FormEditorProps> = ({
         <Button
           onClick={() => {
             onChange(
-              updateForm({
-                sections: [
-                  { id: nanoid(), title: "New Section", questions: [] },
-                ],
+              updateForm((previousForm) => {
+                return {
+                  sections: [
+                    ...previousForm.sections,
+                    { id: nanoid(), title: "New Section", questions: [] },
+                  ],
+                };
               })
             );
           }}

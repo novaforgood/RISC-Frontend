@@ -1,11 +1,10 @@
 import classNames from "classnames";
-import _ from "lodash";
 import React, { useEffect, useRef, useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { Text } from "../atomic";
 import { DeleteIcon, DragHandle } from "./icons";
-import { Question, RecursivePartial } from "./index";
-import { mergeArraysByID } from "./utils";
+import { Question } from "./index";
+import { getUpdateFunction } from "./utils";
 
 interface VisibleGuardProps {
   show: boolean;
@@ -40,10 +39,7 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
     };
   }, []);
 
-  const updateQuestion = (changes: RecursivePartial<Question>) => {
-    return { ..._.mergeWith(question, changes, mergeArraysByID) };
-  };
-
+  const updateQuestion = getUpdateFunction(question);
   const questionPreview = () => {
     switch (question.type) {
       case "single-line":
