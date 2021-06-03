@@ -9,13 +9,13 @@ const TestPage = ({}) => {
       {
         id: nanoid(),
         title: "Question 1",
-        helperText: "",
+        description: "",
         type: "single-line",
       },
       {
         id: nanoid(),
         title: "Question 2",
-        helperText: "",
+        description: "",
         type: "paragraph",
       },
     ],

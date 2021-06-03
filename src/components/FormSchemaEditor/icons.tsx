@@ -1,7 +1,29 @@
 import React, { HTMLAttributes } from "react";
 
-type DeleteIconProps = HTMLAttributes<HTMLDivElement>;
-export const DeleteIcon: React.FC<DeleteIconProps> = (props) => {
+type IconProps = HTMLAttributes<HTMLDivElement>;
+
+export const EditIcon: React.FC<IconProps> = (props) => {
+  return (
+    <div {...props}>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        height="100%"
+        viewBox="0 0 22 22"
+        fill="none"
+      >
+        <path
+          d="M15.5833 2.75011C15.8241 2.50936 16.1099 2.31838 16.4245 2.18808C16.7391 2.05779 17.0762 1.99072 17.4167 1.99072C17.7572 1.99072 18.0943 2.05779 18.4089 2.18808C18.7234 2.31838 19.0093 2.50936 19.25 2.75011C19.4908 2.99087 19.6818 3.27669 19.812 3.59125C19.9423 3.90582 20.0094 4.24297 20.0094 4.58345C20.0094 4.92393 19.9423 5.26108 19.812 5.57564C19.6818 5.8902 19.4908 6.17602 19.25 6.41678L6.87501 18.7918L1.83334 20.1668L3.20834 15.1251L15.5833 2.75011Z"
+          stroke="black"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </div>
+  );
+};
+
+export const DeleteIcon: React.FC<IconProps> = (props) => {
   return (
     <div {...props}>
       <svg
