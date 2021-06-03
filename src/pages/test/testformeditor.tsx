@@ -4,22 +4,16 @@ import FormSchemaEditor, { Form } from "../../components/FormSchemaEditor";
 
 const TestPage = ({}) => {
   const [form, setForm] = useState<Form>({
-    sections: [
+    questions: [
       {
         id: nanoid(),
-        title: "Section 1",
-        questions: [
-          {
-            id: nanoid(),
-            title: "Question 1",
-            type: "single-line",
-          },
-          {
-            id: nanoid(),
-            title: "Question 2",
-            type: "paragraph",
-          },
-        ],
+        title: "Question 1",
+        type: "single-line",
+      },
+      {
+        id: nanoid(),
+        title: "Question 2",
+        type: "paragraph",
       },
     ],
   });

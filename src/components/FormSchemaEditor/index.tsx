@@ -1,21 +1,10 @@
 import { nanoid } from "nanoid";
 import dynamic from "next/dynamic";
 import React, { Fragment } from "react";
-import {
-  DragDropContext,
-  Draggable,
-  Droppable,
-  DropResult,
-} from "react-beautiful-dnd";
-import { Button, Card } from "../atomic";
-import Input from "../atomic/Input";
-import Text from "../atomic/Text";
+import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
+import { Button } from "../atomic";
 import FormQuestionSchemaEditor from "./FormQuestionSchemaEditor";
-import {
-  getUpdateFunction,
-  moveQuestionBetweenSections,
-  reindexItemInList,
-} from "./utils";
+import { getUpdateFunction, reindexItemInList } from "./utils";
 
 const NoSSRComponent = (props: any) => (
   <React.Fragment>{props.children}</React.Fragment>
@@ -36,7 +25,6 @@ type QuestionBase = {
   title: string;
   type: string;
 };
-
 type TextQuestion = QuestionBase & {
   type: "single-line" | "paragraph";
 };
@@ -47,138 +35,11 @@ type MultipleChoiceQuestion = QuestionBase & {
 
 export type Question = MultipleChoiceQuestion | TextQuestion;
 
-export type Section = {
-  readonly id: string;
-  title: string;
+export type Form = {
   questions: Question[];
 };
 
-export type Form = {
-  sections: Section[];
-};
-
 // Components
-
-interface FormSectionSchemaEditorProps {
-  section: Section;
-  index: number;
-  onChange: (section: Section) => void;
-  onDelete: () => void;
-}
-const FormSectionSchemaEditor: React.FC<FormSectionSchemaEditorProps> = ({
-  section,
-  index,
-  onChange = () => {},
-  onDelete = () => {},
-}) => {
-  const { id: sectionID, title, questions } = section;
-
-  const updateSection = getUpdateFunction(section);
-
-  return (
-    <Draggable key={sectionID} draggableId={sectionID} index={index}>
-      {(provided, _) => (
-        <div ref={provided.innerRef} {...provided.draggableProps}>
-          <div {...provided.dragHandleProps} id={sectionID}>
-            handle
-          </div>
-
-          <div className="flex items-center">
-            <Input
-              value={title || ""}
-              onChange={(e) => {
-                onChange(updateSection({ title: e.target.value }));
-              }}
-            />
-            <div className="w-4" />
-            <Button
-              size="small"
-              onClick={() => {
-                onDelete();
-              }}
-            >
-              Delete
-            </Button>
-          </div>
-
-          <div className="h-4" />
-          <Card>
-            <div>
-              <Droppable
-                droppableId={`section---SEPARATOR---${sectionID}`}
-                type={"question"}
-              >
-                {(provided, _) => {
-                  return (
-                    <div {...provided.droppableProps} ref={provided.innerRef}>
-                      {!questions.length && (
-                        <Fragment>
-                          <Text>
-                            Empty Section. Drag items here or add a question!
-                          </Text>
-                          <div className="h-4" />
-                        </Fragment>
-                      )}
-                      {questions.map((question, index) => (
-                        <Fragment key={question.id}>
-                          <FormQuestionSchemaEditor
-                            key={question.id}
-                            question={question}
-                            index={index}
-                            onChange={(newQuestion) => {
-                              const newQuestions = questions.map((question) => {
-                                if (question.id === newQuestion.id)
-                                  return newQuestion;
-                                else return question;
-                              });
-                              onChange(
-                                updateSection({ questions: newQuestions })
-                              );
-                            }}
-                            onDelete={() => {
-                              onChange({
-                                ...section,
-                                questions: section.questions.filter(
-                                  (q) => q.id !== question.id
-                                ),
-                              });
-                            }}
-                          />
-                        </Fragment>
-                      ))}
-                      {provided.placeholder}
-                    </div>
-                  );
-                }}
-              </Droppable>
-            </div>
-            <Button
-              onClick={() => {
-                onChange(
-                  updateSection((section) => {
-                    return {
-                      questions: [
-                        ...section.questions,
-                        {
-                          id: nanoid(),
-                          type: "single-line",
-                          title: "Question",
-                        },
-                      ],
-                    };
-                  })
-                );
-              }}
-            >
-              + Add Question
-            </Button>
-          </Card>
-          <div className="y-12" />
-        </div>
-      )}
-    </Draggable>
-  );
-};
 
 interface FormEditorProps {
   form: Form;
@@ -193,121 +54,58 @@ const FormEditor: React.FC<FormEditorProps> = ({
   const _onDragEnd = (result: DropResult) => {
     if (!result.destination) {
       // Dropped outside the list.
-
       return;
     }
 
     const { source, destination } = result;
+
     if (source.droppableId !== destination.droppableId) {
-      if (
-        source.droppableId !== "allSections" &&
-        destination.droppableId !== "allSections"
-      ) {
-        // Drop question in a different section from which it was dragged.
-
-        const sourceID = source.droppableId.split("---SEPARATOR---")[1];
-        const destinationID =
-          destination.droppableId.split("---SEPARATOR---")[1];
-
-        const moveResult = moveQuestionBetweenSections(
-          form.sections.find((v) => v.id == sourceID)!.questions,
-          form.sections.find((v) => v.id == destinationID)!.questions,
-          source,
-          destination
-        );
-
-        const newSections = form.sections.map((section) => {
-          if (section.id === sourceID) {
-            return {
-              ...section,
-              questions: moveResult[`section---SEPARATOR---${sourceID}`],
-            };
-          } else if (section.id === destinationID) {
-            return {
-              ...section,
-              questions: moveResult[`section---SEPARATOR---${destinationID}`],
-            };
-          } else {
-            return section;
-          }
-        });
-        onChange(updateForm({ sections: newSections }));
-      }
+      // Something is wrong.
       return;
     }
 
-    if (result.type === "sections") {
-      // Drop section somewhere else. (Reordering section list)
-
-      onChange(
-        updateForm({
-          sections: reindexItemInList(
-            form.sections,
-            result.source.index,
-            result.destination.index
-          ),
-        })
-      );
-    } else {
-      // Drop question in same section it was dragged.
-
-      const sectionID =
-        result.destination.droppableId.split("---SEPARATOR---")[1];
-
-      const newQuestions = reindexItemInList(
-        form.sections.find((v) => v.id == sectionID)!.questions,
-        result.source.index,
-        result.destination!.index
-      );
-      onChange(
-        updateForm((oldForm) => {
-          const newSections = oldForm.sections.map((section) => {
-            if (section.id === sectionID) {
-              return { ...section, questions: newQuestions };
-            } else {
-              return section;
-            }
-          });
-          return {
-            sections: newSections,
-          };
-        })
-      );
-    }
+    onChange(
+      updateForm((oldForm) => {
+        const newQuestions = reindexItemInList(
+          oldForm.questions,
+          source.index,
+          destination.index
+        );
+        return {
+          questions: newQuestions,
+        };
+      })
+    );
   };
 
   return (
     <NoSSR>
       <div className="w-full">
         <DragDropContext onDragEnd={_onDragEnd}>
-          <Droppable droppableId="allSections" type="sections">
+          <Droppable droppableId="allQuestions" type="questions">
             {(provided, _) => {
               return (
-                <div
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  style={{
-                    backgroundColor: "#f0f0f0",
-                    boxSizing: "border-box",
-                  }}
-                >
-                  {form.sections.map((section, index) => (
-                    <Fragment key={section.id}>
-                      <FormSectionSchemaEditor
-                        section={section}
+                <div {...provided.droppableProps} ref={provided.innerRef}>
+                  {form.questions.map((question, index) => (
+                    <Fragment key={question.id}>
+                      <FormQuestionSchemaEditor
+                        question={question}
                         index={index}
-                        onChange={(newSection) => {
-                          const newSections = form.sections.map((section) => {
-                            if (section.id === newSection.id) return newSection;
-                            else return section;
-                          });
-                          onChange(updateForm({ sections: newSections }));
+                        onChange={(newQuestion) => {
+                          const newQuestions = form.questions.map(
+                            (question) => {
+                              if (question.id === newQuestion.id)
+                                return newQuestion;
+                              else return question;
+                            }
+                          );
+                          onChange(updateForm({ questions: newQuestions }));
                         }}
                         onDelete={() => {
                           onChange({
                             ...form,
-                            sections: form.sections.filter(
-                              (s) => s.id != section.id
+                            questions: form.questions.filter(
+                              (s) => s.id != question.id
                             ),
                           });
                         }}
@@ -325,16 +123,16 @@ const FormEditor: React.FC<FormEditorProps> = ({
             onChange(
               updateForm((previousForm) => {
                 return {
-                  sections: [
-                    ...previousForm.sections,
-                    { id: nanoid(), title: "New Section", questions: [] },
+                  questions: [
+                    ...previousForm.questions,
+                    { id: nanoid(), title: "New question", questions: [] },
                   ],
                 };
               })
             );
           }}
         >
-          Add Section
+          Add Question
         </Button>
       </div>
     </NoSSR>
