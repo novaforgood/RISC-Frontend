@@ -48,18 +48,20 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
 
   const singlelinePreviewStyles = classNames({
     "w-full px-1.5 py-1 rounded-md placeholder-secondary border-2 resize-none box-border \
-    focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none":
+    focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none pointer-events-none":
       true,
+    "bg-tertiary": hovered,
     "border-inactive hover:border-secondary hover:border-2": !focused,
-    "bg-tertiary border-tertiary pointer-events-none": focused,
+    "bg-tertiary border-tertiary": focused,
   });
 
   const paragraphPreviewStyles = classNames({
     "w-full px-1.5 py-1 rounded-md placeholder-secondary border-2 resize-none box-border \
-    focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none":
+    focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none pointer-events-none":
       true,
+    "bg-tertiary": hovered,
     "border-inactive hover:border-secondary hover:border-2": !focused,
-    "bg-tertiary border-tertiary pointer-events-none": focused,
+    "bg-tertiary border-tertiary": focused,
   });
 
   const questionPreview = () => {
