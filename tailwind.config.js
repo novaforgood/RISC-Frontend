@@ -47,6 +47,9 @@ module.exports = {
       cursor: {
         grab: "grab",
       },
+      transitionProperty: {
+        background: "background-color",
+      },
     },
   },
   variants: {
