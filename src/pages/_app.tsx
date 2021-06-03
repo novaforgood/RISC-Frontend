@@ -1,12 +1,12 @@
 import { ApolloClient, concat, HttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { ApolloProvider } from "@apollo/client/react";
-import { ReactElement } from "react";
-import Page from "../types/Page";
 import { AppProps } from "next/app";
+import { ReactElement } from "react";
 import "tailwindcss/tailwind.css";
-import firebase from "../utils/firebase/firebase";
+import Page from "../types/Page";
 import { AuthProvider } from "../utils/firebase/auth";
+import firebase from "../utils/firebase/firebase";
 
 const httpLink = new HttpLink({ uri: process.env.NEXT_PUBLIC_API_URL });
 
@@ -38,6 +38,7 @@ function MyApp({ Component, pageProps }: CustomAppProps) {
   return (
     <ApolloProvider client={client}>
       <AuthProvider>{getLayout(<Component {...pageProps} />)}</AuthProvider>
+      <script> </script>
     </ApolloProvider>
   );
 }

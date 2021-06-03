@@ -1,17 +1,16 @@
-import React, { useState, ReactNode } from "react";
+import classNames from "classnames";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import React, { ReactNode, useState } from "react";
 import { Text } from "../../components/atomic";
-import classNames from "classnames";
 
 interface ArrowProps {
-  up: boolean;
+  down: boolean;
 }
-const Arrow: React.FC<ArrowProps> = ({ up }) => {
-  console.log(up);
+const Arrow: React.FC<ArrowProps> = ({ down }) => {
   const arrowStyles = classNames({
-    "transform duration-200 h-3.5 w-3.5": true,
-    "-rotate-180": up,
+    "transform duration-100 h-3.5 w-3.5": true,
+    "-rotate-90": down,
   });
   return (
     <svg
@@ -48,7 +47,7 @@ interface TabLayoutProps {
 
 const TabLayout: React.FC<TabLayoutProps> & {
   Separator: React.FC;
-  Dropdown: React.FC<{ label: string }>;
+  Dropdown: React.FC<{ label: string; id: string }>;
   PageItem: React.FC<{
     path: string;
     label: string;
@@ -71,9 +70,10 @@ TabLayout.PageItem = ({ label, Icon, path }) => {
   const active = router.pathname === path;
 
   const pageItemStyles = classNames({
-    "w-full pr-6 pl-4 py-2 flex items-center text-secondary cursor-pointer hover:bg-tertiary duration-200 select-none":
+    "w-full pr-6 pl-8 py-1.5 flex items-center text-secondary cursor-pointer duration-100 select-none":
       true,
-    "text-white bg-black hover:bg-black": active,
+    "hover:bg-tertiary": !active,
+    "text-white bg-primary hover:bg-primary": active,
   });
 
   return (
@@ -81,23 +81,21 @@ TabLayout.PageItem = ({ label, Icon, path }) => {
       <div className={pageItemStyles}>
         <Icon
           color={active ? "white" : "#737373"}
-          className="p-2 h-10 w-10 duration-200 flex-none"
+          className="p-2 h-9 w-9 duration-100 flex-none"
         />
-        <div className="w-2 flex-none" />
-        <Text b className="whitespace-nowrap">
-          {label}
-        </Text>
+        <div className="w-1 flex-none" />
+        <Text className="whitespace-nowrap">{label}</Text>
       </div>
     </Link>
   );
 };
 
 TabLayout.Dropdown = ({ children, label }) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   const dropdownStyles = classNames({
-    "flex cursor-pointer text-secondary py-3 px-6 hover:bg-tertiary duration-200 \
-     justify-between items-center select-none":
+    "flex cursor-pointer text-secondary py-3 px-3 hover:bg-tertiary duration-100 \
+    items-center select-none":
       true,
     "hover:bg-tertiary": open,
   });
@@ -110,13 +108,13 @@ TabLayout.Dropdown = ({ children, label }) => {
         }}
         className={dropdownStyles}
       >
+        <div className="pb-0.5">
+          <Arrow down={!open} />
+        </div>
+        <div className="w-4 flex-none" />
         <Text b className="whitespace-nowrap">
           {label}
         </Text>
-        <div className="w-2 flex-none" />
-        <div className="pb-0.5">
-          <Arrow up={open} />
-        </div>
       </div>
 
       {open && children}
