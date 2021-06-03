@@ -23,6 +23,7 @@ export type RecursivePartial<T> = {
 type QuestionBase = {
   readonly id: string;
   title: string;
+  helperText: string;
   type: string;
 };
 type TextQuestion = QuestionBase & {
@@ -80,7 +81,7 @@ const FormEditor: React.FC<FormEditorProps> = ({
 
   return (
     <NoSSR>
-      <div className="w-full">
+      <div className="w-full flex flex-col">
         <DragDropContext onDragEnd={_onDragEnd}>
           <Droppable droppableId="allQuestions" type="questions">
             {(provided, _) => {
@@ -118,14 +119,22 @@ const FormEditor: React.FC<FormEditorProps> = ({
             }}
           </Droppable>
         </DragDropContext>
+        <div className="h-2"></div>
         <Button
+          size="small"
+          className="mx-auto"
           onClick={() => {
             onChange(
               updateForm((previousForm) => {
                 return {
                   questions: [
                     ...previousForm.questions,
-                    { id: nanoid(), title: "New question", questions: [] },
+                    {
+                      id: nanoid(),
+                      title: "New question",
+                      helperText: "",
+                      type: "single-line",
+                    },
                   ],
                 };
               })
