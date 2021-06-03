@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import React, { useEffect, useRef, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { Text } from "../atomic";
 import { DeleteIcon, DragHandle } from "./icons";
@@ -27,7 +27,13 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
 }) => {
   const [focused, setFocused] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+
+  const updateQuestion = getUpdateFunction(question);
+
   const handleClickOutside = (event: Event) => {
+    if (event.defaultPrevented) {
+      return;
+    }
     if (ref.current && !ref.current!.contains(event.target as Node)) {
       setFocused(false);
     }
@@ -39,15 +45,29 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
     };
   }, []);
 
-  const updateQuestion = getUpdateFunction(question);
+  const singlelinePreviewStyles = classNames({
+    "w-full h-8 rounded-md p-3 placeholder-secondary border-1.5 border-inactive resize-none box-border \
+    focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none":
+      true,
+    "hover:border-secondary hover:border-2": !focused,
+    "bg-inactive": focused,
+  });
+
+  const paragraphPreviewStyles = classNames({
+    "w-full h-16 rounded-md p-3 placeholder-secondary border-1.5 border-inactive resize-none box-border \
+    focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none":
+      true,
+    "hover:border-secondary hover:border-2": !focused,
+    "bg-inactive": focused,
+  });
+
   const questionPreview = () => {
     switch (question.type) {
       case "single-line":
         return (
           <input
-            className="w-full h-8 rounded-md p-3 placeholder-secondary border-1.5 border-inactive resize-none box-border
-              hover:border-secondary hover:border-2
-              focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none"
+            disabled={focused}
+            className={singlelinePreviewStyles}
             onClick={(e) => {
               e.stopPropagation();
             }}
@@ -56,9 +76,8 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
       case "paragraph":
         return (
           <textarea
-            className="w-full h-16 rounded-md p-3 placeholder-secondary border-1.5 border-inactive resize-none box-border
-                        hover:border-secondary hover:border-2
-                        focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none"
+            disabled={focused}
+            className={paragraphPreviewStyles}
             onClick={(e) => {
               e.stopPropagation();
             }}
@@ -83,9 +102,9 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
   };
 
   const wrapperStyles = classNames({
-    "w-full p-6 rounded cursor-pointer bg-white hover:bg-tertiary duration-100":
-      true,
-    "cursor-grab": focused,
+    "w-full p-6 rounded cursor-pointer hover:bg-tertiary duration-100": true,
+    "bg-white": !focused,
+    "cursor-grab bg-tertiary": focused,
   });
 
   return (
@@ -115,7 +134,7 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
               className={wrapperStyles}
             >
               <VisibleGuard show={focused}>
-                <div className="flex items-center">
+                <div className="flex items-center pb-2 border-b border-b-secondary">
                   <DragHandle className="cursor-grab" />
                   <div className="w-2"></div>
                   <select
@@ -138,33 +157,54 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
                   </select>
                   <div className="w-2"></div>
                   <DeleteIcon
-                    className="h-3.5"
+                    className="h-3.5 cursor-pointer"
                     onClick={() => {
                       //Delete
                       onDelete();
                     }}
-                  >
-                    Delete
-                  </DeleteIcon>
+                  />
                 </div>
                 <div className="h-4" />
               </VisibleGuard>
 
               <div>
                 <VisibleGuard show={!focused}>
-                  <Text>{question.title}</Text>
+                  <Text b>{question.title}</Text>
+                  {question.helperText && (
+                    <Fragment>
+                      <div className="h-1"></div>
+                      <Text className="text-secondary">
+                        {question.helperText}
+                      </Text>
+                    </Fragment>
+                  )}
                 </VisibleGuard>
                 <VisibleGuard show={focused}>
                   <input
                     placeholder="Question"
                     className={`${
                       !focused && "hidden"
-                    } w-full h-8 rounded-md p-3 placeholder-secondary border-1.5 border-inactive resize-none box-border
-                hover:border-secondary hover:border-2
-                focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none`}
+                    } w-full h-8 rounded-md p-3 placeholder-secondary border-1.5 border-inactive 
+                      resize-none box-border font-bold
+                      hover:border-secondary hover:border-2
+                      focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none`}
                     value={question.title}
                     onChange={(e) => {
                       onChange(updateQuestion({ title: e.target.value }));
+                    }}
+                  />
+                  <div className="h-2"></div>
+                  <input
+                    placeholder="Helper text"
+                    className={`${
+                      !focused && "hidden"
+                    } w-full h-8 rounded-md p-3 placeholder-secondary border-1.5 border-inactive 
+                      resize-none box-border text-secondary
+                      hover:border-secondary hover:border-2
+                      focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none`}
+                    value={question.helperText}
+                    onChange={(e) => {
+                      onChange(updateQuestion({ helperText: e.target.value }));
                     }}
                   />
                 </VisibleGuard>
