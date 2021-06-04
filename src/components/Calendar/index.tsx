@@ -28,20 +28,24 @@ interface CalendarProps {
   onSelect: (date: Date | null) => void;
   availabilities: Availabilities;
   selectedDay: Date | null;
+  selectAnyDay?: boolean;
 }
 const Calendar = ({
   onSelect = () => {},
   selectedDay,
   availabilities,
+  selectAnyDay = false,
 }: CalendarProps) => {
-  const [month, setMonth] = useState(initMonth);
-  const [year, setYear] = useState(initYear);
+  const [monthyear, setMonthyear] = useState<[number, number]>([
+    initMonth,
+    initYear,
+  ]);
   const [days, setDays] = useState<Date[]>([]);
 
   useEffect(() => {
-    setDays(getDaysInThisMonth(month, year));
+    setDays(getDaysInThisMonth(...monthyear));
     return () => {};
-  }, [month, year]);
+  }, [monthyear]);
 
   if (!days) return <></>;
 
@@ -64,19 +68,20 @@ const Calendar = ({
     <div className="w-96">
       <div className="flex justify-between w-full">
         <Text b className="text-secondary pl-1.5">
-          {monthNames[month]} {year}
+          {monthNames[monthyear[0]]} {monthyear[1]}
         </Text>
         <div className="flex">
           <Arrow
             direction="left"
             className="h-6 w-6 p-1 cursor-pointer"
             onClick={() => {
-              if (month === 0) {
-                setMonth(11);
-                setYear((prevYear) => prevYear - 1);
-              } else {
-                setMonth((prevMonth) => prevMonth - 1);
-              }
+              setMonthyear(([prevMonth, prevYear]) => {
+                if (prevMonth === 0) {
+                  return [11, prevYear - 1];
+                } else {
+                  return [prevMonth - 1, prevYear];
+                }
+              });
             }}
           />
           <div className="w-2" />
@@ -84,19 +89,20 @@ const Calendar = ({
             direction="right"
             className="h-6 w-6 p-1 cursor-pointer"
             onClick={() => {
-              if (month === 11) {
-                setMonth(0);
-                setYear((prevYear) => prevYear + 1);
-              } else {
-                setMonth((prevMonth) => prevMonth + 1);
-              }
+              setMonthyear(([prevMonth, prevYear]) => {
+                if (prevMonth === 11) {
+                  return [0, prevYear + 1];
+                } else {
+                  return [prevMonth + 1, prevYear];
+                }
+              });
             }}
           />
           <div className="w-1" />
         </div>
       </div>
-      <div className="h-8"></div>
-      <div className="grid grid-cols-7 gap-x-1 gap-y-2.5 w-full">
+      <div className="h-4"></div>
+      <div className="grid grid-cols-7 gap-y-3 w-full">
         <React.Fragment>
           {weekdayNamesAbbreviated.map((dayOfWeek, i) => (
             <div className="text-center select-none font-bold" key={i}>
@@ -106,33 +112,32 @@ const Calendar = ({
         </React.Fragment>
         {days.map((day, i) => {
           // Determine if theres availabilities on this day.
-          const inMonth = month === day.getMonth();
+          const inMonth = monthyear[0] === day.getMonth();
           const selected =
             selectedDay && selectedDay.getTime() === day.getTime();
           const hasTimeslots =
             availabilities.weekly[i % 7].length > 0 || isOverrided[i];
 
           const backgroundStyles = classNames({
-            "flex justify-center items-center cursor-pointer select-none rounded-full h-12 w-12":
+            "h-11 w-11 mx-auto flex justify-center items-center cursor-pointer select-none rounded-full \
+            transition-background duration-100":
               true,
-            "pointer-events-none": !hasTimeslots,
+            "pointer-events-none": !selectAnyDay && !hasTimeslots,
             "bg-inactive": hasTimeslots,
             "hover:bg-secondary": !selected,
             "text-white bg-black": selected,
-            hidden: !inMonth,
+            "opacity-0 pointer-events-none": !inMonth,
           });
 
           return (
-            <div className="w-full flex justify-center">
-              <div
-                key={i}
-                className={backgroundStyles}
-                onClick={() => {
-                  onSelect(day);
-                }}
-              >
-                <Text b2>{day.getDate()}</Text>
-              </div>
+            <div
+              key={i}
+              className={backgroundStyles}
+              onClick={() => {
+                onSelect(day);
+              }}
+            >
+              <Text b2>{day.getDate()}</Text>
             </div>
           );
         })}
