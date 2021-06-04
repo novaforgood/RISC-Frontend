@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "next",
-    "build": "next build",
+    "build": "rm -rf .next/ && next build",
     "start": "next start",
     "type-check": "tsc",
     "generate": "graphql-codegen --require dotenv/config --config codegen.yml dotenv_config_path=.env.local"
   },
   "dependencies": {
     "@apollo/client": "^3.3.14",
+    "@headlessui/react": "^1.2.0",
     "@types/lodash": "^4.14.170",
     "@types/react-beautiful-dnd": "^13.0.0",
     "classnames": "^2.3.1",

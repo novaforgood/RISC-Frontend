@@ -10,19 +10,19 @@ const TestPage = ({}) => {
         id: nanoid(),
         title: "Question 1",
         description: "",
-        type: "single-line",
+        type: "short-answer",
       },
       {
         id: nanoid(),
         title: "Question 2",
         description: "",
-        type: "paragraph",
+        type: "long-answer",
       },
     ],
   });
   return (
     <div className="w-screen h-screen flex items-start justify-center">
-      <div className="w-120">
+      <div className="w-1/2">
         <div className="h-4"></div>
         <Text h2>Form Editor</Text>
         <div className="h-4"></div>

@@ -27,7 +27,7 @@ type QuestionBase = {
   type: string;
 };
 type TextQuestion = QuestionBase & {
-  type: "single-line" | "paragraph";
+  type: "short-answer" | "long-answer";
 };
 type MultipleChoiceQuestion = QuestionBase & {
   type: "multiple-choice";
@@ -133,7 +133,7 @@ const FormEditor: React.FC<FormEditorProps> = ({
                       id: nanoid(),
                       title: "New question",
                       description: "",
-                      type: "single-line",
+                      type: "short-answer",
                     },
                   ],
                 };
