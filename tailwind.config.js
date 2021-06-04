@@ -1,3 +1,4 @@
+const plugin = require("tailwindcss/plugin");
 module.exports = {
   purge: ["./src/**/*.{ts,tsx}"],
   darkMode: false, // or 'media' or 'class'
@@ -33,6 +34,7 @@ module.exports = {
     extend: {
       borderWidth: {
         1.5: "1.5px",
+        3: "3px",
       },
       boxShadow: {
         border: "0px 0px 2px 2px #BFBFBD, inset 0px 0px 2px 2px #BFBFBD",
@@ -59,6 +61,12 @@ module.exports = {
       zIndex: {
         "-1": "-1",
       },
+      stroke: (theme) => ({
+        white: theme("colors.white"),
+      }),
+      fill: {
+        none: "none",
+      },
     },
   },
   variants: {
@@ -75,6 +83,14 @@ module.exports = {
     },
   },
   plugins: [
+    plugin(function ({ addUtilities }) {
+      const newUtilities = {
+        ".strokeLinecap-round": {
+          strokeLinecap: "round",
+        },
+      };
+      addUtilities(newUtilities, ["responsive", "hover"]);
+    }),
     // require("@tailwindcss/typography"),
     // require("@tailwindcss/forms"),
     // require("@tailwindcss/line-clamp"),
