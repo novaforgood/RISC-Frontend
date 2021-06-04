@@ -21,7 +21,7 @@ module.exports = {
       // Styleguide in px, tailwind in rem
       h1: "3rem",
       h2: "2.25rem",
-      h3: "1.5",
+      h3: "1.5rem",
       "body-1": "1.375rem",
       "body-2": "1rem",
       caption: "0.75",
