@@ -1,47 +1,29 @@
 import classNames from "classnames";
 import React, { InputHTMLAttributes } from "react";
+import { Text } from "../../components/atomic";
 
 type CheckboxProps = InputHTMLAttributes<HTMLInputElement> & {
-  labelText?: string;
+  labeltext?: string;
 };
 
 const Checkbox = ({ className = "", ...props }: CheckboxProps) => {
-  const wrapperStyles = classNames({
-    ["h-5 w-5 relative"]: true,
-  });
   const checkboxStyles = classNames({
     ["h-5 w-5 border-2 border-primary rounded appearance-none \
+      hover:border-3 active:border-darkblue active:border-3\
       checked:bg-primary checked:fill-white -z-1 absolute"]:
       true,
   });
-  const svgStyles = classNames({
-    ["h-5 w-5 fill-none stroke-2 absolute"]: true,
-  });
 
   return (
-    <label className={wrapperStyles} htmlFor={props.id}>
-      <svg className={svgStyles}>
-        <path
-          xmlns="http://www.w3.org/2000/svg"
-          d="M 4,11 8,14.5 16,5"
-          style={{
-            stroke: "#fff",
-            height: 20,
-            strokeWidth: 2,
-            fill: "none",
-            strokeLinecap: "round",
-          }}
-        />
+    <label
+      className="relative cursor-pointer inline-block align-middle"
+      htmlFor={props.id}
+    >
+      <svg className="h-5 w-5 fill-none stroke-white stroke-2 strokeLinecap-round absolute">
+        <path xmlns="http://www.w3.org/2000/svg" d="M 4,11 8,14.5 16,5" />
       </svg>
-      <input
-        type="checkbox"
-        {...props}
-        className={checkboxStyles}
-        id={props.id}
-      />
-      <span style={{ marginLeft: "25px" }}>
-        {props.labelText ? props.labelText : ""}
-      </span>
+      <input type="checkbox" {...props} className={checkboxStyles} />
+      <Text className="ml-6">{props.labeltext ? props.labeltext : ""}</Text>
     </label>
   );
 };
