@@ -12,7 +12,6 @@ export const Arrow = ({
   className,
   color = "black",
   hoveredColor = "black",
-  onClick = () => {},
   ...props
 }: ArrowProps) => {
   const [hovered, setHovered] = useState(false);
@@ -24,7 +23,6 @@ export const Arrow = ({
   return (
     <button
       {...props}
-      onClick={onClick}
       className={styles}
       onMouseEnter={() => {
         setHovered(true);
