@@ -1,10 +1,8 @@
 import React, { HTMLAttributes } from "react";
 
-type IconProps = HTMLAttributes<HTMLDivElement>;
-
-export const EditIcon: React.FC<IconProps> = (props) => {
+export const EditIcon = (props: HTMLAttributes<HTMLButtonElement>) => {
   return (
-    <div {...props}>
+    <button {...props}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         height="100%"
@@ -19,13 +17,13 @@ export const EditIcon: React.FC<IconProps> = (props) => {
           stroke-linejoin="round"
         />
       </svg>
-    </div>
+    </button>
   );
 };
 
-export const DeleteIcon: React.FC<IconProps> = (props) => {
+export const DeleteIcon = (props: HTMLAttributes<HTMLButtonElement>) => {
   return (
-    <div {...props}>
+    <button {...props}>
       <svg
         height="100%"
         viewBox="0 0 20 22"
@@ -61,7 +59,7 @@ export const DeleteIcon: React.FC<IconProps> = (props) => {
           stroke-linejoin="round"
         />
       </svg>
-    </div>
+    </button>
   );
 };
 

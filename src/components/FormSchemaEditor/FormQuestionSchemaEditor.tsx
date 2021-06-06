@@ -53,6 +53,7 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
       case "short-answer":
         return (
           <input
+            disabled
             readOnly
             value="Short Answer"
             className={singlelinePreviewStyles}
@@ -64,6 +65,7 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
       case "long-answer":
         return (
           <textarea
+            disabled
             readOnly
             value="Long Answer"
             className={paragraphPreviewStyles}

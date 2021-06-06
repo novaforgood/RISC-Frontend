@@ -4,7 +4,7 @@ import React, { Fragment } from "react";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { Button } from "../atomic";
 import FormQuestionSchemaEditor from "./FormQuestionSchemaEditor";
-import { getUpdateFunction, reindexItemInList } from "./utils";
+import { reindexItemInList } from "./utils";
 
 const NoSSRComponent = (props: any) => (
   <React.Fragment>{props.children}</React.Fragment>
@@ -36,22 +36,16 @@ type MultipleChoiceQuestion = QuestionBase & {
 
 export type Question = MultipleChoiceQuestion | TextQuestion;
 
-export type Form = {
-  questions: Question[];
-};
-
 // Components
 
-interface FormEditorProps {
-  form: Form;
-  onChange: (form: Form) => void;
+interface FormSchemaEditorProps {
+  questions: Question[];
+  onChange: (questions: Question[]) => void;
 }
-const FormEditor: React.FC<FormEditorProps> = ({
-  form,
+const FormSchemaEditor: React.FC<FormSchemaEditorProps> = ({
+  questions,
   onChange = () => {},
 }) => {
-  const updateForm = getUpdateFunction(form);
-
   const _onDragEnd = (result: DropResult) => {
     if (!result.destination) {
       // Dropped outside the list.
@@ -65,18 +59,7 @@ const FormEditor: React.FC<FormEditorProps> = ({
       return;
     }
 
-    onChange(
-      updateForm((oldForm) => {
-        const newQuestions = reindexItemInList(
-          oldForm.questions,
-          source.index,
-          destination.index
-        );
-        return {
-          questions: newQuestions,
-        };
-      })
-    );
+    onChange(reindexItemInList(questions, source.index, destination.index));
   };
 
   return (
@@ -87,28 +70,23 @@ const FormEditor: React.FC<FormEditorProps> = ({
             {(provided, _) => {
               return (
                 <div {...provided.droppableProps} ref={provided.innerRef}>
-                  {form.questions.map((question, index) => (
+                  {questions.map((question, index) => (
                     <Fragment key={question.id}>
                       <FormQuestionSchemaEditor
                         question={question}
                         index={index}
                         onChange={(newQuestion) => {
-                          const newQuestions = form.questions.map(
-                            (question) => {
-                              if (question.id === newQuestion.id)
-                                return newQuestion;
-                              else return question;
-                            }
-                          );
-                          onChange(updateForm({ questions: newQuestions }));
+                          const newQuestions = questions.map((question) => {
+                            if (question.id === newQuestion.id)
+                              return newQuestion;
+                            else return question;
+                          });
+                          onChange(newQuestions);
                         }}
                         onDelete={() => {
-                          onChange({
-                            ...form,
-                            questions: form.questions.filter(
-                              (s) => s.id != question.id
-                            ),
-                          });
+                          onChange(
+                            questions.filter((s) => s.id != question.id)
+                          );
                         }}
                       />
                     </Fragment>
@@ -124,21 +102,15 @@ const FormEditor: React.FC<FormEditorProps> = ({
           size="small"
           className="mx-auto"
           onClick={() => {
-            onChange(
-              updateForm((previousForm) => {
-                return {
-                  questions: [
-                    ...previousForm.questions,
-                    {
-                      id: nanoid(),
-                      title: "New question",
-                      description: "",
-                      type: "short-answer",
-                    },
-                  ],
-                };
-              })
-            );
+            onChange([
+              ...questions,
+              {
+                id: nanoid(),
+                title: "New question",
+                description: "",
+                type: "short-answer",
+              },
+            ]);
           }}
         >
           Add Question
@@ -148,4 +120,4 @@ const FormEditor: React.FC<FormEditorProps> = ({
   );
 };
 
-export default FormEditor;
+export default FormSchemaEditor;
