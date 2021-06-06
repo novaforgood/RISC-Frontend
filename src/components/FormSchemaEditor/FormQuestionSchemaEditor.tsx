@@ -129,7 +129,7 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
               }}
               className={wrapperStyles}
             >
-              <div className="flex items-center justify-between overflow-hidden">
+              <div className="flex items-center justify-between">
                 <DragHandle
                   className="cursor-grab p-1.5"
                   {...provided.dragHandleProps}
@@ -137,14 +137,14 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
                 <div className="w-2"></div>
 
                 <div className="w-1"></div>
-                <div className="rounded hover:bg-tertiary p-1.5 cursor-pointer">
-                  <DeleteIcon
-                    className="h-3.5"
-                    onClick={() => {
-                      onDelete();
-                    }}
-                  />
-                </div>
+                <button
+                  className="rounded hover:bg-tertiary p-1.5 cursor-pointer"
+                  onClick={() => {
+                    onDelete();
+                  }}
+                >
+                  <DeleteIcon className="h-3.5" />
+                </button>
               </div>
               <div className="h-4"></div>
 
@@ -178,7 +178,7 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
                     }}
                   />
                 </div>
-                <div className="w-8"></div>
+                <div className="w-2 sm:w-4 md:w-8"></div>
                 <div className="w-1/3">
                   <Select
                     options={[

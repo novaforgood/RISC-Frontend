@@ -64,7 +64,7 @@ const FormSchemaEditor: React.FC<FormSchemaEditorProps> = ({
 
   return (
     <NoSSR>
-      <div className="w-full flex flex-col">
+      <div className="w-80 sm:w-120 md:w-160 lg:w-200 flex flex-col">
         <DragDropContext onDragEnd={_onDragEnd}>
           <Droppable droppableId="allQuestions" type="questions">
             {(provided, _) => {

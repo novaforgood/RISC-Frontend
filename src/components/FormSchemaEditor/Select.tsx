@@ -27,12 +27,12 @@ interface SelectProps<T> {
   value: T;
   onSelect?: (selectedValue: T) => void;
 }
-const Select: React.FC<SelectProps<any>> = ({
+const Select = <T extends string>({
   options,
   value,
   onSelect = () => {},
-}) => {
-  let valueToLabel: { [key: string]: any } = {};
+}: SelectProps<T>) => {
+  let valueToLabel: { [key: string]: string } = {};
   valueToLabel = _.reduce(
     options,
     (prev, curr) => {

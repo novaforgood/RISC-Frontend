@@ -1,8 +1,8 @@
 import React, { HTMLAttributes } from "react";
 
-export const EditIcon = (props: HTMLAttributes<HTMLButtonElement>) => {
+export const EditIcon = (props: HTMLAttributes<HTMLDivElement>) => {
   return (
-    <button {...props}>
+    <div {...props}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         height="100%"
@@ -17,13 +17,13 @@ export const EditIcon = (props: HTMLAttributes<HTMLButtonElement>) => {
           stroke-linejoin="round"
         />
       </svg>
-    </button>
+    </div>
   );
 };
 
-export const DeleteIcon = (props: HTMLAttributes<HTMLButtonElement>) => {
+export const DeleteIcon = (props: HTMLAttributes<HTMLDivElement>) => {
   return (
-    <button {...props}>
+    <div {...props}>
       <svg
         height="100%"
         viewBox="0 0 20 22"
@@ -59,12 +59,11 @@ export const DeleteIcon = (props: HTMLAttributes<HTMLButtonElement>) => {
           stroke-linejoin="round"
         />
       </svg>
-    </button>
+    </div>
   );
 };
 
-type DragHandleProps = HTMLAttributes<HTMLDivElement>;
-export const DragHandle: React.FC<DragHandleProps> = (props) => {
+export const DragHandle = (props: HTMLAttributes<HTMLDivElement>) => {
   return (
     <div {...props}>
       <svg

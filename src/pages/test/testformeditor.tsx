@@ -19,19 +19,17 @@ const TestPage = ({}) => {
     },
   ]);
   return (
-    <div className="w-screen h-screen flex items-start justify-center">
-      <div className="w-1/2">
-        <div className="h-4"></div>
-        <Text h2>Form Editor</Text>
-        <div className="h-4"></div>
+    <div className="w-screen h-screen flex flex-col items-center justify-start">
+      <div className="h-4"></div>
+      <Text h2>Form Editor</Text>
+      <div className="h-4"></div>
 
-        <FormSchemaEditor
-          questions={formQuestions}
-          onChange={(newQuestions) => {
-            setFormQuestions(newQuestions);
-          }}
-        />
-      </div>
+      <FormSchemaEditor
+        questions={formQuestions}
+        onChange={(newQuestions) => {
+          setFormQuestions(newQuestions);
+        }}
+      />
     </div>
   );
 };
