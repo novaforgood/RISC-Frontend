@@ -1,13 +1,15 @@
 import React, { HTMLAttributes } from "react";
 import classNames from "classnames";
 
-type TagProps = HTMLAttributes<HTMLDivElement>;
+type TagProps = HTMLAttributes<HTMLElement> & {
+  variant?: "solid" | "outline";
+};
 
-const Tag = ({ className, ...props }: TagProps) => {
+const Tag = ({ variant = "solid", className, ...props }: TagProps) => {
   const styles = classNames({
-    "inline-block bg-skyblue rounded-lg border-2 border-skyblue \
-     p-1 m-1 text-white text-center hover:cursor-pointer":
-      true,
+    "inline-block rounded-md border-2 p-1 m-1 hover:cursor-pointer": true,
+    "bg-tertiary border-tertiary": variant === "solid",
+    "inline-block bg-white border-primary": variant === "outline",
     [`${className}`]: true,
   });
   return <div {...props} className={styles}></div>;
