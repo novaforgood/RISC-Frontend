@@ -4,7 +4,6 @@ import {
   useCreateProgramMutation,
   CreateProgramInput,
 } from "../generated/graphql";
-import TitledInput from "../components/TitledInput";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24 md:h-64 md:w-64 lg:h-80 lg:w-80";
