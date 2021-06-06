@@ -1,5 +1,5 @@
 import React, { HTMLAttributes, ChangeEvent, ImgHTMLAttributes } from "react";
-import { EditorStateInterface } from "./EditorContext";
+import { EditorStateInterface, useEditor } from "./EditorContext";
 import { INLINE_STYLES, BLOCK_STYLES } from "./TextStyles";
 import classNames from "classnames";
 
@@ -9,20 +9,18 @@ type UploadImageProps = {
   e: ChangeEvent<HTMLInputElement>;
 } & EditorStateInterface;
 
-type ButtonProps = HTMLAttributes<HTMLDivElement> &
-  EditorStateInterface & {
-    display: JSX.Element | string;
-    type: string;
-  };
+type ButtonProps = HTMLAttributes<HTMLDivElement> & {
+  display: JSX.Element | string;
+  type: string;
+};
 
 const ToggleStyleButton = ({
-  editorState,
-  setEditorState,
   display,
   type,
   className,
   ...props
 }: ButtonProps) => {
+  const { editorState, setEditorState } = useEditor();
   const styles = classNames({
     "hover:bg-inactive rounded-md cursor-pointer px-1 py-0.5": true,
     "bg-inactive font-bold": editorState?.getCurrentInlineStyle().has(type),
@@ -43,13 +41,12 @@ const ToggleStyleButton = ({
 };
 
 const ToggleBlockButton = ({
-  editorState,
-  setEditorState,
   display,
   type,
   className,
   ...props
 }: ButtonProps) => {
+  const { editorState, setEditorState } = useEditor();
   const selection = editorState?.getSelection();
   const styles = classNames({
     "hover:bg-inactive rounded-md cursor-pointer px-1 py-0.5": true,
@@ -96,17 +93,20 @@ const uploadImage = ({
   }
 };
 
-const UploadImageButton = ({
-  ...props
-}: HTMLAttributes<HTMLLabelElement> & EditorStateInterface) => {
+const UploadImageButton = (props: HTMLAttributes<HTMLLabelElement>) => {
+  const { editorState, setEditorState, imagePlugin } = useEditor();
   return (
     <label className="" {...props}>
       <input
         onChange={async (e: ChangeEvent<HTMLInputElement>) => {
-          uploadImage({
-            e,
-            ...props,
-          });
+          if (imagePlugin)
+            uploadImage({
+              e,
+              editorState,
+              setEditorState,
+              imagePlugin,
+              ...props,
+            });
         }}
         className="hidden"
         type="file"
@@ -119,23 +119,16 @@ const UploadImageButton = ({
   );
 };
 
-const ToolBar = ({
-  editorState,
-  setEditorState,
-  imagePlugin,
-  ...props
-}: EditorStateInterface & HTMLAttributes<HTMLDivElement>) => {
+const ToolBar = (props: HTMLAttributes<HTMLSpanElement>) => {
   return (
-    <div
+    <span
       onFocus={() => false}
       {...props}
       contentEditable={false}
-      className="transform -translate-y-8 z-10 bg-white rounded-md border border-inactive p-1 flex items-center justify-around space-x-2 text-center text-body-2 absolute"
+      className="bg-white z-10 rounded-md border border-inactive p-1 flex items-center justify-around space-x-2 text-center sticky top-0"
     >
       {BLOCK_STYLES.map((option) => (
         <ToggleBlockButton
-          editorState={editorState}
-          setEditorState={setEditorState}
           key={option.type}
           display={option.display}
           type={option.type}
@@ -143,19 +136,13 @@ const ToolBar = ({
       ))}
       {INLINE_STYLES.map((option) => (
         <ToggleStyleButton
-          editorState={editorState}
-          setEditorState={setEditorState}
           key={option.style}
           display={option.display}
           type={option.style}
         />
       ))}
-      <UploadImageButton
-        editorState={editorState}
-        setEditorState={setEditorState}
-        imagePlugin={imagePlugin}
-      />
-    </div>
+      <UploadImageButton />
+    </span>
   );
 };
 export default ToolBar;

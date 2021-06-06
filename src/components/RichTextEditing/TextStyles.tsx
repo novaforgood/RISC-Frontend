@@ -1,9 +1,6 @@
 import Immutable from "immutable";
-import ToolBar from "./ToolBar";
 import { Text } from "../atomic";
-import React, { HTMLAttributes, useRef, useState } from "react";
-import { useEffect } from "react";
-import { RefObject } from "react";
+import React from "react";
 
 export const INLINE_STYLES = [
   {
@@ -34,74 +31,17 @@ export const BLOCK_STYLES = [
   },
 ];
 
-type TextComponentProps = HTMLAttributes<HTMLDivElement> & {
-  type: string;
-};
-
-type ChildObject = {
-  key: string;
-  props: {
-    children: ChildObject;
-    className: string;
-    "data-block": boolean;
-    "data-editor": string;
-    "data-offset-key": string;
-  };
-  type: string;
-};
-
-const TextWrapper = ({ type, ...props }: TextComponentProps) => {
-  switch (type) {
-    case "header-one":
-      return <Text h1 {...props} />;
-    case "header-two":
-      return <Text h2 {...props} />;
-    default:
-      return <Text b2 {...props} />;
-  }
-};
-
-const TextComponent = ({ type, children, ...props }: TextComponentProps) => {
-  // const [focus, setFocus] = useState(false);
-  // const blockRef = useRef<HTMLDivElement | null>(null);
-
-  // const clickedOutside = (e: MouseEvent) => {
-  //   if (!blockRef.current?.contains(e.target as Node)) {
-  //     setFocus(false);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   document.addEventListener("mousedown", clickedOutside);
-  // }, [blockRef]);
-
-  return (
-    <div /*ref={blockRef}*/>
-      {/* {focus ? <ToolBar /> : <></>} */}
-      <TextWrapper
-        // onClick={() => {
-        //   setFocus(true);
-        // }}
-        type={type}
-        {...props}
-      >
-        {children ? children : "Type to add text"}
-      </TextWrapper>
-    </div>
-  );
-};
-
 export const blockRenderMap = Immutable.Map({
   "header-one": {
     element: "div",
-    wrapper: <TextComponent type={"header-one"} />,
+    wrapper: <Text h1 />,
   },
   "header-two": {
     element: "div",
-    wrapper: <TextComponent type={"header-two"} />,
+    wrapper: <Text h2 />,
   },
   unstyled: {
     element: "div",
-    wrapper: <TextComponent type={"unstyled"} />,
+    wrapper: <Text b2 />,
   },
 });

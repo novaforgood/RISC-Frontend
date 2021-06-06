@@ -3,30 +3,39 @@ import ToolBar from "./ToolBar";
 import { blockRenderMap } from "./TextStyles";
 import { useEditor } from "./EditorContext";
 import Editor from "@draft-js-plugins/editor";
-import { RichUtils, DraftHandleValue } from "draft-js";
+import { RichUtils, DraftHandleValue, EditorState } from "draft-js";
 
 import "draft-js/dist/Draft.css";
-import ReactDOM from "react-dom";
 
 const TextEditor = () => {
-  const { editorState, setEditorState, imagePlugin, plugins } = useEditor();
+  const { editorState, setEditorState, plugins } = useEditor();
   const editor = useRef<HTMLDivElement | null>(null);
   const forwardRef = useRef<Editor | null>(null);
-  const handleKeyCommand = (command: string): DraftHandleValue => {
-    var newState = RichUtils.handleKeyCommand(editorState, command);
 
-    if (newState) {
-      setEditorState(newState);
-      return "handled";
+  const handleKeyCommand = (
+    command: string,
+    newEditorState: EditorState
+  ): DraftHandleValue => {
+    console.log(command);
+    switch (command) {
+      case "backspace":
+        let selection = newEditorState.getSelection();
+      default:
+        let newState = RichUtils.handleKeyCommand(newEditorState, command);
+
+        if (newState) {
+          setEditorState(newState);
+          return "handled";
+        }
+
+        return "not-handled";
     }
-
-    return "not-handled";
   };
 
   let contentState = editorState.getCurrentContent();
 
   const focus = () => {
-    if (editor.current) editor.current.focus();
+    if (forwardRef.current) forwardRef.current.focus();
   };
 
   useEffect(() => {
@@ -57,71 +66,58 @@ const TextEditor = () => {
     }
   }, [contentState.getFirstBlock()]);
 
-  const getToolBar = () => {
-    const toolBarNode = document.getElementById("inline-toolbar");
-    if (toolBarNode) {
-      return toolBarNode;
-    } else {
-      const newToolBarNode = document.createElement("div");
-      newToolBarNode.setAttribute("id", "inline-toolbar");
-      editor.current?.appendChild(newToolBarNode);
-      return newToolBarNode;
-    }
-  };
+  // const getToolBar = () => {
+  //   return document.getElementById("inline-toolbar");
+  // };
 
-  useEffect(() => {
-    const textBlocks = document.querySelectorAll(
-      "#__next > div > div > div > div > div > div > span > div"
-    );
-    for (let i = 0; i < textBlocks.length; i++) {
-      const textBlock = textBlocks[i] as HTMLElement;
-      textBlock.onclick = () => {
-        const toolBarNode = getToolBar();
-        textBlock.parentNode?.insertBefore(toolBarNode, textBlock);
+  // const moveToolBar = (textBlock: HTMLElement) => {
+  //   const toolBarNode = getToolBar();
+  //   if (toolBarNode) {
+  //     toolBarNode.classList.remove("hidden");
+  //     textBlock.appendChild(toolBarNode);
+  //   }
+  // };
 
-        ReactDOM.render(
-          <ToolBar
-            editorState={editorState}
-            setEditorState={setEditorState}
-            imagePlugin={imagePlugin}
-          />,
-          document.getElementById("inline-toolbar")
-        );
-      };
-      textBlock.onfocus = () => {
-        console.log("focus");
-      };
-      textBlock.onkeypress = () => {
-        console.log("key pressed");
-      };
-    }
-  }, [contentState]);
+  // useEffect(() => {
+  //   const textBlocks = document.querySelectorAll(
+  //     "div.public-DraftStyleDefault-block.public-DraftStyleDefault-ltr"
+  //   );
+  //   for (let i = 0; i < textBlocks.length; i++) {
+  //     const textBlock = textBlocks[i] as HTMLElement;
+  //     textBlock.onclick = (_) => {
+  //       moveToolBar(textBlock);
+  //     };
+  //   }
+  // }, [contentState]);
 
-  const clickedOutside = (e: MouseEvent) => {
-    if (!editor.current?.contains(e.target as Node)) {
-      const toolBarNode = getToolBar();
-      if (!toolBarNode.contains(e.target as Node)) {
-        toolBarNode.remove();
-      }
-    }
-  };
+  // const clickedOutside = (e: MouseEvent) => {
+  //   if (!editor.current?.contains(e.target as Node)) {
+  //     const toolBarNode = getToolBar();
+  //     if (toolBarNode)
+  //       if (!toolBarNode.contains(e.target as Node)) {
+  //         toolBarNode.classList.add("hidden");
+  //       }
+  //   }
+  // };
 
-  useEffect(() => {
-    document.addEventListener("mousedown", clickedOutside);
-  }, [editor]);
+  // useEffect(() => {
+  //   document.addEventListener("mousedown", clickedOutside);
+  // }, [editor]);
 
   /**Receiving the following warning:
    * Expected server HTML to contain a matching <div> in <div>.
    */
   return typeof window !== "undefined" ? (
-    <div onClick={focus} ref={editor}>
-      <div id="inline-toolbar" />
+    <div onClick={focus} ref={editor} className="overflow-scroll">
+      <ToolBar />
       <Editor
-        plugins={plugins}
+        editorKey="temp-key"
+        plugins={plugins!}
         blockRenderMap={blockRenderMap}
         editorState={editorState}
         handleKeyCommand={handleKeyCommand}
         onChange={setEditorState}
+        stripPastedStyles={true}
         placeholder="Edit here..."
         ref={forwardRef}
       />
