@@ -26,6 +26,33 @@ const CreateProgramPage = () => {
   const [displayError, setError] = useState(""); // TODO: Proper error box
   const [loading, setLoading] = useState(false);
 
+  const validateProgramName = (name: string) => {
+    // check string is not whitespace; can ask product for more constraints on names
+    return name.length && !name.match("^\\s*$");
+  };
+
+  const validateProgramIdentifier = (name: string) => {
+    // check string is valid for url; can ask product for more constraints on names
+    return name.length && !name.match("\\s") && !name.match("/");
+  };
+
+  const callCreateProgram = () => {
+    const createProgramInput: CreateProgramInput = {
+      name: programName,
+      description: "", // a lotta dummy strings for now since the form doesn't specify them
+      slug: programIdentifier,
+      iconUrl: programLogo,
+      homepage: programIdentifier,
+      mentorProfileSchemaJson: "",
+      menteeProfileSchemaJson: "",
+      mentorApplicationSchemaJson: "",
+      public: true,
+    };
+    createProgram({ variables: { data: createProgramInput } })
+      .then(() => setLoading(false))
+      .catch((err) => setError("Error: " + err.message));
+  };
+
   const stepOne = () => {
     return (
       <div className="flex flex-col w-full px-4 py-12 md:w-152">
@@ -55,7 +82,7 @@ const CreateProgramPage = () => {
         <Button
           disabled={programName.length == 0}
           onClick={() => {
-            if (programName) {
+            if (validateProgramName(programName)) {
               setStage((prev) => prev + 1);
               setError("");
             } else setError("Please enter a program name.");
@@ -115,31 +142,30 @@ const CreateProgramPage = () => {
 
         <div className="h-3" />
         <div className="flex">
-          <Button variant="inverted">Back</Button>
+          <Button
+            variant="inverted"
+            onClick={() => {
+              setStage((prev) => prev - 1);
+            }}
+          >
+            Back
+          </Button>
           <div className="w-2"></div>
           <Button
             disabled={programIdentifier.length == 0}
             onClick={() => {
-              if (displayError || loading) {
-                // TODO: error, check identifier, bad file?
-              } else {
-                setLoading(true);
-                const createProgramInput: CreateProgramInput = {
-                  name: programName,
-                  description: "", // a lotta dummy strings for now since the form doesn't specify them
-                  slug: programIdentifier,
-                  iconUrl: programLogo,
-                  homepage: programIdentifier,
-                  mentorProfileSchemaJson: "",
-                  menteeProfileSchemaJson: "",
-                  mentorApplicationSchemaJson: "",
-                  public: true,
-                };
-                createProgram({ variables: { data: createProgramInput } }).then(
-                  () => setLoading(false)
+              if (!validateProgramIdentifier(programIdentifier))
+                setError(
+                  "Your program identifier cannot contain slashes or spaces"
                 );
-                setStage((prev) => prev + 1);
+              else if (
+                !loading &&
+                validateProgramIdentifier(programIdentifier)
+              ) {
                 setError("");
+                setLoading(true);
+                callCreateProgram();
+                setStage((prev) => prev + 1);
               }
             }}
           >
