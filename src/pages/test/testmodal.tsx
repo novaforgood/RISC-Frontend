@@ -12,7 +12,12 @@ const TestPage = () => {
       >
         OPEN MODAL
       </button>
-      <Modal isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+        }}
+      >
         <Modal.Title>Hello</Modal.Title>
         <div className="h-4"></div>
         <button

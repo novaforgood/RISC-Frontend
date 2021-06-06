@@ -3,11 +3,11 @@ import classNames from "classnames";
 import React, { Fragment, HTMLAttributes, ReactNode } from "react";
 type ModalProps = HTMLAttributes<HTMLDivElement> & {
   isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
+  onClose: () => void;
   children?: ReactNode;
 };
 
-const Modal = ({ children, isOpen, setIsOpen = () => {} }: ModalProps) => {
+const Modal = ({ children, isOpen, onClose = () => {} }: ModalProps) => {
   const overlayStyles = classNames({
     "fixed inset-0 bg-black": true,
     "opacity-20": isOpen,
@@ -18,9 +18,7 @@ const Modal = ({ children, isOpen, setIsOpen = () => {} }: ModalProps) => {
         <Dialog
           as="div"
           className="fixed inset-0 z-10 overflow-y-auto"
-          onClose={() => {
-            setIsOpen(false);
-          }}
+          onClose={onClose}
         >
           <div className="min-h-screen px-4 text-center">
             <Transition.Child
