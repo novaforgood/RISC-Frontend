@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { HTMLAttributes, useState } from "react";
 
-type ArrowProps = HTMLAttributes<HTMLDivElement> & {
+type ArrowProps = HTMLAttributes<HTMLButtonElement> & {
   direction: "left" | "right";
   className?: string;
   color?: string;
@@ -22,7 +22,7 @@ export const Arrow = ({
     [`${className}`]: true,
   });
   return (
-    <div
+    <button
       {...props}
       onClick={onClick}
       className={styles}
@@ -48,6 +48,6 @@ export const Arrow = ({
           points="79.093,0 48.907,30.187 146.72,128 48.907,225.813 79.093,256 207.093,128   "
         />
       </svg>
-    </div>
+    </button>
   );
 };

@@ -117,12 +117,13 @@ const Calendar = ({
             selectedDay && selectedDay.getTime() === day.getTime();
           const hasTimeslots =
             availabilities.weekly[i % 7].length > 0 || isOverrided[i];
+          const selectable = inMonth && (selectAnyDay || hasTimeslots);
 
           const backgroundStyles = classNames({
             "h-11 w-11 mx-auto flex justify-center items-center cursor-pointer select-none rounded-full \
             transition-background duration-100":
               true,
-            "pointer-events-none": !selectAnyDay && !hasTimeslots,
+            "pointer-events-none": !selectable,
             "bg-inactive": hasTimeslots,
             "hover:bg-secondary": !selected,
             "text-white bg-black": selected,
@@ -130,7 +131,8 @@ const Calendar = ({
           });
 
           return (
-            <div
+            <button
+              disabled={!selectable}
               key={i}
               className={backgroundStyles}
               onClick={() => {
@@ -138,7 +140,7 @@ const Calendar = ({
               }}
             >
               <Text b2>{day.getDate()}</Text>
-            </div>
+            </button>
           );
         })}
       </div>
