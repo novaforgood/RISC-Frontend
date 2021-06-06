@@ -25,7 +25,8 @@ const CreateProgramPage = () => {
 
   //const [programIsPublic, setProgramIsPublic] = useState(true); // TODO: add checkbox on form for setting program public or not
   const [createProgram] = useCreateProgramMutation();
-  const [displayError, setError] = useState("");
+  const [displayError, setError] = useState(""); // TODO: Proper error box
+  const [loading, setLoading] = useState(false);
 
   const stepOne = () => {
     return (
@@ -35,13 +36,17 @@ const CreateProgramPage = () => {
         </Text>
         <div className="h-6" />
 
-        <div className="flex w-full">
-          <TitledInput
-            title="What is the name of your mentorship program?"
+        <Text className="text-secondary">
+          What is the name of your mentorship program?
+        </Text>
+        <div className="h-6" />
+
+        <div className="w-full">
+          <Input
             name="Program Name"
             placeholder="e.g. Nova Mentorship"
             value={programName}
-            className="flex-1"
+            className="w-full"
             onChange={(e) => {
               setProgramName(e.target.value);
             }}
@@ -62,9 +67,7 @@ const CreateProgramPage = () => {
         </Button>
         <div className="h-6" />
 
-        <Text className="text-error">
-          {displayError + "TODO: Proper error box"}
-        </Text>
+        <Text className="text-error">{displayError}</Text>
       </div>
     );
   };
@@ -117,10 +120,12 @@ const CreateProgramPage = () => {
           <Button variant="inverted">Back</Button>
           <div className="w-2"></div>
           <Button
+            disabled={programIdentifier.length == 0}
             onClick={() => {
-              if (displayError) {
+              if (displayError || loading) {
                 // TODO: error, check identifier, bad file?
               } else {
+                setLoading(true);
                 const createProgramInput: CreateProgramInput = {
                   name: programName,
                   description: "", // a lotta dummy strings for now since the form doesn't specify them
@@ -136,7 +141,9 @@ const CreateProgramPage = () => {
                   public: programPublic,
 >>>>>>> c4693a5 (connect createProgram mutation)
                 };
-                createProgram({ variables: { data: createProgramInput } });
+                createProgram({ variables: { data: createProgramInput } }).then(
+                  () => setLoading(false)
+                );
                 setStage((prev) => prev + 1);
                 setError("");
               }
@@ -145,10 +152,22 @@ const CreateProgramPage = () => {
             Create!
           </Button>
         </div>
+        <div className="h-6" />
+
+        <Text className="text-error">{displayError}</Text>
       </div>
     );
   };
-
+  const renderStage = () => {
+    switch (stage) {
+      case 0:
+        return stepOne();
+      case 1:
+        return stepTwo();
+      default:
+        return <Text>Redirecting u home~</Text>;
+    }
+  };
   return (
     <div className="flex w-screen min-h-screen">
       <img
@@ -156,13 +175,7 @@ const CreateProgramPage = () => {
         className="absolute p-6 select-none pointer-events-none"
       />
       <div className="w-full md:w-2/3 flex justify-center items-center min-h-screen">
-        {stage == 0 ? (
-          stepOne()
-        ) : stage == 1 ? (
-          stepTwo()
-        ) : (
-          <Text>Redirecting u home~</Text> // TODO: actual redirect
-        )}
+        {renderStage()}
       </div>
       <div className="hidden md:grid md:w-1/3 bg-primary min-h-screen relative">
         <div className="place-self-center">
