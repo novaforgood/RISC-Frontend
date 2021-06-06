@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useAuth } from "../utils/firebase/auth";
 import { Button, Text } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
+import type { GetServerSideProps } from "next";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24 md:h-64 md:w-64 lg:h-80 lg:w-80";
@@ -153,3 +154,17 @@ const SignUpPage = () => {
 };
 
 export default SignUpPage;
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=1, stale-while-revalidate=59"
+  );
+  console.log(req.headers);
+
+  return {
+    props: {
+      host: req.headers.host,
+    },
+  };
+};
