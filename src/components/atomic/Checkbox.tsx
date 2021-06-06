@@ -9,7 +9,7 @@ type CheckboxProps = InputHTMLAttributes<HTMLInputElement> & {
 const Checkbox = ({ className = "", ...props }: CheckboxProps) => {
   const checkboxStyles = classNames({
     ["h-5 w-5 border-2 border-primary rounded appearance-none \
-      hover:border-3 active:border-darkblue active:border-3\
+      hover:bg-darkblue active:border-darkblue active:border-3\
       checked:bg-primary checked:fill-white -z-1 absolute"]:
       true,
   });
@@ -23,7 +23,7 @@ const Checkbox = ({ className = "", ...props }: CheckboxProps) => {
         <path xmlns="http://www.w3.org/2000/svg" d="M 4,11 8,14.5 16,5" />
       </svg>
       <input type="checkbox" {...props} className={checkboxStyles} />
-      <Text className="ml-6">{props.labeltext ? props.labeltext : ""}</Text>
+      <Text className="ml-6">{props.labeltext}</Text>
     </label>
   );
 };
