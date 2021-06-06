@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Tag, Text } from "../../components/atomic";
+import { Button, Card, Tag, Text } from "../../components/atomic";
 import { useGetUsersLazyQuery } from "../../generated/graphql";
 
 const IndexPage = () => {
@@ -19,8 +19,12 @@ const IndexPage = () => {
         Get users
       </Button>
       <p>{JSON.stringify(data)}</p>
-      <Text>Blaah</Text>
-      <Tag>Sample Tag</Tag>
+      <Card className="h-60 w-60">
+        <Text>Blaah</Text>
+        <div className="h-1"></div>
+        <Tag>Sample Tag</Tag>
+        <Tag variant="outline">Outline Tag</Tag>
+      </Card>
     </>
   );
 };
