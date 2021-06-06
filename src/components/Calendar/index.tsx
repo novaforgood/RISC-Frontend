@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Text } from "../../components/atomic";
 import { monthNames, weekdayNamesAbbreviated } from "./data";
 import { Arrow } from "./icons";
@@ -40,12 +40,9 @@ const Calendar = ({
     initMonth,
     initYear,
   ]);
-  const [days, setDays] = useState<Date[]>([]);
-
-  useEffect(() => {
-    setDays(getDaysInThisMonth(...monthyear));
-    return () => {};
-  }, [monthyear]);
+  const [days, setDays] = useState<Date[]>(
+    getDaysInThisMonth(initMonth, initYear)
+  );
 
   if (!days) return <></>;
 
@@ -76,11 +73,14 @@ const Calendar = ({
             className="h-6 w-6 p-1 cursor-pointer"
             onClick={() => {
               setMonthyear(([prevMonth, prevYear]) => {
+                let newMonthYear: [number, number];
                 if (prevMonth === 0) {
-                  return [11, prevYear - 1];
+                  newMonthYear = [11, prevYear - 1];
                 } else {
-                  return [prevMonth - 1, prevYear];
+                  newMonthYear = [prevMonth - 1, prevYear];
                 }
+                setDays(getDaysInThisMonth(...newMonthYear));
+                return newMonthYear;
               });
             }}
           />
@@ -90,11 +90,14 @@ const Calendar = ({
             className="h-6 w-6 p-1 cursor-pointer"
             onClick={() => {
               setMonthyear(([prevMonth, prevYear]) => {
+                let newMonthYear: [number, number];
                 if (prevMonth === 11) {
-                  return [0, prevYear + 1];
+                  newMonthYear = [0, prevYear + 1];
                 } else {
-                  return [prevMonth + 1, prevYear];
+                  newMonthYear = [prevMonth + 1, prevYear];
                 }
+                setDays(getDaysInThisMonth(...newMonthYear));
+                return newMonthYear;
               });
             }}
           />
