@@ -1,5 +1,8 @@
-import React, { useState } from "react";
-import { Card, Text } from "../components/atomic";
+import { unix } from "moment";
+import React from "react";
+import { Text } from "../components/atomic";
+import InlineProfileAvatar from "../components/InlineProfileAvatar";
+import ListFilterer from "../components/ListFilterer";
 import {
   ApplicationStatus,
   GetApplicationsQuery,
@@ -10,48 +13,74 @@ import {
 const QUERY_PROGRAM_ID = "8e1a323d-fdba-4c8a-81bc-901de3d2b0a7";
 const QUERY_PROFILE_TYPE = "mentor";
 
-type ApplicationListItemProps = {
-  application: GetApplicationsQuery["getApplications"][number];
+type ApplicationPartial = GetApplicationsQuery["getApplications"][number];
+
+type ApplicationReviewListItem = {
+  application: ApplicationPartial;
 };
 
-const ApplicationListItem = ({ application }: ApplicationListItemProps) => {
+const ApplicationReviewListItem = ({
+  application,
+}: ApplicationReviewListItem) => {
+  const getStatusIcon = (status: ApplicationStatus) => {
+    switch (status) {
+      case ApplicationStatus.Pending:
+        return <Text i>Pending</Text>;
+      case ApplicationStatus.Accepted:
+        return <Text>Accepted</Text>;
+      case ApplicationStatus.Rejected:
+        return <Text>Rejected</Text>;
+    }
+  };
+
   return (
     <div className="flex space-x-4">
       <input type="checkbox" />
-      <Text>
-        {application.profile.user.firstName} {application.profile.user.lastName}
+      <div className="w-8" />
+      <InlineProfileAvatar profile={application.profile} />
+      <div className="md:flex-1" />
+      <Text className="hidden lg:inline">
+        {unix(application.createdAt / 1000).format("MMM D, YYYY | h:mma")}
       </Text>
       <div className="flex-1" />
-      <Text>{application.createdAt}</Text>
-      <div className="flex-1" />
-      <Text>{application.applicationStatus}</Text>
+      {getStatusIcon(application.applicationStatus)}
+      <div className="md:w-8 lg:w-12" />
     </div>
   );
 };
 
-type ApplicationListProps = {
+type ApplicationReviewListProps = {
   title: string;
-  applications: GetApplicationsQuery["getApplications"];
+  applications: ApplicationPartial[];
 };
 
-const ApplicationList = ({ title, applications }: ApplicationListProps) => {
+const ApplicationReviewList = ({
+  title,
+  applications,
+}: ApplicationReviewListProps) => {
   return (
-    <div className="flex flex-col px-4 py-4">
+    <div className="flex flex-col px-8 py-6">
       <Text h2>{title}</Text>
-      <input type="checkbox" />
       <div className="h-4" />
-      {applications.map((x) => (
-        <ApplicationListItem application={x} key={x.profile.profileId} />
+      {applications.map((app) => (
+        <ApplicationReviewListItem application={app} />
       ))}
     </div>
   );
 };
 
 const ApplicationFilterer = () => {
+  const { data } = useGetApplicationsQuery({
+    variables: {
+      programId: QUERY_PROGRAM_ID,
+      profileType: QUERY_PROFILE_TYPE,
+    },
+  });
+
   const filterOptions: {
     [key: string]: (
-      applicationList: GetApplicationsQuery["getApplications"]
-    ) => GetApplicationsQuery["getApplications"];
+      applicationList: ApplicationPartial[]
+    ) => ApplicationPartial[];
   } = {
     All: (x) => x,
     Pending: (x) =>
@@ -61,53 +90,19 @@ const ApplicationFilterer = () => {
     Rejected: (x) =>
       x.filter((y) => y.applicationStatus === ApplicationStatus.Rejected),
   };
-  const [filterOption, setFilterOption] = useState("All");
-
-  const { data } = useGetApplicationsQuery({
-    variables: {
-      programId: QUERY_PROGRAM_ID,
-      profileType: QUERY_PROFILE_TYPE,
-    },
-  });
-
-  const getFilterTab = (title: string) => {
-    const selected = filterOption === title;
-    return (
-      <div key={title}>
-        <button
-          className="rounded-md focus:outline-none focus:ring-primary focus:ring-2"
-          disabled={selected}
-          onClick={() => setFilterOption(title)}
-        >
-          <Text b className={selected ? "text-primary" : "text-secondary"}>
-            {title}
-          </Text>
-        </button>
-        <div
-          className={
-            "h-1 w-full" +
-            (selected ? "h-1 w-full bg-primary rounded-full" : "")
-          }
-        />
-      </div>
-    );
-  };
 
   return (
-    <>
-      <div className="flex space-x-4">
-        {Object.keys(filterOptions).map(getFilterTab)}
-      </div>
-      <div className="h-4" />
-      <Card className="w-full h-5/6">
-        {data && (
-          <ApplicationList
-            title={filterOption + " Applications"}
-            applications={filterOptions[filterOption](data.getApplications)}
-          />
-        )}
-      </Card>
-    </>
+    <ListFilterer
+      listToFilter={data ? data.getApplications : []}
+      filterOptions={filterOptions}
+      defaultFilterOption={"All"}
+      listComponent={(filterOption, filteredList) => (
+        <ApplicationReviewList
+          title={`${filterOption} Applications`}
+          applications={filteredList}
+        />
+      )}
+    />
   );
 };
 
