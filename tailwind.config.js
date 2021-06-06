@@ -60,7 +60,7 @@ module.exports = {
       backgroundColor: ["active", "disabled"],
       borderWidth: ["hover", "active", "disabled"],
       borderColor: ["hover", "active", "disabled"],
-      cursor: ["disabled"],
+      cursor: ["hover", "disabled"],
       opacity: ["disabled"],
       pointerEvents: ["disabled"],
       textColor: ["active", "disabled"],
