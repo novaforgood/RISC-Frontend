@@ -5,7 +5,7 @@ import { useAuth } from "../utils/firebase/auth";
 
 const IndexPage = () => {
   const [getUser, { data }] = useGetUsersLazyQuery();
-  const { auth, signOut } = useAuth();
+  const { user, signOut, userData } = useAuth();
 
   return (
     <>
@@ -21,8 +21,10 @@ const IndexPage = () => {
         Get users
       </Button>
       <p>{JSON.stringify(data)}</p>
-      {auth ? <p>Hi, {auth.displayName}</p> : <p>Join us!</p>}
-      {auth ? (
+      <a href="/create">Create Program</a>
+      {userData && <p>USER DATA: {JSON.stringify(userData)}</p>}
+      {user ? <p>Hi, {user.displayName}</p> : <p>Join us!</p>}
+      {user ? (
         <button onClick={() => signOut()}>Sign Out</button>
       ) : (
         <a href="/login">Log In</a>

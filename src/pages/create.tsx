@@ -1,8 +1,9 @@
+import { useRouter } from "next/router";
 import { useState } from "react";
-import { Text, Button, Input } from "../components/atomic";
+import { Button, Input, Text } from "../components/atomic";
 import {
-  useCreateProgramMutation,
   CreateProgramInput,
+  useCreateProgramMutation,
 } from "../generated/graphql";
 
 const BlobCircle = () => {
@@ -25,6 +26,7 @@ const CreateProgramPage = () => {
   const [createProgram] = useCreateProgramMutation();
   const [displayError, setError] = useState(""); // TODO: Proper error box
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const validateProgramName = (name: string) => {
     // check string is not whitespace; can ask product for more constraints on names
@@ -48,9 +50,20 @@ const CreateProgramPage = () => {
       mentorApplicationSchemaJson: "",
       public: true,
     };
-    createProgram({ variables: { data: createProgramInput } })
-      .then(() => setLoading(false))
-      .catch((err) => setError("Error: " + err.message));
+    return createProgram({ variables: { data: createProgramInput } })
+      .then((res) => {
+        if (res) {
+          router.push(
+            `http://${res.data?.createProgram.program.slug}.${window.location.host}`
+          );
+        } else {
+          throw { message: "Failed to retrieve created program's subdomain" };
+        }
+      })
+      .catch((err) => setError("Error: " + err.message))
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const stepOne = () => {
