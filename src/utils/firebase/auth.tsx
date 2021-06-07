@@ -1,8 +1,12 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { GetMyUserQuery, useGetMyUserLazyQuery } from "../../generated/graphql";
 import firebase from "./firebase";
 
+type UserData = GetMyUserQuery;
+
 interface AuthContext {
-  auth: firebase.User | null;
+  user: firebase.User | null;
+  userData: UserData | undefined;
   loading: boolean;
   signUpWithEmail: (
     e: string,
@@ -19,8 +23,9 @@ interface AuthContext {
 const authContext = createContext<AuthContext | undefined>(undefined);
 
 function useProvideAuth() {
-  const [auth, setAuth] = useState<firebase.User | null>(null);
+  const [user, setUser] = useState<firebase.User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [getMyUser, { data: userData }] = useGetMyUserLazyQuery();
 
   const signUpWithEmail = async (email: string, password: string) => {
     setLoading(true);
@@ -56,8 +61,11 @@ function useProvideAuth() {
   useEffect(() => {
     const unsubscribe = firebase
       .auth()
-      .onAuthStateChanged((authState: firebase.User | null) => {
-        setAuth(authState);
+      .onAuthStateChanged((newUser: firebase.User | null) => {
+        if (newUser) {
+          getMyUser();
+        }
+        setUser(newUser);
         setLoading(false);
       });
     return () => unsubscribe();
@@ -65,12 +73,13 @@ function useProvideAuth() {
 
   // returns state values and callbacks for signIn and signOut.
   return {
-    auth,
+    user,
     loading,
     signUpWithEmail,
     signInWithEmail,
     signInWithGoogle,
     signOut,
+    userData,
   };
 }
 

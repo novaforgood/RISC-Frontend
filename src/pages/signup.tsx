@@ -1,9 +1,11 @@
+import type { GetServerSideProps } from "next";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
-import { useAuth } from "../utils/firebase/auth";
 import { Button, Text } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
-import type { GetServerSideProps } from "next";
+import { CreateUserInput, useCreateUserMutation } from "../generated/graphql";
+import { useAuth } from "../utils/firebase/auth";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24 md:h-64 md:w-64 lg:h-80 lg:w-80";
@@ -23,6 +25,8 @@ const SignUpPage = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [displayError, setError] = useState("");
+  const [createUser] = useCreateUserMutation();
+  const router = useRouter();
 
   return (
     <div className="flex w-screen min-h-screen">
@@ -51,7 +55,22 @@ const SignUpPage = () => {
             onClick={() =>
               signInWithGoogle()
                 .catch((e) => setError(e.message))
-                .then((_) => {})
+                .then((res) => {
+                  if (res) {
+                    const arr = res.user?.displayName?.split(" ") || [];
+                    const createUserInput: CreateUserInput = {
+                      email: res.user?.email!,
+                      firstName: arr[0] || "",
+                      lastName: arr[1] || "",
+                      profilePictureUrl: "",
+                    };
+                    createUser({ variables: { data: createUserInput } }).then(
+                      () => {
+                        router.push("/");
+                      }
+                    );
+                  }
+                })
             }
             className="h-16 w-full bg-tertiary flex items-center justify-center cursor-pointer"
           >
@@ -129,9 +148,25 @@ const SignUpPage = () => {
 
           <Button
             onClick={() => {
-              signUpWithEmail(email, password).catch((error) => {
-                setError(error.message);
-              });
+              signUpWithEmail(email, password)
+                .catch((error) => {
+                  setError(error.message);
+                })
+                .then((res) => {
+                  if (res) {
+                    const createUserInput: CreateUserInput = {
+                      email: res.user?.email!,
+                      firstName: firstName,
+                      lastName: lastName,
+                      profilePictureUrl: "",
+                    };
+                    createUser({ variables: { data: createUserInput } }).then(
+                      () => {
+                        router.push("/");
+                      }
+                    );
+                  }
+                });
             }}
           >
             Sign Up

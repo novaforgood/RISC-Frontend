@@ -1,0 +1,5 @@
+mutation createProfile($data: CreateProfileInput!) {
+  createProfile(data: $data) {
+    profileId
+  }
+}
