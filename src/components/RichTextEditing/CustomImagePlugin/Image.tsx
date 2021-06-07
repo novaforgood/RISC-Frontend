@@ -1,26 +1,14 @@
 import React, {
   ImgHTMLAttributes,
-  ComponentType,
   ReactElement,
   useEffect,
   useRef,
 } from "react";
-import {
-  EditorState,
-  AtomicBlockUtils,
-  ContentBlock,
-  ContentState,
-} from "draft-js";
 import classNames from "classnames";
-import { EditorPlugin } from "@draft-js-plugins/editor";
+import { ContentBlock, ContentState } from "draft-js";
+import { ImagePluginTheme } from "../CustomImagePlugin";
 
-/**
- * THIS IS AN EDIT OF THE CODE FOUND AT https://github.com/draft-js-plugins/draft-js-plugins/tree/f4b5e696ed1c8354d98ac53bc58372486589cf83/packages/image
- *
- * Rights reserved by the MIT License; Code creation by Facebook
- */
-
-interface ImageProps extends ImgHTMLAttributes<HTMLImageElement> {
+export interface ImageProps extends ImgHTMLAttributes<HTMLImageElement> {
   block: ContentBlock;
   className?: string;
   theme?: ImagePluginTheme;
@@ -39,52 +27,7 @@ interface ImageProps extends ImgHTMLAttributes<HTMLImageElement> {
   preventScroll: unknown;
 }
 
-export interface ImagePluginTheme {
-  image?: string;
-}
-
-export interface ImagePluginConfig {
-  decorator?(component: ComponentType<ImageProps>): ComponentType<ImageProps>;
-  theme?: ImagePluginTheme;
-  imageComponent?: ComponentType<ImageProps>;
-}
-
-let imgProps: ImgHTMLAttributes<HTMLImageElement> | undefined = undefined;
-
-const addImage = (
-  editorState: EditorState,
-  url: string,
-  extraData: ImgHTMLAttributes<HTMLImageElement>
-): EditorState => {
-  const urlType = "IMAGE";
-  const contentState = editorState.getCurrentContent();
-  const contentStateWithEntity = contentState.createEntity(
-    urlType,
-    "IMMUTABLE",
-    { src: url, ...extraData }
-  );
-  imgProps = extraData;
-  const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-  contentState.mergeEntityData(entityKey, { entityKey: entityKey });
-  console.log(entityKey);
-  const newEditorState = AtomicBlockUtils.insertAtomicBlock(
-    editorState,
-    entityKey,
-    " "
-  );
-  return EditorState.forceSelection(
-    newEditorState,
-    newEditorState.getCurrentContent().getSelectionAfter()
-  );
-};
-
-export type ImageEditorPlugin = EditorPlugin & {
-  addImage: typeof addImage;
-};
-
-const defaultTheme: ImagePluginTheme = {};
-
-const ImageComponent = React.forwardRef<HTMLImageElement, ImageProps>(
+export default React.forwardRef<HTMLImageElement, ImageProps>(
   /**This forwarded ref returns null: need to figure out why */
   (props, ref): ReactElement => {
     const { block, className, theme = {}, ...otherProps } = props;
@@ -104,11 +47,7 @@ const ImageComponent = React.forwardRef<HTMLImageElement, ImageProps>(
       style,
       ...elementProps
     } = otherProps;
-    const combinedClassName = classNames(
-      theme.image,
-      className,
-      imgProps?.className
-    );
+    const combinedClassName = classNames(theme.image, className);
     const { src, entityKey } = contentState
       .getEntity(block.getEntityAt(0))
       .getData();
@@ -130,7 +69,6 @@ const ImageComponent = React.forwardRef<HTMLImageElement, ImageProps>(
       document.addEventListener("click", clickedOutside);
       imageRef.current.onmousedown = (e_mousedown: MouseEvent) => {
         const start_x = e_mousedown.clientX;
-        console.log(entityKey);
         if (!imageRef.current) return;
         const imgProperties = imageRef.current.getBoundingClientRect();
         const originalWidth = imgProperties.width;
@@ -164,7 +102,6 @@ const ImageComponent = React.forwardRef<HTMLImageElement, ImageProps>(
       <img
         onClick={resize}
         {...elementProps}
-        {...imgProps}
         ref={imageRef}
         src={src}
         style={{
@@ -180,38 +117,3 @@ const ImageComponent = React.forwardRef<HTMLImageElement, ImageProps>(
     );
   }
 );
-
-const createImagePlugin = (
-  config: ImagePluginConfig = {}
-): ImageEditorPlugin => {
-  const theme = config.theme ? config.theme : defaultTheme;
-  let Image = config.imageComponent || ImageComponent;
-  if (config.decorator) {
-    Image = config.decorator(Image);
-  }
-  const ThemedImage = (props: ImageProps): ReactElement => (
-    <Image {...props} theme={theme} />
-  );
-  return {
-    blockRendererFn: (block, { getEditorState }) => {
-      if (block.getType() === "atomic") {
-        const contentState = getEditorState().getCurrentContent();
-        const entity = block.getEntityAt(0);
-        if (!entity) return null;
-        const type = contentState.getEntity(entity).getType();
-        if (type === "IMAGE" || type === "image") {
-          return {
-            component: ThemedImage,
-            editable: false,
-          };
-        }
-        return null;
-      }
-
-      return null;
-    },
-    addImage,
-  };
-};
-
-export default createImagePlugin;

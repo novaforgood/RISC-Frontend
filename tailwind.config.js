@@ -32,6 +32,12 @@ module.exports = {
       bold: 700,
     },
     extend: {
+      cursor: {
+        "s-resize": "s-resize",
+        "w-resize": "w-resize",
+        "se-resize": "se-resize",
+        "sw-resize": "sw-resize",
+      },
       borderWidth: {
         1.5: "1.5px",
         3: "3px",
