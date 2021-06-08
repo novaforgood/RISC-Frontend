@@ -5,6 +5,7 @@ import { createUploadLink } from "apollo-upload-client";
 import { AppProps } from "next/app";
 import { ReactElement } from "react";
 import "tailwindcss/tailwind.css";
+import GuaranteeUserData from "../layouts/GuaranteeUserData";
 import Page from "../types/Page";
 import { AuthProvider } from "../utils/firebase/auth";
 import firebase from "../utils/firebase/firebase";
@@ -38,7 +39,11 @@ function MyApp({ Component, pageProps }: CustomAppProps) {
 
   return (
     <ApolloProvider client={client}>
-      <AuthProvider>{getLayout(<Component {...pageProps} />)}</AuthProvider>
+      <AuthProvider>
+        <GuaranteeUserData>
+          {getLayout(<Component {...pageProps} />)}
+        </GuaranteeUserData>
+      </AuthProvider>
       <script> </script>
     </ApolloProvider>
   );

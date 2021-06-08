@@ -1,5 +1,12 @@
+import { FetchResult } from "@apollo/client";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { GetMyUserQuery, useGetMyUserLazyQuery } from "../../generated/graphql";
+import {
+  CreateUserInput,
+  CreateUserMutation,
+  GetMyUserQuery,
+  useCreateUserMutation,
+  useGetMyUserLazyQuery,
+} from "../../generated/graphql";
 import firebase from "./firebase";
 
 type UserData = GetMyUserQuery;
@@ -18,44 +25,65 @@ interface AuthContext {
   ) => Promise<firebase.auth.UserCredential>;
   signInWithGoogle: () => Promise<firebase.auth.UserCredential>;
   signOut: () => Promise<void>;
+  createUserInDb: (
+    createUserInput: CreateUserInput
+  ) => Promise<FetchResult<CreateUserMutation>>;
 }
 
 const authContext = createContext<AuthContext | undefined>(undefined);
 
 function useProvideAuth() {
   const [user, setUser] = useState<firebase.User | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [getMyUser, { data: userData }] = useGetMyUserLazyQuery();
+  const [loadingUser, setLoadingUser] = useState(true);
+  const [loadingUserData, setLoadingUserData] = useState(true);
+  const loading = loadingUser || loadingUserData;
+  const [createUser] = useCreateUserMutation();
+
+  const [getMyUser, { data: userData }] = useGetMyUserLazyQuery({
+    onCompleted: () => {
+      setLoadingUserData(false);
+    },
+  });
 
   const signUpWithEmail = async (email: string, password: string) => {
-    setLoading(true);
+    setLoadingUser(true);
+    setLoadingUserData(true);
     return firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
-      .finally(() => setLoading(false));
+      .finally(() => setLoadingUser(false));
   };
 
   const signInWithEmail = async (email: string, password: string) => {
-    setLoading(true);
+    setLoadingUser(true);
+    setLoadingUserData(true);
     return firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .finally(() => setLoading(false));
+      .finally(() => setLoadingUser(false));
   };
 
   const signInWithGoogle = async () => {
-    setLoading(true);
+    setLoadingUser(true);
+    setLoadingUserData(true);
     return firebase
       .auth()
       .signInWithPopup(new firebase.auth.GoogleAuthProvider())
-      .finally(() => setLoading(false));
+      .finally(() => setLoadingUser(false));
   };
 
   const signOut = async () => {
     return firebase
       .auth()
       .signOut()
-      .then(() => setLoading(false));
+      .then(() => setLoadingUser(false));
+  };
+
+  const createUserInDb = async (createUserInput: CreateUserInput) => {
+    return createUser({ variables: { data: createUserInput } }).then((res) => {
+      getMyUser();
+      return res;
+    });
   };
 
   useEffect(() => {
@@ -66,20 +94,20 @@ function useProvideAuth() {
           getMyUser();
         }
         setUser(newUser);
-        setLoading(false);
+        setLoadingUser(false);
       });
     return () => unsubscribe();
   }, []);
 
-  // returns state values and callbacks for signIn and signOut.
   return {
-    user,
-    loading,
+    user, // Firebase User
+    loading, // True if user and userData are both loaded
     signUpWithEmail,
     signInWithEmail,
     signInWithGoogle,
     signOut,
-    userData,
+    createUserInDb,
+    userData, // User object from database
   };
 }
 

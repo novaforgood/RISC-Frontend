@@ -56,7 +56,7 @@ const CreateProgramPage: Page = () => {
       .then((res) => {
         if (res) {
           router.push(
-            `http://${res.data?.createProgram.program.slug}.${window.location.host}`
+            `http://${res.data?.createProgram.slug}.${window.location.host}`
           );
         } else {
           throw { message: "Failed to retrieve created program's subdomain" };

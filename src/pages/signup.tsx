@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { Button, Text } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
-import { CreateUserInput, useCreateUserMutation } from "../generated/graphql";
+import { CreateUserInput } from "../generated/graphql";
 import { useAuth } from "../utils/firebase/auth";
 
 const BlobCircle = () => {
@@ -19,13 +19,12 @@ const BlobCircle = () => {
 };
 
 const SignUpPage = () => {
-  const { signUpWithEmail, signInWithGoogle } = useAuth();
+  const { signUpWithEmail, signInWithGoogle, createUserInDb } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [displayError, setError] = useState("");
-  const [createUser] = useCreateUserMutation();
   const router = useRouter();
 
   return (
@@ -64,11 +63,9 @@ const SignUpPage = () => {
                       lastName: arr[1] || "",
                       profilePictureUrl: "",
                     };
-                    createUser({ variables: { data: createUserInput } }).then(
-                      () => {
-                        router.push("/");
-                      }
-                    );
+                    createUserInDb(createUserInput).then(() => {
+                      router.push("/");
+                    });
                   }
                 })
             }
@@ -153,6 +150,7 @@ const SignUpPage = () => {
                   setError(error.message);
                 })
                 .then((res) => {
+                  // TODO: Valid profilePictureURL and photoURL
                   if (res) {
                     const createUserInput: CreateUserInput = {
                       email: res.user?.email!,
@@ -160,11 +158,15 @@ const SignUpPage = () => {
                       lastName: lastName,
                       profilePictureUrl: "",
                     };
-                    createUser({ variables: { data: createUserInput } }).then(
-                      () => {
-                        router.push("/");
-                      }
-                    );
+                    Promise.all([
+                      createUserInDb(createUserInput),
+                      res.user?.updateProfile({
+                        displayName: firstName + " " + lastName,
+                        photoURL: "",
+                      }),
+                    ]).then(() => {
+                      router.push("/");
+                    });
                   }
                 });
             }}
