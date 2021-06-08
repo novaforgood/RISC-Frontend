@@ -16,6 +16,7 @@ query getMyUser {
     profiles {
       profileType
       program {
+        programId
         name
         iconUrl
         slug
