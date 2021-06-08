@@ -13,7 +13,7 @@ const IndexPage: PageGetProgramBySlugComp = (props) => {
   const { user, signOut, userData } = useAuth();
 
   console.log(props);
-
+  console.log(userData);
   return (
     <>
       <Button
@@ -42,6 +42,8 @@ const IndexPage: PageGetProgramBySlugComp = (props) => {
 
 export default IndexPage;
 
+// We're no longer using subdomains for v2, but keep this around for
+// future use.
 function extractSubdomain(hostname: string | undefined) {
   if (!hostname) return "";
   let arr = hostname.split(".");
@@ -58,8 +60,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   const slug = extractSubdomain(req.headers.host);
 
-  return await ssrGetProgramBySlug.getServerPage(
-    { variables: { slug: slug } },
-    ctx
-  );
+  return await ssrGetProgramBySlug
+    .getServerPage({ variables: { slug: slug } }, ctx)
+    .catch((e) => {
+      console.log(e);
+      return { props: {} };
+    });
 };

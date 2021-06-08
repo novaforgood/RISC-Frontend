@@ -9,7 +9,7 @@ import {
 } from "../../generated/graphql";
 import firebase from "./firebase";
 
-type UserData = GetMyUserQuery;
+export type UserData = GetMyUserQuery;
 
 interface AuthContext {
   user: firebase.User | null;
