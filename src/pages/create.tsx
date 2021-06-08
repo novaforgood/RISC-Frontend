@@ -5,6 +5,8 @@ import {
   CreateProgramInput,
   useCreateProgramMutation,
 } from "../generated/graphql";
+import RedirectIfNotLoggedIn from "../layouts/RedirectIfNotLoggedIn";
+import Page from "../types/Page";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24 md:h-64 md:w-64 lg:h-80 lg:w-80";
@@ -17,7 +19,7 @@ const BlobCircle = () => {
   );
 };
 
-const CreateProgramPage = () => {
+const CreateProgramPage: Page = () => {
   const [stage, setStage] = useState(0);
   const [programName, setProgramName] = useState("");
   const [programLogo, setProgramLogo] = useState("");
@@ -197,7 +199,7 @@ const CreateProgramPage = () => {
       case 1:
         return stepTwo();
       default:
-        return <Text>Redirecting u home~</Text>;
+        return <Text>Placeholder (Should not show)</Text>;
     }
   };
   return (
@@ -217,5 +219,11 @@ const CreateProgramPage = () => {
     </div>
   );
 };
+
+CreateProgramPage.getLayout = (page) => (
+  <RedirectIfNotLoggedIn pathAfterLoggingIn="/create">
+    {page}
+  </RedirectIfNotLoggedIn>
+);
 
 export default CreateProgramPage;

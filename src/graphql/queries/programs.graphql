@@ -1,0 +1,13 @@
+query getProgramBySlug($slug: String) {
+  getProgramBySlug(slug: $slug) {
+    programId
+    slug
+    
+  }
+}
+
+mutation createUser($data: CreateUserInput!) {
+  createUser(data: $data) {
+    userId
+  }
+}
