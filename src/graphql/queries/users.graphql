@@ -13,5 +13,13 @@ query getMyUser {
     firstName
     lastName
     profilePictureUrl
+    profiles {
+      profileType
+      program {
+        name
+        iconUrl
+        slug
+      }
+    }
   }
 }

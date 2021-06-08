@@ -1,4 +1,9 @@
-import { ApolloClient, concat, InMemoryCache } from "@apollo/client";
+import {
+  ApolloClient,
+  concat,
+  InMemoryCache,
+  NormalizedCacheObject,
+} from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { ApolloProvider } from "@apollo/client/react";
 import { createUploadLink } from "apollo-upload-client";
@@ -30,6 +35,17 @@ const client = new ApolloClient({
   link: concat(authLink, uploadLink),
   cache: new InMemoryCache(),
 });
+
+export const getApolloClient = (
+  _: any,
+  initialState?: NormalizedCacheObject
+) => {
+  const cache = new InMemoryCache().restore(initialState || {});
+  return new ApolloClient({
+    link: concat(authLink, uploadLink),
+    cache,
+  });
+};
 
 type CustomAppProps = AppProps & {
   Component: Page;

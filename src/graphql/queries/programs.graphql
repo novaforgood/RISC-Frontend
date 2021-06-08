@@ -1,7 +1,11 @@
 query getProgramBySlug($slug: String!) {
   getProgramBySlug(slug: $slug) {
     programId
+    name
+    description
     slug
+    iconUrl
+    homepage
   }
 }
 

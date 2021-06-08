@@ -1,4 +1,3 @@
-import type { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -191,17 +190,3 @@ const SignUpPage = () => {
 };
 
 export default SignUpPage;
-
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  res.setHeader(
-    "Cache-Control",
-    "public, s-maxage=1, stale-while-revalidate=59"
-  );
-  console.log(req.headers);
-
-  return {
-    props: {
-      host: req.headers.host,
-    },
-  };
-};

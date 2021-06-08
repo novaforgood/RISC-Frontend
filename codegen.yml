@@ -7,3 +7,14 @@ generates:
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
+  src/generated/page.tsx:
+    config:
+      reactApolloVersion: 3
+      documentMode: external
+      importDocumentNodeExternallyFrom: "./graphql"
+      apolloClientInstanceImport: "../pages/_app"
+    preset: import-types
+    presetConfig:
+      typesPath: "./graphql"
+    plugins:
+      - "graphql-codegen-apollo-next-ssr"
