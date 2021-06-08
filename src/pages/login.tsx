@@ -23,6 +23,14 @@ const LoginPage = () => {
   const [displayError, setError] = useState("");
   const router = useRouter();
 
+  const redirectAfterLoggingIn = () => {
+    if (router.query.to && typeof router.query.to === "string") {
+      router.push(router.query.to);
+    } else {
+      router.push("/");
+    }
+  };
+
   return (
     <div className="flex w-screen min-h-screen relative">
       <img
@@ -51,7 +59,7 @@ const LoginPage = () => {
               signInWithGoogle()
                 .catch((e) => setError(e.message))
                 .then((_) => {
-                  router.push("/");
+                  redirectAfterLoggingIn();
                 })
             }
             className="h-16 w-full bg-tertiary flex items-center justify-center cursor-pointer"
@@ -109,7 +117,7 @@ const LoginPage = () => {
                   setError(error.message);
                 })
                 .then((_) => {
-                  router.push("/");
+                  redirectAfterLoggingIn();
                 });
             }}
           >
@@ -119,11 +127,6 @@ const LoginPage = () => {
           <Text className="text-error">
             {displayError + "TODO: Proper error box"}
           </Text>
-          {/* {auth ? (
-            <button onClick={() => signOut()}>Sign Out</button>
-          ) : (
-            <button>Sign In</button>
-          )} */}
         </div>
       </div>
     </div>
