@@ -1,8 +1,7 @@
-query getProgramBySlug($slug: String) {
+query getProgramBySlug($slug: String!) {
   getProgramBySlug(slug: $slug) {
     programId
     slug
-    
   }
 }
 
