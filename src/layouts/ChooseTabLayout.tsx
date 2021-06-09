@@ -1,7 +1,12 @@
 import { useRouter } from "next/router";
 import React, { Fragment } from "react";
-import { parseParam } from "../utils";
-import { AuthorizationLevel, useAuth } from "../utils/firebase/auth";
+import { useGetMyUserQuery } from "../generated/graphql";
+import {
+  AuthorizationLevel,
+  getAuthorizationLevel,
+  parseParam,
+} from "../utils";
+import { useAuth } from "../utils/firebase/auth";
 import { AdminTabLayout, MenteeTabLayout, MentorTabLayout } from "./TabLayout";
 import { BaseTabLayoutProps } from "./TabLayout/TabLayout";
 
@@ -34,21 +39,19 @@ interface ChooseTabLayoutProps {
   children: React.ReactNode;
 }
 const ChooseTabLayout = ({ children }: ChooseTabLayoutProps) => {
-  const { getAuthorizationLevel, loading } = useAuth();
+  const { user } = useAuth();
+
   const router = useRouter();
-
-  if (loading) return <Fragment />;
-
+  const { data: myUserData } = useGetMyUserQuery();
   const slug = parseParam(router.query?.slug);
-  const authorizationLevel = getAuthorizationLevel(slug);
 
+  const authorizationLevel = getAuthorizationLevel(user, myUserData, slug);
+
+  console.log(authorizationLevel);
   const TabLayout = getTabLayout(authorizationLevel);
 
-  if (loading) return <Fragment />;
-  return (
-    <Fragment>
-      <TabLayout basePath={`/program/${slug}`}>{children}</TabLayout>
-    </Fragment>
-  );
+  console.log(slug);
+
+  return <TabLayout basePath={`/program/${slug}`}>{children}</TabLayout>;
 };
 export default ChooseTabLayout;
