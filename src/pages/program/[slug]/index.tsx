@@ -1,76 +1,34 @@
-import firebase from "firebase";
 import type { GetServerSideProps } from "next";
+import { useRouter } from "next/router";
 import React, { Fragment } from "react";
-import { Button, Text } from "../../../components/atomic";
-import { ProfileType, useGetUsersLazyQuery } from "../../../generated/graphql";
+import { Text } from "../../../components/atomic";
+import { useGetMyUserQuery } from "../../../generated/graphql";
 import {
   PageGetProgramBySlugComp,
   ssrGetProgramBySlug,
 } from "../../../generated/page";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
 import Page from "../../../types/Page";
-import { parseParam } from "../../../utils";
-import { useAuth, UserData } from "../../../utils/firebase/auth";
-
-type AuthorizationLevel =
-  | "unauthorized"
-  | "not-in-program"
-  | "mentee"
-  | "mentor"
-  | "admin";
-
-function getAuthorizationLevel(
-  user: firebase.User | null,
-  userData: UserData | undefined,
-  programID: string | undefined
-): AuthorizationLevel {
-  if (!user || !userData || !programID) return "unauthorized";
-
-  for (let profile of userData.getMyUser.profiles) {
-    if (profile.program.programId === programID) {
-      switch (profile.profileType) {
-        case ProfileType.Admin:
-          return "admin";
-        case ProfileType.Mentee:
-          return "mentee";
-        case ProfileType.Mentor:
-          return "mentor";
-      }
-    }
-  }
-
-  return "not-in-program";
-}
+import { getAuthorizationLevel, parseParam } from "../../../utils";
+import { useAuth } from "../../../utils/firebase/auth";
 
 const ProgramPage: PageGetProgramBySlugComp & Page = (props) => {
-  const [getUser, { data }] = useGetUsersLazyQuery();
-  const { user, signOut, userData, loading } = useAuth();
-
+  const { user, signOut, loading } = useAuth();
+  const { data: myUserData } = useGetMyUserQuery();
+  const router = useRouter();
   if (loading) return <Fragment />;
 
   const authorizationLevel = getAuthorizationLevel(
     user,
-    userData,
-    props.data?.getProgramBySlug.programId
+    myUserData,
+    parseParam(router.query.slug)
   );
 
   const program = props.data?.getProgramBySlug;
   console.log(props);
 
   return (
-    <>
-      <Button
-        size="medium"
-        variant="solid"
-        onClick={() => {
-          getUser();
-          console.log("hi");
-          console.log(data);
-        }}
-      >
-        Get users
-      </Button>
-      <p>{JSON.stringify(data)}</p>
+    <div className="h-screen w-full">
       <a href="/create">Create Program</a>
       <div className="p-4">
         <div>
@@ -82,10 +40,10 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props) => {
           </div>
         </div>
 
-        {userData && (
+        {myUserData && (
           <div>
             <div>USER DATA</div>
-            <div>{JSON.stringify(userData)}</div>
+            <div>{JSON.stringify(myUserData)}</div>
           </div>
         )}
       </div>
@@ -95,7 +53,7 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props) => {
       ) : (
         <a href="/login">Log In</a>
       )}
-    </>
+    </div>
   );
 };
 
@@ -108,10 +66,11 @@ ProgramPage.getLayout = (page, pageProps) => (
 // TODO: Extract this function because it'll probably be reused
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const slug = parseParam(ctx.params?.slug);
-  const apolloProps = await ssrGetProgramBySlug.getServerPage(
-    { variables: { slug: slug } },
-    ctx
-  );
+  const apolloProps = await ssrGetProgramBySlug
+    .getServerPage({ variables: { slug: slug } }, ctx)
+    .catch((_) => {
+      return { props: {} };
+    });
 
   return apolloProps;
 };

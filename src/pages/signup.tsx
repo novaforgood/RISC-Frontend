@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { Button, Text } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
-import { CreateUserInput } from "../generated/graphql";
+import { CreateUserInput, useCreateUserMutation } from "../generated/graphql";
 import { useAuth } from "../utils/firebase/auth";
 
 const BlobCircle = () => {
@@ -18,13 +18,14 @@ const BlobCircle = () => {
 };
 
 const SignUpPage = () => {
-  const { signUpWithEmail, signInWithGoogle, createUserInDb } = useAuth();
+  const { signUpWithEmail, signInWithGoogle } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [displayError, setError] = useState("");
   const router = useRouter();
+  const [createUser] = useCreateUserMutation();
 
   return (
     <div className="flex w-screen min-h-screen">
@@ -62,9 +63,11 @@ const SignUpPage = () => {
                       lastName: arr[1] || "",
                       profilePictureUrl: "",
                     };
-                    createUserInDb(createUserInput).then(() => {
-                      router.push("/");
-                    });
+                    createUser({ variables: { data: createUserInput } }).then(
+                      () => {
+                        router.push("/");
+                      }
+                    );
                   }
                 })
             }
@@ -158,7 +161,7 @@ const SignUpPage = () => {
                       profilePictureUrl: "",
                     };
                     Promise.all([
-                      createUserInDb(createUserInput),
+                      createUser({ variables: { data: createUserInput } }),
                       res.user?.updateProfile({
                         displayName: firstName + " " + lastName,
                         photoURL: "",

@@ -1,6 +1,6 @@
 import {
   ApolloClient,
-  concat,
+  from,
   InMemoryCache,
   NormalizedCacheObject,
 } from "@apollo/client";
@@ -10,7 +10,7 @@ import { createUploadLink } from "apollo-upload-client";
 import { AppProps } from "next/app";
 import { ReactElement } from "react";
 import "tailwindcss/tailwind.css";
-import GuaranteeUserData from "../layouts/GuaranteeUserData";
+import GuaranteeMyUserData from "../layouts/GuaranteeMyUserData";
 import Page from "../types/Page";
 import "tailwindcss/tailwind.css";
 import { AuthProvider } from "../utils/firebase/auth";
@@ -31,8 +31,8 @@ const authLink = setContext(async (_, { headers, ...context }) => {
   };
 });
 
-const client = new ApolloClient({
-  link: concat(authLink, uploadLink),
+export const client = new ApolloClient({
+  link: from([authLink, uploadLink]),
   cache: new InMemoryCache(),
 });
 
@@ -42,7 +42,7 @@ export const getApolloClient = (
 ) => {
   const cache = new InMemoryCache().restore(initialState || {});
   return new ApolloClient({
-    link: concat(authLink, uploadLink),
+    link: from([authLink, uploadLink]),
     cache,
   });
 };
@@ -57,9 +57,9 @@ function MyApp({ Component, pageProps }: CustomAppProps) {
   return (
     <ApolloProvider client={client}>
       <AuthProvider>
-        <GuaranteeUserData>
+        <GuaranteeMyUserData>
           {getLayout(<Component {...pageProps} />, pageProps)}
-        </GuaranteeUserData>
+        </GuaranteeMyUserData>
       </AuthProvider>
       <script> </script>
     </ApolloProvider>

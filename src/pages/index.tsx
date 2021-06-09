@@ -1,15 +1,17 @@
 import React from "react";
 import { Button } from "../components/atomic";
-import { useGetUsersLazyQuery } from "../generated/graphql";
+import { useGetUsersLazyQuery, useGetUsersQuery } from "../generated/graphql";
 import { PageGetProgramBySlugComp } from "../generated/page";
 import { useAuth } from "../utils/firebase/auth";
 
 const IndexPage: PageGetProgramBySlugComp = (props) => {
   const [getUser, { data }] = useGetUsersLazyQuery();
-  const { user, signOut, userData } = useAuth();
+  const { user, signOut } = useAuth();
+
+  const { data: myUserData } = useGetUsersQuery();
 
   console.log(props);
-  console.log(userData);
+  console.log(myUserData);
   return (
     <>
       <Button
@@ -25,7 +27,7 @@ const IndexPage: PageGetProgramBySlugComp = (props) => {
       </Button>
       <p>{JSON.stringify(data)}</p>
       <a href="/create">Create Program</a>
-      {userData && <p>USER DATA: {JSON.stringify(userData)}</p>}
+      {myUserData && <p>USER DATA: {JSON.stringify(myUserData)}</p>}
       {user ? <p>Hi, {user.displayName}</p> : <p>Join us!</p>}
       {user ? (
         <button onClick={() => signOut()}>Sign Out</button>
@@ -40,6 +42,7 @@ export default IndexPage;
 
 // We're no longer using subdomains for v2, but keep this around for
 // future use.
+
 // function extractSubdomain(hostname: string | undefined) {
 //   if (!hostname) return "";
 //   let arr = hostname.split(".");
