@@ -4,12 +4,19 @@ import {
   CreateUserInput,
   CreateUserMutation,
   GetMyUserQuery,
+  ProfileType,
   useCreateUserMutation,
   useGetMyUserLazyQuery,
 } from "../../generated/graphql";
 import firebase from "./firebase";
 
 export type UserData = GetMyUserQuery;
+export type AuthorizationLevel =
+  | "unauthorized"
+  | "not-in-program"
+  | "mentee"
+  | "mentor"
+  | "admin";
 
 interface AuthContext {
   user: firebase.User | null;
@@ -28,6 +35,7 @@ interface AuthContext {
   createUserInDb: (
     createUserInput: CreateUserInput
   ) => Promise<FetchResult<CreateUserMutation>>;
+  getAuthorizationLevel: (programSlug: string) => AuthorizationLevel;
 }
 
 const authContext = createContext<AuthContext | undefined>(undefined);
@@ -35,19 +43,25 @@ const authContext = createContext<AuthContext | undefined>(undefined);
 function useProvideAuth() {
   const [user, setUser] = useState<firebase.User | null>(null);
   const [loadingUser, setLoadingUser] = useState(true);
-  const [loadingUserData, setLoadingUserData] = useState(true);
+  const [loadingUserData, setLoadingUserData] = useState(false);
   const loading = loadingUser || loadingUserData;
   const [createUser] = useCreateUserMutation();
 
-  const [getMyUser, { data: userData }] = useGetMyUserLazyQuery({
+  const [_getMyUser, { data: userData }] = useGetMyUserLazyQuery({
     onCompleted: () => {
       setLoadingUserData(false);
     },
+    onError: () => {
+      setLoadingUserData(false);
+    },
   });
+  const getMyUser = () => {
+    setLoadingUserData(true);
+    _getMyUser();
+  };
 
   const signUpWithEmail = async (email: string, password: string) => {
     setLoadingUser(true);
-    setLoadingUserData(true);
     return firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
@@ -56,7 +70,6 @@ function useProvideAuth() {
 
   const signInWithEmail = async (email: string, password: string) => {
     setLoadingUser(true);
-    setLoadingUserData(true);
     return firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
@@ -65,7 +78,6 @@ function useProvideAuth() {
 
   const signInWithGoogle = async () => {
     setLoadingUser(true);
-    setLoadingUserData(true);
     return firebase
       .auth()
       .signInWithPopup(new firebase.auth.GoogleAuthProvider())
@@ -86,6 +98,24 @@ function useProvideAuth() {
     });
   };
 
+  const getAuthorizationLevel = (programSlug: string) => {
+    if (!user || !userData) return "unauthorized";
+
+    for (let profile of userData.getMyUser.profiles) {
+      if (profile.program.slug === programSlug) {
+        switch (profile.profileType) {
+          case ProfileType.Admin:
+            return "admin";
+          case ProfileType.Mentee:
+            return "mentee";
+          case ProfileType.Mentor:
+            return "mentor";
+        }
+      }
+    }
+    return "not-in-program";
+  };
+
   useEffect(() => {
     const unsubscribe = firebase
       .auth()
@@ -101,12 +131,13 @@ function useProvideAuth() {
 
   return {
     user, // Firebase User
-    loading, // True if user and userData are both loaded
+    loading, // True if user and userData are both loading
     signUpWithEmail,
     signInWithEmail,
     signInWithGoogle,
     signOut,
     createUserInDb,
+    getAuthorizationLevel,
     userData, // User object from database
   };
 }

@@ -3,6 +3,8 @@ schema: ${NEXT_PUBLIC_API_URL}
 documents: "src/graphql/**/*.graphql"
 generates:
   src/generated/graphql.tsx:
+    config:
+      withRefetchFn: false
     plugins:
       - "typescript"
       - "typescript-operations"

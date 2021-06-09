@@ -1,13 +1,16 @@
 import firebase from "firebase";
 import type { GetServerSideProps } from "next";
 import React, { Fragment } from "react";
-import { Button } from "../../components/atomic";
-import { ProfileType, useGetUsersLazyQuery } from "../../generated/graphql";
+import { Button, Text } from "../../../components/atomic";
+import { ProfileType, useGetUsersLazyQuery } from "../../../generated/graphql";
 import {
   PageGetProgramBySlugComp,
   ssrGetProgramBySlug,
-} from "../../generated/page";
-import { useAuth, UserData } from "../../utils/firebase/auth";
+} from "../../../generated/page";
+import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
+import Page from "../../../types/Page";
+import { parseParam } from "../../../utils";
+import { useAuth, UserData } from "../../../utils/firebase/auth";
 
 type AuthorizationLevel =
   | "unauthorized"
@@ -39,7 +42,7 @@ function getAuthorizationLevel(
   return "not-in-program";
 }
 
-const IndexPage: PageGetProgramBySlugComp = (props) => {
+const ProgramPage: PageGetProgramBySlugComp & Page = (props) => {
   const [getUser, { data }] = useGetUsersLazyQuery();
   const { user, signOut, userData, loading } = useAuth();
 
@@ -51,7 +54,8 @@ const IndexPage: PageGetProgramBySlugComp = (props) => {
     props.data?.getProgramBySlug.programId
   );
 
-  console.log(authorizationLevel);
+  const program = props.data?.getProgramBySlug;
+  console.log(props);
 
   return (
     <>
@@ -68,7 +72,23 @@ const IndexPage: PageGetProgramBySlugComp = (props) => {
       </Button>
       <p>{JSON.stringify(data)}</p>
       <a href="/create">Create Program</a>
-      {userData && <p>USER DATA: {JSON.stringify(userData)}</p>}
+      <div className="p-4">
+        <div>
+          <div>
+            <Text h2>Program: [{program?.name}]</Text>
+          </div>
+          <div>
+            <Text b>Authorization Level: [{authorizationLevel}]</Text>
+          </div>
+        </div>
+
+        {userData && (
+          <div>
+            <div>USER DATA</div>
+            <div>{JSON.stringify(userData)}</div>
+          </div>
+        )}
+      </div>
       {user ? <p>Hi, {user.displayName}</p> : <p>Join us!</p>}
       {user ? (
         <button onClick={() => signOut()}>Sign Out</button>
@@ -79,20 +99,19 @@ const IndexPage: PageGetProgramBySlugComp = (props) => {
   );
 };
 
-export default IndexPage;
+export default ProgramPage;
 
-function getProgramSlug(slug: string | string[] | undefined) {
-  if (!slug || typeof slug !== "string") {
-    return "";
-  } else {
-    return slug;
-  }
-}
+ProgramPage.getLayout = (page, pageProps) => (
+  <ChooseTabLayout {...pageProps}>{page}</ChooseTabLayout>
+);
 
+// TODO: Extract this function because it'll probably be reused
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const slug = getProgramSlug(ctx.params?.slug);
-  return await ssrGetProgramBySlug.getServerPage(
+  const slug = parseParam(ctx.params?.slug);
+  const apolloProps = await ssrGetProgramBySlug.getServerPage(
     { variables: { slug: slug } },
     ctx
   );
+
+  return apolloProps;
 };

@@ -4,6 +4,7 @@ import { Button, Input, Text } from "../components/atomic";
 import {
   CreateProgramInput,
   useCreateProgramMutation,
+  useGetMyUserLazyQuery,
 } from "../generated/graphql";
 import RedirectIfNotLoggedIn from "../layouts/RedirectIfNotLoggedIn";
 import Page from "../types/Page";
@@ -30,6 +31,7 @@ const CreateProgramPage: Page = () => {
   const [displayError, setError] = useState(""); // TODO: Proper error box
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const [, { refetch: refetchMyUser }] = useGetMyUserLazyQuery();
 
   const validateProgramName = (name: string) => {
     // check string is not whitespace; can ask product for more constraints on names
@@ -54,11 +56,16 @@ const CreateProgramPage: Page = () => {
       public: true,
     };
     return createProgram({ variables: { data: createProgramInput } })
-      .then((res) => {
+      .then(async (res) => {
         if (res) {
-          router.push(
-            `http://${res.data?.createProgram.slug}.${window.location.host}`
-          );
+          console.log(refetchMyUser);
+          if (refetchMyUser) await refetchMyUser();
+          router.push(`/program/${res.data?.createProgram.slug}`);
+
+          // If we use subdomains
+          // router.push(
+          //   `http://${res.data?.createProgram.slug}.${window.location.host}`
+          // );
         } else {
           throw { message: "Failed to retrieve created program's subdomain" };
         }
@@ -220,7 +227,7 @@ const CreateProgramPage: Page = () => {
   );
 };
 
-CreateProgramPage.getLayout = (page) => (
+CreateProgramPage.getLayout = (page, _) => (
   <RedirectIfNotLoggedIn pathAfterLoggingIn="/create">
     {page}
   </RedirectIfNotLoggedIn>

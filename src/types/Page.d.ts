@@ -1,8 +1,13 @@
 import { NextPage } from "next";
-import { ReactElement, ReactNode } from "react";
+import { ReactElement } from "react";
 
-type Page<P = {}> = NextPage<P> & {
-  getLayout?: (page: ReactElement) => ReactNode;
+type PageProps = any & { error?: Error; apollo?: any };
+
+type Page<P = {}> = NextPage<PageProps & P> & {
+  getLayout?: (
+    page: ReactElement<PageProps>,
+    pageProps: PageProps
+  ) => ReactNode;
 };
 
 export default Page;

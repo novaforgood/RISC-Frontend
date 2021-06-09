@@ -58,7 +58,7 @@ function MyApp({ Component, pageProps }: CustomAppProps) {
     <ApolloProvider client={client}>
       <AuthProvider>
         <GuaranteeUserData>
-          {getLayout(<Component {...pageProps} />)}
+          {getLayout(<Component {...pageProps} />, pageProps)}
         </GuaranteeUserData>
       </AuthProvider>
       <script> </script>
