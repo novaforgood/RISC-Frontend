@@ -10,7 +10,7 @@ import { useAuth } from "../utils/firebase/auth";
 import { AdminTabLayout, MenteeTabLayout, MentorTabLayout } from "./TabLayout";
 import { BaseTabLayoutProps } from "./TabLayout/TabLayout";
 
-const UnauthorizedTabLayout: React.FC = ({ children }) => {
+const UnauthenticatedTabLayout: React.FC = ({ children }) => {
   return <Fragment>{children}</Fragment>;
 };
 
@@ -22,15 +22,15 @@ function getTabLayout(
   authLevel: AuthorizationLevel
 ): React.FC<BaseTabLayoutProps> {
   switch (authLevel) {
-    case "mentor":
+    case AuthorizationLevel.Mentor:
       return MentorTabLayout;
-    case "mentee":
+    case AuthorizationLevel.Mentee:
       return MenteeTabLayout;
-    case "admin":
+    case AuthorizationLevel.Admin:
       return AdminTabLayout;
-    case "unauthorized":
-      return UnauthorizedTabLayout;
-    case "not-in-program":
+    case AuthorizationLevel.Unauthenticated:
+      return UnauthenticatedTabLayout;
+    case AuthorizationLevel.NotInProgram:
       return NotInProgramTabLayout;
   }
 }
