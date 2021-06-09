@@ -42,6 +42,24 @@ const Arrow: React.FC<ArrowProps> = ({ down }) => {
   );
 };
 
+export interface BaseTabLayoutProps {
+  basePath: string;
+}
+
+export function joinPath(...args: string[]): string {
+  return args
+    .map((part, i) => {
+      if (!part) return "";
+      if (i === 0) {
+        return part.trim().replace(/[\/]*$/g, "");
+      } else {
+        return part.trim().replace(/(^[\/]*|[\/]*$)/g, "");
+      }
+    })
+    .filter((x) => x.length)
+    .join("/");
+}
+
 interface TabLayoutProps {
   currentPageChildren: ReactNode;
 }
