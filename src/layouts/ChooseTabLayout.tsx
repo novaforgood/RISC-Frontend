@@ -1,12 +1,10 @@
 import { useRouter } from "next/router";
 import React, { Fragment } from "react";
-import { useGetMyUserQuery } from "../generated/graphql";
 import {
   AuthorizationLevel,
-  getAuthorizationLevel,
   parseParam,
+  useAuthorizationLevel,
 } from "../utils";
-import { useAuth } from "../utils/firebase/auth";
 import { AdminTabLayout, MenteeTabLayout, MentorTabLayout } from "./TabLayout";
 import { BaseTabLayoutProps } from "./TabLayout/TabLayout";
 
@@ -39,14 +37,10 @@ interface ChooseTabLayoutProps {
   children: React.ReactNode;
 }
 const ChooseTabLayout = ({ children }: ChooseTabLayoutProps) => {
-  const { user } = useAuth();
-
-  const { data: myUserData } = useGetMyUserQuery({ skip: !user });
-
   const router = useRouter();
   const slug = parseParam(router.query?.slug);
 
-  const authorizationLevel = getAuthorizationLevel(user, myUserData, slug);
+  const authorizationLevel = useAuthorizationLevel();
 
   const TabLayout = getTabLayout(authorizationLevel);
 
