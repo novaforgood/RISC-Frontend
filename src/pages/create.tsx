@@ -4,10 +4,11 @@ import { Button, Input, Text } from "../components/atomic";
 import {
   CreateProgramInput,
   useCreateProgramMutation,
-  useGetMyUserLazyQuery,
+  useGetMyUserQuery,
 } from "../generated/graphql";
 import RedirectIfNotLoggedIn from "../layouts/RedirectIfNotLoggedIn";
 import Page from "../types/Page";
+import { useAuth } from "../utils/firebase/auth";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24 md:h-64 md:w-64 lg:h-80 lg:w-80";
@@ -30,7 +31,8 @@ const CreateProgramPage: Page = () => {
   const [displayError, setError] = useState(""); // TODO: Proper error box
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const [, { refetch: refetchMyUser }] = useGetMyUserLazyQuery();
+  const { user } = useAuth();
+  const { refetch: refetchMyUser } = useGetMyUserQuery({ skip: !user });
 
   const validateProgramName = (name: string) => {
     // check string is not whitespace; can ask product for more constraints on names
