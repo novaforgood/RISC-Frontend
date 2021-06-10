@@ -14,7 +14,7 @@ import { useAuth } from "../../../utils/firebase/auth";
 
 const ProgramPage: PageGetProgramBySlugComp & Page = (props) => {
   const { user, signOut, loading } = useAuth();
-  const { data: myUserData } = useGetMyUserQuery();
+  const { data: myUserData } = useGetMyUserQuery({ skip: !user });
   const router = useRouter();
   if (loading) return <Fragment />;
 
@@ -25,7 +25,6 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props) => {
   );
 
   const program = props.data?.getProgramBySlug;
-  console.log(props);
 
   return (
     <div className="h-screen w-full">

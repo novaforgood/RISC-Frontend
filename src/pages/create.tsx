@@ -58,7 +58,6 @@ const CreateProgramPage: Page = () => {
     return createProgram({ variables: { data: createProgramInput } })
       .then(async (res) => {
         if (res) {
-          console.log(refetchMyUser);
           if (refetchMyUser) await refetchMyUser();
           router.push(`/program/${res.data?.createProgram.slug}`);
 
@@ -70,7 +69,11 @@ const CreateProgramPage: Page = () => {
           throw { message: "Failed to retrieve created program's subdomain" };
         }
       })
-      .catch((err) => setError("Error: " + err.message))
+      .catch((err) => {
+        if (err.message.includes("duplicate key value violates unique"))
+          setError(`Error: Slug "${programIdentifier}" already exists`);
+        else setError("Error: " + err.message);
+      })
       .finally(() => {
         setLoading(false);
       });

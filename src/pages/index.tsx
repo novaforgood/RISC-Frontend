@@ -1,36 +1,28 @@
 import React from "react";
-import { Button } from "../components/atomic";
-import { useGetUsersLazyQuery, useGetUsersQuery } from "../generated/graphql";
+import { useGetMyUserQuery } from "../generated/graphql";
 import { PageGetProgramBySlugComp } from "../generated/page";
 import { useAuth } from "../utils/firebase/auth";
 
-const IndexPage: PageGetProgramBySlugComp = (props) => {
-  const [getUser, { data }] = useGetUsersLazyQuery();
+const IndexPage: PageGetProgramBySlugComp = (_) => {
   const { user, signOut } = useAuth();
+  const { data: myUserData } = useGetMyUserQuery({ skip: !user });
 
-  const { data: myUserData } = useGetUsersQuery();
-
-  console.log(props);
-  console.log(myUserData);
   return (
     <>
-      <Button
-        size="medium"
-        variant="solid"
-        onClick={() => {
-          getUser();
-          console.log("hi");
-          console.log(data);
-        }}
-      >
-        Get users
-      </Button>
-      <p>{JSON.stringify(data)}</p>
       <a href="/create">Create Program</a>
-      {myUserData && <p>USER DATA: {JSON.stringify(myUserData)}</p>}
+      <div className="h-4"></div>
+      <div>{JSON.stringify(myUserData)}</div>
+      <div className="h-4"></div>
+
       {user ? <p>Hi, {user.displayName}</p> : <p>Join us!</p>}
       {user ? (
-        <button onClick={() => signOut()}>Sign Out</button>
+        <button
+          onClick={() => {
+            signOut();
+          }}
+        >
+          Sign Out
+        </button>
       ) : (
         <a href="/login">Log In</a>
       )}

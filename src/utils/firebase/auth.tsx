@@ -53,6 +53,7 @@ function useProvideAuth() {
       .signOut()
       .then(() => {
         client.resetStore();
+        setUser(null);
         setLoading(false);
       });
   };
