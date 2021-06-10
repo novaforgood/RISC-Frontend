@@ -42,15 +42,12 @@ const ChooseTabLayout = ({ children }: ChooseTabLayoutProps) => {
   const { user } = useAuth();
 
   const router = useRouter();
-  const { data: myUserData } = useGetMyUserQuery();
+  const { data: myUserData } = useGetMyUserQuery({ skip: !user });
   const slug = parseParam(router.query?.slug);
 
   const authorizationLevel = getAuthorizationLevel(user, myUserData, slug);
 
-  console.log(authorizationLevel);
   const TabLayout = getTabLayout(authorizationLevel);
-
-  console.log(slug);
 
   return <TabLayout basePath={`/program/${slug}`}>{children}</TabLayout>;
 };

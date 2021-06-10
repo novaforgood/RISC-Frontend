@@ -1,21 +1,23 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, ReactNode, useEffect } from "react";
 import { useCreateUserMutation, useGetMyUserQuery } from "../generated/graphql";
 import { useAuth } from "../utils/firebase/auth";
 
-/**
- * If user is authenticated but there's no User table entry,
- * mirror Firebase data to the database
- */
+interface GuaranteeMyUserDataProps {
+  children: ReactNode;
+}
 
-interface GuaranteeUserDataProps {}
-
-const GuaranteeUserData: React.FC<GuaranteeUserDataProps> = ({ children }) => {
-  const { user, loading } = useAuth();
-  const { data: myUserData } = useGetMyUserQuery();
+const GuaranteeMyUserData = ({ children }: GuaranteeMyUserDataProps) => {
+  const { user } = useAuth();
+  const { data: myUserData } = useGetMyUserQuery({ skip: !user });
   const [createUser] = useCreateUserMutation();
 
   useEffect(() => {
     if (user && !myUserData) {
+      /**
+       * If user is authenticated but there's no User table entry,
+       * mirror Firebase data to the database
+       */
+      console.log("GuaranteeMyUserData fired");
       const arr = user.displayName?.split(" ") || [];
       createUser({
         variables: {
@@ -31,8 +33,6 @@ const GuaranteeUserData: React.FC<GuaranteeUserDataProps> = ({ children }) => {
     return () => {};
   }, [user, myUserData]);
 
-  if (loading) return <Fragment />;
-
   return <Fragment>{children}</Fragment>;
 };
-export default GuaranteeUserData;
+export default GuaranteeMyUserData;

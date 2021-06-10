@@ -19,11 +19,11 @@ const BlobCircle = () => {
 
 const SignUpPage = () => {
   const { signUpWithEmail, signInWithGoogle } = useAuth();
+  const [displayError, setDisplayError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [displayError, setError] = useState("");
   const router = useRouter();
   const [createUser] = useCreateUserMutation();
 
@@ -53,7 +53,6 @@ const SignUpPage = () => {
           <button
             onClick={() =>
               signInWithGoogle()
-                .catch((e) => setError(e.message))
                 .then((res) => {
                   if (res) {
                     const arr = res.user?.displayName?.split(" ") || [];
@@ -69,6 +68,9 @@ const SignUpPage = () => {
                       }
                     );
                   }
+                })
+                .catch((e) => {
+                  setDisplayError(e.message);
                 })
             }
             className="h-16 w-full bg-tertiary flex items-center justify-center cursor-pointer"
@@ -148,8 +150,8 @@ const SignUpPage = () => {
           <Button
             onClick={() => {
               signUpWithEmail(email, password)
-                .catch((error) => {
-                  setError(error.message);
+                .catch((e) => {
+                  setDisplayError(e.message);
                 })
                 .then((res) => {
                   // TODO: Valid profilePictureURL and photoURL
@@ -160,15 +162,20 @@ const SignUpPage = () => {
                       lastName: lastName,
                       profilePictureUrl: "",
                     };
+
                     Promise.all([
                       createUser({ variables: { data: createUserInput } }),
                       res.user?.updateProfile({
                         displayName: firstName + " " + lastName,
                         photoURL: "",
                       }),
-                    ]).then(() => {
-                      router.push("/");
-                    });
+                    ])
+                      .then(() => {
+                        router.push("/");
+                      })
+                      .catch((e) => {
+                        setDisplayError(e.message);
+                      });
                   }
                 });
             }}
@@ -178,7 +185,7 @@ const SignUpPage = () => {
           <div className="h-6" />
 
           <Text className="text-error">
-            {displayError + "TODO: Proper error box"}
+            {displayError ? displayError : "TODO: Proper error box"}
           </Text>
 
           {/* {auth ? (
