@@ -4,21 +4,17 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { Text } from "../../components/atomic";
-import {
-  useGetMyUserQuery,
-  useGetProgramBySlugQuery,
-} from "../../generated/graphql";
+import { useGetProgramBySlugQuery } from "../../generated/graphql";
+import { useMyUserData } from "../../hooks";
 import { parseParam } from "../../utils";
-import { useAuth } from "../../utils/firebase/auth";
 
 const ProgramDropdown = () => {
-  const { user } = useAuth();
   const router = useRouter();
   const slug = parseParam(router.query?.slug);
   const { data: programData } = useGetProgramBySlugQuery({
     variables: { slug: slug },
   });
-  const { data: myUserData } = useGetMyUserQuery({ skip: !user });
+  const { myUserData } = useMyUserData();
   const currentProgram = programData?.getProgramBySlug;
   return (
     <div>
@@ -48,7 +44,7 @@ const ProgramDropdown = () => {
             className="absolute -right-12 w-64 mt-1 origin-top-right bg-white rounded-md 
             shadow-lg ring-1 ring-primary ring-opacity-5 focus:outline-none"
           >
-            {myUserData?.getMyUser.profiles.map((profile, i) => {
+            {myUserData?.profiles.map((profile, i) => {
               const { program } = profile;
               const active = program.programId === currentProgram?.programId;
               const styles = classNames({
