@@ -10,7 +10,7 @@ import { ApolloProvider } from "@apollo/client/react";
 import { createUploadLink } from "apollo-upload-client";
 import { AppProps } from "next/app";
 import { ReactElement } from "react";
-import "tailwindcss/tailwind.css";
+import "../styles/tailwind.css";
 import Page from "../types/Page";
 import "tailwindcss/tailwind.css";
 import { AuthProvider } from "../utils/firebase/auth";
