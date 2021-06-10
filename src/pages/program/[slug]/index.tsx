@@ -1,19 +1,19 @@
 import type { GetServerSideProps } from "next";
 import React, { Fragment } from "react";
 import { Text } from "../../../components/atomic";
-import { useGetMyUserQuery } from "../../../generated/graphql";
 import {
   PageGetProgramBySlugComp,
   ssrGetProgramBySlug,
 } from "../../../generated/page";
+import { useAuthorizationLevel, useMyUserData } from "../../../hooks";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
 import Page from "../../../types/Page";
-import { parseParam, useAuthorizationLevel } from "../../../utils";
+import { parseParam } from "../../../utils";
 import { useAuth } from "../../../utils/firebase/auth";
 
 const ProgramPage: PageGetProgramBySlugComp & Page = (props) => {
   const { user, signOut, loading } = useAuth();
-  const { data: myUserData } = useGetMyUserQuery({ skip: !user });
+  const { myUserData } = useMyUserData();
   const authorizationLevel = useAuthorizationLevel();
 
   if (loading) return <Fragment />;

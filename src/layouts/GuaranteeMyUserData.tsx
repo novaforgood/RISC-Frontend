@@ -1,5 +1,6 @@
 import React, { Fragment, ReactNode, useEffect } from "react";
-import { useCreateUserMutation, useGetMyUserQuery } from "../generated/graphql";
+import { useCreateUserMutation } from "../generated/graphql";
+import { useMyUserData } from "../hooks";
 import { useAuth } from "../utils/firebase/auth";
 
 interface GuaranteeMyUserDataProps {
@@ -8,7 +9,7 @@ interface GuaranteeMyUserDataProps {
 
 const GuaranteeMyUserData = ({ children }: GuaranteeMyUserDataProps) => {
   const { user } = useAuth();
-  const { data: myUserData } = useGetMyUserQuery({ skip: !user });
+  const { myUserData } = useMyUserData();
   const [createUser] = useCreateUserMutation();
 
   useEffect(() => {

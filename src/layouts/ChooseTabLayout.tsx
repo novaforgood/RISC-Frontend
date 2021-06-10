@@ -1,10 +1,7 @@
 import { useRouter } from "next/router";
 import React, { Fragment } from "react";
-import {
-  AuthorizationLevel,
-  parseParam,
-  useAuthorizationLevel,
-} from "../utils";
+import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";
+import { parseParam } from "../utils";
 import { AdminTabLayout, MenteeTabLayout, MentorTabLayout } from "./TabLayout";
 import { BaseTabLayoutProps } from "./TabLayout/TabLayout";
 

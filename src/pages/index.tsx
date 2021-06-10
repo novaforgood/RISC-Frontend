@@ -1,11 +1,11 @@
 import React from "react";
-import { useGetMyUserQuery } from "../generated/graphql";
 import { PageGetProgramBySlugComp } from "../generated/page";
+import { useMyUserData } from "../hooks";
 import { useAuth } from "../utils/firebase/auth";
 
 const IndexPage: PageGetProgramBySlugComp = (_) => {
   const { user, signOut } = useAuth();
-  const { data: myUserData } = useGetMyUserQuery({ skip: !user });
+  const { myUserData } = useMyUserData();
 
   return (
     <>
