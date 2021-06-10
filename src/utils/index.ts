@@ -1,5 +1,12 @@
 import firebase from "firebase";
-import { GetMyUserQuery, ProfileType } from "../generated/graphql";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import {
+  GetMyUserQuery,
+  ProfileType,
+  useGetMyUserQuery,
+} from "../generated/graphql";
+import { useAuth } from "./firebase/auth";
 
 export function parseParam(slug: string | string[] | undefined) {
   if (!slug || typeof slug !== "string") {
@@ -17,7 +24,7 @@ export enum AuthorizationLevel {
   NotInProgram = "NOTINPROGRAM,",
 }
 
-export const getAuthorizationLevel = (
+const getAuthorizationLevel = (
   user: firebase.User | null,
   myUserData: GetMyUserQuery | undefined,
   programSlug: string
@@ -37,4 +44,24 @@ export const getAuthorizationLevel = (
     }
   }
   return AuthorizationLevel.NotInProgram;
+};
+
+export const useAuthorizationLevel = () => {
+  const { user } = useAuth();
+  const { data: myUserData } = useGetMyUserQuery({ skip: !user });
+  const router = useRouter();
+  const [authLevel, setAuthLevel] = useState(
+    AuthorizationLevel.Unauthenticated
+  );
+
+  useEffect(() => {
+    if (user && myUserData && router) {
+      const slug = parseParam(router.query.slug);
+      console.log(user, myUserData, slug);
+      setAuthLevel(getAuthorizationLevel(user, myUserData, slug));
+    }
+    return () => {};
+  }, [myUserData, router, user]);
+
+  return authLevel;
 };
