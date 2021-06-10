@@ -41,8 +41,9 @@ interface ChooseTabLayoutProps {
 const ChooseTabLayout = ({ children }: ChooseTabLayoutProps) => {
   const { user } = useAuth();
 
-  const router = useRouter();
   const { data: myUserData } = useGetMyUserQuery({ skip: !user });
+
+  const router = useRouter();
   const slug = parseParam(router.query?.slug);
 
   const authorizationLevel = getAuthorizationLevel(user, myUserData, slug);

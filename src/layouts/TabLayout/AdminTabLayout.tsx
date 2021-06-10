@@ -18,7 +18,6 @@ const AdminTabLayout: React.FC<BaseTabLayoutProps> = ({
           path={joinPath(basePath, "mentors")}
         />
       </Dropdown>
-      <Separator />
     </TabLayout>
   );
 };

@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import React, { ReactNode, useEffect, useState } from "react";
 import { Text } from "../../components/atomic";
 import LocalStorage from "../../utils/localstorage";
+import ProgramDropdown from "./ProgramDropdown";
 
 interface ArrowProps {
   down: boolean;
@@ -63,7 +64,6 @@ export function joinPath(...args: string[]): string {
 interface TabLayoutProps {
   currentPageChildren: ReactNode;
 }
-
 const TabLayout: React.FC<TabLayoutProps> & {
   Separator: React.FC;
   Dropdown: React.FC<{ label: string; id: string }>;
@@ -75,11 +75,11 @@ const TabLayout: React.FC<TabLayoutProps> & {
 } = ({ children, currentPageChildren }) => {
   return (
     <div className="flex h-screen w-screen">
-      <div className="w-1/5 lg:w-1/6 bg-white shadow-lg overflow-x-hidden overflow-y-scroll">
-        <div className="whitespace-nowrap">Mentorship Name Placeholder</div>
-        {children}
+      <div className="w-60 flex-shrink-0 bg-white shadow-lg">
+        <ProgramDropdown />
+        <div className="overflow-y-scroll">{children}</div>
       </div>
-      <div className="w-4/5 lg:w-5/6 overflow-y-scroll overflow-x-hidden">
+      <div className="flex-grow overflow-y-scroll overflow-x-hidden">
         {currentPageChildren}
       </div>
     </div>
