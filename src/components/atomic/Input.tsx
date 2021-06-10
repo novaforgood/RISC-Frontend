@@ -1,5 +1,5 @@
-import React, { InputHTMLAttributes } from "react";
 import classNames from "classnames";
+import React, { InputHTMLAttributes } from "react";
 
 type InputProps = InputHTMLAttributes<HTMLInputElement>;
 
