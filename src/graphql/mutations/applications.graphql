@@ -1,0 +1,17 @@
+mutation createApplication($data: CreateApplicationInput!) {
+  createApplication(data: $data) {
+    applicationId
+  }
+}
+
+mutation acceptApplication($applicationId: String!) {
+  acceptApplication(applicationId: $applicationId) {
+    applicationId
+  }
+}
+
+mutation rejectApplication($applicationId: String!) {
+  rejectApplication(applicationId: $applicationId) {
+    applicationId
+  }
+}
