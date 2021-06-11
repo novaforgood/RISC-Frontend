@@ -45,6 +45,9 @@ module.exports = {
       boxShadow: {
         border: "0px 0px 2px 2px #BFBFBD, inset 0px 0px 2px 2px #BFBFBD",
       },
+      maxHeight: {
+        "3/4": "75%",
+      },
       spacing: {
         0.25: "0.0625rem",
         13.5: "3.375rem",

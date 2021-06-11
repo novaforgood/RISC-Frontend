@@ -3,13 +3,13 @@ import { EditorStateInterface, useEditor } from "./EditorContext";
 import { INLINE_STYLES, BLOCK_STYLES } from "./TextStyles";
 import classNames from "classnames";
 
-import { RichUtils } from "draft-js";
+import { EditorState, Modifier, RichUtils } from "draft-js";
 
 type UploadImageProps = {
   e: ChangeEvent<HTMLInputElement>;
 } & EditorStateInterface;
 
-type ButtonProps = HTMLAttributes<HTMLDivElement> & {
+type ButtonProps = HTMLAttributes<HTMLButtonElement> & {
   display: JSX.Element | string;
   type: string;
 };
@@ -27,7 +27,7 @@ const ToggleStyleButton = ({
     [`${className}`]: true,
   });
   return (
-    <div
+    <button
       {...props}
       className={styles}
       onMouseDown={(e) => {
@@ -36,7 +36,7 @@ const ToggleStyleButton = ({
       }}
     >
       {display}
-    </div>
+    </button>
   );
 };
 
@@ -58,7 +58,7 @@ const ToggleBlockButton = ({
     [`${className}`]: true,
   });
   return (
-    <div
+    <button
       {...props}
       className={styles}
       onMouseDown={(e) => {
@@ -67,9 +67,40 @@ const ToggleBlockButton = ({
       }}
     >
       {display}
-    </div>
+    </button>
   );
 };
+
+// const createLinkEntity = ({e, editorState, setEditorState, url}: ButtonProps) => {
+//   const contentState = editorState.getCurrentContent()
+//   const contentStateWithEntity = contentState.createEntity("LINK", "MUTABLE", {
+//     url,
+//   })
+//   const selection = editorState?.getSelection();
+
+//   const entityKey = contentStateWithEntity.getLastCreatedEntity();
+//   const contentStateWithLink = Modifier.applyEntity(
+//     contentStateWithEntity,
+//     selectionState,
+//     entityKey,
+//   )
+
+//   const newEditorState = EditorState.set(editorState, { currentContent: contentStateWithLink,})
+//   setEditorState(newEditorState);
+// }
+
+// const createLinkButton = () => {
+//   const { editorState, setEditorState } = useEditor();
+
+//   return (
+//     <button
+//       onClick={(e) => createLinkEntity({e, editorState, setEditorState})}
+//     >
+//       <img
+//         className="hover:bg-inactive rounded-md cursor-pointer px-1 py-0.5" src="/static/Link.svg" />
+//     </button>
+//   )
+// }
 
 const uploadImage = ({
   e,
@@ -119,13 +150,13 @@ const UploadImageButton = (props: HTMLAttributes<HTMLLabelElement>) => {
   );
 };
 
-const ToolBar = (props: HTMLAttributes<HTMLSpanElement>) => {
+const ToolBar = (props: HTMLAttributes<HTMLDivElement>) => {
   return (
-    <span
+    <div
       onFocus={() => false}
       {...props}
       contentEditable={false}
-      className="bg-white z-10 rounded-md border border-inactive p-1 flex items-center justify-around space-x-2 text-center sticky top-0"
+      className="bg-white rounded-md border border-inactive p-1 flex items-center justify-around space-x-2 text-center"
     >
       {BLOCK_STYLES.map((option) => (
         <ToggleBlockButton
@@ -142,7 +173,7 @@ const ToolBar = (props: HTMLAttributes<HTMLSpanElement>) => {
         />
       ))}
       <UploadImageButton />
-    </span>
+    </div>
   );
 };
 export default ToolBar;

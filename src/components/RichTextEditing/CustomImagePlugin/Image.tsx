@@ -1,14 +1,10 @@
-import React, {
-  ImgHTMLAttributes,
-  ReactElement,
-  useEffect,
-  useRef,
-} from "react";
+import React, { HTMLAttributes, ReactElement } from "react";
 import classNames from "classnames";
 import { ContentBlock, ContentState } from "draft-js";
 import { ImagePluginTheme } from "../CustomImagePlugin";
+import ResizeWrapper from "./ResizeableComponent";
 
-export interface ImageProps extends ImgHTMLAttributes<HTMLImageElement> {
+export interface ImageProps extends HTMLAttributes<HTMLDivElement> {
   block: ContentBlock;
   className?: string;
   theme?: ImagePluginTheme;
@@ -27,7 +23,7 @@ export interface ImageProps extends ImgHTMLAttributes<HTMLImageElement> {
   preventScroll: unknown;
 }
 
-export default React.forwardRef<HTMLImageElement, ImageProps>(
+export default React.forwardRef<HTMLDivElement, ImageProps>(
   /**This forwarded ref returns null: need to figure out why */
   (props, ref): ReactElement => {
     const { block, className, theme = {}, ...otherProps } = props;
@@ -47,73 +43,18 @@ export default React.forwardRef<HTMLImageElement, ImageProps>(
       style,
       ...elementProps
     } = otherProps;
-    const combinedClassName = classNames(theme.image, className);
-    const { src, entityKey } = contentState
+    const combinedClassName = classNames(
+      theme.image,
+      className,
+      "h-full w-full"
+    );
+    const { src /*entityKey*/ } = contentState
       .getEntity(block.getEntityAt(0))
       .getData();
-    const imageRef = useRef<HTMLImageElement | null>(null);
-
-    const clickedOutside = (e: MouseEvent) => {
-      if (imageRef.current && !imageRef.current?.contains(e.target as Node)) {
-        imageRef.current.style.border = "none";
-        imageRef.current.style.cursor = "default";
-      }
-      document.removeEventListener("click", clickedOutside);
-    };
-
-    const resize = () => {
-      if (!imageRef.current) return;
-      imageRef.current.focus();
-      imageRef.current.style.border = "1px solid #707070";
-      imageRef.current.style.cursor = "col-resize";
-      document.addEventListener("click", clickedOutside);
-      imageRef.current.onmousedown = (e_mousedown: MouseEvent) => {
-        const start_x = e_mousedown.clientX;
-        if (!imageRef.current) return;
-        const imgProperties = imageRef.current.getBoundingClientRect();
-        const originalWidth = imgProperties.width;
-        const move = (e_mousemove: MouseEvent) => {
-          const dif = (e_mousemove.clientX - start_x) / 100;
-          if (!imageRef.current) return;
-          imageRef.current.style.width = `calc(${originalWidth} * ${dif}%)`;
-        };
-        document.addEventListener("mousemove", move);
-        document.addEventListener("mouseup", function up() {
-          if (entityKey)
-            contentState.mergeEntityData(entityKey, {
-              width: imageRef.current?.style.width,
-            });
-          document.removeEventListener("mouseup", up);
-          document.removeEventListener("mousemove", move);
-        });
-      };
-    };
-
-    useEffect(() => {
-      if (!imageRef.current) return;
-      imageRef.current.ondragstart = () => false;
-      imageRef.current.onclick = resize;
-      return () => {
-        document.removeEventListener("click", clickedOutside);
-      };
-    }, [imageRef]);
-
     return (
-      <img
-        onClick={resize}
-        {...elementProps}
-        ref={imageRef}
-        src={src}
-        style={{
-          minWidth: "25vw",
-          maxWidth: "80vw",
-          margin: "0 auto",
-          objectFit: "cover",
-          ...style,
-        }}
-        role="presentation"
-        className={combinedClassName}
-      />
+      <ResizeWrapper ref={ref} {...elementProps}>
+        <img src={src} className={combinedClassName} />
+      </ResizeWrapper>
     );
   }
 );
