@@ -1,11 +1,13 @@
 import type { GetServerSideProps } from "next";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { Fragment } from "react";
 import { Text } from "../../../components/atomic";
 import {
   PageGetProgramBySlugComp,
   ssrGetProgramBySlug,
 } from "../../../generated/page";
-import { useAuthorizationLevel, useMyUserData } from "../../../hooks";
+import { AuthorizationLevel, useAuthorizationLevel } from "../../../hooks";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
 import Page from "../../../types/Page";
 import { parseParam } from "../../../utils";
@@ -13,8 +15,8 @@ import { useAuth } from "../../../utils/firebase/auth";
 
 const ProgramPage: PageGetProgramBySlugComp & Page = (props) => {
   const { user, signOut, loading } = useAuth();
-  const { myUserData } = useMyUserData();
   const authorizationLevel = useAuthorizationLevel();
+  const router = useRouter();
 
   if (loading) return <Fragment />;
 
@@ -22,7 +24,12 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props) => {
 
   return (
     <div className="h-screen w-full">
-      <a href="/create">Create Program</a>
+      <div>
+        <a href="/create">Create Program</a>
+      </div>
+      {authorizationLevel === AuthorizationLevel.NotInProgram && (
+        <Link href={`${router.asPath}/join`}>Join this program</Link>
+      )}
       <div className="p-4">
         <div>
           <div>
@@ -32,13 +39,6 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props) => {
             <Text b>Authorization Level: [{authorizationLevel}]</Text>
           </div>
         </div>
-
-        {myUserData && (
-          <div>
-            <div>USER DATA</div>
-            <div>{JSON.stringify(myUserData)}</div>
-          </div>
-        )}
       </div>
       {user ? <p>Hi, {user.displayName}</p> : <p>Join us!</p>}
       {user ? (

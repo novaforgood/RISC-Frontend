@@ -52,6 +52,7 @@ const CreateProgramPage: Page = () => {
       mentorProfileSchemaJson: "",
       menteeProfileSchemaJson: "",
       mentorApplicationSchemaJson: "",
+      menteeApplicationSchemaJson: "",
       public: true,
     };
     return createProgram({ variables: { data: createProgramInput } })
