@@ -9,18 +9,9 @@ import TextEditor from "../components/RichTextEditing/RichTextEditor";
 //TODO: Determine when the button should be disabled
 //TODO: saving contents of the homepage
 const Test = () => (
-  <div className="box-border bg-tertiary min-h-screen px-28">
+  <div className="box-border bg-tertiary min-h-screen py-24 px-28 flex">
     {/*Stand-in for the mentorship logo*/}
-    <div className="sticky top-0 w-full box-border bg-tertiary py-4 flex justify-end">
-      <Button
-        onClick={() => {
-          /* Save contents of homepage */
-        }}
-      >
-        Publish
-      </Button>
-    </div>
-    <Card className="px-16 py-10 ">
+    <Card className="box-border w-full px-16 py-10">
       <img
         className="w-24 h-24 absolute transform -translate-y-24"
         src="/static/HappyBlobs.svg"
@@ -31,8 +22,17 @@ const Test = () => (
       </Text>
       <div className="h-2" />
       <EditorProvider>
-        <div className="bg-white sticky top-4 z-10">
-          <ToolBar />
+        <div className="box-border w-full sticky top-4 z-10 rounded-md flex justify-end">
+          <div className="flex-grow self-center ">
+            <ToolBar />
+          </div>
+          <Button
+            onClick={() => {
+              /* Save contents of homepage */
+            }}
+          >
+            Publish
+          </Button>
         </div>
         <div className="h-2" />
         <TextEditor />

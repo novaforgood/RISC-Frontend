@@ -85,13 +85,11 @@ export default React.forwardRef<HTMLDivElement, HTMLProps<HTMLDivElement>>(
     //Helper function to get the offset for the resize boxes
     //Can be separated from the return values for performance
     const getBounds = (ref: HTMLDivElement | null) => {
-      console.log(ref);
       if (ref == null)
         return { width: 0, height: 0, ratio: 1, horizontal: true };
-      const refProps = ref.getBoundingClientRect();
-      console.log(refProps);
-      const width = refProps.width - 6;
-      const height = refProps.height - 6;
+      const dimensions = ref.getBoundingClientRect();
+      const width = dimensions.width;
+      const height = dimensions.height;
       setAdjustedSize({
         halfHorizontal: width / 2,
         halfVertical: height / 2,
@@ -106,22 +104,26 @@ export default React.forwardRef<HTMLDivElement, HTMLProps<HTMLDivElement>>(
       };
     };
 
+    useEffect(() => {}, []);
+
     //When the window changes sizes, we need to reset the offset of the resize boxes
     //TODO: Figure out why initial size pulls return a height and width of 0
     useEffect(() => {
-      const refObj = containerRef.current;
-      console.log(refObj);
-      if (refObj != null) {
+      const refObj = childRef.current;
+      const container = containerRef.current;
+      if (refObj && container) {
         const initialBounds = () => getBounds(refObj);
-        const props = initialBounds();
-        console.log(props);
+        refObj.firstChild?.addEventListener("load", () => {
+          const props = initialBounds();
+          console.log(props);
+          container.style.minWidth = `${20 / props.ratio}vh`;
+          container.style.maxWidth = `${65 / props.ratio}vh`;
+          container.style.minHeight = `20vh`;
+          container.style.maxHeight = `65vh`;
+          setSize(props);
+        });
         window.addEventListener("resize", initialBounds);
 
-        refObj.style.minWidth = `${20 / props.ratio}vh`;
-        refObj.style.maxWidth = `${60 / props.ratio}vh`;
-        refObj.style.minHeight = `20vh`;
-        refObj.style.maxHeight = `60vh`;
-        setSize(props);
         return () => {
           window.removeEventListener("resize", initialBounds);
         };
@@ -136,16 +138,11 @@ export default React.forwardRef<HTMLDivElement, HTMLProps<HTMLDivElement>>(
         ref={ref}
         tabIndex={0}
         className="border-box w-max h-max select-none m-auto"
-        onClick={() => {
-          setEdit(true);
-        }}
         {...props}
+        onClick={() => setEdit(true)}
         onBlur={() => setEdit(false)}
       >
-        <div
-          className="border-box w-max h-max min-w-max min-h-max"
-          ref={containerRef}
-        >
+        <div className="border-box w-max h-max" ref={containerRef}>
           {edit ? (
             <>
               <ResizeSquare
@@ -217,7 +214,9 @@ export default React.forwardRef<HTMLDivElement, HTMLProps<HTMLDivElement>>(
               />
             </>
           ) : (
-            children
+            <div className="box-border h-full w-full" ref={childRef}>
+              {children}
+            </div>
           )}
         </div>
       </div>

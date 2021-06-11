@@ -115,11 +115,11 @@ const uploadImage = ({
   if (file && file.type.match("image.*")) {
     let url = URL.createObjectURL(file);
     const data: ImgHTMLAttributes<HTMLImageElement> = {
-      className: "editor-image",
       alt: file.name,
     };
     setEditorState(imagePlugin!.addImage(editorState, url, data));
 
+    //Upload the same image
     e.target.value = "";
   }
 };
@@ -156,7 +156,7 @@ const ToolBar = (props: HTMLAttributes<HTMLDivElement>) => {
       onFocus={() => false}
       {...props}
       contentEditable={false}
-      className="bg-white rounded-md border border-inactive p-1 flex items-center justify-around space-x-2 text-center"
+      className="bg-white rounded-md border border-inactive p-1 flex items-center justify-around space-x-2 text-center w-max"
     >
       {BLOCK_STYLES.map((option) => (
         <ToggleBlockButton

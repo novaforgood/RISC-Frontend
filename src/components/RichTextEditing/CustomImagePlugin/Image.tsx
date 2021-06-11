@@ -48,12 +48,12 @@ export default React.forwardRef<HTMLDivElement, ImageProps>(
       className,
       "h-full w-full"
     );
-    const { src /*entityKey*/ } = contentState
+    const { src, alt /*entityKey*/ } = contentState
       .getEntity(block.getEntityAt(0))
       .getData();
     return (
       <ResizeWrapper ref={ref} {...elementProps}>
-        <img src={src} className={combinedClassName} />
+        <img src={src} alt={alt} className={combinedClassName} />
       </ResizeWrapper>
     );
   }

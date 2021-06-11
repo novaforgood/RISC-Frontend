@@ -68,30 +68,26 @@ const TextEditor = () => {
   /**Receiving the following warning:
    * Expected server HTML to contain a matching <div> in <div>.
    */
-  return typeof window !== "undefined" ? (
-    <div>
-      <div
-        onClick={focus}
-        ref={editor}
-        className="max-h-3/4 box-border flex-grow m-1.5"
-      >
-        <Editor
-          editorKey="temp-key" //Necessary to prevent server from rendering a separate editor
-          plugins={plugins!}
-          blockRenderMap={blockRenderMap}
-          editorState={editorState}
-          handleKeyCommand={handleKeyCommand}
-          onChange={setEditorState}
-          stripPastedStyles={true}
-          placeholder="Edit here..."
-          ref={(el: RefObject<any>) => {
-            forwardRef = el;
-          }}
-        />
-      </div>
+  return (
+    <div
+      onClick={focus}
+      ref={editor}
+      className="max-h-3/4 box-border flex-grow m-1.5"
+    >
+      <Editor
+        editorKey="temp-key" //Necessary to prevent server from rendering a separate editor
+        plugins={plugins!}
+        blockRenderMap={blockRenderMap}
+        editorState={editorState}
+        handleKeyCommand={handleKeyCommand}
+        onChange={setEditorState}
+        stripPastedStyles={true}
+        placeholder="Edit here..."
+        ref={(el: RefObject<any>) => {
+          forwardRef = el;
+        }}
+      />
     </div>
-  ) : (
-    <></>
   );
 };
 export default TextEditor;
