@@ -7,11 +7,14 @@ import {
   ApplicationStatus,
   ApplicationType,
   GetApplicationsQuery,
+  refetchGetApplicationsQuery,
+  useAcceptApplicationMutation,
   useGetApplicationsQuery,
+  useRejectApplicationMutation,
 } from "../generated/graphql";
 
 // Hardcoded values
-const QUERY_PROGRAM_ID = "0fe10c0f-3367-4b9e-9e8d-7a1f54d8f3d9";
+const QUERY_PROGRAM_ID = "457c3a86-8e01-483e-b72d-843347334b16";
 const QUERY_APPLICATION_TYPE = ApplicationType.Mentor;
 
 type ApplicationPartial = GetApplicationsQuery["getApplications"][number];
@@ -23,10 +26,52 @@ type ApplicationReviewListItem = {
 const ApplicationReviewListItem = ({
   application,
 }: ApplicationReviewListItem) => {
-  const getStatusIcon = (status: ApplicationStatus) => {
-    switch (status) {
+  const [acceptApplicationMutation] = useAcceptApplicationMutation({
+    variables: {
+      applicationId: application.applicationId,
+    },
+    refetchQueries: [
+      refetchGetApplicationsQuery({
+        programId: application.programId,
+        applicationType: application.applicationType,
+      }),
+    ],
+  });
+
+  const [rejectApplicationMutation] = useRejectApplicationMutation({
+    variables: {
+      applicationId: application.applicationId,
+    },
+    refetchQueries: [
+      refetchGetApplicationsQuery({
+        programId: application.programId,
+        applicationType: application.applicationType,
+      }),
+    ],
+  });
+
+  const getStatusIcon = (app: ApplicationPartial) => {
+    switch (app.applicationStatus) {
       case ApplicationStatus.PendingReview:
-        return <Text i>Pending</Text>;
+        // return <Text i>Pending</Text>;
+        return (
+          <>
+            <button
+              onClick={() => {
+                acceptApplicationMutation();
+              }}
+            >
+              accept
+            </button>
+            <button
+              onClick={() => {
+                rejectApplicationMutation();
+              }}
+            >
+              reject
+            </button>
+          </>
+        );
       case ApplicationStatus.Accepted:
         return <Text>Accepted</Text>;
       case ApplicationStatus.Rejected:
@@ -44,7 +89,7 @@ const ApplicationReviewListItem = ({
         {unix(application.createdAt / 1000).format("MMM D, YYYY | h:mma")}
       </Text>
       <div className="flex-1" />
-      {getStatusIcon(application.applicationStatus)}
+      {getStatusIcon(application)}
       <div className="md:w-8 lg:w-12" />
     </div>
   );
