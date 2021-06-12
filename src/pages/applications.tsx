@@ -5,13 +5,14 @@ import InlineProfileAvatar from "../components/InlineProfileAvatar";
 import ListFilterer from "../components/ListFilterer";
 import {
   ApplicationStatus,
+  ApplicationType,
   GetApplicationsQuery,
   useGetApplicationsQuery,
 } from "../generated/graphql";
 
 // Hardcoded values
-const QUERY_PROGRAM_ID = "8e1a323d-fdba-4c8a-81bc-901de3d2b0a7";
-const QUERY_PROFILE_TYPE = "mentor";
+const QUERY_PROGRAM_ID = "0fe10c0f-3367-4b9e-9e8d-7a1f54d8f3d9";
+const QUERY_APPLICATION_TYPE = ApplicationType.Mentor;
 
 type ApplicationPartial = GetApplicationsQuery["getApplications"][number];
 
@@ -24,7 +25,7 @@ const ApplicationReviewListItem = ({
 }: ApplicationReviewListItem) => {
   const getStatusIcon = (status: ApplicationStatus) => {
     switch (status) {
-      case ApplicationStatus.Pending:
+      case ApplicationStatus.PendingReview:
         return <Text i>Pending</Text>;
       case ApplicationStatus.Accepted:
         return <Text>Accepted</Text>;
@@ -37,7 +38,7 @@ const ApplicationReviewListItem = ({
     <div className="flex space-x-4">
       <input type="checkbox" />
       <div className="w-8" />
-      <InlineProfileAvatar profile={application.profile} />
+      <InlineProfileAvatar user={application.user} />
       <div className="md:flex-1" />
       <Text className="hidden lg:inline">
         {unix(application.createdAt / 1000).format("MMM D, YYYY | h:mma")}
@@ -63,7 +64,7 @@ const ApplicationReviewList = ({
       <Text h2>{title}</Text>
       <div className="h-4" />
       {applications.map((app) => (
-        <ApplicationReviewListItem application={app} />
+        <ApplicationReviewListItem key={app.user.userId} application={app} />
       ))}
     </div>
   );
@@ -73,7 +74,7 @@ const ApplicationFilterer = () => {
   const { data } = useGetApplicationsQuery({
     variables: {
       programId: QUERY_PROGRAM_ID,
-      profileType: QUERY_PROFILE_TYPE,
+      applicationType: QUERY_APPLICATION_TYPE,
     },
   });
 
@@ -84,7 +85,7 @@ const ApplicationFilterer = () => {
   } = {
     All: (x) => x,
     Pending: (x) =>
-      x.filter((y) => y.applicationStatus === ApplicationStatus.Pending),
+      x.filter((y) => y.applicationStatus === ApplicationStatus.PendingReview),
     Accepted: (x) =>
       x.filter((y) => y.applicationStatus === ApplicationStatus.Accepted),
     Rejected: (x) =>
