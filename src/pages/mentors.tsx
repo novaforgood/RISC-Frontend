@@ -49,7 +49,6 @@ const ViewMentorsPage = () => {
   const mentors = [mentor, mentor, mentor];
 
   const sortDropdown = () => {
-    console.log(mentors);
     return (
       <div className="flex">
         <Text b>Sort By</Text>
