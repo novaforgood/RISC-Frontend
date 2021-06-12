@@ -1,7 +1,7 @@
 import type { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { Fragment } from "react";
+import React from "react";
 import { Text } from "../../../components/atomic";
 import {
   PageGetProgramBySlugComp,
@@ -14,11 +14,9 @@ import { parseParam } from "../../../utils";
 import { useAuth } from "../../../utils/firebase/auth";
 
 const ProgramPage: PageGetProgramBySlugComp & Page = (props) => {
-  const { user, signOut, loading } = useAuth();
+  const { user, signOut } = useAuth();
   const authorizationLevel = useAuthorizationLevel();
   const router = useRouter();
-
-  if (loading) return <Fragment />;
 
   const program = props.data?.getProgramBySlug;
 

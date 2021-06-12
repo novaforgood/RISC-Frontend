@@ -1,17 +1,17 @@
 import React from "react";
+import { useGetMyUserQuery } from "../generated/graphql";
 import { PageGetProgramBySlugComp } from "../generated/page";
-import { useMyUserData } from "../hooks";
 import { useAuth } from "../utils/firebase/auth";
 
 const IndexPage: PageGetProgramBySlugComp = (_) => {
   const { user, signOut } = useAuth();
-  const { myUserData } = useMyUserData();
+  const { data } = useGetMyUserQuery();
 
   return (
     <>
       <a href="/create">Create Program</a>
       <div className="h-4"></div>
-      <div>{JSON.stringify(myUserData)}</div>
+      <div>{JSON.stringify(data?.getMyUser)}</div>
       <div className="h-4"></div>
 
       {user ? <p>Hi, {user.displayName}</p> : <p>Join us!</p>}

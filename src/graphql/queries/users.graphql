@@ -22,5 +22,8 @@ query getMyUser {
         slug
       }
     }
+    applications {
+      programId
+    }
   }
 }

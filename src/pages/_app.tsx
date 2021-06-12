@@ -10,6 +10,7 @@ import { ApolloProvider } from "@apollo/client/react";
 import { createUploadLink } from "apollo-upload-client";
 import { AppProps } from "next/app";
 import { ReactElement } from "react";
+import AuthLoadingScreen from "../layouts/AuthLoadingScreen";
 import "../styles/tailwind.css";
 import Page from "../types/Page";
 import { AuthProvider } from "../utils/firebase/auth";
@@ -76,7 +77,9 @@ function MyApp({ Component, pageProps }: CustomAppProps) {
   return (
     <ApolloProvider client={client}>
       <AuthProvider>
-        {getLayout(<Component {...pageProps} />, pageProps)}
+        <AuthLoadingScreen>
+          {getLayout(<Component {...pageProps} />, pageProps)}
+        </AuthLoadingScreen>
       </AuthProvider>
       <script> </script>
     </ApolloProvider>

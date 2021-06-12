@@ -4,8 +4,8 @@ import { Button, Input, Text } from "../components/atomic";
 import {
   CreateProgramInput,
   useCreateProgramMutation,
+  useGetMyUserQuery,
 } from "../generated/graphql";
-import { useMyUserData } from "../hooks";
 import RedirectIfNotLoggedIn from "../layouts/RedirectIfNotLoggedIn";
 import Page from "../types/Page";
 
@@ -30,7 +30,7 @@ const CreateProgramPage: Page = () => {
   const [displayError, setError] = useState(""); // TODO: Proper error box
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { refetchMyUserData } = useMyUserData();
+  const { refetch: refetchMyUserData } = useGetMyUserQuery();
 
   const validateProgramName = (name: string) => {
     // check string is not whitespace; can ask product for more constraints on names
@@ -55,6 +55,8 @@ const CreateProgramPage: Page = () => {
       menteeApplicationSchemaJson: "",
       public: true,
     };
+
+    setLoading(true);
     return createProgram({ variables: { data: createProgramInput } })
       .then(async (res) => {
         if (res) {
@@ -70,6 +72,8 @@ const CreateProgramPage: Page = () => {
         }
       })
       .catch((err) => {
+        console.log({ ...err });
+
         if (err.message.includes("duplicate key value violates unique"))
           setError(`Error: Slug "${programIdentifier}" already exists`);
         else setError("Error: " + err.message);
@@ -189,7 +193,6 @@ const CreateProgramPage: Page = () => {
                 validateProgramIdentifier(programIdentifier)
               ) {
                 setError("");
-                setLoading(true);
                 callCreateProgram();
               }
             }}

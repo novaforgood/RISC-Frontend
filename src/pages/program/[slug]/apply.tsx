@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { Button, Text } from "../../../components/atomic";
 import {
   ApplicationType,
@@ -14,12 +14,10 @@ import Page from "../../../types/Page";
 import { useAuth } from "../../../utils/firebase/auth";
 
 const ProgramApplyPage: Page = (_) => {
-  const { loading, user } = useAuth();
+  const { user } = useAuth();
   const { currentProgram } = useCurrentProgram();
   const [createApplication] = useCreateApplicationMutation();
   const authorizationLevel = useAuthorizationLevel();
-
-  if (loading) return <Fragment />;
 
   const { Admin, Mentor, Mentee } = AuthorizationLevel;
   if ([Admin, Mentor, Mentee].includes(authorizationLevel))

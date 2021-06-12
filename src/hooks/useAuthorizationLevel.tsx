@@ -1,23 +1,25 @@
 import firebase from "firebase";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useMyUserData } from ".";
-import { ProfileType } from "../generated/graphql";
+import {
+  GetMyUserQuery,
+  ProfileType,
+  useGetMyUserQuery,
+} from "../generated/graphql";
 import { parseParam } from "../utils";
 import { useAuth } from "../utils/firebase/auth";
-import { UserData } from "./useMyUserData";
 
 export enum AuthorizationLevel {
   Mentee = "MENTEE",
   Mentor = "MENTOR",
   Admin = "ADMIN",
   Unauthenticated = "UNAUTHENTICATED",
-  NotInProgram = "NOTINPROGRAM,",
+  NotInProgram = "NOTINPROGRAM",
 }
 
 const getAuthorizationLevel = (
   user: firebase.User | null,
-  myUserData: UserData,
+  myUserData: GetMyUserQuery["getMyUser"],
   programSlug: string
 ): AuthorizationLevel => {
   if (!user || !myUserData) return AuthorizationLevel.Unauthenticated;
@@ -39,11 +41,13 @@ const getAuthorizationLevel = (
 
 const useAuthorizationLevel = () => {
   const { user } = useAuth();
-  const { myUserData } = useMyUserData();
+  const { data } = useGetMyUserQuery();
   const router = useRouter();
   const [authLevel, setAuthLevel] = useState(
     AuthorizationLevel.Unauthenticated
   );
+
+  const myUserData = data?.getMyUser;
 
   useEffect(() => {
     if (user && myUserData && router) {

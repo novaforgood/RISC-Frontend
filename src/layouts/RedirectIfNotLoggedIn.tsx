@@ -11,9 +11,8 @@ const RedirectIfNotLoggedIn: React.FC<RedirectIfNotLoggedInProps> = ({
   children,
   pathAfterLoggingIn,
 }) => {
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
-  if (loading) return <Fragment />;
   return (
     <Fragment>
       {children}
