@@ -8,9 +8,3 @@ query getProgramBySlug($slug: String!) {
     homepage
   }
 }
-
-mutation createUser($data: CreateUserInput!) {
-  createUser(data: $data) {
-    userId
-  }
-}

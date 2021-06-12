@@ -1,0 +1,5 @@
+mutation rejectApplication($applicationId: String!) {
+  rejectApplication(applicationId: $applicationId) {
+    applicationId
+  }
+}

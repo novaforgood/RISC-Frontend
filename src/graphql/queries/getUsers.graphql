@@ -1,0 +1,7 @@
+query getUsers {
+  getUsers {
+    userId
+    createdAt
+    updatedAt
+  }
+}
