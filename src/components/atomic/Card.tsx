@@ -7,7 +7,7 @@ type CardProps = HTMLAttributes<HTMLDivElement>;
 const Card = ({ className, ...props }: CardProps) => {
   //You can override width, height, and padding like this.
   const styles = classNames({
-    "bg-white shadow-md rounded-md border border-secondary": true,
+    "bg-white shadow-md rounded-md border-secondary": true,
     [`${className}`]: true,
   });
   return <div {...props} className={styles}></div>;
