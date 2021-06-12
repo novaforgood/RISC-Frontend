@@ -24,27 +24,17 @@ function useProvideAuth() {
   const [loading, setLoading] = useState(true);
 
   const signUpWithEmail = async (email: string, password: string) => {
-    setLoading(true);
-    return firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .finally(() => setLoading(false));
+    return firebase.auth().createUserWithEmailAndPassword(email, password);
   };
 
   const signInWithEmail = async (email: string, password: string) => {
-    setLoading(true);
-    return firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .finally(() => setLoading(false));
+    return firebase.auth().signInWithEmailAndPassword(email, password);
   };
 
   const signInWithGoogle = async () => {
-    setLoading(true);
     return firebase
       .auth()
-      .signInWithPopup(new firebase.auth.GoogleAuthProvider())
-      .finally(() => setLoading(false));
+      .signInWithPopup(new firebase.auth.GoogleAuthProvider());
   };
 
   const signOut = async () => {
@@ -54,7 +44,6 @@ function useProvideAuth() {
       .then(() => {
         client.resetStore();
         setUser(null);
-        setLoading(false);
       });
   };
 

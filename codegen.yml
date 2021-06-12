@@ -4,7 +4,7 @@ documents: "src/graphql/**/*.graphql"
 generates:
   src/generated/graphql.tsx:
     config:
-      withRefetchFn: false
+      withRefetchFn: true
     plugins:
       - "typescript"
       - "typescript-operations"

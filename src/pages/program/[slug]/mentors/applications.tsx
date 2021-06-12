@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { Button } from "../../../../components/atomic";
 import {
   ApplicationType,
@@ -12,24 +12,20 @@ import Page from "../../../../types/Page";
 import { useAuth } from "../../../../utils/firebase/auth";
 
 const MentorApplicationsPage: Page = (_) => {
-  const { loading, user } = useAuth();
+  const { user } = useAuth();
   const { currentProgram } = useCurrentProgram();
-  const [acceptApplication] = useAcceptApplicationMutation();
-  const [rejectApplication] = useRejectApplicationMutation();
-  const { data } = useGetApplicationsQuery({
-    skip: !user || !currentProgram,
+  const { data, refetch: refetchApplications } = useGetApplicationsQuery({
     variables: {
       programId: currentProgram?.programId!,
       applicationType: ApplicationType.Mentor,
     },
   });
-  const applications = data?.getApplications;
-
-  if (loading) return <Fragment />;
+  const [acceptApplication] = useAcceptApplicationMutation();
+  const [rejectApplication] = useRejectApplicationMutation();
 
   return (
     <div>
-      {applications?.map((application) => {
+      {data?.getApplications?.map((application) => {
         return (
           <div>
             <div>App JSON</div>
@@ -45,6 +41,8 @@ const MentorApplicationsPage: Page = (_) => {
                   //       or add a subscriber / poller to update UI.
                   acceptApplication({
                     variables: { applicationId: application.applicationId },
+                  }).then(() => {
+                    refetchApplications();
                   });
                 }}
               >
@@ -59,6 +57,8 @@ const MentorApplicationsPage: Page = (_) => {
                   //       or add a subscriber / poller to update UI.
                   rejectApplication({
                     variables: { applicationId: application.applicationId },
+                  }).then(() => {
+                    refetchApplications();
                   });
                 }}
               >

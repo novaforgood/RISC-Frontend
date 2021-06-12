@@ -1,21 +1,14 @@
 import { Menu, Transition } from "@headlessui/react";
 import classNames from "classnames";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { Text } from "../../components/atomic";
-import { useGetProgramBySlugQuery } from "../../generated/graphql";
-import { useMyUserData } from "../../hooks";
-import { parseParam } from "../../utils";
+import { useGetMyUserQuery } from "../../generated/graphql";
+import { useCurrentProgram } from "../../hooks";
 
 const ProgramDropdown = () => {
-  const router = useRouter();
-  const slug = parseParam(router.query?.slug);
-  const { data: programData } = useGetProgramBySlugQuery({
-    variables: { slug: slug },
-  });
-  const { myUserData } = useMyUserData();
-  const currentProgram = programData?.getProgramBySlug;
+  const { currentProgram } = useCurrentProgram();
+  const { data } = useGetMyUserQuery();
   return (
     <div>
       <Menu as="div" className="relative text-left">
@@ -44,7 +37,7 @@ const ProgramDropdown = () => {
             className="absolute -right-12 w-64 mt-1 origin-top-right bg-white rounded-md 
             shadow-lg ring-1 ring-primary ring-opacity-5 focus:outline-none"
           >
-            {myUserData?.profiles.map((profile, i) => {
+            {data?.getMyUser?.profiles.map((profile, i) => {
               const { program } = profile;
               const active = program.programId === currentProgram?.programId;
               const styles = classNames({
