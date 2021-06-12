@@ -1,5 +1,7 @@
 query getApplications($programId: String!, $applicationType: String!) {
   getApplications(programId: $programId, applicationType: $applicationType) {
+    applicationId
+    programId
     user {
       userId
       firstName

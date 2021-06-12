@@ -1,0 +1,9 @@
+mutation acceptApplication($applicationId: String!) {
+  acceptApplication(applicationId: $applicationId) {
+    userId
+    applicationType
+    applicationStatus
+    applicationJson
+    createdAt
+  }
+}
