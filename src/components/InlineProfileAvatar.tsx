@@ -1,25 +1,21 @@
 import React from "react";
-import { Profile, User } from "../generated/graphql";
+import { User } from "../generated/graphql";
 import { Text } from "./atomic";
 
-type ProfileWithUser = Pick<Profile, "profileId"> & {
-  user: Pick<User, "firstName" | "lastName" | "profilePictureUrl">;
+type UserPartial = Pick<User, "firstName" | "lastName" | "profilePictureUrl">;
+
+type InlineProfileAvatarProps<T extends UserPartial> = {
+  user: T;
 };
 
-type InlineProfileAvatarProps<T extends ProfileWithUser> = {
-  profile: T;
-};
-
-const InlineProfileAvatar = <T extends ProfileWithUser>({
-  profile,
+const InlineProfileAvatar = <T extends UserPartial>({
+  user,
 }: InlineProfileAvatarProps<T>) => {
   return (
     <>
-      {profile.user.profilePictureUrl && (
-        <img src={profile.user.profilePictureUrl} alt="" />
-      )}
+      {user.profilePictureUrl && <img src={user.profilePictureUrl} alt="" />}
       <Text>
-        {profile.user.firstName} {profile.user.lastName}
+        {user.firstName} {user.lastName}
       </Text>
     </>
   );

@@ -1,8 +1,9 @@
-mutation createApplication($profileId: String!, $applicationJson: String!) {
-  createApplication(profileId: $profileId, applicationJson: $applicationJson) {
-    profileId
-    applicationJson
+mutation createApplication($data: CreateApplicationInput!) {
+  createApplication(data: $data) {
+    userId
+    applicationType
     applicationStatus
+    applicationJson
     createdAt
   }
 }
