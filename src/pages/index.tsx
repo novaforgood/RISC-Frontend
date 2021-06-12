@@ -1,4 +1,6 @@
 import React from "react";
+import Form from "../components/Form";
+import TitledInput from "../components/TitledInput";
 import { useGetMyUserQuery } from "../generated/graphql";
 import { PageGetProgramBySlugComp } from "../generated/page";
 import { useAuth } from "../utils/firebase/auth";
@@ -26,6 +28,8 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
       ) : (
         <a href="/login">Log In</a>
       )}
+      <Form></Form>
+      <TitledInput title="Foo"></TitledInput>
     </>
   );
 };
