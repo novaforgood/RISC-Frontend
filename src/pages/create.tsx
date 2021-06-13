@@ -45,6 +45,7 @@ const CreateProgramPage = () => {
       homepage: programIdentifier,
       mentorProfileSchemaJson: "",
       menteeProfileSchemaJson: "",
+      menteeApplicationSchemaJson: "",
       mentorApplicationSchemaJson: "",
       public: true,
     };

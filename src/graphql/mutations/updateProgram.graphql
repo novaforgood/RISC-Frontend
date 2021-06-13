@@ -1,4 +1,4 @@
-mutation updateProgram($data: UpdateProgramInput!, $programId: string) {
+mutation updateProgram($data: UpdateProgramInput!, $programId: String!) {
   updateProgram(data: $data, programId: $programId) {
     homepage
   }
