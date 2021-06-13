@@ -16,7 +16,11 @@ Add a `.env.local` file in the root directory with the following environment var
 
 ```
 NEXT_PUBLIC_API_URL=[GraphQL endpoint URL]
+NEXT_PUBLIC_FIREBASE_API_KEY=[KEY]
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=[DOMAIN]
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=[ID]
 ```
+If you don't already have the values, message someone to get them!
 
 #### Development
 
