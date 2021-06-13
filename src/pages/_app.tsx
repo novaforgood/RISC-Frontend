@@ -10,6 +10,7 @@ import { createUploadLink } from "apollo-upload-client";
 import { AppProps } from "next/app";
 import { ReactElement } from "react";
 import AuthLoadingScreen from "../layouts/AuthLoadingScreen";
+import "../styles/globals.css";
 import "../styles/tailwind.css";
 import Page from "../types/Page";
 import { AuthProvider } from "../utils/firebase/auth";
