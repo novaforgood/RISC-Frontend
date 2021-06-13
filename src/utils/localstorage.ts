@@ -10,6 +10,9 @@ const LocalStorage = {
   delete: (key: string) => {
     window.localStorage.removeItem(key);
   },
+  clear: () => {
+    window.localStorage.clear();
+  },
 };
 
 export default LocalStorage;

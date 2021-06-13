@@ -1,4 +1,4 @@
-query GetUsers {
+query getUsers {
   getUsers {
     userId
     createdAt

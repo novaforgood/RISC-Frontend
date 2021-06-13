@@ -1,5 +1,5 @@
 mutation createProgram($data: CreateProgramInput!) {
   createProgram(data: $data) {
-    programId
+    slug
   }
 }

@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import React, { ReactNode, useEffect, useState } from "react";
 import { Text } from "../../components/atomic";
 import LocalStorage from "../../utils/localstorage";
+import ProgramDropdown from "./ProgramDropdown";
 
 interface ArrowProps {
   down: boolean;
@@ -42,10 +43,27 @@ const Arrow: React.FC<ArrowProps> = ({ down }) => {
   );
 };
 
+export interface BaseTabLayoutProps {
+  basePath: string;
+}
+
+export function joinPath(...args: string[]): string {
+  return args
+    .map((part, i) => {
+      if (!part) return "";
+      if (i === 0) {
+        return part.trim().replace(/[\/]*$/g, "");
+      } else {
+        return part.trim().replace(/(^[\/]*|[\/]*$)/g, "");
+      }
+    })
+    .filter((x) => x.length)
+    .join("/");
+}
+
 interface TabLayoutProps {
   currentPageChildren: ReactNode;
 }
-
 const TabLayout: React.FC<TabLayoutProps> & {
   Separator: React.FC;
   Dropdown: React.FC<{ label: string; id: string }>;
@@ -56,22 +74,24 @@ const TabLayout: React.FC<TabLayoutProps> & {
   }>;
 } = ({ children, currentPageChildren }) => {
   return (
-    <div className="flex h-screen">
-      <div className="w-1/6 bg-white shadow-lg overflow-x-hidden overflow-y-scroll">
-        <div className="whitespace-nowrap">Mentorship Name Placeholder</div>
-        {children}
+    <div className="flex h-screen w-screen">
+      <div className="w-64 flex-shrink-0 bg-white shadow-lg">
+        <ProgramDropdown />
+        <div className="overflow-y-scroll">{children}</div>
       </div>
-      <div className="w-5/6">{currentPageChildren}</div>
+      <div className="flex-grow overflow-y-scroll overflow-x-hidden">
+        {currentPageChildren}
+      </div>
     </div>
   );
 };
 
 TabLayout.PageItem = ({ label, Icon, path }) => {
   const router = useRouter();
-  const active = router.pathname === path;
+  const active = router.asPath === path;
 
   const pageItemStyles = classNames({
-    "w-full pr-6 pl-8 py-1.5 flex items-center text-secondary cursor-pointer duration-100 select-none":
+    "w-full pr-6 pl-8 py-1.5 flex items-center text-secondary cursor-pointer duration-150 select-none":
       true,
     "hover:bg-tertiary": !active,
     "text-white bg-primary hover:bg-primary": active,
@@ -82,7 +102,7 @@ TabLayout.PageItem = ({ label, Icon, path }) => {
       <div className={pageItemStyles}>
         <Icon
           color={active ? "white" : "#737373"}
-          className="p-2 h-9 w-9 duration-100 flex-none"
+          className="p-2 h-9 w-9 duration-150 flex-none"
         />
         <div className="w-1 flex-none" />
         <Text className="whitespace-nowrap">{label}</Text>
