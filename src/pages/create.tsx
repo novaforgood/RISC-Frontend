@@ -34,12 +34,12 @@ const CreateProgramPage: Page = () => {
 
   const validateProgramName = (name: string) => {
     // check string is not whitespace; can ask product for more constraints on names
-    return name.length && !name.match("^\\s*$");
+    return name.length && !name.match(/^\s*$/);
   };
 
   const validateProgramIdentifier = (name: string) => {
     // check string is valid for url; can ask product for more constraints on names
-    return name.length && !name.match("\\s") && !name.match("/");
+    return name.length && name.match(/^[a-zA-Z0-9]{4,}$/) && !name.match("/");
   };
 
   const callCreateProgram = () => {
@@ -186,7 +186,7 @@ const CreateProgramPage: Page = () => {
             onClick={() => {
               if (!validateProgramIdentifier(programIdentifier))
                 setError(
-                  "Your program identifier cannot contain slashes or spaces"
+                  "Your program identifier must be alphanumeric and have at least 4 characters."
                 );
               else if (
                 !loading &&
