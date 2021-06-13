@@ -1,47 +1,114 @@
-import React from "react";
-import { Card, Input, Text } from "../../../../components/atomic";
+import React, { useState } from "react";
+import {
+  Button,
+  Card,
+  Input,
+  Modal,
+  Text,
+} from "../../../../components/atomic";
+import {
+  GetProfilesQuery,
+  ProfileType,
+  useGetProfilesQuery,
+} from "../../../../generated/graphql";
+import { useCurrentProgram } from "../../../../hooks";
 import ChooseTabLayout from "../../../../layouts/ChooseTabLayout";
 import Page from "../../../../types/Page";
 
-const renderMentorCard = (mentor: any, idx: number) => {
-  const tags = mentor.tags
-    .slice(0, 3)
-    .map((tag: string) => (
-      <div className="rounded-md bg-tertiary m-1 p-1">{tag}</div>
-    ));
+type MentorProfile = GetProfilesQuery["getProfiles"][0];
+
+interface MentorCardProps {
+  // TODO: Remove "any" and replace with proper fields
+  mentor: MentorProfile | any;
+}
+const MentorCard = ({ mentor }: MentorCardProps) => {
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
+
+  const tags = mentor.tags?.slice(0, 3).map((tag: string, index: number) => (
+    <div className="rounded-md bg-tertiary m-1 p-1" key={index}>
+      {tag}
+    </div>
+  ));
   const moreTag = (
     <div className="rounded-md border-primary border m-1 p-1">
-      + {mentor.tags.length - 3} more
+      + {mentor.tags?.length - 3} more
     </div>
   );
+
   return (
-    <Card
-      className="flex flex-col m-5 p-6 place-items-center border-0"
-      key={idx}
-    >
+    <Card className="flex flex-col m-5 p-6 place-items-center border-0">
       <div className="h-40 w-40 rounded-full bg-tertiary">
-        <img src={mentor.profileImg}></img>
+        <img src={mentor.user.profilePictureUrl}></img>
       </div>
+      <div className="h-4"></div>
+
       <Text b className="text-body-1 text-center">
-        {mentor.displayName}
+        {mentor.user.firstName} {mentor.user.lastName}
       </Text>
+      <div className="h-4"></div>
+
       <div className="flex flex-wrap justify-center">
         {tags}
-        {mentor.tags.length > 3 ? moreTag : <div></div>}
+        {mentor.tags?.length > 3 ? moreTag : <div></div>}
       </div>
-      <Text>{mentor.description}</Text>
-    </Card>
-  );
-};
+      <div className="h-4"></div>
 
-const renderMentors = (mentors: Array<any>) => {
-  const cards = mentors.map((mentor: any, idx) =>
-    renderMentorCard(mentor, idx)
-  );
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-      {cards}
-    </div>
+      <Text>{mentor.user.firstName}</Text>
+      <div className="h-4"></div>
+
+      <Button
+        onClick={() => {
+          setProfileModalOpen(true);
+        }}
+      >
+        Book a Chat
+      </Button>
+
+      <Modal
+        isOpen={profileModalOpen}
+        onClose={() => {
+          setProfileModalOpen(false);
+        }}
+      >
+        <div className="flex p-4">
+          <div className="flex flex-col items-center">
+            <div className="h-40 w-40 rounded-full bg-tertiary">
+              <img src={mentor.user.profilePictureUrl}></img>
+            </div>
+            <div className="h-4"></div>
+            <Text b1 b>
+              {mentor.user.firstName} {mentor.user.lastName}
+            </Text>
+          </div>
+          <div className="w-8"></div>
+          <div>
+            <div>
+              <div className="rounded bg-tertiary p-4">
+                <table className="table-auto">
+                  <tr>
+                    <td>
+                      <Text b>Email:</Text>
+                    </td>
+                    <td className="pl-4">
+                      <Text>{mentor.user.email}</Text>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div className="h-2"></div>
+
+            <div className="flex">
+              <Button size="small">Book a Chat</Button>
+              <div className="w-2"></div>
+              <Button size="small" variant="inverted">
+                Request Mentor
+              </Button>
+            </div>
+          </div>
+        </div>
+      </Modal>
+    </Card>
   );
 };
 
@@ -49,14 +116,14 @@ const ViewMentorsPage: Page = () => {
   //const [getMentors, { mentorsData }] = useGetMentorssLazyQuery();
   //const [sortBy, setSortBy] = useState("");
 
-  const mentor = {
-    profileImg: "",
-    displayName: "Bob Jenkins",
-    tags: ["2022", "Cognitive Science", "Goated", "yurt", "LOL"],
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniammod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim",
-  };
-  const mentors = [mentor, mentor, mentor];
+  const { currentProgram } = useCurrentProgram();
+  const { data } = useGetProfilesQuery({
+    variables: {
+      programId: currentProgram?.programId!,
+      profileType: ProfileType.Mentor,
+    },
+  });
+  const mentors = data?.getProfiles;
 
   const sortDropdown = () => {
     return (
@@ -88,7 +155,11 @@ const ViewMentorsPage: Page = () => {
       </div>
       <Input className="h-5 w-full" placeholder="Search..."></Input>
       <div className="h-1"></div>
-      {renderMentors(mentors)}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+        {mentors?.map((mentor: MentorProfile, index: number) => {
+          return <MentorCard mentor={mentor} key={index} />;
+        })}
+      </div>
     </div>
   );
 };
