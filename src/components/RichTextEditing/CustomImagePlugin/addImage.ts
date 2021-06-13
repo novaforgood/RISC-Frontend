@@ -14,12 +14,14 @@ const AddImage = (
     { src: url, ...extraData }
   );
   const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-  contentState.mergeEntityData(entityKey, { entityKey: entityKey });
   const newEditorState = AtomicBlockUtils.insertAtomicBlock(
     editorState,
     entityKey,
     " "
   );
+
+  newEditorState.getCurrentContent().mergeEntityData(entityKey, { entityKey });
+
   return EditorState.forceSelection(
     newEditorState,
     newEditorState.getCurrentContent().getSelectionAfter()

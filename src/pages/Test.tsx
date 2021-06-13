@@ -1,8 +1,10 @@
 import React from "react";
-import { EditorProvider } from "../components/RichTextEditing/EditorContext";
 import { Button, Text, Card } from "../components/atomic";
-import ToolBar from "../components/RichTextEditing/ToolBar";
-import TextEditor from "../components/RichTextEditing/RichTextEditor";
+import {
+  EditorProvider,
+  ToolBar,
+  TextEditor,
+} from "../components/RichTextEditing";
 
 //TODO: Figure out how we want the scrolling behavior to work
 //TODO: Answer "Should the homepage be by default a really long card / What contents should it have"

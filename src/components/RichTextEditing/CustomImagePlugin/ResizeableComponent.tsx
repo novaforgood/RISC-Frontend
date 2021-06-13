@@ -7,6 +7,9 @@ import React, {
   HTMLAttributes,
 } from "react";
 
+//Determines micro-movement of the resize squares
+const OFFSET = -6;
+
 type ResizeSquareProps = HTMLAttributes<HTMLDivElement> & {
   cursor: string;
 };
@@ -23,9 +26,14 @@ const ResizeSquare = ({ cursor, ...props }: ResizeSquareProps) => {
   return <div {...props} className={styles} />;
 };
 
+type ResizeWrapperProps = HTMLProps<HTMLDivElement> & {
+  difference: number;
+  mergeData: (newContent: Object) => void;
+};
+
 //Allows the children of this component to be resized
-export default React.forwardRef<HTMLDivElement, HTMLProps<HTMLDivElement>>(
-  ({ className, children, ...props }, ref) => {
+export default React.forwardRef<HTMLDivElement, ResizeWrapperProps>(
+  ({ className, children, mergeData, difference, ...props }, ref) => {
     //Used for storing original proportions
     const [size, setSize] = useState({
       width: 0,
@@ -111,6 +119,8 @@ export default React.forwardRef<HTMLDivElement, HTMLProps<HTMLDivElement>>(
 
       document.addEventListener("mousemove", mousemove);
       document.addEventListener("mouseup", function mouseup() {
+        console.log("resized");
+        mergeData({ difference: adjustedSize.fullHorizontal - size.width });
         document.removeEventListener("mousemove", mousemove);
         document.removeEventListener("mouseup", mouseup);
       });
@@ -121,10 +131,22 @@ export default React.forwardRef<HTMLDivElement, HTMLProps<HTMLDivElement>>(
       const child = childRef.current;
       if (child) {
         child.firstChild?.addEventListener("load", async () => {
+          console.log("loaded");
           const props = getBounds();
           await setSize(props);
+          console.log(props.width, props.height);
+          mergeData({ width: props.width, height: props.height });
           setBounds();
-          console.log(size);
+          if (difference) {
+            const width = props.width + difference;
+            const height = props.height + difference;
+            setAdjustedSize({
+              halfHorizontal: width / 2,
+              halfVertical: height / 2,
+              fullHorizontal: width,
+              fullVertical: height,
+            });
+          }
         });
       }
     }, []);
@@ -154,7 +176,7 @@ export default React.forwardRef<HTMLDivElement, HTMLProps<HTMLDivElement>>(
                   id="top-left"
                   cursor="se-resize"
                   style={{
-                    transform: `translate(-8px,-8px)`,
+                    transform: `translate(${OFFSET}px,${OFFSET}px)`,
                   }}
                   onMouseDown={(e: MouseEvent) => resize(e, true)}
                 />
@@ -163,8 +185,8 @@ export default React.forwardRef<HTMLDivElement, HTMLProps<HTMLDivElement>>(
                   cursor="s-resize"
                   style={{
                     transform: `translate(${
-                      adjustedSize.halfHorizontal - 6
-                    }px,-8px)`,
+                      adjustedSize.halfHorizontal + OFFSET
+                    }px,${OFFSET}px)`,
                   }}
                   onMouseDown={resize}
                 />
@@ -173,8 +195,8 @@ export default React.forwardRef<HTMLDivElement, HTMLProps<HTMLDivElement>>(
                   cursor="sw-resize"
                   style={{
                     transform: `translate(${
-                      adjustedSize.fullHorizontal - 6
-                    }px,-8px)`,
+                      adjustedSize.fullHorizontal + OFFSET
+                    }px,${OFFSET}px)`,
                   }}
                   onMouseDown={resize}
                 />
@@ -182,8 +204,8 @@ export default React.forwardRef<HTMLDivElement, HTMLProps<HTMLDivElement>>(
                   id="left"
                   cursor="w-resize"
                   style={{
-                    transform: `translate(-8px,${
-                      adjustedSize.halfVertical - 6
+                    transform: `translate(${OFFSET}px,${
+                      adjustedSize.halfVertical + OFFSET
                     }px)`,
                   }}
                   onMouseDown={(e: MouseEvent) => resize(e, true)}
@@ -193,8 +215,8 @@ export default React.forwardRef<HTMLDivElement, HTMLProps<HTMLDivElement>>(
                   cursor="w-resize"
                   style={{
                     transform: `translate(${
-                      adjustedSize.fullHorizontal - 6
-                    }px,${adjustedSize.halfVertical - 6}px)`,
+                      adjustedSize.fullHorizontal + OFFSET
+                    }px,${adjustedSize.halfVertical + OFFSET}px)`,
                   }}
                   onMouseDown={resize}
                 />
@@ -208,7 +230,7 @@ export default React.forwardRef<HTMLDivElement, HTMLProps<HTMLDivElement>>(
                   id="bottom-left"
                   cursor="sw-resize"
                   style={{
-                    transform: `translate(-8px,-8px)`,
+                    transform: `translate(${OFFSET}px,${OFFSET}px)`,
                   }}
                   onMouseDown={(e: MouseEvent) => resize(e, true)}
                 />
@@ -217,8 +239,8 @@ export default React.forwardRef<HTMLDivElement, HTMLProps<HTMLDivElement>>(
                   cursor="s-resize"
                   style={{
                     transform: `translate(${
-                      adjustedSize.halfHorizontal - 6
-                    }px,-8px)`,
+                      adjustedSize.halfHorizontal + OFFSET
+                    }px,${OFFSET}px)`,
                   }}
                   onMouseDown={resize}
                 />
@@ -227,8 +249,8 @@ export default React.forwardRef<HTMLDivElement, HTMLProps<HTMLDivElement>>(
                   cursor="se-resize"
                   style={{
                     transform: `translate(${
-                      adjustedSize.fullHorizontal - 6
-                    }px,-8px)`,
+                      adjustedSize.fullHorizontal + OFFSET
+                    }px,${OFFSET}px)`,
                   }}
                   onMouseDown={resize}
                 />

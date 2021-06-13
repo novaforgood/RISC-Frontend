@@ -7,8 +7,9 @@ import { EditorPlugin } from "@draft-js-plugins/editor";
 const imagePlugin = createImagePlugin();
 
 export interface EditorStateInterface {
-  editorState: EditorState;
+  editorState?: EditorState;
   setEditorState: (prop: EditorState) => void;
+  getStringEditorState?: () => string;
   imagePlugin?: ImageEditorPlugin;
   plugins?: EditorPlugin[];
 }
@@ -35,9 +36,14 @@ const useProvideEditor = () => {
     EditorState.createWithContent(emptyContentState)
   );
 
+  const getStringEditorState = () => {
+    return JSON.stringify(editorState);
+  };
+
   return {
     editorState,
     setEditorState,
+    getStringEditorState,
     imagePlugin,
     plugins: [imagePlugin],
   };
@@ -53,7 +59,7 @@ export const EditorProvider = (props: ContextProps) => {
 export const useEditor = () => {
   const context = useContext(EditorContext);
   if (context === undefined) {
-    throw new Error("useEditor() must be within EditorProvider");
+    throw new Error("useEditor() must be within AuthProvider");
   }
   return context;
 };

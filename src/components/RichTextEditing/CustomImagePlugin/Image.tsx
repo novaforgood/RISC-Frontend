@@ -48,11 +48,24 @@ export default React.forwardRef<HTMLDivElement, ImageProps>(
       className,
       "h-full w-full"
     );
-    const { src, alt /*entityKey*/ } = contentState
-      .getEntity(block.getEntityAt(0))
-      .getData();
+    const {
+      src,
+      alt,
+      difference = 0,
+      entityKey,
+    } = contentState.getEntity(block.getEntityAt(0)).getData();
+
+    const mergeData = (newData: { [key: string]: any }) => {
+      contentState.mergeEntityData(entityKey, newData);
+    };
+
     return (
-      <ResizeWrapper ref={ref} {...elementProps}>
+      <ResizeWrapper
+        ref={ref}
+        mergeData={mergeData}
+        difference={difference}
+        {...elementProps}
+      >
         <img src={src} alt={alt} className={combinedClassName} />
       </ResizeWrapper>
     );
