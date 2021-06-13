@@ -1,6 +1,7 @@
-import { HTMLAttributes } from "react";
-import { Card } from "./atomic";
+import { ChangeEvent, HTMLAttributes, useState } from "react";
+import { Button, Card } from "./atomic";
 import TitledInput from "./TitledInput";
+var _ = require("lodash"); // Is this right?
 
 /**
  * @summary Typedefs for the Form.
@@ -29,15 +30,23 @@ export type Question = MultipleChoiceQuestion | TextQuestion;
 
 // Eventually, `form` likely shouldn't be optional
 type FormProps = HTMLAttributes<HTMLDivElement> & {
-  form?: Question[];
+  form: Question[];
 };
 
-const fetchStoredAnswer = (id: string): string => {
-  // TODO: Grab previously saved answer from question, if any
-  return "Type your answer here"; // Filler text to remove
+// TODO: Grab previously saved answer from question, if any
+const fetchAnswer = (id: string): string => {
+  return ""; // Filler text to remove
+};
+
+// TODO: Push answer to db
+const pushAnswer = (id: string, answer): void => {
+  console.log("Change Reg at id: ", id, " with answer ", answer);
 };
 
 // TODO
+/**
+ * @summary UNFINISHED: Multiple choice Asker
+ */
 const MultipleChoiceAsker = ({ ...props }: MultipleChoiceQuestion) => {
   return <></>;
 };
@@ -47,11 +56,26 @@ const MultipleChoiceAsker = ({ ...props }: MultipleChoiceQuestion) => {
  * Right now, there is no difference except placeholder. Do we want long answer to have multiline input functionality?
  */
 const TextAsker = ({ id, title, type }: TextQuestion) => {
+  const [answer, setAnswer] = useState(fetchAnswer(id));
+
+  var throttledPush = _.throttle(() => {
+    pushAnswer(id, answer);
+  }, 3000);
+
+  var debouncedPush = _.debounce(throttledPush, 3000);
+
+  const handleAnswerChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    setAnswer(e.target.value);
+    console.log("Naive log at id: ", id, " with answer ", answer);
+    debouncedPush();
+  };
+
   return (
     <TitledInput
       title={title}
       placeholder={type == "short-answer" ? "Short text" : "Long text"} // Want this branching to be in the Form switch statement, but couldn't get types to work in args of this function
-      value={fetchStoredAnswer(id)}
+      value={answer}
+      onChange={handleAnswerChange}
     ></TitledInput>
   );
 };
@@ -60,17 +84,34 @@ const TextAsker = ({ id, title, type }: TextQuestion) => {
  * @summary Renders Form from question[]
  */
 const Form = ({ form = [], ...props }: FormProps) => {
+  // I'm not a real fan of a var having the same name as an HTML elem, but I think it's ok
+
+  //TODO
+  const handleFormSubmit = () => {
+    // This should probably be a function that iterates through all the Askers and tells each of them
+    // to push their answers.
+    console.log("Imagine that a form submitted");
+  };
+
   return (
     <Card {...props}>
-      {form.map((question) => {
-        switch (question.type) {
-          case "short-answer":
-          case "long-answer":
-            return <TextAsker {...question}></TextAsker>;
-          case "multiple-choice":
-            return <MultipleChoiceAsker {...question}></MultipleChoiceAsker>;
-        }
-      })}
+      <form onSubmit={handleFormSubmit} /*do we need an action?*/>
+        {form.map((question, i) => {
+          switch (question.type) {
+            case "short-answer":
+            case "long-answer":
+              return <TextAsker {...question} key={i}></TextAsker>;
+            case "multiple-choice":
+              return (
+                <MultipleChoiceAsker
+                  {...question}
+                  key={i}
+                ></MultipleChoiceAsker>
+              );
+          }
+        })}
+        <Button>Submit</Button>
+      </form>
     </Card>
   );
 };

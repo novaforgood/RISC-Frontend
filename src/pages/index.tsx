@@ -1,5 +1,5 @@
 import React from "react";
-import Form from "../components/Form";
+import Form, { Question } from "../components/Form";
 import TitledInput from "../components/TitledInput";
 import { useGetMyUserQuery } from "../generated/graphql";
 import { PageGetProgramBySlugComp } from "../generated/page";
@@ -8,6 +8,22 @@ import { useAuth } from "../utils/firebase/auth";
 const IndexPage: PageGetProgramBySlugComp = (_) => {
   const { user, signOut } = useAuth();
   const { data } = useGetMyUserQuery();
+
+  // Dummy data
+  const dummyForm: Question[] = [
+    {
+      id: "0ABC",
+      title: "Test Question",
+      type: "short-answer",
+      description: "",
+    },
+    {
+      id: "1ABC",
+      title: "Test Question",
+      type: "short-answer",
+      description: "",
+    },
+  ];
 
   return (
     <>
@@ -28,7 +44,7 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
       ) : (
         <a href="/login">Log In</a>
       )}
-      <Form></Form>
+      <Form form={dummyForm}></Form>
       <TitledInput title="Foo"></TitledInput>
     </>
   );
