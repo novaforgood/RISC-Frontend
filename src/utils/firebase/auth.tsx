@@ -23,18 +23,39 @@ function useProvideAuth() {
   const [user, setUser] = useState<firebase.User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const clearCache = () => {
+    client.resetStore();
+    localStorage.clear();
+  };
+
   const signUpWithEmail = async (email: string, password: string) => {
-    return firebase.auth().createUserWithEmailAndPassword(email, password);
+    return firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then((res) => {
+        clearCache();
+        return res;
+      });
   };
 
   const signInWithEmail = async (email: string, password: string) => {
-    return firebase.auth().signInWithEmailAndPassword(email, password);
+    return firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then((res) => {
+        clearCache();
+        return res;
+      });
   };
 
   const signInWithGoogle = async () => {
     return firebase
       .auth()
-      .signInWithPopup(new firebase.auth.GoogleAuthProvider());
+      .signInWithPopup(new firebase.auth.GoogleAuthProvider())
+      .then((res) => {
+        clearCache();
+        return res;
+      });
   };
 
   const signOut = async () => {
@@ -42,7 +63,7 @@ function useProvideAuth() {
       .auth()
       .signOut()
       .then(() => {
-        client.resetStore();
+        clearCache();
         setUser(null);
       });
   };
