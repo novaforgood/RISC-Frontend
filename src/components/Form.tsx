@@ -1,7 +1,7 @@
 import { ChangeEvent, HTMLAttributes, useState } from "react";
 import { Button, Card } from "./atomic";
 import TitledInput from "./TitledInput";
-var _ = require("lodash"); // Is this right?
+const _ = require("lodash"); // Is this right?
 
 /**
  * @summary Typedefs for the Form.
@@ -28,20 +28,19 @@ export type MultipleChoiceQuestion = QuestionBase & {
 
 export type Question = MultipleChoiceQuestion | TextQuestion;
 
-// Eventually, `form` likely shouldn't be optional
+type AnswerType = any; // TODO after 06/12: Should specify answer type
+
+type TextAskerProps = TextQuestion & {
+  initResponse: string;
+};
+
 type FormProps = HTMLAttributes<HTMLDivElement> & {
   form: Question[];
+  initResponses: { [key: string]: string };
+  onChange: (id: string, answer: AnswerType) => void;
 };
 
-// TODO: Grab previously saved answer from question, if any
-const fetchAnswer = (id: string): string => {
-  return ""; // Filler text to remove
-};
-
-// TODO: Push answer to db
-const pushAnswer = (id: string, answer): void => {
-  console.log("Change Reg at id: ", id, " with answer ", answer);
-};
+var responses: { [key: string]: string };
 
 // TODO
 /**
@@ -55,19 +54,26 @@ const MultipleChoiceAsker = ({ ...props }: MultipleChoiceQuestion) => {
  * @summary Short text and Long Text Asker.
  * Right now, there is no difference except placeholder. Do we want long answer to have multiline input functionality?
  */
-const TextAsker = ({ id, title, type }: TextQuestion) => {
-  const [answer, setAnswer] = useState(fetchAnswer(id));
+const TextAsker = ({ id, title, type, initResponse }: TextAskerProps) => {
+  const [answer, setAnswer] = useState(initResponse); // Replace with responses
 
-  var throttledPush = _.throttle(() => {
-    pushAnswer(id, answer);
-  }, 3000);
+  // var throttledPush = _.throttle(() => {
+  //   responses[`${id}`] = answer;
+  //   console.log("Resp Modif at id: ", id, " with answer ", responses[`${id}`]);
+  // }, 3000);
 
-  var debouncedPush = _.debounce(throttledPush, 3000);
+  // var throttledPush = () => {
+  //   responses[`${id}`] = answer;
+  //   console.log("Resp Modif at id: ", id, " with answer ", responses[`${id}`]);
+  // };
+  //
+  // const debouncedPush = _.debounce(throttledPush, 3000);
 
   const handleAnswerChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setAnswer(e.target.value);
-    console.log("Naive log at id: ", id, " with answer ", answer);
-    debouncedPush();
+    console.log("Change at id: ", id, " with answer ", e.target.value); // Testing
+    responses[`${id}`] = e.target.value;
+    // Tell form to update it (debounced)
   };
 
   return (
@@ -82,9 +88,15 @@ const TextAsker = ({ id, title, type }: TextQuestion) => {
 
 /**
  * @summary Renders Form from question[]
+ * @param {Function} onChange
  */
-const Form = ({ form = [], ...props }: FormProps) => {
-  // I'm not a real fan of a var having the same name as an HTML elem, but I think it's ok
+const Form = ({
+  form = [],
+  initResponses = {},
+  onChange,
+  ...props
+}: FormProps) => {
+  responses = initResponses;
 
   //TODO
   const handleFormSubmit = () => {
@@ -93,6 +105,10 @@ const Form = ({ form = [], ...props }: FormProps) => {
     console.log("Imagine that a form submitted");
   };
 
+  // const externallyAccessibleFunction = () => {
+  //   save all the questions
+  // }
+
   return (
     <Card {...props}>
       <form onSubmit={handleFormSubmit} /*do we need an action?*/>
@@ -100,7 +116,13 @@ const Form = ({ form = [], ...props }: FormProps) => {
           switch (question.type) {
             case "short-answer":
             case "long-answer":
-              return <TextAsker {...question} key={i}></TextAsker>;
+              return (
+                <TextAsker
+                  {...question}
+                  initResponse={initResponses[`${question.id}`] || ""}
+                  key={i}
+                ></TextAsker>
+              );
             case "multiple-choice":
               return (
                 <MultipleChoiceAsker
