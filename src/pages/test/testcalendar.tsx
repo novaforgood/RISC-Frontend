@@ -41,7 +41,5 @@ export default TestPage;
 
 const SAMPLE_AVAILABILITIES = {
   weekly: [[{ start: new Date(), end: new Date() }], [], [], [], [], [], []], // Sunday thru Saturday
-  overrides: [
-    { date: new Date(), timeslots: [{ start: new Date(), end: new Date() }] },
-  ],
+  overrides: [{ start: new Date(), end: new Date() }],
 };

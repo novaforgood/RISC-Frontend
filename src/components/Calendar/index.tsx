@@ -14,10 +14,7 @@ type Timeslot = {
 
 type Availabilities = {
   weekly: Timeslot[][];
-  overrides: {
-    date: Date;
-    timeslots: Timeslot[];
-  }[];
+  overrides: Timeslot[];
 };
 
 const today = new Date();
@@ -50,14 +47,11 @@ const Calendar = ({
   let isOverrided = useMemo(() => {
     const ret: { [key: number]: boolean } = {};
     if (!days || days.length == 0) return ret;
-    for (let d of availabilities.overrides) {
-      const idx = dateDiffInDays(days[0], d.date);
-      if (!d.timeslots || d.timeslots.length === 0) {
-        ret[idx] = false;
-      } else {
-        ret[idx] = true;
-      }
+    for (let timeslot of availabilities.overrides) {
+      const idx = dateDiffInDays(days[0], timeslot.start);
+      ret[idx] = true;
     }
+    console.log(ret);
     return ret;
   }, [days, availabilities]);
 
