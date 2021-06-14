@@ -51,6 +51,7 @@ module.exports = {
       },
       transitionProperty: {
         background: "background-color",
+        152: "38rem",
       },
     },
   },

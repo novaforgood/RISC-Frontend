@@ -1,0 +1,21 @@
+query getMyUser {
+  getMyUser {
+    userId
+    email
+    firstName
+    lastName
+    profilePictureUrl
+    profiles {
+      profileType
+      program {
+        programId
+        name
+        iconUrl
+        slug
+      }
+    }
+    applications {
+      programId
+    }
+  }
+}
