@@ -1,4 +1,4 @@
-import { HTMLAttributes, useState } from "react";
+import { useState } from "react";
 import { Card } from "./atomic";
 import TitledInput from "./TitledInput";
 const _ = require("lodash"); // Is this right?
@@ -30,11 +30,13 @@ type TextAskerProps = TextQuestion & {
   onChange: (id: string, answer: string) => void;
 };
 
-type FormProps = HTMLAttributes<HTMLDivElement> & {
+type FormProps = {
   questions: Question[];
-  initResponses: { [key: string]: string };
-  onSubmit: (responses: Object) => void; // Takes in answer json and send it to db
-  id?: string; // id for the form HTML element to allow linking of external buttons
+  responses?: { [key: string]: string };
+  onChange?: (responses: Object) => void;
+  onAutosave?: (responses: Object) => void; // Takes in answer json and send it to db
+  waitTime?: number;
+  className?: string;
 };
 
 /**
@@ -66,46 +68,42 @@ const TextAsker = ({
 /**
  * @summary Renders Form from question[]
  * @param questions questions to render into components
- * @param initResponses mapped type from question id to previously saved response
- * @param onChange Function that takes in responses json and pushes it to the db
- * @param id The id that will be given to the form HTML element. This allows linking external submit buttons.
+ * @param responses mapped type from question id to previously saved response
+ * @param onChange Invoked at every edit on form
+ * @param onAutosave Invoked after user edits the form and pauses for `waitTime` milliseconds.
+ * @param waitTime Autosave debounce wait time in milliseconds
  */
 const Form = ({
   questions,
-  initResponses = {},
-  onSubmit,
-  id,
+  responses = {},
+  onChange = () => {},
+  onAutosave = () => {},
+  waitTime = 3000,
   className,
-  ...props
 }: FormProps) => {
-  var responses: { [key: string]: string } = initResponses;
-
-  const debouncedOnSubmit = _.debounce(() => {
-    onSubmit(responses);
-  }, 3000);
+  const debouncedAutosave = _.debounce(() => {
+    onAutosave(responses);
+  }, waitTime);
 
   //TODO
-  const onChange = (id: string, answer: string): void => {
+  const handleChange = (id: string, answer: string): void => {
     responses[`${id}`] = answer;
-    debouncedOnSubmit();
+    onChange(responses);
+    debouncedAutosave();
   };
 
   return (
-    <Card {...props} className={"p-9 border-inactive rounded-xl " + className}>
-      <form
-        id={id}
-        onSubmit={() => onSubmit(responses)} /*do we need an action?*/
-        className="space-y-6"
-      >
-        {questions.map((q, i) => {
-          switch (q.type) {
+    <Card className={"p-9 border-inactive rounded-xl " + className}>
+      <div className="space-y-6">
+        {questions.map((question, i) => {
+          switch (question.type) {
             case "short-answer":
             case "long-answer":
               return (
                 <TextAsker
-                  {...q}
-                  initResponse={initResponses[`${q.id}`] || ""}
-                  onChange={onChange}
+                  {...question}
+                  initResponse={responses[`${question.id}`] || ""}
+                  onChange={handleChange}
                   key={i}
                 ></TextAsker>
               );
@@ -113,7 +111,7 @@ const Form = ({
               return;
           }
         })}
-      </form>
+      </div>
     </Card>
   );
 };

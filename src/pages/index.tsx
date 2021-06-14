@@ -1,7 +1,6 @@
-import React from "react";
-import { Button, Text } from "../components/atomic";
+import React, { useState } from "react";
+import { Button } from "../components/atomic";
 import Form, { Question } from "../components/Form";
-import TitledInput from "../components/TitledInput";
 import { useGetMyUserQuery } from "../generated/graphql";
 import { PageGetProgramBySlugComp } from "../generated/page";
 import { useAuth } from "../utils/firebase/auth";
@@ -9,6 +8,9 @@ import { useAuth } from "../utils/firebase/auth";
 const IndexPage: PageGetProgramBySlugComp = (_) => {
   const { user, signOut } = useAuth();
   const { data } = useGetMyUserQuery();
+
+  const [responses, setResponses] = useState({});
+  const [formChanged, setFormChanged] = useState(false);
 
   // Dummy data
   const dummyForm: Question[] = [
@@ -32,7 +34,6 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
       <div className="h-4"></div>
       <div>{JSON.stringify(data?.getMyUser)}</div>
       <div className="h-4"></div>
-
       {user ? <p>Hi, {user.displayName}</p> : <p>Join us!</p>}
       {user ? (
         <button
@@ -45,32 +46,30 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
       ) : (
         <a href="/login">Log In</a>
       )}
-      <br />
-      <Text h2>Just the component</Text>
+      {/* Form */}
       <Form
         questions={dummyForm}
-        initResponses={{}}
-        onSubmit={(resp: Object) => {
-          console.log("Imagine that I pushed answers");
-          console.log(resp);
+        responses={responses}
+        onChange={() => {
+          setFormChanged(true);
+          console.log("onChange");
         }}
-        id="bryanTestID0"
-      ></Form>
-      <Text h2>With margins applied</Text>
-      <Form
-        questions={dummyForm}
-        initResponses={{}}
-        onSubmit={(resp: Object) => {
-          console.log("Imagine that I pushed answers");
-          console.log(resp);
+        onAutosave={(response) => {
+          setResponses(response);
+          console.log("onAutosave");
+          console.log(response);
         }}
-        id="bryanTestID1"
         className="m-20"
       ></Form>
-      <Text h2>Can make custom submit button and link to form</Text>
-      <br />
-      <Button form="bryanTestID1">Submit</Button>
-      <TitledInput title="Foo"></TitledInput>
+      <Button
+        disabled={!formChanged}
+        onClick={() => {
+          console.log("Submitted!");
+          console.log(responses);
+        }}
+      >
+        Submit
+      </Button>
     </>
   );
 };
