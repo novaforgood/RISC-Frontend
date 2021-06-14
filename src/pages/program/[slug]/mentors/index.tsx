@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import {
   Button,
   Card,
@@ -16,6 +16,107 @@ import ChooseTabLayout from "../../../../layouts/ChooseTabLayout";
 import Page from "../../../../types/Page";
 
 type MentorProfile = GetProfilesQuery["getProfiles"][0];
+
+enum ProfileModalStage {
+  VIEW_PROFILE = "VIEW_PROFILE",
+  BOOK_CHAT = "BOOK_CHAT",
+}
+interface ProfileModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  mentor: MentorProfile;
+}
+const ProfileModal = ({
+  isOpen,
+  onClose = () => {},
+  mentor,
+}: ProfileModalProps) => {
+  const [stage, setStage] = useState(ProfileModalStage.VIEW_PROFILE);
+
+  useEffect(() => {
+    if (isOpen === true) setStage(ProfileModalStage.VIEW_PROFILE);
+    return () => {};
+  }, [isOpen]);
+
+  const renderModalContents = () => {
+    switch (stage) {
+      case ProfileModalStage.VIEW_PROFILE:
+        return (
+          <Fragment>
+            <div className="flex flex-col items-center">
+              <div className="h-40 w-40 rounded-full bg-tertiary">
+                <img src={mentor.user.profilePictureUrl}></img>
+              </div>
+              <div className="h-4"></div>
+              <Text b1 b>
+                {mentor.user.firstName} {mentor.user.lastName}
+              </Text>
+            </div>
+            <div className="w-8"></div>
+            <div>
+              <div>
+                <div className="rounded bg-tertiary p-4">
+                  <table className="table-auto">
+                    <tr>
+                      <td>
+                        <Text b>Email:</Text>
+                      </td>
+                      <td className="pl-4">
+                        <Text>{mentor.user.email}</Text>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              <div className="h-2"></div>
+
+              <div className="flex">
+                <Button
+                  size="small"
+                  onClick={() => {
+                    setStage(ProfileModalStage.BOOK_CHAT);
+                  }}
+                >
+                  Book a Chat
+                </Button>
+                <div className="w-2"></div>
+                <Button size="small" variant="inverted">
+                  Request Mentor
+                </Button>
+              </div>
+            </div>
+          </Fragment>
+        );
+      case ProfileModalStage.BOOK_CHAT:
+        return (
+          <Fragment>
+            <Button
+              onClick={() => {
+                setStage(ProfileModalStage.VIEW_PROFILE);
+              }}
+              size="small"
+            >
+              Back
+            </Button>
+            <Text>
+              Book a chat with {mentor.user.firstName} {mentor.user.lastName}
+            </Text>
+          </Fragment>
+        );
+    }
+  };
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        onClose();
+      }}
+    >
+      <div className="flex p-4">{renderModalContents()}</div>
+    </Modal>
+  );
+};
 
 interface MentorCardProps {
   // TODO: Remove "any" and replace with proper fields
@@ -36,7 +137,7 @@ const MentorCard = ({ mentor }: MentorCardProps) => {
   );
 
   return (
-    <Card className="flex flex-col m-5 p-6 place-items-center border-0">
+    <Card className="flex flex-col p-6 place-items-center border-0">
       <div className="h-40 w-40 rounded-full bg-tertiary">
         <img src={mentor.user.profilePictureUrl}></img>
       </div>
@@ -61,53 +162,16 @@ const MentorCard = ({ mentor }: MentorCardProps) => {
           setProfileModalOpen(true);
         }}
       >
-        Book a Chat
+        View Profile
       </Button>
 
-      <Modal
+      <ProfileModal
         isOpen={profileModalOpen}
         onClose={() => {
           setProfileModalOpen(false);
         }}
-      >
-        <div className="flex p-4">
-          <div className="flex flex-col items-center">
-            <div className="h-40 w-40 rounded-full bg-tertiary">
-              <img src={mentor.user.profilePictureUrl}></img>
-            </div>
-            <div className="h-4"></div>
-            <Text b1 b>
-              {mentor.user.firstName} {mentor.user.lastName}
-            </Text>
-          </div>
-          <div className="w-8"></div>
-          <div>
-            <div>
-              <div className="rounded bg-tertiary p-4">
-                <table className="table-auto">
-                  <tr>
-                    <td>
-                      <Text b>Email:</Text>
-                    </td>
-                    <td className="pl-4">
-                      <Text>{mentor.user.email}</Text>
-                    </td>
-                  </tr>
-                </table>
-              </div>
-            </div>
-            <div className="h-2"></div>
-
-            <div className="flex">
-              <Button size="small">Book a Chat</Button>
-              <div className="w-2"></div>
-              <Button size="small" variant="inverted">
-                Request Mentor
-              </Button>
-            </div>
-          </div>
-        </div>
-      </Modal>
+        mentor={mentor}
+      />
     </Card>
   );
 };
@@ -154,8 +218,8 @@ const ViewMentorsPage: Page = () => {
         {sortDropdown()}
       </div>
       <Input className="h-5 w-full" placeholder="Search..."></Input>
-      <div className="h-1"></div>
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+      <div className="h-8"></div>
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {mentors?.map((mentor: MentorProfile, index: number) => {
           return <MentorCard mentor={mentor} key={index} />;
         })}
