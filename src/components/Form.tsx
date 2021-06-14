@@ -39,6 +39,22 @@ type FormProps = {
   className?: string;
 };
 
+// Dummy data
+export var dummyForm: Question[] = [
+  {
+    id: "0ABC",
+    title: "Test Question",
+    type: "short-answer",
+    description: "",
+  },
+  {
+    id: "1ABC",
+    title: "Test Question",
+    type: "short-answer",
+    description: "",
+  },
+];
+
 /**
  * @summary Short text and Long Text Asker.
  * Right now, there is no difference except placeholder. Do we want long answer to have multiline input functionality?
