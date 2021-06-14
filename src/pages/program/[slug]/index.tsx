@@ -2,7 +2,7 @@ import type { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
-import { Text } from "../../../components/atomic";
+import { Button, Text } from "../../../components/atomic";
 import {
   PageGetProgramBySlugComp,
   ssrGetProgramBySlug,
@@ -13,7 +13,7 @@ import Page from "../../../types/Page";
 import { parseParam } from "../../../utils";
 import { useAuth } from "../../../utils/firebase/auth";
 
-const ProgramPage: PageGetProgramBySlugComp & Page = (props) => {
+const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
   const { user, signOut } = useAuth();
   const authorizationLevel = useAuthorizationLevel();
   const router = useRouter();
@@ -23,27 +23,38 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props) => {
   return (
     <div className="h-screen w-full">
       <div>
-        <a href="/create">Create Program</a>
+        {authorizationLevel === AuthorizationLevel.NotInProgram && (
+          <>
+            <Button variant="inverted" size="small">
+              <Link href={`${router.asPath}/apply`}>Apply to Mentor</Link>
+            </Button>
+            <Button size="small">
+              <Link href={`${router.asPath}/join`}>Join</Link>
+            </Button>
+          </>
+        )}
       </div>
-      {authorizationLevel === AuthorizationLevel.NotInProgram && (
-        <Link href={`${router.asPath}/join`}>Join this program</Link>
-      )}
-      <div className="p-4">
+      <div>
         <div>
+          <a href="/create">Create Program</a>
+        </div>
+        <div className="p-4">
           <div>
-            <Text h2>Program: [{program?.name}]</Text>
-          </div>
-          <div>
-            <Text b>Authorization Level: [{authorizationLevel}]</Text>
+            <div>
+              <Text h2>Program: [{program?.name}]</Text>
+            </div>
+            <div>
+              <Text b>Authorization Level: [{authorizationLevel}]</Text>
+            </div>
           </div>
         </div>
+        {user ? <p>Hi, {user.displayName}</p> : <p>Join us!</p>}
+        {user ? (
+          <button onClick={() => signOut()}>Sign Out</button>
+        ) : (
+          <a href="/login">Log In</a>
+        )}
       </div>
-      {user ? <p>Hi, {user.displayName}</p> : <p>Join us!</p>}
-      {user ? (
-        <button onClick={() => signOut()}>Sign Out</button>
-      ) : (
-        <a href="/login">Log In</a>
-      )}
     </div>
   );
 };
