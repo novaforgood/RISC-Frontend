@@ -1,0 +1,11 @@
+mutation setWeeklyAvailabilities(
+  $profileId: String!
+  $availabilities: [DateInterval!]!
+) {
+  setWeeklyAvailabilities(
+    profileId: $profileId
+    availabilities: $availabilities
+  ) {
+    profileId
+  }
+}

@@ -1,0 +1,7 @@
+query getWeeklyAvailabilities($profileId: String!) {
+  getWeeklyAvailabilities(profileId: $profileId) {
+    profileId
+    startTime
+    endTime
+  }
+}
