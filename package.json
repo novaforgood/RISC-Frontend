@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "next",
     "build": "rm -rf .next/ && next build",
+    "build-only": "next build",
     "start": "next start",
     "type-check": "tsc",
     "generate": "graphql-codegen --require dotenv/config --config codegen.yml dotenv_config_path=.env.local"

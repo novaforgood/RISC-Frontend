@@ -1,12 +1,9 @@
-import { ChangeEvent, HTMLAttributes, useState } from "react";
-import { Button, Card } from "./atomic";
+import { HTMLAttributes, useState } from "react";
+import { Card } from "./atomic";
 import TitledInput from "./TitledInput";
 const _ = require("lodash"); // Is this right?
 
-/**
- * @summary Typedefs for the Form.
- * BACKLOG: Where should we store these types?
- */
+// TYPES
 export type RecursivePartial<T> = {
   [P in keyof T]?: RecursivePartial<T[P]>;
 };
@@ -28,111 +25,92 @@ export type MultipleChoiceQuestion = QuestionBase & {
 
 export type Question = MultipleChoiceQuestion | TextQuestion;
 
-type AnswerType = any; // TODO after 06/12: Should specify answer type
-
 type TextAskerProps = TextQuestion & {
   initResponse: string;
+  onChange: (id: string, answer: string) => void;
 };
 
 type FormProps = HTMLAttributes<HTMLDivElement> & {
-  form: Question[];
+  questions: Question[];
   initResponses: { [key: string]: string };
-  onChange: (id: string, answer: AnswerType) => void;
-};
-
-var responses: { [key: string]: string };
-
-// TODO
-/**
- * @summary UNFINISHED: Multiple choice Asker
- */
-const MultipleChoiceAsker = ({ ...props }: MultipleChoiceQuestion) => {
-  return <></>;
+  onSubmit: (responses: Object) => void; // Takes in answer json and send it to db
+  id?: string; // id for the form HTML element to allow linking of external buttons
 };
 
 /**
  * @summary Short text and Long Text Asker.
  * Right now, there is no difference except placeholder. Do we want long answer to have multiline input functionality?
  */
-const TextAsker = ({ id, title, type, initResponse }: TextAskerProps) => {
+const TextAsker = ({
+  id,
+  title,
+  type,
+  initResponse,
+  onChange,
+}: TextAskerProps) => {
   const [answer, setAnswer] = useState(initResponse); // Replace with responses
-
-  // var throttledPush = _.throttle(() => {
-  //   responses[`${id}`] = answer;
-  //   console.log("Resp Modif at id: ", id, " with answer ", responses[`${id}`]);
-  // }, 3000);
-
-  // var throttledPush = () => {
-  //   responses[`${id}`] = answer;
-  //   console.log("Resp Modif at id: ", id, " with answer ", responses[`${id}`]);
-  // };
-  //
-  // const debouncedPush = _.debounce(throttledPush, 3000);
-
-  const handleAnswerChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    setAnswer(e.target.value);
-    console.log("Change at id: ", id, " with answer ", e.target.value); // Testing
-    responses[`${id}`] = e.target.value;
-    // Tell form to update it (debounced)
-  };
 
   return (
     <TitledInput
       title={title}
       placeholder={type == "short-answer" ? "Short text" : "Long text"} // Want this branching to be in the Form switch statement, but couldn't get types to work in args of this function
       value={answer}
-      onChange={handleAnswerChange}
+      onChange={(e) => {
+        setAnswer(e.target.value);
+        onChange(id, e.target.value);
+      }}
     ></TitledInput>
   );
 };
 
 /**
  * @summary Renders Form from question[]
- * @param {Function} onChange
+ * @param questions questions to render into components
+ * @param initResponses mapped type from question id to previously saved response
+ * @param onChange Function that takes in responses json and pushes it to the db
+ * @param id The id that will be given to the form HTML element. This allows linking external submit buttons.
  */
 const Form = ({
-  form = [],
+  questions,
   initResponses = {},
-  onChange,
+  onSubmit,
+  id,
   ...props
 }: FormProps) => {
-  responses = initResponses;
+  var responses: { [key: string]: string } = initResponses;
+
+  const debouncedOnSubmit = _.debounce(() => {
+    onSubmit(responses);
+  }, 3000);
 
   //TODO
-  const handleFormSubmit = () => {
-    // This should probably be a function that iterates through all the Askers and tells each of them
-    // to push their answers.
-    console.log("Imagine that a form submitted");
+  const onChange = (id: string, answer: string): void => {
+    responses[`${id}`] = answer;
+    debouncedOnSubmit();
   };
-
-  // const externallyAccessibleFunction = () => {
-  //   save all the questions
-  // }
 
   return (
     <Card {...props}>
-      <form onSubmit={handleFormSubmit} /*do we need an action?*/>
-        {form.map((question, i) => {
-          switch (question.type) {
+      <form
+        id={id}
+        onSubmit={() => onSubmit(responses)} /*do we need an action?*/
+      >
+        {questions.map((q, i) => {
+          switch (q.type) {
             case "short-answer":
             case "long-answer":
               return (
                 <TextAsker
-                  {...question}
-                  initResponse={initResponses[`${question.id}`] || ""}
+                  {...q}
+                  initResponse={initResponses[`${q.id}`] || ""}
+                  onChange={onChange}
                   key={i}
                 ></TextAsker>
               );
             case "multiple-choice":
-              return (
-                <MultipleChoiceAsker
-                  {...question}
-                  key={i}
-                ></MultipleChoiceAsker>
-              );
+              return;
           }
         })}
-        <Button>Submit</Button>
       </form>
     </Card>
   );
