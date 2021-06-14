@@ -75,6 +75,7 @@ const Form = ({
   initResponses = {},
   onSubmit,
   id,
+  className,
   ...props
 }: FormProps) => {
   var responses: { [key: string]: string } = initResponses;
@@ -90,10 +91,11 @@ const Form = ({
   };
 
   return (
-    <Card {...props}>
+    <Card {...props} className={"p-9 border-inactive rounded-xl " + className}>
       <form
         id={id}
         onSubmit={() => onSubmit(responses)} /*do we need an action?*/
+        className="space-y-6"
       >
         {questions.map((q, i) => {
           switch (q.type) {
