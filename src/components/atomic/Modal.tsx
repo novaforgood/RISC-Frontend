@@ -1,13 +1,24 @@
 import { Dialog, Transition } from "@headlessui/react";
 import classNames from "classnames";
-import React, { Fragment, HTMLAttributes, ReactNode } from "react";
+import React, {
+  Fragment,
+  HTMLAttributes,
+  MutableRefObject,
+  ReactNode,
+} from "react";
 type ModalProps = HTMLAttributes<HTMLDivElement> & {
   isOpen: boolean;
   onClose: () => void;
   children?: ReactNode;
+  initialFocus?: MutableRefObject<HTMLElement | null>;
 };
 
-const Modal = ({ children, isOpen, onClose = () => {} }: ModalProps) => {
+const Modal = ({
+  children,
+  isOpen,
+  onClose = () => {},
+  initialFocus,
+}: ModalProps) => {
   const overlayStyles = classNames({
     "fixed inset-0 bg-black": true,
     "opacity-20": isOpen,
@@ -19,6 +30,7 @@ const Modal = ({ children, isOpen, onClose = () => {} }: ModalProps) => {
           as="div"
           className="fixed inset-0 z-10 overflow-y-auto"
           onClose={onClose}
+          initialFocus={initialFocus}
         >
           <div className="min-h-screen px-4 text-center">
             <Transition.Child
