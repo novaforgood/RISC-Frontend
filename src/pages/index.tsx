@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "../components/atomic";
+import { Button, Text } from "../components/atomic";
 import Form, { Question } from "../components/Form";
 import TitledInput from "../components/TitledInput";
 import { useGetMyUserQuery } from "../generated/graphql";
@@ -45,6 +45,8 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
       ) : (
         <a href="/login">Log In</a>
       )}
+      <br />
+      <Text h2>Just the component</Text>
       <Form
         questions={dummyForm}
         initResponses={{}}
@@ -52,9 +54,22 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
           console.log("Imagine that I pushed answers");
           console.log(resp);
         }}
-        id="bryanTestID"
+        id="bryanTestID0"
       ></Form>
-      <Button form="bryanTestID">Submit</Button>
+      <Text h2>With margins applied</Text>
+      <Form
+        questions={dummyForm}
+        initResponses={{}}
+        onSubmit={(resp: Object) => {
+          console.log("Imagine that I pushed answers");
+          console.log(resp);
+        }}
+        id="bryanTestID1"
+        className="m-20"
+      ></Form>
+      <Text h2>Can make custom submit button and link to form</Text>
+      <br />
+      <Button form="bryanTestID1">Submit</Button>
       <TitledInput title="Foo"></TitledInput>
     </>
   );
