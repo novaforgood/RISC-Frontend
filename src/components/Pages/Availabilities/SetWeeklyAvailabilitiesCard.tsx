@@ -13,8 +13,13 @@ import {
   startOfDay,
   startOfWeek,
 } from "date-fns";
-import React, { useState } from "react";
-import { DateInterval } from "../../../generated/graphql";
+import React from "react";
+import {
+  DateInterval,
+  refetchGetWeeklyAvailabilitiesQuery,
+  useGetWeeklyAvailabilitiesQuery,
+  useSetWeeklyAvailabilitiesMutation,
+} from "../../../generated/graphql";
 import { Button, Text } from "../../atomic";
 import Select from "../../atomic/Select";
 import { weekdayNames } from "../../Calendar/data";
@@ -149,10 +154,31 @@ type SetWeeklyAvailabilitiesCardProps = {
   profileId: string;
 };
 
-export const SetWeeklyAvailabilitiesCard = ({}: SetWeeklyAvailabilitiesCardProps) => {
-  const [weeklyAvailabilities, setWeeklyAvailabilities] = useState<
-    DateInterval[]
-  >([]);
+export const SetWeeklyAvailabilitiesCard = ({
+  profileId,
+}: SetWeeklyAvailabilitiesCardProps) => {
+  const { data, loading, error } = useGetWeeklyAvailabilitiesQuery({
+    variables: {
+      profileId,
+    },
+  });
+
+  const [setWeeklyAvailabilitiesMutation] = useSetWeeklyAvailabilitiesMutation({
+    refetchQueries: [
+      refetchGetWeeklyAvailabilitiesQuery({
+        profileId,
+      }),
+    ],
+  });
+
+  let weeklyAvailabilities: DateInterval[] = [];
+
+  if (!loading && !error && data) {
+    weeklyAvailabilities = data.getWeeklyAvailabilities.map((x) => ({
+      startTime: new Date(x.startTime),
+      endTime: new Date(x.endTime),
+    }));
+  }
 
   const addWeeklyAvailability = (date: Date) => {
     const availabilitiesForDate = weeklyAvailabilities.filter((interval) =>
@@ -204,7 +230,12 @@ export const SetWeeklyAvailabilitiesCard = ({}: SetWeeklyAvailabilitiesCardProps
     const newWeeklyAvailabilities = weeklyAvailabilities
       .concat(newAvailability)
       .sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
-    setWeeklyAvailabilities(newWeeklyAvailabilities);
+    setWeeklyAvailabilitiesMutation({
+      variables: {
+        profileId: profileId,
+        availabilities: newWeeklyAvailabilities,
+      },
+    });
   };
 
   const editWeeklyAvailability = (dateIntervalIndex: number) => (
@@ -215,7 +246,12 @@ export const SetWeeklyAvailabilitiesCard = ({}: SetWeeklyAvailabilitiesCardProps
       ...weeklyAvailabilities.slice(dateIntervalIndex + 1),
       newDateInterval,
     ].sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
-    setWeeklyAvailabilities(newWeeklyAvailabilities);
+    setWeeklyAvailabilitiesMutation({
+      variables: {
+        profileId: profileId,
+        availabilities: newWeeklyAvailabilities,
+      },
+    });
   };
 
   const deleteWeeklyAvailability = (dateIntervalIndex: number) => () => {
@@ -223,7 +259,12 @@ export const SetWeeklyAvailabilitiesCard = ({}: SetWeeklyAvailabilitiesCardProps
       ...weeklyAvailabilities.slice(0, dateIntervalIndex),
       ...weeklyAvailabilities.slice(dateIntervalIndex + 1),
     ];
-    setWeeklyAvailabilities(newWeeklyAvailabilities);
+    setWeeklyAvailabilitiesMutation({
+      variables: {
+        profileId: profileId,
+        availabilities: newWeeklyAvailabilities,
+      },
+    });
   };
 
   return (
@@ -249,7 +290,9 @@ export const SetWeeklyAvailabilitiesCard = ({}: SetWeeklyAvailabilitiesCardProps
                 <Text b>{weekdayNames[getDay(date)].toUpperCase() + "S"}</Text>
                 {weeklyAvailabilities.map((interval, intervalIndex) => {
                   if (getDay(interval.startTime) !== getDay(date)) {
-                    return <></>;
+                    return (
+                      <React.Fragment key={intervalIndex}></React.Fragment>
+                    );
                   }
                   return (
                     <SetDateInterval
