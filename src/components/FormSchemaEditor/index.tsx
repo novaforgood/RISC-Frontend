@@ -76,7 +76,7 @@ const FormSchemaEditor: React.FC<FormSchemaEditorProps> = ({
             }}
           </Droppable>
         </DragDropContext>
-        <div className="h-8"></div>
+        <div className="h-4"></div>
         <Button
           size="small"
           className="mx-auto"

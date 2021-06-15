@@ -229,6 +229,7 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
 
               {questionPreview()}
             </div>
+            <div className="h-4"></div>
           </div>
         );
       }}
