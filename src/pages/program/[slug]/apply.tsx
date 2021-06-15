@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { Button, Text } from "../../../components/atomic";
+import { Button, Text, Card } from "../../../components/atomic";
 import Form, { dummyForm } from "../../../components/Form";
 import {
   ApplicationType,
@@ -42,58 +42,111 @@ const ProgramApplyPage: Page = (_) => {
     );
 
   return (
-    <div className="min-w-screen h-screen bg-tertiary">
-      {/* Nav bar goes here */}
-      <div
-        className={"max-w-4xl mx-auto p-10" + (formSubmitted ? " hidden" : "")}
+    <>
+      {/* For Testing */}
+      {/* <Button
+        variant={formSubmitted ? "inverted" : "solid"}
+        onClick={() => {
+          setFormSubmitted(!formSubmitted);
+        }}
       >
-        <div className="mt-9">
-          <Text h1 b>
-            {currentProgram?.name}
-          </Text>
-        </div>
-        <div className="mt-4">
-          <Text h3>Mentor Application</Text>
-        </div>
-        <div className="mt-6 mx-10">
-          <Form
-            questions={dummyForm} // Should actually fetch form schema
-            responses={responses}
-            onChange={() => {
-              setFormChanged(true);
-            }}
-            // onAutosave={(response) => {
-            //   setResponses(response);
-            // }}
-          ></Form>
-          <div className="flex justify-between mt-10">
-            <Button variant="inverted">Back</Button>
-            <Button
-              disabled={!formChanged}
-              onClick={() => {
-                if (!currentProgram || !user) return; // Should show an error message
-                const createApplicationInput: CreateApplicationInput = {
-                  programId: currentProgram.programId!,
-                  applicationJson: JSON.stringify(responses),
-                  applicationType: ApplicationType.Mentor,
-                };
-                createApplication({
-                  variables: { data: createApplicationInput },
-                });
-                setFormSubmitted(true);
-              }}
-            >
-              Submit
-            </Button>
-            {user == null ? (
-              <RedirectIfNotLoggedIn
-                pathAfterLoggingIn={`${router.asPath}`}
-              ></RedirectIfNotLoggedIn>
-            ) : null}
+        Submitted: <pre>{formSubmitted ? "true" : "false"}</pre>
+      </Button> */}
+      <div className="min-w-screen h-screen bg-tertiary">
+        {/* Nav bar goes here */}
+        <div
+          className={
+            "max-w-4xl mx-auto p-10" +
+            (formSubmitted
+              ? " h-screen w-screen flex flex-col justify-center items-center"
+              : "")
+          }
+        >
+          <div className={formSubmitted ? "hidden" : ""}>
+            <div className="mt-9">
+              <Text h1 b>
+                {currentProgram?.name}
+              </Text>
+            </div>
+            <div className="mt-4">
+              <Text h3>Mentor Application</Text>
+            </div>
+            <div className="mt-6 mx-10">
+              <Form
+                questions={dummyForm} // Should actually fetch form schema
+                responses={responses}
+                onChange={() => {
+                  setFormChanged(true);
+                }}
+                // onAutosave={(response) => {
+                //   setResponses(response);
+                // }}
+              ></Form>
+              <div className="flex justify-between mt-10">
+                <Button variant="inverted">Back</Button>
+                <Button
+                  disabled={!formChanged}
+                  onClick={() => {
+                    if (!currentProgram || !user) return; // Should show an error message
+                    const createApplicationInput: CreateApplicationInput = {
+                      programId: currentProgram.programId!,
+                      applicationJson: JSON.stringify(responses),
+                      applicationType: ApplicationType.Mentor,
+                    };
+                    createApplication({
+                      variables: { data: createApplicationInput },
+                    });
+                    setFormSubmitted(true);
+                  }}
+                >
+                  Submit
+                </Button>
+                {user == null ? (
+                  <RedirectIfNotLoggedIn
+                    pathAfterLoggingIn={`${router.asPath}`}
+                  ></RedirectIfNotLoggedIn>
+                ) : null}
+              </div>
+            </div>
+          </div>
+          <div className={"mx-10" + (formSubmitted ? "" : " hidden")}>
+            <div>
+              <Text h1 b>
+                Thank You
+              </Text>
+            </div>
+            <div className="mt-6">
+              <Card className="p-9 border-inactive rounded-xl">
+                <Text b>
+                  Your application has been submitted. You will receive an email
+                  once there are updates to your application.
+                </Text>
+                <br />
+                <br />
+                <Text>
+                  Please contact [Mentorship Admin - TODO] if you need to make
+                  changes to your application.
+                </Text>
+                <br />
+                <br />
+                <Text b>
+                  Go to your profile to view your application status.
+                </Text>
+              </Card>
+              <div className="mt-14">
+                <Button
+                  onClick={() => {
+                    //TODO
+                  }}
+                >
+                  Go to Profile
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
