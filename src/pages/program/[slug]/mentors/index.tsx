@@ -1,3 +1,5 @@
+import { addMinutes, getDay, isBefore } from "date-fns";
+import dateFormat from "dateformat";
 import React, { Fragment, useEffect, useState } from "react";
 import {
   Button,
@@ -20,11 +22,35 @@ import Page from "../../../../types/Page";
 
 type MentorProfile = GetProfilesQuery["getProfiles"][0];
 
+function generateTimeslots(
+  day: Date | null,
+  minutesPerTimeslot: number,
+  weeklyAvailabilities: DateInterval[]
+) {
+  if (!day) return [];
+  const timeslots: DateInterval[] = [];
+  for (let avail of weeklyAvailabilities) {
+    if (getDay(avail.startTime) === getDay(day)) {
+      let d = avail.startTime;
+      let n = 1;
+      while (isBefore(addMinutes(d, minutesPerTimeslot * n), avail.endTime)) {
+        timeslots.push({
+          startTime: addMinutes(d, minutesPerTimeslot * (n - 1)),
+          endTime: addMinutes(d, minutesPerTimeslot * n),
+        });
+        n += 1;
+      }
+    }
+  }
+
+  return timeslots;
+}
+
 interface BookAChatProps {
   mentor: MentorProfile;
 }
 const BookAChat = ({ mentor }: BookAChatProps) => {
-  const [selectedDay, setSelectedDay] = useState(new Date());
+  const [selectedDay, setSelectedDay] = useState<Date | null>(new Date());
   const { data, error } = useGetWeeklyAvailabilitiesQuery({
     variables: { profileId: mentor.profileId },
   });
@@ -36,6 +62,11 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
       endTime: new Date(x.endTime),
     }));
   }
+
+  console.log(weeklyAvailabilities);
+
+  const timeslots = generateTimeslots(selectedDay, 15, weeklyAvailabilities);
+  console.log(timeslots);
 
   return (
     <div>
@@ -51,13 +82,26 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
             weekly: weeklyAvailabilities,
             overrides: [],
           }}
-          onSelect={() => {
-            setSelectedDay(selectedDay);
+          onSelect={(newSelectedDay) => {
+            setSelectedDay(newSelectedDay);
           }}
           selectedDay={selectedDay}
         />
         <div className="w-8"></div>
-        <Card>lol</Card>
+        <Card>
+          <Text b>
+            {selectedDay && dateFormat(selectedDay, "dddd, mmmm dS, yyyy")}
+          </Text>
+          <div className="h-2"></div>
+          {timeslots.map((timeslot) => {
+            return (
+              <div>
+                {dateFormat(timeslot.startTime, "h:MM TT")} -{" "}
+                {dateFormat(timeslot.endTime, "h:MM TT")}
+              </div>
+            );
+          })}
+        </Card>
       </div>
     </div>
   );
