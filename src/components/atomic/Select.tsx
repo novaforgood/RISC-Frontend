@@ -1,5 +1,6 @@
 import { Listbox, Transition } from "@headlessui/react";
-import _ from "lodash";
+import { isEqual } from "date-fns";
+import {} from "lodash";
 import { Fragment } from "react";
 
 interface UpDownArrowProps {}
@@ -27,20 +28,18 @@ interface SelectProps<T> {
   value: T;
   onSelect?: (selectedValue: T) => void;
 }
-const Select = <T,>({
+const Select = <T extends string | Date>({
   options,
   value,
   onSelect = () => {},
 }: SelectProps<T>) => {
-  let valueToLabel: { [key: T]: string } = {};
-  valueToLabel = _.reduce(
-    options,
-    (prev, curr) => {
-      prev[curr.value] = curr.label;
-      return prev;
-    },
-    valueToLabel
-  );
+  const valueToLabel = (value: T) => {
+    return options.find((x) =>
+      x.value instanceof Date && value instanceof Date
+        ? isEqual(x.value, value)
+        : x.value === value
+    )?.label;
+  };
 
   return (
     <div className="w-auto">
@@ -55,7 +54,7 @@ const Select = <T,>({
             className="relative w-full px-2 py-1 text-left border border-inactive rounded cursor-pointer
             focus:outline-none focus:ring-2 focus:ring-inactive focus:border-inactive flex justify-between items-center"
           >
-            <span className="block truncate">{valueToLabel[value]}</span>
+            <span className="block truncate">{valueToLabel(value)}</span>
             <UpDownArrow />
           </Listbox.Button>
           <Transition
