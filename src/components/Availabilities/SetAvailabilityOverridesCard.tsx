@@ -1,5 +1,5 @@
 import React from "react";
-import { Text } from "../../atomic";
+import { Text } from "../atomic";
 
 type SetAvailabilityOverridesCardProps = {
   profileId: string;
@@ -11,6 +11,7 @@ export const SetAvailabilityOverridesCard = ({
   return (
     <Text h3 b>
       Add Exceptions
+      {profileId}
     </Text>
   );
 };

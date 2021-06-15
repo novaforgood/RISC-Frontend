@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Text } from "../components/atomic";
-import { SetAvailabilityOverridesCard } from "../components/Pages/Availabilities/SetAvailabilityOverridesCard";
-import { SetWeeklyAvailabilitiesCard } from "../components/Pages/Availabilities/SetWeeklyAvailabilitiesCard";
+import { SetAvailabilityOverridesCard } from "../components/Availabilities/SetAvailabilityOverridesCard";
+import { SetWeeklyAvailabilitiesCard } from "../components/Availabilities/SetWeeklyAvailabilitiesCard";
 
 const PROFILE_ID = "4c1a35bb-dd8d-4de0-aa93-efff37ceba55";
 
