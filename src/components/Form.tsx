@@ -27,6 +27,7 @@ export type Question = MultipleChoiceQuestion | TextQuestion;
 
 type TextAskerProps = TextQuestion & {
   initResponse: string;
+  readonly: boolean;
   onChange: (id: string, answer: string) => void;
 };
 
@@ -36,6 +37,7 @@ type FormProps = {
   onChange?: (responses: Object) => void;
   onAutosave?: (responses: Object) => void; // Takes in answer json and send it to db
   autosaveInterval?: number;
+  readonly?: boolean;
   className?: string;
 };
 
@@ -48,6 +50,7 @@ const TextAsker = ({
   title,
   type,
   initResponse,
+  readonly,
   onChange,
 }: TextAskerProps) => {
   const [answer, setAnswer] = useState(initResponse); // Replace with responses
@@ -57,6 +60,7 @@ const TextAsker = ({
       title={title}
       placeholder={type == "short-answer" ? "Short text" : "Long text"} // Want this branching to be in the Form switch statement, but couldn't get types to work in args of this function
       value={answer}
+      readOnly={readonly}
       onChange={(e) => {
         setAnswer(e.target.value);
         onChange(id, e.target.value);
@@ -79,6 +83,7 @@ const Form = ({
   onChange = () => {},
   onAutosave = () => {},
   autosaveInterval = 3000,
+  readonly = false,
   className,
 }: FormProps) => {
   const debouncedAutosave = _.debounce(() => {
@@ -103,6 +108,7 @@ const Form = ({
                 <TextAsker
                   {...question}
                   initResponse={responses[`${question.id}`] || ""}
+                  readonly={readonly}
                   onChange={handleChange}
                   key={i}
                 ></TextAsker>
