@@ -6,5 +6,9 @@ query getProgramBySlug($slug: String!) {
     slug
     iconUrl
     homepage
+    mentorProfileSchemaJson
+    menteeProfileSchemaJson
+    mentorApplicationSchemaJson
+    menteeApplicationSchemaJson
   }
 }
