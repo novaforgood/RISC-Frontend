@@ -1,8 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { client } from "../../pages/_app";
 import firebase from "./firebase";
 
 interface AuthContext {
-  auth: firebase.User | null;
+  user: firebase.User | null;
   loading: boolean;
   signUpWithEmail: (
     e: string,
@@ -19,53 +20,66 @@ interface AuthContext {
 const authContext = createContext<AuthContext | undefined>(undefined);
 
 function useProvideAuth() {
-  const [auth, setAuth] = useState<firebase.User | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [user, setUser] = useState<firebase.User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const clearCache = () => {
+    client.resetStore();
+    localStorage.clear();
+  };
 
   const signUpWithEmail = async (email: string, password: string) => {
-    setLoading(true);
     return firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
-      .finally(() => setLoading(false));
+      .then((res) => {
+        clearCache();
+        return res;
+      });
   };
 
   const signInWithEmail = async (email: string, password: string) => {
-    setLoading(true);
     return firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .finally(() => setLoading(false));
+      .then((res) => {
+        clearCache();
+        return res;
+      });
   };
 
   const signInWithGoogle = async () => {
-    setLoading(true);
     return firebase
       .auth()
       .signInWithPopup(new firebase.auth.GoogleAuthProvider())
-      .finally(() => setLoading(false));
+      .then((res) => {
+        clearCache();
+        return res;
+      });
   };
 
   const signOut = async () => {
     return firebase
       .auth()
       .signOut()
-      .then(() => setLoading(false));
+      .then(() => {
+        clearCache();
+        setUser(null);
+      });
   };
 
   useEffect(() => {
     const unsubscribe = firebase
       .auth()
-      .onAuthStateChanged((authState: firebase.User | null) => {
-        setAuth(authState);
+      .onAuthStateChanged((newUser: firebase.User | null) => {
+        setUser(newUser);
         setLoading(false);
       });
     return () => unsubscribe();
   }, []);
 
-  // returns state values and callbacks for signIn and signOut.
   return {
-    auth,
+    user,
     loading,
     signUpWithEmail,
     signInWithEmail,

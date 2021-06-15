@@ -1,0 +1,14 @@
+query getApplications($programId: String!, $applicationType: String!) {
+  getApplications(programId: $programId, applicationType: $applicationType) {
+    applicationId
+    applicationType
+    applicationJson
+    applicationStatus
+    user {
+      firstName
+      lastName
+      profilePictureUrl
+      email
+    }
+  }
+}

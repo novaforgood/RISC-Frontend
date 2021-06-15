@@ -1,6 +1,6 @@
+import { ComponentProps } from "react";
 import Input from "./atomic/Input";
 import Text from "./atomic/Text";
-import { ComponentProps } from "react";
 
 type TitledInputProps = {
   title: string;

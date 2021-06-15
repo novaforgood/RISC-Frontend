@@ -1,9 +1,10 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
-import { useAuth } from "../utils/firebase/auth";
 import { Button, Text } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
-import type { GetServerSideProps } from "next";
+import { CreateUserInput, useCreateUserMutation } from "../generated/graphql";
+import { useAuth } from "../utils/firebase/auth";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24 md:h-64 md:w-64 lg:h-80 lg:w-80";
@@ -18,11 +19,13 @@ const BlobCircle = () => {
 
 const SignUpPage = () => {
   const { signUpWithEmail, signInWithGoogle } = useAuth();
+  const [displayError, setDisplayError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [displayError, setError] = useState("");
+  const router = useRouter();
+  const [createUser] = useCreateUserMutation();
 
   return (
     <div className="flex w-screen min-h-screen">
@@ -50,8 +53,25 @@ const SignUpPage = () => {
           <button
             onClick={() =>
               signInWithGoogle()
-                .catch((e) => setError(e.message))
-                .then((_) => {})
+                .then((res) => {
+                  if (res) {
+                    const arr = res.user?.displayName?.split(" ") || [];
+                    const createUserInput: CreateUserInput = {
+                      email: res.user?.email!,
+                      firstName: arr[0] || "",
+                      lastName: arr[1] || "",
+                      profilePictureUrl: "",
+                    };
+                    createUser({ variables: { data: createUserInput } }).then(
+                      () => {
+                        router.push("/");
+                      }
+                    );
+                  }
+                })
+                .catch((e) => {
+                  setDisplayError(e.message);
+                })
             }
             className="h-16 w-full bg-tertiary flex items-center justify-center cursor-pointer"
           >
@@ -129,9 +149,35 @@ const SignUpPage = () => {
 
           <Button
             onClick={() => {
-              signUpWithEmail(email, password).catch((error) => {
-                setError(error.message);
-              });
+              signUpWithEmail(email, password)
+                .catch((e) => {
+                  setDisplayError(e.message);
+                })
+                .then((res) => {
+                  // TODO: Valid profilePictureURL and photoURL
+                  if (res) {
+                    const createUserInput: CreateUserInput = {
+                      email: res.user?.email!,
+                      firstName: firstName,
+                      lastName: lastName,
+                      profilePictureUrl: "",
+                    };
+
+                    Promise.all([
+                      createUser({ variables: { data: createUserInput } }),
+                      res.user?.updateProfile({
+                        displayName: firstName + " " + lastName,
+                        photoURL: "",
+                      }),
+                    ])
+                      .then(() => {
+                        router.push("/");
+                      })
+                      .catch((e) => {
+                        setDisplayError(e.message);
+                      });
+                  }
+                });
             }}
           >
             Sign Up
@@ -139,7 +185,7 @@ const SignUpPage = () => {
           <div className="h-6" />
 
           <Text className="text-error">
-            {displayError + "TODO: Proper error box"}
+            {displayError ? displayError : "TODO: Proper error box"}
           </Text>
 
           {/* {auth ? (
@@ -154,17 +200,3 @@ const SignUpPage = () => {
 };
 
 export default SignUpPage;
-
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  res.setHeader(
-    "Cache-Control",
-    "public, s-maxage=1, stale-while-revalidate=59"
-  );
-  console.log(req.headers);
-
-  return {
-    props: {
-      host: req.headers.host,
-    },
-  };
-};

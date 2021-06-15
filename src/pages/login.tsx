@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { Button, Input, Text } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
@@ -20,6 +21,15 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayError, setError] = useState("");
+  const router = useRouter();
+
+  const redirectAfterLoggingIn = () => {
+    if (router.query.to && typeof router.query.to === "string") {
+      router.push(router.query.to);
+    } else {
+      router.push("/");
+    }
+  };
 
   return (
     <div className="flex w-screen min-h-screen relative">
@@ -48,7 +58,9 @@ const LoginPage = () => {
             onClick={() =>
               signInWithGoogle()
                 .catch((e) => setError(e.message))
-                .then((_) => {})
+                .then((_) => {
+                  redirectAfterLoggingIn();
+                })
             }
             className="h-16 w-full bg-tertiary flex items-center justify-center cursor-pointer"
           >
@@ -100,9 +112,13 @@ const LoginPage = () => {
 
           <Button
             onClick={() => {
-              signInWithEmail(email, password).catch((error) => {
-                setError(error.message);
-              });
+              signInWithEmail(email, password)
+                .catch((error) => {
+                  setError(error.message);
+                })
+                .then((_) => {
+                  redirectAfterLoggingIn();
+                });
             }}
           >
             Login
@@ -111,11 +127,6 @@ const LoginPage = () => {
           <Text className="text-error">
             {displayError + "TODO: Proper error box"}
           </Text>
-          {/* {auth ? (
-            <button onClick={() => signOut()}>Sign Out</button>
-          ) : (
-            <button>Sign In</button>
-          )} */}
         </div>
       </div>
     </div>

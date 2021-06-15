@@ -3,7 +3,20 @@ schema: ${NEXT_PUBLIC_API_URL}
 documents: "src/graphql/**/*.graphql"
 generates:
   src/generated/graphql.tsx:
+    config:
+      withRefetchFn: true
     plugins:
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
+  src/generated/page.tsx:
+    config:
+      reactApolloVersion: 3
+      documentMode: external
+      importDocumentNodeExternallyFrom: "./graphql"
+      apolloClientInstanceImport: "../pages/_app"
+    preset: import-types
+    presetConfig:
+      typesPath: "./graphql"
+    plugins:
+      - "graphql-codegen-apollo-next-ssr"

@@ -3,13 +3,15 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "next",
-    "build": "next build",
+    "build": "rm -rf .next/ && next build",
+    "build-only": "next build",
     "start": "next start",
     "type-check": "tsc",
     "generate": "graphql-codegen --require dotenv/config --config codegen.yml dotenv_config_path=.env.local"
   },
   "dependencies": {
     "@apollo/client": "^3.3.14",
+    "@headlessui/react": "^1.2.0",
     "@svgr/webpack": "^5.5.0",
     "apollo-upload-client": "^15.0.0",
     "classnames": "^2.3.1",
@@ -17,12 +19,15 @@
     "firebase": "^8.4.2",
     "graphql": "^15.5.0",
     "lodash": "^4.17.21",
+    "nanoid": "^3.1.23",
     "next": "latest",
     "react": "^17.0.1",
+    "react-beautiful-dnd": "^13.1.0",
     "react-dom": "^17.0.1"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "1.21.3",
+    "@graphql-codegen/import-types-preset": "^1.18.2",
     "@graphql-codegen/typescript": "1.21.1",
     "@graphql-codegen/typescript-operations": "1.17.15",
     "@graphql-codegen/typescript-react-apollo": "2.2.3",
@@ -31,7 +36,10 @@
     "@types/node": "^12.12.21",
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.1",
+    "@types/lodash": "^4.14.170",
+    "@types/react-beautiful-dnd": "^13.0.0",
     "autoprefixer": "^10.2.5",
+    "graphql-codegen-apollo-next-ssr": "^1.6.1",
     "postcss": "^8.2.12",
     "tailwindcss": "^2.1.2",
     "typescript": "4.0"
