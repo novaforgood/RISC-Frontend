@@ -3,20 +3,15 @@ import { getDay } from "date-fns";
 import _ from "lodash";
 import React, { useMemo, useState } from "react";
 import { Text } from "../../components/atomic";
+import { DateInterval } from "../../generated/graphql";
 import { monthNames, weekdayNamesAbbreviated } from "./data";
 import { Arrow } from "./icons";
 import { dateDiffInDays, getDaysInThisMonth } from "./utils";
 
 // Types
-
-type Timeslot = {
-  start: Date;
-  end: Date;
-};
-
 type Availabilities = {
-  weekly: Timeslot[];
-  overrides: Timeslot[];
+  weekly: DateInterval[];
+  overrides: DateInterval[];
 };
 
 const today = new Date();
@@ -50,7 +45,7 @@ const Calendar = ({
     const ret: { [key: number]: boolean } = {};
     if (!days || days.length == 0) return ret;
     for (let timeslot of availabilities.overrides) {
-      const idx = dateDiffInDays(days[0], timeslot.start);
+      const idx = dateDiffInDays(days[0], timeslot.startTime);
       ret[idx] = true;
     }
     console.log(ret);
@@ -60,7 +55,7 @@ const Calendar = ({
   let occupiedWeekdays = _.reduce(
     availabilities.weekly,
     (prev, curr) => {
-      prev.add(getDay(curr.start));
+      prev.add(getDay(curr.startTime));
       return prev;
     },
     new Set()
@@ -128,8 +123,7 @@ const Calendar = ({
 
           const backgroundStyles = classNames({
             "h-11 w-11 mx-auto flex justify-center items-center cursor-pointer select-none rounded-full \
-            transition-background duration-100":
-              true,
+            transition-background duration-100": true,
             "pointer-events-none": !selectable,
             "bg-inactive": hasTimeslots,
             "hover:bg-secondary": !selected,

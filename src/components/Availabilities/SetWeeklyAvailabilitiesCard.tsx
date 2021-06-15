@@ -19,10 +19,10 @@ import {
   refetchGetWeeklyAvailabilitiesQuery,
   useGetWeeklyAvailabilitiesQuery,
   useSetWeeklyAvailabilitiesMutation,
-} from "../../../generated/graphql";
-import { Button, Text } from "../../atomic";
-import Select from "../../atomic/Select";
-import { weekdayNames } from "../../Calendar/data";
+} from "../../generated/graphql";
+import { Button, Text } from "../atomic";
+import Select from "../atomic/Select";
+import { weekdayNames } from "../Calendar/data";
 
 type SetDateIntervalProps = {
   date: Date;

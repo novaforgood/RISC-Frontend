@@ -41,11 +41,11 @@ export default TestPage;
 
 const SAMPLE_AVAILABILITIES = {
   weekly: [
-    { start: new Date(), end: new Date() },
-    { start: new Date("June 17 2021"), end: new Date("June 17 2021") },
+    { startTime: new Date(), endTime: new Date() },
+    { startTime: new Date("June 17 2021"), endTime: new Date("June 17 2021") },
   ],
   overrides: [
-    { start: new Date("June 8 2021"), end: new Date() },
-    { start: new Date("June 25 2021"), end: new Date() },
+    { startTime: new Date("June 8 2021"), endTime: new Date() },
+    { startTime: new Date("June 25 2021"), endTime: new Date() },
   ],
 };
