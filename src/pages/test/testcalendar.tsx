@@ -40,6 +40,12 @@ const TestPage = () => {
 export default TestPage;
 
 const SAMPLE_AVAILABILITIES = {
-  weekly: [[{ start: new Date(), end: new Date() }], [], [], [], [], [], []], // Sunday thru Saturday
-  overrides: [{ start: new Date(), end: new Date() }],
+  weekly: [
+    { start: new Date(), end: new Date() },
+    { start: new Date("June 17 2021"), end: new Date("June 17 2021") },
+  ],
+  overrides: [
+    { start: new Date("June 8 2021"), end: new Date() },
+    { start: new Date("June 25 2021"), end: new Date() },
+  ],
 };

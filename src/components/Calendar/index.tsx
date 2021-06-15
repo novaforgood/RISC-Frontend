@@ -1,4 +1,6 @@
 import classNames from "classnames";
+import { getDay } from "date-fns";
+import _ from "lodash";
 import React, { useMemo, useState } from "react";
 import { Text } from "../../components/atomic";
 import { monthNames, weekdayNamesAbbreviated } from "./data";
@@ -13,7 +15,7 @@ type Timeslot = {
 };
 
 type Availabilities = {
-  weekly: Timeslot[][];
+  weekly: Timeslot[];
   overrides: Timeslot[];
 };
 
@@ -54,6 +56,15 @@ const Calendar = ({
     console.log(ret);
     return ret;
   }, [days, availabilities]);
+
+  let occupiedWeekdays = _.reduce(
+    availabilities.weekly,
+    (prev, curr) => {
+      prev.add(getDay(curr.start));
+      return prev;
+    },
+    new Set()
+  );
 
   return (
     <div className="w-96">
@@ -112,8 +123,7 @@ const Calendar = ({
           const inMonth = monthyear[0] === day.getMonth();
           const selected =
             selectedDay && selectedDay.getTime() === day.getTime();
-          const hasTimeslots =
-            availabilities.weekly[i % 7].length > 0 || isOverrided[i];
+          const hasTimeslots = occupiedWeekdays.has(i % 7) || isOverrided[i];
           const selectable = inMonth && (selectAnyDay || hasTimeslots);
 
           const backgroundStyles = classNames({
