@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card } from "./atomic";
 import TitledInput from "./TitledInput";
-const _ = require("lodash"); // Is this right?
+import _ from "lodash"; // Is this right?
 
 // TYPES
 export type RecursivePartial<T> = {
@@ -35,7 +35,7 @@ type FormProps = {
   responses?: { [key: string]: string };
   onChange?: (responses: Object) => void;
   onAutosave?: (responses: Object) => void; // Takes in answer json and send it to db
-  waitTime?: number;
+  autosaveInterval?: number;
   className?: string;
 };
 
@@ -78,12 +78,12 @@ const Form = ({
   responses = {},
   onChange = () => {},
   onAutosave = () => {},
-  waitTime = 3000,
+  autosaveInterval = 3000,
   className,
 }: FormProps) => {
   const debouncedAutosave = _.debounce(() => {
     onAutosave(responses);
-  }, waitTime);
+  }, autosaveInterval);
 
   //TODO
   const handleChange = (id: string, answer: string): void => {
