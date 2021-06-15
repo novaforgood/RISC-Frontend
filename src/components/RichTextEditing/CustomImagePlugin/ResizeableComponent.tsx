@@ -10,6 +10,13 @@ import React, {
 //Determines micro-movement of the resize squares
 const OFFSET = -6;
 
+enum Direction {
+  LEFT = "LEFT",
+  RIGHT = "RIGHT",
+  TOP = "TOP",
+  BOTTOM = "BOTTOM",
+}
+
 type ResizeSquareProps = HTMLAttributes<HTMLDivElement> & {
   cursor: string;
 };
@@ -96,15 +103,30 @@ export default React.forwardRef<HTMLDivElement, ResizeWrapperProps>(
     };
 
     //TODO: Vertical boxes scaling (Can only scale horizontally & diagonally right now)
-    const resize = (e_click: MouseEvent, left: boolean) => {
+    const resize = (
+      e_click: React.MouseEvent<HTMLDivElement>,
+      direction: Direction
+    ) => {
       const mousemove = (e_move: MouseEvent) => {
         const container = containerRef.current;
         if (container) {
-          //If the resizing is on a left resize box, invert the difference
-          const xDif = left
-            ? e_click.pageX - e_move.pageX
-            : e_move.pageX - e_click.pageX;
-          container.style.width = `${adjustedSize.fullHorizontal + xDif}px`;
+          //If the resizing is on a direction resize box, invert the difference
+          let dif = 0;
+          switch (direction) {
+            case Direction.LEFT:
+              dif = e_click.pageX - e_move.pageX;
+              break;
+            case Direction.RIGHT:
+              dif = e_move.pageX - e_click.pageX;
+              break;
+            case Direction.TOP:
+              dif = e_click.pageY - e_move.pageY;
+              break;
+            case Direction.BOTTOM:
+              dif = e_move.pageY - e_click.pageY;
+              break;
+          }
+          container.style.width = `${adjustedSize.fullHorizontal + dif}px`;
 
           /*
           The outside container will go past the max width / max height at this point, 
@@ -119,7 +141,6 @@ export default React.forwardRef<HTMLDivElement, ResizeWrapperProps>(
 
       document.addEventListener("mousemove", mousemove);
       document.addEventListener("mouseup", function mouseup() {
-        console.log("resized");
         mergeData({ difference: adjustedSize.fullHorizontal - size.width });
         document.removeEventListener("mousemove", mousemove);
         document.removeEventListener("mouseup", mouseup);
@@ -131,10 +152,8 @@ export default React.forwardRef<HTMLDivElement, ResizeWrapperProps>(
       const child = childRef.current;
       if (child) {
         child.firstChild?.addEventListener("load", async () => {
-          console.log("loaded");
           const props = getBounds();
           await setSize(props);
-          console.log(props.width, props.height);
           mergeData({ width: props.width, height: props.height });
           setBounds();
           if (difference) {
@@ -178,7 +197,9 @@ export default React.forwardRef<HTMLDivElement, ResizeWrapperProps>(
                   style={{
                     transform: `translate(${OFFSET}px,${OFFSET}px)`,
                   }}
-                  onMouseDown={(e: MouseEvent) => resize(e, true)}
+                  onMouseDown={(e: React.MouseEvent<HTMLDivElement>) =>
+                    resize(e, Direction.LEFT)
+                  }
                 />
                 <ResizeSquare
                   id="top"
@@ -188,7 +209,9 @@ export default React.forwardRef<HTMLDivElement, ResizeWrapperProps>(
                       adjustedSize.halfHorizontal + OFFSET
                     }px,${OFFSET}px)`,
                   }}
-                  onMouseDown={resize}
+                  onMouseDown={(e: React.MouseEvent<HTMLDivElement>) =>
+                    resize(e, Direction.TOP)
+                  }
                 />
                 <ResizeSquare
                   id="top-right"
@@ -198,17 +221,21 @@ export default React.forwardRef<HTMLDivElement, ResizeWrapperProps>(
                       adjustedSize.fullHorizontal + OFFSET
                     }px,${OFFSET}px)`,
                   }}
-                  onMouseDown={resize}
+                  onMouseDown={(e: React.MouseEvent<HTMLDivElement>) =>
+                    resize(e, Direction.RIGHT)
+                  }
                 />
                 <ResizeSquare
-                  id="left"
+                  id="direction"
                   cursor="w-resize"
                   style={{
                     transform: `translate(${OFFSET}px,${
                       adjustedSize.halfVertical + OFFSET
                     }px)`,
                   }}
-                  onMouseDown={(e: MouseEvent) => resize(e, true)}
+                  onMouseDown={(e: React.MouseEvent<HTMLDivElement>) =>
+                    resize(e, Direction.LEFT)
+                  }
                 />
                 <ResizeSquare
                   id="right"
@@ -218,7 +245,9 @@ export default React.forwardRef<HTMLDivElement, ResizeWrapperProps>(
                       adjustedSize.fullHorizontal + OFFSET
                     }px,${adjustedSize.halfVertical + OFFSET}px)`,
                   }}
-                  onMouseDown={resize}
+                  onMouseDown={(e: React.MouseEvent<HTMLDivElement>) =>
+                    resize(e, Direction.RIGHT)
+                  }
                 />
                 <div
                   ref={childRef}
@@ -227,12 +256,14 @@ export default React.forwardRef<HTMLDivElement, ResizeWrapperProps>(
                   {children}
                 </div>
                 <ResizeSquare
-                  id="bottom-left"
+                  id="bottom-direction"
                   cursor="sw-resize"
                   style={{
                     transform: `translate(${OFFSET}px,${OFFSET}px)`,
                   }}
-                  onMouseDown={(e: MouseEvent) => resize(e, true)}
+                  onMouseDown={(e: React.MouseEvent<HTMLDivElement>) =>
+                    resize(e, Direction.LEFT)
+                  }
                 />
                 <ResizeSquare
                   id="bottom"
@@ -242,7 +273,9 @@ export default React.forwardRef<HTMLDivElement, ResizeWrapperProps>(
                       adjustedSize.halfHorizontal + OFFSET
                     }px,${OFFSET}px)`,
                   }}
-                  onMouseDown={resize}
+                  onMouseDown={(e: React.MouseEvent<HTMLDivElement>) =>
+                    resize(e, Direction.BOTTOM)
+                  }
                 />
                 <ResizeSquare
                   id="bottom-right"
@@ -252,11 +285,16 @@ export default React.forwardRef<HTMLDivElement, ResizeWrapperProps>(
                       adjustedSize.fullHorizontal + OFFSET
                     }px,${OFFSET}px)`,
                   }}
-                  onMouseDown={resize}
+                  onMouseDown={(e: React.MouseEvent<HTMLDivElement>) =>
+                    resize(e, Direction.RIGHT)
+                  }
                 />
               </>
             ) : (
-              <div className="h-full w-full" ref={childRef}>
+              <div
+                className="border-4 border-white h-full w-full"
+                ref={childRef}
+              >
                 {children}
               </div>
             )}

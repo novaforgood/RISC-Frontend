@@ -1,4 +1,4 @@
-import React, { RefObject, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { blockRenderMap } from "./TextStyles";
 import { useEditor } from "./EditorContext";
 import Editor from "@draft-js-plugins/editor";
@@ -9,7 +9,8 @@ import "draft-js/dist/Draft.css";
 const TextEditor = () => {
   const { editorState, setEditorState, plugins } = useEditor();
   const editor = useRef<HTMLDivElement | null>(null);
-  let forwardRef = useRef<HTMLDivElement>(null);
+
+  let forwardRef = useRef<any>(null);
 
   const handleKeyCommand = (
     command: string,
@@ -31,7 +32,7 @@ const TextEditor = () => {
     // }
   };
 
-  let contentState = editorState.getCurrentContent();
+  let contentState = editorState!.getCurrentContent();
 
   const focus = () => {
     if (forwardRef.current) forwardRef.current.focus();
@@ -78,12 +79,12 @@ const TextEditor = () => {
         editorKey="temp-key" //Necessary to prevent server from rendering a separate editor
         plugins={plugins!}
         blockRenderMap={blockRenderMap}
-        editorState={editorState}
+        editorState={editorState!}
         handleKeyCommand={handleKeyCommand}
         onChange={setEditorState}
         stripPastedStyles={true}
         placeholder="Edit here..."
-        ref={(el: RefObject<any>) => {
+        ref={(el: any) => {
           forwardRef = el;
         }}
       />

@@ -3,7 +3,7 @@ import { EditorStateInterface, useEditor } from "./EditorContext";
 import { INLINE_STYLES, BLOCK_STYLES } from "./TextStyles";
 import classNames from "classnames";
 
-import { EditorState, Modifier, RichUtils } from "draft-js";
+import { RichUtils } from "draft-js";
 
 type UploadImageProps = {
   e: ChangeEvent<HTMLInputElement>;
@@ -124,29 +124,31 @@ const uploadImage = ({
   }
 };
 
-const UploadImageButton = (props: HTMLAttributes<HTMLLabelElement>) => {
+const UploadImageButton = (props: HTMLAttributes<HTMLButtonElement>) => {
   const { editorState, setEditorState, imagePlugin } = useEditor();
   return (
-    <label className="" {...props}>
-      <input
-        onChange={async (e: ChangeEvent<HTMLInputElement>) => {
-          if (imagePlugin)
-            uploadImage({
-              e,
-              editorState,
-              setEditorState,
-              imagePlugin,
-              ...props,
-            });
-        }}
-        className="hidden"
-        type="file"
-      />
-      <img
-        className="hover:bg-inactive rounded-md cursor-pointer px-1 py-0.5"
-        src="/static/UploadImageIcon.svg"
-      />
-    </label>
+    <button {...props}>
+      <label>
+        <input
+          onChange={async (e: ChangeEvent<HTMLInputElement>) => {
+            if (imagePlugin)
+              uploadImage({
+                e,
+                editorState,
+                setEditorState,
+                imagePlugin,
+                ...props,
+              });
+          }}
+          className="hidden"
+          type="file"
+        />
+        <img
+          className="hover:bg-inactive rounded-md cursor-pointer px-1 py-0.5"
+          src="/static/UploadImageIcon.svg"
+        />
+      </label>
+    </button>
   );
 };
 
@@ -165,6 +167,7 @@ const ToolBar = (props: HTMLAttributes<HTMLDivElement>) => {
           type={option.type}
         />
       ))}
+      <div className="h-4 w-0.25 bg-inactive" />
       {INLINE_STYLES.map((option) => (
         <ToggleStyleButton
           key={option.style}
@@ -172,6 +175,7 @@ const ToolBar = (props: HTMLAttributes<HTMLDivElement>) => {
           type={option.style}
         />
       ))}
+      <div className="h-4 w-0.25 bg-inactive" />
       <UploadImageButton />
     </div>
   );

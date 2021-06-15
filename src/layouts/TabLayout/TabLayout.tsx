@@ -29,7 +29,7 @@ const Arrow: React.FC<ArrowProps> = ({ down }) => {
         y2="-0.75"
         transform="matrix(-0.716702 0.697379 0.477583 0.878587 12 2)"
         stroke="#737373"
-        stroke-width="1.5"
+        strokeWidth="1.5"
       />
       <line
         y1="-0.75"
@@ -37,7 +37,7 @@ const Arrow: React.FC<ArrowProps> = ({ down }) => {
         y2="-0.75"
         transform="matrix(0.716702 0.697379 -0.477583 0.878587 0 2)"
         stroke="#737373"
-        stroke-width="1.5"
+        strokeWidth="1.5"
       />
     </svg>
   );

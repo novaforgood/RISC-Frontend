@@ -23,7 +23,7 @@ const BlobCircle = () => {
 const CreateProgramPage: Page = () => {
   const [stage, setStage] = useState(0);
   const [programName, setProgramName] = useState("");
-  const [programLogo, setProgramLogo] = useState("");
+  const [programLogo, setProgramLogo] = useState("/static/HappyBlobs.svg");
   const [programIdentifier, setProgramIdentifier] = useState("");
 
   //const [programIsPublic, setProgramIsPublic] = useState(true); // TODO: add checkbox on form for setting program public or not
@@ -49,7 +49,7 @@ const CreateProgramPage: Page = () => {
       description: "", // a lotta dummy strings for now since the form doesn't specify them
       slug: programIdentifier,
       iconUrl: programLogo,
-      homepage: programIdentifier,
+      homepage: "",
       mentorProfileSchemaJson: "",
       menteeProfileSchemaJson: "",
       mentorApplicationSchemaJson: "",
