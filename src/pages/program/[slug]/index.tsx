@@ -22,6 +22,14 @@ import { parseParam } from "../../../utils";
 import { Program } from "../../../generated/graphql";
 import { RawDraftContentState } from "draft-js";
 
+function getHomepageFromJson(json: string) {
+  try {
+    return JSON.parse(json);
+  } catch (_) {
+    return {};
+  }
+}
+
 //TODO: Answer "Should the homepage be by default a really long card / What contents should it have"
 const AdminHome = ({ programId, name, iconUrl, homepage }: Program) => {
   return (
@@ -50,21 +58,30 @@ const AdminHome = ({ programId, name, iconUrl, homepage }: Program) => {
   );
 };
 
-//TODO: Add join and apply routing
-const ReadOnlyHome = ({ name, iconUrl, homepage }: Program) => {
-  const JSONHomepage: RawDraftContentState = JSON.parse(homepage);
+//TODO: Add join and apply as mentor routing to buttons
+const ReadOnlyHome = ({
+  name,
+  iconUrl,
+  homepage,
+  inProgram = false,
+}: Program & { inProgram: boolean }) => {
+  const JSONHomepage: RawDraftContentState = getHomepageFromJson(homepage);
   return (
     //TODO: Figure out whether the buttons at the top should be sticky
     <div className="box-border bg-tertiary min-h-screen py-32 px-36">
-      <div className="flex transform -translate-y-20 float-right z-10">
-        <Button variant="inverted" size="small">
-          Apply to Mentor
-        </Button>
-        <div className="w-4" />
-        <Button variant="solid" size="small">
-          Join
-        </Button>
-      </div>
+      {inProgram ? (
+        <></>
+      ) : (
+        <div className="flex transform -translate-y-20 float-right z-10">
+          <Button variant="inverted" size="small">
+            Apply to Mentor
+          </Button>
+          <div className="w-4" />
+          <Button variant="solid" size="small">
+            Join
+          </Button>
+        </div>
+      )}
       <Card className="box-border w-full px-16 py-10">
         <div className="relative -top-24">
           <img className="w-28 h-28" src={iconUrl} />
@@ -87,7 +104,6 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
   // const router = useRouter();
 
   const program = props.data?.getProgramBySlug;
-  console.log(program);
 
   const getProgramPage = () => {
     switch (authorizationLevel) {
@@ -95,7 +111,7 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
         return <AdminHome {...program} />;
       case AuthorizationLevel.Mentee:
       case AuthorizationLevel.Mentor:
-        return <div>In-program Home</div>;
+        return <ReadOnlyHome {...program} inProgram={true} />;
       default:
         return <ReadOnlyHome {...program} />;
     }

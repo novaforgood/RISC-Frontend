@@ -61,7 +61,6 @@ export default React.forwardRef<HTMLDivElement, ImageProps>(
     const mergeData = (newData: { [key: string]: any }) => {
       contentState.mergeEntityData(entityKey, newData);
     };
-    console.log(readonly);
     return readonly ? (
       <img
         className={combinedClassName}

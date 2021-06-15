@@ -27,7 +27,6 @@ export type ImageEditorPlugin = EditorPlugin & {
 };
 
 const ImagePlugin = (config: ImagePluginConfig = {}): ImageEditorPlugin => {
-  console.log(config);
   const theme = config.theme ? config.theme : defaultTheme;
   let Image = config.imageComponent || ImageComponent;
   if (config.decorator) {

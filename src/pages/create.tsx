@@ -148,7 +148,6 @@ const CreateProgramPage: Page = () => {
           <input // TODO: display preview of logo
             type="file"
             name="Program Logo"
-            value={programLogo}
             className="flex-1"
             onChange={(e) => {
               setProgramLogo(e.target.value);
