@@ -1,9 +1,14 @@
 import {
   addDays,
   addMinutes,
+  eachDayOfInterval,
   eachHourOfInterval,
   endOfDay,
+  endOfWeek,
+  format,
   getDay,
+  isEqual,
+  isSameDay,
   isWithinInterval,
   startOfDay,
   startOfWeek,
@@ -17,29 +22,21 @@ import { weekdayNames } from "../../Calendar/data";
 type SetDateIntervalProps = {
   date: Date;
   intervalsForDate: DateInterval[];
-  interval: DateInterval;
-  dateIntervalIndex: number;
-  editDateInterval: (
-    dateIntervalIndex: number,
-    newDateInterval: DateInterval
-  ) => void;
-  deleteDateInterval: (weekday: number, dateIntervalIndex: number) => void;
+  selectedInterval: DateInterval;
+  onEditInterval: (newDateInterval: DateInterval) => void;
+  onDeleteInterval: (weekday: number) => void;
 };
 
 const SetDateInterval = ({
   date,
   intervalsForDate,
-  interval,
-  dateIntervalIndex,
-  editDateInterval,
-  deleteDateInterval,
+  selectedInterval,
+  onEditInterval,
+  onDeleteInterval,
 }: SetDateIntervalProps) => {
-  const toTimeString = (date: Date, minuteOffset = 0) =>
-    addMinutes(date, minuteOffset).toLocaleString("en-US", {
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-    });
+  const toTimeString = (date: Date, minuteOffset = 0) => {
+    return format(addMinutes(date, minuteOffset), "h:mm aaa");
+  };
 
   const eachHalfHourOfDate = (date: Date) =>
     eachHourOfInterval({
@@ -55,6 +52,7 @@ const SetDateInterval = ({
       .sort((a, b) => a.getTime() - b.getTime());
 
   const getAvailableStartTimes = () => {
+    // Available start times are all times at least half hour before another interval
     let allOptions = eachHalfHourOfDate(date).map((x) => ({
       label: toTimeString(x),
       value: x,
@@ -62,17 +60,13 @@ const SetDateInterval = ({
     allOptions.pop(); // Remove midnight (next day) as a start time
     // Get start times that don't overlap with any other interval
     intervalsForDate.forEach((weeklyInterval) => {
-      if (
-        interval.startTime.getTime() - weeklyInterval.startTime.getTime() !==
-        0
-      ) {
+      if (!isEqual(selectedInterval.startTime, weeklyInterval.startTime)) {
         allOptions = allOptions.filter((option) => {
           return (
             !isWithinInterval(option.value, {
               start: weeklyInterval.startTime,
               end: weeklyInterval.endTime,
-            }) ||
-            option.value.getTime() - weeklyInterval.endTime.getTime() === 0
+            }) || isEqual(option.value, weeklyInterval.endTime)
           );
         });
       }
@@ -81,13 +75,16 @@ const SetDateInterval = ({
   };
 
   const getAvailableEndTimes = () => {
+    // End time options are from start time until EOD or start of next interval
     let allOptions = eachHalfHourOfDate(date).map((x) => ({
       label: toTimeString(x, -1),
       value: x,
     }));
-    allOptions = allOptions.filter(({ value }) => value > interval.startTime);
+    allOptions = allOptions.filter(
+      ({ value }) => value > selectedInterval.startTime
+    );
     for (let i = 0; i < intervalsForDate.length; i++) {
-      if (intervalsForDate[i].startTime > interval.startTime) {
+      if (intervalsForDate[i].startTime > selectedInterval.startTime) {
         allOptions = allOptions.filter(
           ({ value }) => value <= intervalsForDate[i].startTime
         );
@@ -102,23 +99,23 @@ const SetDateInterval = ({
       <div className="w-28">
         <Select
           options={getAvailableStartTimes()}
-          value={interval.startTime}
+          value={selectedInterval.startTime}
           onSelect={(selectedValue) => {
-            let tmpEndTime = interval.endTime;
+            let tmpEndTime = selectedInterval.endTime;
+            // If the new interval intersects with another interval,
+            // change the end time to not intersect
             if (
-              selectedValue >= interval.endTime ||
+              selectedValue >= selectedInterval.endTime ||
               !intervalsForDate.every(
                 (weeklyInterval) =>
-                  interval.endTime.getTime() -
-                    weeklyInterval.endTime.getTime() ===
-                    0 ||
+                  isEqual(selectedInterval.endTime, weeklyInterval.endTime) ||
                   weeklyInterval.endTime <= selectedValue ||
-                  weeklyInterval.startTime >= interval.endTime
+                  weeklyInterval.startTime >= selectedInterval.endTime
               )
             ) {
               tmpEndTime = addMinutes(selectedValue, 30);
             }
-            editDateInterval(dateIntervalIndex, {
+            onEditInterval({
               startTime: selectedValue,
               endTime: tmpEndTime,
             });
@@ -129,10 +126,10 @@ const SetDateInterval = ({
       <div className="w-28">
         <Select
           options={getAvailableEndTimes()}
-          value={interval.endTime}
+          value={selectedInterval.endTime}
           onSelect={(selectedValue) => {
-            editDateInterval(dateIntervalIndex, {
-              startTime: interval.startTime,
+            onEditInterval({
+              startTime: selectedInterval.startTime,
               endTime: selectedValue,
             });
           }}
@@ -140,9 +137,7 @@ const SetDateInterval = ({
       </div>
       <div className="flex-1" />
       <button
-        onClick={() =>
-          deleteDateInterval(getDay(interval.startTime), dateIntervalIndex)
-        }
+        onClick={() => onDeleteInterval(getDay(selectedInterval.startTime))}
       >
         delete
       </button>
@@ -156,32 +151,28 @@ type SetWeeklyAvailabilitiesCardProps = {
 
 export const SetWeeklyAvailabilitiesCard = ({}: SetWeeklyAvailabilitiesCardProps) => {
   const [weeklyAvailabilities, setWeeklyAvailabilities] = useState<
-    DateInterval[][]
-  >([[], [], [], [], [], [], []]);
+    DateInterval[]
+  >([]);
 
-  const addWeeklyAvailability = (weekday: number) => {
-    const date = addDays(startOfWeek(new Date()), weekday);
+  const addWeeklyAvailability = (date: Date) => {
+    const availabilitiesForDate = weeklyAvailabilities.filter((interval) =>
+      isSameDay(interval.startTime, date)
+    );
     // If there are no availabilities for the day, add one starting at 12:00 AM
     let newAvailability: DateInterval | null = {
       startTime: date,
       endTime: addMinutes(date, 30),
     };
-    const len = weeklyAvailabilities[weekday].length;
+    const len = availabilitiesForDate.length;
     if (len > 0) {
-      if (weeklyAvailabilities[weekday][len - 1].endTime < addDays(date, 1)) {
+      if (availabilitiesForDate[len - 1].endTime < addDays(date, 1)) {
         // If the last availability of the day ends before midnight, add another availability at the end
+        const newStartTime = availabilitiesForDate[len - 1].endTime;
         newAvailability = {
-          startTime: weeklyAvailabilities[weekday][len - 1].endTime,
-          endTime: addMinutes(
-            weeklyAvailabilities[weekday][len - 1].endTime,
-            30
-          ),
+          startTime: newStartTime,
+          endTime: addMinutes(newStartTime, 30),
         };
-      } else if (
-        weeklyAvailabilities[weekday][0].startTime.getTime() -
-          date.getTime() !==
-        0
-      ) {
+      } else if (!isEqual(availabilitiesForDate[0].startTime, date)) {
         // If the first availability of the day starts after midnight, add another availability at the start
         newAvailability = {
           startTime: date,
@@ -193,13 +184,14 @@ export const SetWeeklyAvailabilitiesCard = ({}: SetWeeklyAvailabilitiesCardProps
         newAvailability = null;
         for (let i = 0; i < len - 1; ++i) {
           if (
-            weeklyAvailabilities[weekday][i].endTime.getTime() -
-              weeklyAvailabilities[weekday][i + 1].startTime.getTime() !=
-            0
+            !isEqual(
+              availabilitiesForDate[i].endTime,
+              availabilitiesForDate[i + 1].startTime
+            )
           ) {
             newAvailability = {
-              startTime: weeklyAvailabilities[weekday][i].endTime,
-              endTime: addMinutes(weeklyAvailabilities[weekday][i].endTime, 30),
+              startTime: availabilitiesForDate[i].endTime,
+              endTime: addMinutes(availabilitiesForDate[i].endTime, 30),
             };
           }
         }
@@ -209,44 +201,27 @@ export const SetWeeklyAvailabilitiesCard = ({}: SetWeeklyAvailabilitiesCardProps
       // Entire day is already available
       return;
     }
-    const newWeeklyAvailabilities = [
-      ...weeklyAvailabilities.slice(0, weekday),
-      [...weeklyAvailabilities[weekday], newAvailability].sort(
-        (a, b) => a.startTime.getTime() - b.startTime.getTime()
-      ),
-      ...weeklyAvailabilities.slice(weekday + 1),
-    ];
+    const newWeeklyAvailabilities = weeklyAvailabilities
+      .concat(newAvailability)
+      .sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
     setWeeklyAvailabilities(newWeeklyAvailabilities);
   };
 
-  const editWeeklyAvailability = (
-    dateIntervalIndex: number,
+  const editWeeklyAvailability = (dateIntervalIndex: number) => (
     newDateInterval: DateInterval
   ) => {
-    const weekday = getDay(newDateInterval.startTime);
     const newWeeklyAvailabilities = [
-      ...weeklyAvailabilities.slice(0, weekday),
-      [
-        ...weeklyAvailabilities[weekday].slice(0, dateIntervalIndex),
-        newDateInterval,
-        ...weeklyAvailabilities[weekday].slice(dateIntervalIndex + 1),
-      ].sort((a, b) => a.startTime.getTime() - b.startTime.getTime()),
-      ...weeklyAvailabilities.slice(weekday + 1),
-    ];
+      ...weeklyAvailabilities.slice(0, dateIntervalIndex),
+      ...weeklyAvailabilities.slice(dateIntervalIndex + 1),
+      newDateInterval,
+    ].sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
     setWeeklyAvailabilities(newWeeklyAvailabilities);
   };
 
-  const deleteWeeklyAvailability = (
-    weekday: number,
-    dateIntervalIndex: number
-  ) => {
+  const deleteWeeklyAvailability = (dateIntervalIndex: number) => () => {
     const newWeeklyAvailabilities = [
-      ...weeklyAvailabilities.slice(0, weekday),
-      [
-        ...weeklyAvailabilities[weekday].slice(0, dateIntervalIndex),
-        ...weeklyAvailabilities[weekday].slice(dateIntervalIndex + 1),
-      ],
-      ...weeklyAvailabilities.slice(weekday + 1),
+      ...weeklyAvailabilities.slice(0, dateIntervalIndex),
+      ...weeklyAvailabilities.slice(dateIntervalIndex + 1),
     ];
     setWeeklyAvailabilities(newWeeklyAvailabilities);
   };
@@ -260,36 +235,44 @@ export const SetWeeklyAvailabilitiesCard = ({}: SetWeeklyAvailabilitiesCardProps
       </div>
       <div className="h-4" />
       <div className="flex flex-col">
-        {weeklyAvailabilities.map((weekdayIntervals, weekdayIndex) => (
-          <div key={weekdayIndex}>
-            <div className="w-full h-px bg-inactive"></div>
-            <div className="flex flex-col w-5/6 mx-auto space-y-4 my-4">
-              <Text b>{weekdayNames[weekdayIndex].toUpperCase() + "S"}</Text>
-              {weekdayIntervals.map((interval, intervalIndex) => (
-                <SetDateInterval
-                  key={intervalIndex}
-                  date={addDays(startOfWeek(new Date()), weekdayIndex)}
-                  intervalsForDate={weekdayIntervals}
-                  dateIntervalIndex={intervalIndex}
-                  interval={interval}
-                  editDateInterval={(dateIntervalId, newDateInterval) => {
-                    editWeeklyAvailability(dateIntervalId, newDateInterval);
-                  }}
-                  deleteDateInterval={(weekday, dateIntervalIndex) => {
-                    deleteWeeklyAvailability(weekday, dateIntervalIndex);
-                  }}
-                />
-              ))}
-              <Button
-                size="small"
-                variant="inverted"
-                onClick={() => addWeeklyAvailability(weekdayIndex)}
-              >
-                add time
-              </Button>
+        {eachDayOfInterval({
+          start: startOfWeek(new Date()),
+          end: endOfWeek(new Date()),
+        }).map((date) => {
+          const intervalsForDate = weeklyAvailabilities.filter((interval) =>
+            isSameDay(interval.startTime, date)
+          );
+          return (
+            <div key={date.toDateString()}>
+              <div className="w-full h-px bg-inactive"></div>
+              <div className="flex flex-col w-5/6 mx-auto space-y-4 my-4">
+                <Text b>{weekdayNames[getDay(date)].toUpperCase() + "S"}</Text>
+                {weeklyAvailabilities.map((interval, intervalIndex) => {
+                  if (getDay(interval.startTime) !== getDay(date)) {
+                    return <></>;
+                  }
+                  return (
+                    <SetDateInterval
+                      key={intervalIndex}
+                      date={startOfDay(interval.startTime)}
+                      intervalsForDate={intervalsForDate}
+                      selectedInterval={interval}
+                      onEditInterval={editWeeklyAvailability(intervalIndex)}
+                      onDeleteInterval={deleteWeeklyAvailability(intervalIndex)}
+                    />
+                  );
+                })}
+                <Button
+                  size="small"
+                  variant="inverted"
+                  onClick={() => addWeeklyAvailability(date)}
+                >
+                  add time
+                </Button>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
