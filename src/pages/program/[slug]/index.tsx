@@ -26,10 +26,12 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
         {authorizationLevel === AuthorizationLevel.NotInProgram && (
           <>
             <Button variant="inverted" size="small">
-              <Link href={`${router.asPath}/apply`}>Apply to Mentor</Link>
+              <Link href={`${router.asPath}/apply?as=mentor`}>
+                Apply to Mentor
+              </Link>
             </Button>
             <Button size="small">
-              <Link href={`${router.asPath}/join`}>Join</Link>
+              <Link href={`${router.asPath}/apply?as=mentee`}>Join</Link>
             </Button>
           </>
         )}

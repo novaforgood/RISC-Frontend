@@ -1,7 +1,9 @@
+import { capitalize } from "lodash";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { Button, Text, Card } from "../../../components/atomic";
-import Form, { dummyForm } from "../../../components/Form";
+import { Button, Card, Text } from "../../../components/atomic";
+import Form, { dummyForm, Question } from "../../../components/Form";
 import {
   ApplicationType,
   CreateApplicationInput,
@@ -30,8 +32,45 @@ const ProgramApplyPage: Page = (_) => {
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const { Admin, Mentor, Mentee } = AuthorizationLevel;
+
+  const applicant: string | string[] = router.query.as;
+  const path: string = router.asPath;
+
+  console.log(router);
+
+  const getApplicationType = (): ApplicationType | null => {
+    switch (applicant) {
+      case "mentor":
+        return ApplicationType.Mentor;
+      case "mentee":
+        return ApplicationType.Mentee;
+      default:
+        return null;
+    }
+  };
+
+  const applicationType: ApplicationType | null = getApplicationType();
+
+  //TODO
+  const fetchMenteeAppSchema = (): Question[] => {
+    return dummyForm;
+  };
+
+  //TODO
+  const fetchMentorAppSchema = (): Question[] => {
+    return dummyForm;
+  };
+
   if ([Admin, Mentor, Mentee].includes(authorizationLevel))
     return <div>You're already in this program.</div>;
+
+  // TODO: Make these into modals with back button
+  if (applicationType == null)
+    return (
+      <div className="h-screen w-screen flex flex-col justify-center items-center">
+        <Text h1>The application you are looking for does not exist</Text>
+      </div>
+    );
 
   // There must be a better/more direct way of checking whether the program exists or not.
   if (currentProgram?.name == null)
@@ -44,14 +83,15 @@ const ProgramApplyPage: Page = (_) => {
   return (
     <>
       {/* For Testing */}
-      {/* <Button
+      <Button
         variant={formSubmitted ? "inverted" : "solid"}
         onClick={() => {
           setFormSubmitted(!formSubmitted);
+          console.log(applicant);
         }}
       >
         Submitted: <pre>{formSubmitted ? "true" : "false"}</pre>
-      </Button> */}
+      </Button>
       <div className="min-w-screen h-screen bg-tertiary">
         {/* Nav bar goes here */}
         <div
@@ -69,11 +109,15 @@ const ProgramApplyPage: Page = (_) => {
               </Text>
             </div>
             <div className="mt-4">
-              <Text h3>Mentor Application</Text>
+              <Text h3>{capitalize(applicant as string)} Application</Text>
             </div>
             <div className="mt-6 mx-10">
               <Form
-                questions={dummyForm} // Should actually fetch form schema
+                questions={
+                  applicant == "mentee"
+                    ? fetchMenteeAppSchema()
+                    : fetchMentorAppSchema()
+                } // Should actually fetch form schema
                 responses={responses}
                 onChange={() => {
                   setFormChanged(true);
@@ -83,7 +127,17 @@ const ProgramApplyPage: Page = (_) => {
                 // }}
               ></Form>
               <div className="flex justify-between mt-10">
-                <Button variant="inverted">Back</Button>
+                <Button variant="inverted">
+                  <Link
+                    href={
+                      // Returns relative URL to homepage of program
+                      path.slice(0, path.indexOf("/", 1) + 1) +
+                      router.query.slug
+                    }
+                  >
+                    Back
+                  </Link>
+                </Button>
                 <Button
                   disabled={!formChanged}
                   onClick={() => {
@@ -91,7 +145,7 @@ const ProgramApplyPage: Page = (_) => {
                     const createApplicationInput: CreateApplicationInput = {
                       programId: currentProgram.programId!,
                       applicationJson: JSON.stringify(responses),
-                      applicationType: ApplicationType.Mentor,
+                      applicationType: applicationType,
                     };
                     createApplication({
                       variables: { data: createApplicationInput },
@@ -101,11 +155,6 @@ const ProgramApplyPage: Page = (_) => {
                 >
                   Submit
                 </Button>
-                {user == null ? (
-                  <RedirectIfNotLoggedIn
-                    pathAfterLoggingIn={`${router.asPath}`}
-                  ></RedirectIfNotLoggedIn>
-                ) : null}
               </div>
             </div>
           </div>
@@ -146,6 +195,11 @@ const ProgramApplyPage: Page = (_) => {
           </div>
         </div>
       </div>
+      {user == null ? (
+        <RedirectIfNotLoggedIn
+          pathAfterLoggingIn={`${router.asPath}`}
+        ></RedirectIfNotLoggedIn>
+      ) : null}
     </>
   );
 };
