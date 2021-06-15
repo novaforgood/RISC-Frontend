@@ -1,9 +1,9 @@
 import classNames from "classnames";
 import React, { useEffect, useRef, useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
+import Select from "../atomic/Select";
 import { DeleteIcon, DragHandle } from "./icons";
 import { Question } from "./index";
-import Select from "./Select";
 import { getUpdateFunction } from "./utils";
 
 interface FormQuestionSchemaEditorProps {
@@ -37,14 +37,12 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
 
   const singlelinePreviewStyles = classNames({
     "w-full px-2 py-1 rounded-md placeholder-secondary border-2 border-inactive resize-none box-border text-secondary bg-tertiary \
-    focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none pointer-events-none":
-      true,
+    focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none pointer-events-none": true,
   });
 
   const paragraphPreviewStyles = classNames({
     "w-full px-2 py-1 rounded-md placeholder-secondary border-2 border-inactive resize-none box-border text-secondary bg-tertiary \
-    focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none pointer-events-none":
-      true,
+    focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none pointer-events-none": true,
     "bg-tertiary": hovered,
   });
 

@@ -5,7 +5,7 @@ generates:
   src/generated/graphql.tsx:
     plugins:
       - add:
-          content: "type DateInterval = { startTime: Date, endTime: Date }"
+          content: "export type DateInterval = { startTime: Date, endTime: Date }"
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
