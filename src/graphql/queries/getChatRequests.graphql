@@ -1,0 +1,26 @@
+query getChatRequests($profileId: String!) {
+  getChatRequests(profileId: $profileId) {
+    chatRequestId
+    chatRequestStatus
+    chatStartTime
+    chatEndTime
+    chatRequestMessage
+    chatRejectMessage
+    mentorProfile {
+      user {
+        userId
+        firstName
+        lastName
+        profilePictureUrl
+      }
+    }
+    menteeProfile {
+      user {
+        userId
+        firstName
+        lastName
+        profilePictureUrl
+      }
+    }
+  }
+}
