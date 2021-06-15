@@ -2,6 +2,13 @@ import Immutable from "immutable";
 import { Text } from "../atomic";
 import React from "react";
 
+export enum BlockTypes {
+  "atomic" = "atomic",
+  "header-one" = "header-one",
+  "header-two" = "header-two",
+  "unstyled" = "unstyled",
+}
+
 export const INLINE_STYLES = [
   {
     display: <Text b>B</Text>,

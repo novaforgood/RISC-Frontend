@@ -9,6 +9,7 @@ export interface ImageProps extends HTMLAttributes<HTMLDivElement> {
   className?: string;
   theme?: ImagePluginTheme;
   contentState: ContentState;
+  readonly: boolean | undefined;
 
   //removed props
   blockStyleFn: unknown;
@@ -26,7 +27,7 @@ export interface ImageProps extends HTMLAttributes<HTMLDivElement> {
 export default React.forwardRef<HTMLDivElement, ImageProps>(
   /**This forwarded ref returns null: need to figure out why */
   (props, ref): ReactElement => {
-    const { block, className, theme = {}, ...otherProps } = props;
+    const { block, className, theme = {}, readonly, ...otherProps } = props;
     // leveraging destructuring to omit certain properties from props
     const {
       blockProps, // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -46,11 +47,13 @@ export default React.forwardRef<HTMLDivElement, ImageProps>(
     const combinedClassName = classNames(
       theme.image,
       className,
-      "h-full w-full"
+      readonly ? "m-auto" : "h-full w-full"
     );
     const {
       src,
       alt,
+      width,
+      height,
       difference = 0,
       entityKey,
     } = contentState.getEntity(block.getEntityAt(0)).getData();
@@ -58,8 +61,18 @@ export default React.forwardRef<HTMLDivElement, ImageProps>(
     const mergeData = (newData: { [key: string]: any }) => {
       contentState.mergeEntityData(entityKey, newData);
     };
-
-    return (
+    console.log(readonly);
+    return readonly ? (
+      <img
+        className={combinedClassName}
+        src={src}
+        alt={alt}
+        style={{
+          width: `${width + difference}px`,
+          height: `${height + difference}px`,
+        }}
+      />
+    ) : (
       <ResizeWrapper
         ref={ref}
         mergeData={mergeData}

@@ -16,11 +16,6 @@ const TextEditor = () => {
     command: string,
     newEditorState: EditorState
   ): DraftHandleValue => {
-    // console.log(command);
-    // switch (command) {
-    //   case "backspace":
-    //     let selection = newEditorState.getSelection();
-    //   default:
     let newState = RichUtils.handleKeyCommand(newEditorState, command);
 
     if (newState) {
@@ -91,4 +86,5 @@ const TextEditor = () => {
     </div>
   );
 };
+
 export default TextEditor;

@@ -5,7 +5,7 @@ import {
   convertToRaw,
   RawDraftContentState,
 } from "draft-js";
-import * as _ from "lodash";
+import _ from "lodash";
 
 import createImagePlugin, { ImageEditorPlugin } from "./CustomImagePlugin";
 import { EditorPlugin } from "@draft-js-plugins/editor";
@@ -22,7 +22,7 @@ export interface EditorStateInterface {
   plugins?: EditorPlugin[];
 }
 
-const emptyContentState: RawDraftContentState = {
+export const defaultContentState: RawDraftContentState = {
   entityMap: {},
   blocks: [
     {
@@ -40,7 +40,7 @@ const EditorContext =
   React.createContext<EditorStateInterface | undefined>(undefined);
 
 //Works with publish only- will need to change for autosave
-const useProvideEditor = (storedState = emptyContentState) => {
+const useProvideEditor = (storedState = defaultContentState) => {
   const [editorState, setEditorState] = useState(
     EditorState.createWithContent(convertFromRaw(storedState))
   );

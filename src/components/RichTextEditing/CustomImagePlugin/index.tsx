@@ -19,6 +19,7 @@ export interface ImagePluginConfig {
   decorator?(component: ComponentType<ImageProps>): ComponentType<ImageProps>;
   theme?: ImagePluginTheme;
   imageComponent?: ComponentType<ImageProps>;
+  readonly?: boolean;
 }
 
 export type ImageEditorPlugin = EditorPlugin & {
@@ -26,13 +27,14 @@ export type ImageEditorPlugin = EditorPlugin & {
 };
 
 const ImagePlugin = (config: ImagePluginConfig = {}): ImageEditorPlugin => {
+  console.log(config);
   const theme = config.theme ? config.theme : defaultTheme;
   let Image = config.imageComponent || ImageComponent;
   if (config.decorator) {
     Image = config.decorator(Image);
   }
   const ThemedImage = (props: ImageProps): ReactElement => (
-    <Image {...props} theme={theme} />
+    <Image {...props} readonly={config.readonly} theme={theme} />
   );
   return {
     blockRendererFn: (block, { getEditorState }) => {

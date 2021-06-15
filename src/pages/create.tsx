@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { Button, Input, Text } from "../components/atomic";
+import { defaultContentState } from "../components/RichTextEditing";
 import {
   CreateProgramInput,
   useCreateProgramMutation,
@@ -49,7 +50,7 @@ const CreateProgramPage: Page = () => {
       description: "", // a lotta dummy strings for now since the form doesn't specify them
       slug: programIdentifier,
       iconUrl: programLogo,
-      homepage: "",
+      homepage: JSON.stringify(defaultContentState),
       mentorProfileSchemaJson: "",
       menteeProfileSchemaJson: "",
       mentorApplicationSchemaJson: "",
