@@ -9,9 +9,11 @@ export const SetAvailabilityOverridesCard = ({
   profileId,
 }: SetAvailabilityOverridesCardProps) => {
   return (
-    <Text h3 b>
-      Add Exceptions
-      {profileId}
-    </Text>
+    <>
+      <Text h3 b>
+        Add Exceptions
+      </Text>
+      <Text>{profileId}</Text>
+    </>
   );
 };

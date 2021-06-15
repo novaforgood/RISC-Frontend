@@ -1,11 +1,16 @@
 import React from "react";
-import { Card, Text } from "../components/atomic";
-import { SetAvailabilityOverridesCard } from "../components/Availabilities/SetAvailabilityOverridesCard";
-import { SetWeeklyAvailabilitiesCard } from "../components/Availabilities/SetWeeklyAvailabilitiesCard";
-
-const PROFILE_ID = "4c1a35bb-dd8d-4de0-aa93-efff37ceba55";
+import { Card, Text } from "../../../components/atomic";
+import { SetAvailabilityOverridesCard } from "../../../components/Availabilities/SetAvailabilityOverridesCard";
+import { SetWeeklyAvailabilitiesCard } from "../../../components/Availabilities/SetWeeklyAvailabilitiesCard";
+import { useCurrentProfile } from "../../../hooks";
 
 const SetAvailabilitiesPage = () => {
+  const { currentProfile } = useCurrentProfile();
+
+  if (!currentProfile) {
+    return <></>;
+  }
+
   return (
     <div className="bg-tertiary h-full">
       <div className="flex flex-col items-center w-11/12 mx-auto h-full">
@@ -22,10 +27,14 @@ const SetAvailabilitiesPage = () => {
         <div className="w-11/12 xl:w-5/6 flex-1">
           <div className="flex space-x-10">
             <Card className="flex-1 py-4">
-              <SetWeeklyAvailabilitiesCard profileId={PROFILE_ID} />
+              <SetWeeklyAvailabilitiesCard
+                profileId={currentProfile.profileId}
+              />
             </Card>
             <Card className="flex-1 py-4">
-              <SetAvailabilityOverridesCard profileId={PROFILE_ID} />
+              <SetAvailabilityOverridesCard
+                profileId={currentProfile.profileId}
+              />
             </Card>
           </div>
         </div>
