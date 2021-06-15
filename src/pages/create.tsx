@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { Button, Input, Text } from "../components/atomic";
 import { defaultContentState } from "../components/RichTextEditing";
+import InputPreview from "../components/InputPreview";
 import {
   CreateProgramInput,
   useCreateProgramMutation,
@@ -24,8 +25,7 @@ const BlobCircle = () => {
 const CreateProgramPage: Page = () => {
   const [stage, setStage] = useState(0);
   const [programName, setProgramName] = useState("");
-  //@ts-ignore
-  const [programLogo, setProgramLogo] = useState("/static/HappyBlobs.svg");
+  const [programLogo, setProgramLogo] = useState<File | null>(null);
   const [programIdentifier, setProgramIdentifier] = useState("");
   //const [programIsPublic, setProgramIsPublic] = useState(true); // TODO: add checkbox on form for setting program public or not
   const [createProgram] = useCreateProgramMutation();
@@ -44,12 +44,16 @@ const CreateProgramPage: Page = () => {
     return name.length && name.match(/^[a-zA-Z0-9]{4,}$/) && !name.match("/");
   };
 
+  //TODO: Convert file to server-hosted image and retrieve URL for creating program
   const callCreateProgram = () => {
     const createProgramInput: CreateProgramInput = {
       name: programName,
       description: "", // a lotta dummy strings for now since the form doesn't specify them
       slug: programIdentifier,
-      iconUrl: programLogo,
+      //TODO: Send the actual URL of the icon in
+      iconUrl: programLogo
+        ? "/static/HappyBlobs.svg"
+        : "/static/DefaultLogo.svg",
       homepage: JSON.stringify(defaultContentState),
       mentorProfileSchemaJson: "",
       menteeProfileSchemaJson: "",
@@ -87,7 +91,7 @@ const CreateProgramPage: Page = () => {
 
   const stepOne = () => {
     return (
-      <div className="flex flex-col w-full px-4 py-12 md:w-152">
+      <div className="flex flex-col w-9/12">
         <Text h1 b className="whitespace no-wrap">
           Create your mentorship!
         </Text>
@@ -131,48 +135,40 @@ const CreateProgramPage: Page = () => {
 
   const stepTwo = () => {
     return (
-      <div className="flex flex-col w-full px-4 py-12 md:w-120">
-        <Text h1 b>
-          Program Details
-        </Text>
-        <Text>
-          Let's set up some basic information! You can also do these later.
-        </Text>
-        <div className="h-6" />
+      <div className="flex flex-col space-y-8">
+        <div>
+          <Text h1 b>
+            Program Details
+          </Text>
+          <div className="h-2" />
+          <Text className="text-secondary">
+            Let's set up some basic information! You can also do these later.
+          </Text>
+        </div>
         <div>
           <Text b>Logo</Text>
-          <div className="h-1" />
-          <Button variant="inverted" size="small">
-            Choose File
-          </Button>
-          {/* <input // TODO: display preview of logo
-            type="file"
-            name="Program Logo"
-            value={programLogo}
-            className="flex-1"
-            onChange={(e) => {
-              setProgramLogo(e.target.value);
-            }}
-          /> */}
+          <div className="h-2" />
+          <InputPreview setFile={setProgramLogo} />
         </div>
 
-        <div className="h-6" />
-        <Text b>Identifier</Text>
-        <div className="inline">
-          <Text b2>www.mentorcenter.us/</Text>
-          <Input
-            title="Identifier"
-            name="Program Identifier"
-            placeholder="nova-mentorship"
-            value={programIdentifier}
-            className="flex-1"
-            onChange={(e) => {
-              setProgramIdentifier(e.target.value);
-            }}
-          />
+        <div>
+          <Text b>Identifier</Text>
+          <div className="h-2" />
+          <div className="inline">
+            <Text b2>www.mentorcenter.us/</Text>
+            <Input
+              title="Identifier"
+              name="Program Identifier"
+              placeholder="nova-mentorship"
+              value={programIdentifier}
+              className="flex-1"
+              onChange={(e) => {
+                setProgramIdentifier(e.target.value);
+              }}
+            />
+          </div>
         </div>
 
-        <div className="h-3" />
         <div className="flex">
           <Button
             variant="inverted"
@@ -182,7 +178,7 @@ const CreateProgramPage: Page = () => {
           >
             Back
           </Button>
-          <div className="w-2"></div>
+          <div className="w-4"></div>
           <Button
             disabled={programIdentifier.length == 0}
             onClick={() => {
@@ -202,7 +198,6 @@ const CreateProgramPage: Page = () => {
             Create!
           </Button>
         </div>
-        <div className="h-6" />
 
         <Text className="text-error">{displayError}</Text>
       </div>
@@ -219,15 +214,15 @@ const CreateProgramPage: Page = () => {
     }
   };
   return (
-    <div className="flex w-screen min-h-screen">
-      <img
-        src="/static/TextLogo.svg"
-        className="absolute p-6 select-none pointer-events-none"
-      />
-      <div className="w-full md:w-2/3 flex justify-center items-center min-h-screen">
-        {renderStage()}
+    <div className="flex w-screen h-screen">
+      <div className="w-9/12 h-full flex">
+        <img
+          src="/static/DarkTextLogo.svg"
+          className="absolute p-6 select-none pointer-events-none"
+        />
+        <div className="m-auto">{renderStage()}</div>
       </div>
-      <div className="hidden md:grid md:w-1/3 bg-primary min-h-screen relative">
+      <div className="hidden md:grid md:w-1/3 bg-primary h-screen">
         <div className="place-self-center">
           <BlobCircle />
         </div>
