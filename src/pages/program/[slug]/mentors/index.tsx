@@ -6,16 +6,62 @@ import {
   Modal,
   Text,
 } from "../../../../components/atomic";
+import Calendar from "../../../../components/Calendar";
 import {
+  DateInterval,
   GetProfilesQuery,
   ProfileType,
   useGetProfilesQuery,
+  useGetWeeklyAvailabilitiesQuery,
 } from "../../../../generated/graphql";
 import { useCurrentProgram } from "../../../../hooks";
 import ChooseTabLayout from "../../../../layouts/ChooseTabLayout";
 import Page from "../../../../types/Page";
 
 type MentorProfile = GetProfilesQuery["getProfiles"][0];
+
+interface BookAChatProps {
+  mentor: MentorProfile;
+}
+const BookAChat = ({ mentor }: BookAChatProps) => {
+  const [selectedDay, setSelectedDay] = useState(new Date());
+  const { data, error } = useGetWeeklyAvailabilitiesQuery({
+    variables: { profileId: mentor.profileId },
+  });
+
+  let weeklyAvailabilities: DateInterval[] = [];
+  if (!error && data) {
+    weeklyAvailabilities = data.getWeeklyAvailabilities.map((x) => ({
+      startTime: new Date(x.startTime),
+      endTime: new Date(x.endTime),
+    }));
+  }
+
+  return (
+    <div>
+      <div className="h-4"></div>
+      <Text b1>
+        Book a chat with {mentor.user.firstName} {mentor.user.lastName}
+      </Text>
+      <div className="h-8"></div>
+
+      <div className="flex">
+        <Calendar
+          availabilities={{
+            weekly: weeklyAvailabilities,
+            overrides: [],
+          }}
+          onSelect={() => {
+            setSelectedDay(selectedDay);
+          }}
+          selectedDay={selectedDay}
+        />
+        <div className="w-8"></div>
+        <Card>lol</Card>
+      </div>
+    </div>
+  );
+};
 
 enum ProfileModalStage {
   VIEW_PROFILE = "VIEW_PROFILE",
@@ -34,7 +80,7 @@ const ProfileModal = ({
   const [stage, setStage] = useState(ProfileModalStage.VIEW_PROFILE);
 
   useEffect(() => {
-    if (isOpen === true) setStage(ProfileModalStage.VIEW_PROFILE);
+    if (isOpen === true) setStage(ProfileModalStage.BOOK_CHAT);
     return () => {};
   }, [isOpen]);
 
@@ -89,7 +135,7 @@ const ProfileModal = ({
         );
       case ProfileModalStage.BOOK_CHAT:
         return (
-          <Fragment>
+          <div>
             <Button
               onClick={() => {
                 setStage(ProfileModalStage.VIEW_PROFILE);
@@ -98,10 +144,8 @@ const ProfileModal = ({
             >
               Back
             </Button>
-            <Text>
-              Book a chat with {mentor.user.firstName} {mentor.user.lastName}
-            </Text>
-          </Fragment>
+            <BookAChat mentor={mentor} />
+          </div>
         );
     }
   };
