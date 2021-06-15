@@ -1,29 +1,8 @@
+import _ from "lodash";
 import { useState } from "react";
+import type { Question, TextQuestion } from "../types/Form";
 import { Card } from "./atomic";
 import TitledInput from "./TitledInput";
-import _ from "lodash"; // Is this right?
-
-// TYPES
-export type RecursivePartial<T> = {
-  [P in keyof T]?: RecursivePartial<T[P]>;
-};
-
-export type QuestionBase = {
-  readonly id: string;
-  title: string;
-  description: string;
-};
-
-export type TextQuestion = QuestionBase & {
-  type: "short-answer" | "long-answer";
-};
-
-export type MultipleChoiceQuestion = QuestionBase & {
-  type: "multiple-choice";
-  choices: Set<string>; // TODO: Multiple choice data structure
-};
-
-export type Question = MultipleChoiceQuestion | TextQuestion;
 
 type TextAskerProps = TextQuestion & {
   initResponse: string;
