@@ -1,0 +1,11 @@
+query getAvailabilityOverrides($profileId: String!) {
+  getAvailabilityOverrides(profileId: $profileId) {
+    availabilityOverrideId
+    profileId
+    date
+    availabilityOverrideIntervals {
+      startTime
+      endTime
+    }
+  }
+}

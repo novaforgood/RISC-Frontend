@@ -286,7 +286,8 @@ export const SetWeeklyAvailabilitiesCard = ({
           return (
             <div key={date.toDateString()}>
               <div className="w-full h-px bg-inactive"></div>
-              <div className="flex flex-col w-5/6 mx-auto space-y-4 my-4">
+              <div className="h-4" />
+              <div className="flex flex-col w-5/6 mx-auto space-y-4">
                 <Text b>{weekdayNames[getDay(date)].toUpperCase() + "S"}</Text>
                 {weeklyAvailabilities.map((interval, intervalIndex) => {
                   if (getDay(interval.startTime) !== getDay(date)) {
@@ -313,6 +314,7 @@ export const SetWeeklyAvailabilitiesCard = ({
                   add time
                 </Button>
               </div>
+              <div className="h-4" />
             </div>
           );
         })}

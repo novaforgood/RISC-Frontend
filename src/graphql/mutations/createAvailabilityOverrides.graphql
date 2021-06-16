@@ -1,0 +1,6 @@
+mutation createAvailabilityOverride($profileId: String!, $date: Timestamp!) {
+  createAvailabilityOverride(profileId: $profileId, date: $date) {
+    profileId
+    date
+  }
+}
