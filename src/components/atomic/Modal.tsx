@@ -11,6 +11,7 @@ type ModalProps = HTMLAttributes<HTMLDivElement> & {
   onClose: () => void;
   children?: ReactNode;
   initialFocus?: MutableRefObject<HTMLElement | null>;
+  backgroundColor?: string | undefined;
 };
 
 const Modal = ({
@@ -18,6 +19,7 @@ const Modal = ({
   isOpen,
   onClose = () => {},
   initialFocus,
+  backgroundColor,
 }: ModalProps) => {
   const overlayStyles = classNames({
     "fixed inset-0 bg-black": true,
@@ -62,8 +64,10 @@ const Modal = ({
               leaveTo="opacity-0 scale-95"
             >
               <div
-                className="inline-block p-6 my-8 overflow-hidden \ 
-                text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl"
+                className={`inline-block p-6 my-8 overflow-hidden
+                text-left align-middle transition-all transform bg-${
+                  backgroundColor || "white"
+                } shadow-xl rounded-2xl`}
               >
                 {children}
               </div>

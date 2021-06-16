@@ -10,9 +10,11 @@ import {
 } from "../../../../components/atomic";
 import Calendar from "../../../../components/Calendar";
 import {
+  CreateChatRequestInput,
   DateInterval,
   GetProfilesQuery,
   ProfileType,
+  useCreateChatRequestMutation,
   useGetProfilesQuery,
   useGetWeeklyAvailabilitiesQuery,
 } from "../../../../generated/graphql";
@@ -50,11 +52,18 @@ interface BookAChatProps {
   mentor: MentorProfile;
 }
 const BookAChat = ({ mentor }: BookAChatProps) => {
-  const [selectedDay, setSelectedDay] = useState<Date | null>(new Date());
+  const [selectedDay, setSelectedDay] = useState<Date | null>(null);
+  const [selectedTimeslot, setSelectedTimeslot] =
+    useState<DateInterval | null>(null);
+  const [sendChatModalOpen, setSendChatModalOpen] = useState(false);
   const { data, error } = useGetWeeklyAvailabilitiesQuery({
     variables: { profileId: mentor.profileId },
   });
 
+  const [createChatRequest] = useCreateChatRequestMutation();
+  const [loadingCreateChatRequest, setLoadingCreateChatRequest] =
+    useState(false);
+  const [chatRequestMessage, setChatRequestMessage] = useState("");
   let weeklyAvailabilities: DateInterval[] = [];
   if (!error && data) {
     weeklyAvailabilities = data.getWeeklyAvailabilities.map((x) => ({
@@ -63,46 +72,147 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
     }));
   }
 
-  console.log(weeklyAvailabilities);
-
   const timeslots = generateTimeslots(selectedDay, 15, weeklyAvailabilities);
-  console.log(timeslots);
 
   return (
     <div>
       <div className="h-4"></div>
-      <Text b1>
-        Book a chat with {mentor.user.firstName} {mentor.user.lastName}
+      <Text h2>
+        Book a chat with{" "}
+        <b>
+          {mentor.user.firstName} {mentor.user.lastName}
+        </b>
       </Text>
       <div className="h-8"></div>
 
       <div className="flex">
-        <Calendar
-          availabilities={{
-            weekly: weeklyAvailabilities,
-            overrides: [],
-          }}
-          onSelect={(newSelectedDay) => {
-            setSelectedDay(newSelectedDay);
-          }}
-          selectedDay={selectedDay}
-        />
+        <Card className="p-12">
+          <Calendar
+            availabilities={{
+              weekly: weeklyAvailabilities,
+              overrides: [],
+            }}
+            onSelect={(newSelectedDay) => {
+              setSelectedDay(newSelectedDay);
+            }}
+            selectedDay={selectedDay}
+          />
+        </Card>
+
         <div className="w-8"></div>
-        <Card>
-          <Text b>
-            {selectedDay && dateFormat(selectedDay, "dddd, mmmm dS, yyyy")}
-          </Text>
+        <Card className="p-12 w-80">
+          <div>
+            <Text b1 b>
+              Available Times
+            </Text>
+          </div>
           <div className="h-2"></div>
-          {timeslots.map((timeslot) => {
-            return (
-              <div>
-                {dateFormat(timeslot.startTime, "h:MM TT")} -{" "}
-                {dateFormat(timeslot.endTime, "h:MM TT")}
-              </div>
-            );
-          })}
+          <div>
+            <Text b className="text-secondary">
+              {selectedDay
+                ? dateFormat(selectedDay, "dddd, mmmm dS, yyyy")
+                : "Select a day to see slots"}
+            </Text>
+          </div>
+
+          <div className="h-4"></div>
+          <div className="h-80 box-border flex flex-col gap-2 overflow-y-scroll">
+            {timeslots.map((timeslot) => {
+              return (
+                <div
+                  className="border border-inactive text-center w-full p-2 cursor-pointer hover:border-primary duration-150"
+                  onClick={() => {
+                    setSendChatModalOpen(true);
+                    setSelectedTimeslot(timeslot);
+                  }}
+                >
+                  {dateFormat(timeslot.startTime, "h:MMtt")} -{" "}
+                  {dateFormat(timeslot.endTime, "h:MMtt")}
+                </div>
+              );
+            })}
+          </div>
         </Card>
       </div>
+      <Modal
+        isOpen={sendChatModalOpen}
+        onClose={() => {
+          setSendChatModalOpen(false);
+        }}
+      >
+        <div className="p-4 flex flex-col items-center">
+          <div>
+            <Text>
+              Send Chat Request to{" "}
+              <Text b>
+                {mentor.user.firstName} {mentor.user.lastName}
+              </Text>
+            </Text>
+          </div>
+          <div className="h-2"></div>
+          <div>
+            <Text b>Date:</Text>{" "}
+            <Text>
+              {dateFormat(selectedTimeslot?.startTime, "dddd, mmmm dS, yyyy")}
+            </Text>
+          </div>
+          <div>
+            <Text b>Time:</Text>{" "}
+            <Text>
+              {dateFormat(selectedTimeslot?.startTime, "h:MMtt")} -{" "}
+              {dateFormat(selectedTimeslot?.endTime, "h:MMtt")}
+            </Text>
+          </div>
+          <div className="h-6"></div>
+
+          <textarea
+            value={chatRequestMessage}
+            onChange={(e) => {
+              setChatRequestMessage(e.target.value);
+            }}
+            className="p-2 w-96 shadow-sm focus:ring-secondary focus:border-primary mt-1 block sm:text-sm border border-secondary rounded-md"
+            placeholder="Optional message"
+          ></textarea>
+          <div className="h-8"></div>
+
+          <div className="flex">
+            <Button
+              variant="inverted"
+              size="small"
+              onClick={() => {
+                setSendChatModalOpen(false);
+              }}
+            >
+              Cancel
+            </Button>
+            <div className="w-2"></div>
+            <Button
+              size="small"
+              onClick={() => {
+                if (!selectedTimeslot) return; // TODO: Set error
+                setLoadingCreateChatRequest(true);
+                const createChatRequestInput: CreateChatRequestInput = {
+                  mentorProfileId: mentor.profileId,
+                  chatRequestMessage: chatRequestMessage,
+                  chatStartTime: selectedTimeslot.startTime.getTime(),
+                  chatEndTime: selectedTimeslot.endTime.getTime(),
+                };
+                createChatRequest({
+                  variables: {
+                    data: createChatRequestInput,
+                  },
+                }).then(() => {
+                  setLoadingCreateChatRequest(false);
+                  setSendChatModalOpen(false);
+                  setChatRequestMessage("");
+                });
+              }}
+            >
+              Send
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };
@@ -124,7 +234,7 @@ const ProfileModal = ({
   const [stage, setStage] = useState(ProfileModalStage.VIEW_PROFILE);
 
   useEffect(() => {
-    if (isOpen === true) setStage(ProfileModalStage.BOOK_CHAT);
+    if (isOpen === true) setStage(ProfileModalStage.VIEW_PROFILE);
     return () => {};
   }, [isOpen]);
 
@@ -134,7 +244,7 @@ const ProfileModal = ({
         return (
           <Fragment>
             <div className="flex flex-col items-center">
-              <div className="h-40 w-40 rounded-full bg-tertiary">
+              <div className="h-40 w-40 rounded-full bg-inactive">
                 <img src={mentor.user.profilePictureUrl}></img>
               </div>
               <div className="h-4"></div>
@@ -196,6 +306,7 @@ const ProfileModal = ({
 
   return (
     <Modal
+      backgroundColor={ProfileModalStage.BOOK_CHAT ? "tertiary" : "white"}
       isOpen={isOpen}
       onClose={() => {
         onClose();

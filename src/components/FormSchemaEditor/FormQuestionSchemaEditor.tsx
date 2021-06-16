@@ -1,9 +1,9 @@
 import classNames from "classnames";
 import React, { useEffect, useRef, useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
+import { Question } from "../../types/Form";
 import Select from "../atomic/Select";
 import { DeleteIcon, DragHandle } from "./icons";
-import { Question } from "./index";
 import { getUpdateFunction } from "./utils";
 
 interface FormQuestionSchemaEditorProps {
