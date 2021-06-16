@@ -1,5 +1,9 @@
 mutation acceptApplication($applicationId: String!) {
   acceptApplication(applicationId: $applicationId) {
-    applicationId
+    userId
+    applicationType
+    applicationStatus
+    applicationJson
+    createdAt
   }
 }
