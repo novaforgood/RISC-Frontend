@@ -2,6 +2,7 @@ import { nanoid } from "nanoid";
 import dynamic from "next/dynamic";
 import React, { Fragment } from "react";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
+import type { Question } from "../../types/Form";
 import { Button } from "../atomic";
 import FormQuestionSchemaEditor from "./FormQuestionSchemaEditor";
 import { reindexItemInList } from "./utils";
@@ -13,28 +14,6 @@ const NoSSRComponent = (props: any) => (
 const NoSSR = dynamic(() => Promise.resolve(NoSSRComponent), {
   ssr: false,
 });
-
-// Types
-
-export type RecursivePartial<T> = {
-  [P in keyof T]?: RecursivePartial<T[P]>;
-};
-
-type QuestionBase = {
-  readonly id: string;
-  title: string;
-  description: string;
-  type: string;
-};
-type TextQuestion = QuestionBase & {
-  type: "short-answer" | "long-answer";
-};
-type MultipleChoiceQuestion = QuestionBase & {
-  type: "multiple-choice";
-  choices: Set<string>; // TODO: Multiple choice data structure
-};
-
-export type Question = MultipleChoiceQuestion | TextQuestion;
 
 // Components
 
@@ -97,7 +76,7 @@ const FormSchemaEditor: React.FC<FormSchemaEditorProps> = ({
             }}
           </Droppable>
         </DragDropContext>
-        <div className="h-8"></div>
+        <div className="h-4"></div>
         <Button
           size="small"
           className="mx-auto"

@@ -1,8 +1,8 @@
 import classNames from "classnames";
 import React, { useEffect, useRef, useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
+import { Question } from "../../types/Form";
 import { DeleteIcon, DragHandle } from "./icons";
-import { Question } from "./index";
 import Select from "./Select";
 import { getUpdateFunction } from "./utils";
 
@@ -229,6 +229,7 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
 
               {questionPreview()}
             </div>
+            <div className="h-4"></div>
           </div>
         );
       }}

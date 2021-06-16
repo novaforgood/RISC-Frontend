@@ -6,9 +6,14 @@ const useCurrentProgram = () => {
   const router = useRouter();
   const slug = parseParam(router.query.slug);
 
-  const { data } = useGetProgramBySlugQuery({ variables: { slug: slug } });
+  const { data, refetch } = useGetProgramBySlugQuery({
+    variables: { slug: slug },
+  });
 
-  return { currentProgram: data?.getProgramBySlug };
+  return {
+    currentProgram: data?.getProgramBySlug,
+    refetchCurrentProgram: refetch,
+  };
 };
 
 export default useCurrentProgram;
