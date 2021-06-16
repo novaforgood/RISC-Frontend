@@ -1,6 +1,5 @@
 import React from "react";
 import { Card, Text } from "../../../components/atomic";
-import { SetAvailabilityOverridesCard } from "../../../components/Availabilities/SetAvailabilityOverridesCard";
 import { SetWeeklyAvailabilitiesCard } from "../../../components/Availabilities/SetWeeklyAvailabilitiesCard";
 import { useCurrentProfile } from "../../../hooks";
 
@@ -31,11 +30,11 @@ const SetAvailabilitiesPage = () => {
                 profileId={currentProfile.profileId}
               />
             </Card>
-            <Card className="flex-1 py-4">
+            {/* <Card className="flex-1 py-4">
               <SetAvailabilityOverridesCard
                 profileId={currentProfile.profileId}
               />
-            </Card>
+            </Card> */}
           </div>
         </div>
       </div>
