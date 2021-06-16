@@ -108,6 +108,10 @@ const ChatRequestListItem = ({ chatRequest }: ChatRequestListItemProps) => {
           </button>
         </div>
       );
+    } else if (chatRequest.chatRequestStatus === ChatRequestStatus.Accepted) {
+      return <Text>Accepted</Text>;
+    } else if (chatRequest.chatRequestStatus === ChatRequestStatus.Rejected) {
+      return <Text>Rejected</Text>;
     } else {
       return <></>;
     }
