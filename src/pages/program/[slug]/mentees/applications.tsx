@@ -4,8 +4,9 @@ import { ApplicationFilterer } from "../../../../components/ReviewApplications/A
 import { ApplicationType } from "../../../../generated/graphql";
 import { useCurrentProgram } from "../../../../hooks";
 import ChooseTabLayout from "../../../../layouts/ChooseTabLayout";
+import Page from "../../../../types/Page";
 
-const MenteeApplicationsPage = () => {
+const MenteeApplicationsPage: Page = () => {
   const { currentProgram } = useCurrentProgram();
 
   if (!currentProgram) {
