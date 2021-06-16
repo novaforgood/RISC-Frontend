@@ -1,0 +1,5 @@
+mutation createChatRequest($data: CreateChatRequestInput!) {
+  createChatRequest(data: $data) {
+    chatRequestId
+  }
+}
