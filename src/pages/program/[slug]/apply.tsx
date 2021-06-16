@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { Button, Card, Text } from "../../../components/atomic";
-import Form, { dummyForm, Question } from "../../../components/Form";
+import Form, { dummyForm } from "../../../components/Form";
 import {
   ApplicationType,
   CreateApplicationInput,
@@ -15,6 +15,7 @@ import {
   useCurrentProgram,
 } from "../../../hooks";
 import RedirectIfNotLoggedIn from "../../../layouts/RedirectIfNotLoggedIn";
+import { Question } from "../../../types/Form";
 import Page from "../../../types/Page";
 import { useAuth } from "../../../utils/firebase/auth";
 
