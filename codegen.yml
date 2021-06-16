@@ -3,12 +3,18 @@ schema: ${NEXT_PUBLIC_API_URL}
 documents: "src/graphql/**/*.graphql"
 generates:
   src/generated/graphql.tsx:
-    config:
-      withRefetchFn: true
     plugins:
+      - add:
+          content: "export type DateInterval = { startTime: Date, endTime: Date }"
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
+    config:
+      withRefetchFn: true
+      strictScalars: true
+      scalars:
+        DateInterval: DateInterval
+        Timestamp: number
   src/generated/page.tsx:
     config:
       reactApolloVersion: 3
