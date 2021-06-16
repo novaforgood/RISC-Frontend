@@ -1,0 +1,3 @@
+mutation deleteAvailabilityOverride($availabilityOverrideId: String!) {
+  deleteAvailabilityOverride(availabilityOverrideId: $availabilityOverrideId)
+}
