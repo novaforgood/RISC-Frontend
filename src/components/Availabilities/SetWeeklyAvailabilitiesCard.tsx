@@ -13,7 +13,7 @@ import {
   startOfDay,
   startOfWeek,
 } from "date-fns";
-import React from "react";
+import React, { useState } from "react";
 import {
   DateInterval,
   refetchGetWeeklyAvailabilitiesQuery,
@@ -170,6 +170,7 @@ export const SetWeeklyAvailabilitiesCard = ({
       }),
     ],
   });
+  const [allDayAvailableError, setAllDayAvailableError] = useState(-1); // Index of error
 
   let weeklyAvailabilities: DateInterval[] = [];
 
@@ -225,6 +226,7 @@ export const SetWeeklyAvailabilitiesCard = ({
     }
     if (!newAvailability) {
       // Entire day is already available
+      setAllDayAvailableError(getDay(date));
       return;
     }
     const newWeeklyAvailabilities = weeklyAvailabilities
@@ -252,6 +254,7 @@ export const SetWeeklyAvailabilitiesCard = ({
         availabilities: newWeeklyAvailabilities,
       },
     });
+    setAllDayAvailableError(-1);
   };
 
   const deleteWeeklyAvailability = (dateIntervalIndex: number) => () => {
@@ -265,6 +268,7 @@ export const SetWeeklyAvailabilitiesCard = ({
         availabilities: newWeeklyAvailabilities,
       },
     });
+    setAllDayAvailableError(-1);
   };
 
   return (
@@ -313,6 +317,11 @@ export const SetWeeklyAvailabilitiesCard = ({
                 >
                   add time
                 </Button>
+                {allDayAvailableError === getDay(date) && (
+                  <Text className="text-error">
+                    The entire day is already available.
+                  </Text>
+                )}
               </div>
               <div className="h-4" />
             </div>
