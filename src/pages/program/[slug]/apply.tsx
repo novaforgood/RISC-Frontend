@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { Button, Card, Text } from "../../../components/atomic";
-import Form, { dummyForm } from "../../../components/Form";
+import Form from "../../../components/Form";
 import {
   ApplicationType,
   CreateApplicationInput,
@@ -21,6 +21,15 @@ import { useAuth } from "../../../utils/firebase/auth";
 
 // Question: Do we want users to see mentor app (behind the modal) before they log in?
 // Urgent: Should check if user applied to be mentor before prior to allowing them to access the form.
+
+function getApplicationSchemaFromJson(json: string): Question[] {
+  try {
+    return JSON.parse(json) as Question[];
+  } catch (_) {
+    return [];
+  }
+}
+
 const ProgramApplyPage: Page = (_) => {
   const { user } = useAuth();
   const authorizationLevel = useAuthorizationLevel();
@@ -51,16 +60,6 @@ const ProgramApplyPage: Page = (_) => {
   };
 
   const applicationType: ApplicationType | null = getApplicationType();
-
-  //TODO
-  const fetchMenteeAppSchema = (): Question[] => {
-    return dummyForm;
-  };
-
-  //TODO
-  const fetchMentorAppSchema = (): Question[] => {
-    return dummyForm;
-  };
 
   if ([Admin, Mentor, Mentee].includes(authorizationLevel))
     return <div>You're already in this program.</div>;
@@ -114,11 +113,11 @@ const ProgramApplyPage: Page = (_) => {
             </div>
             <div className="mt-6 mx-10">
               <Form
-                questions={
+                questions={getApplicationSchemaFromJson(
                   applicant == "mentee"
-                    ? fetchMenteeAppSchema()
-                    : fetchMentorAppSchema()
-                } // Should actually fetch form schema
+                    ? currentProgram.menteeApplicationSchemaJson
+                    : currentProgram.mentorApplicationSchemaJson
+                )} // Should actually fetch form schema
                 responses={responses}
                 onChange={() => {
                   setFormChanged(true);
