@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Checkbox } from "../../components/atomic";
 import { useGetUsersLazyQuery } from "../../generated/graphql";
 import { useAuth } from "../../utils/firebase/auth";
@@ -6,6 +6,8 @@ import { useAuth } from "../../utils/firebase/auth";
 const TestCheckboxPage = () => {
   const [getUser, { data }] = useGetUsersLazyQuery();
   const { user, signOut } = useAuth();
+
+  const [checked, setChecked] = useState(false);
 
   return (
     <>
@@ -28,7 +30,13 @@ const TestCheckboxPage = () => {
         <a href="/login">Log In</a>
       )}
       <br />
-      <Checkbox labeltext="check me!"></Checkbox>
+      <Checkbox
+        label="check me!"
+        checked={checked}
+        onCheck={(c) => {
+          setChecked(c);
+        }}
+      ></Checkbox>
     </>
   );
 };
