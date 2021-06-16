@@ -73,8 +73,8 @@ module.exports = {
     extend: {
       backgroundColor: ["active", "disabled", "checked"],
       borderWidth: ["hover", "active", "disabled"],
+      cursor: ["hover", "disabled"],
       borderColor: ["hover", "active", "disabled", "checked"],
-      cursor: ["disabled"],
       opacity: ["disabled"],
       pointerEvents: ["disabled"],
       textColor: ["active", "disabled", "checked"],
