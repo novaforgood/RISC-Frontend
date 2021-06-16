@@ -59,6 +59,7 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
           console.log("onAutosave");
           console.log(response);
         }}
+        readonly
         className="m-20"
       ></Form>
       <Button
