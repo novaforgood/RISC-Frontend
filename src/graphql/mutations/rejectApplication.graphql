@@ -1,9 +1,0 @@
-mutation rejectApplication($applicationId: String!) {
-  rejectApplication(applicationId: $applicationId) {
-    userId
-    applicationType
-    applicationStatus
-    applicationJson
-    createdAt
-  }
-}

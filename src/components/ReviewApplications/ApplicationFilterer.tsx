@@ -1,8 +1,6 @@
-import { unix } from "moment";
+import { format } from "date-fns";
 import React from "react";
-import { Text } from "../components/atomic";
-import InlineProfileAvatar from "../components/InlineProfileAvatar";
-import ListFilterer from "../components/ListFilterer";
+import { Text } from "../../components/atomic";
 import {
   ApplicationStatus,
   ApplicationType,
@@ -11,11 +9,9 @@ import {
   useAcceptApplicationMutation,
   useGetApplicationsQuery,
   useRejectApplicationMutation,
-} from "../generated/graphql";
-
-// Hardcoded values
-const QUERY_PROGRAM_ID = "457c3a86-8e01-483e-b72d-843347334b16";
-const QUERY_APPLICATION_TYPE = ApplicationType.Mentor;
+} from "../../generated/graphql";
+import InlineProfileAvatar from "../InlineProfileAvatar";
+import ListFilterer from "../ListFilterer";
 
 type ApplicationPartial = GetApplicationsQuery["getApplications"][number];
 
@@ -81,12 +77,11 @@ const ApplicationReviewListItem = ({
 
   return (
     <div className="flex space-x-4">
-      <input type="checkbox" />
       <div className="w-8" />
       <InlineProfileAvatar user={application.user} />
       <div className="md:flex-1" />
       <Text className="hidden lg:inline">
-        {unix(application.createdAt / 1000).format("MMM D, YYYY | h:mma")}
+        {format(new Date(application.createdAt), "MMM d, yyyy | h:mma")}
       </Text>
       <div className="flex-1" />
       {getStatusIcon(application)}
@@ -115,11 +110,19 @@ const ApplicationReviewList = ({
   );
 };
 
-const ApplicationFilterer = () => {
+type ApplicationFiltererProps = {
+  programId: string;
+  applicationType: ApplicationType;
+};
+
+export const ApplicationFilterer = ({
+  programId,
+  applicationType,
+}: ApplicationFiltererProps) => {
   const { data } = useGetApplicationsQuery({
     variables: {
-      programId: QUERY_PROGRAM_ID,
-      applicationType: QUERY_APPLICATION_TYPE,
+      programId,
+      applicationType,
     },
   });
 
@@ -151,28 +154,3 @@ const ApplicationFilterer = () => {
     />
   );
 };
-
-const ReviewApplicationsPage = () => {
-  return (
-    <div className="bg-tertiary h-screen">
-      <div className="flex flex-col items-center w-5/6 mx-auto h-full">
-        <div className="flex w-5/6 items-center">
-          <Text h1 b>
-            Applications
-          </Text>
-          <div className="flex-1" />
-          <label className="space-x-4">
-            <Text>Accepting Applications</Text>
-            <input type="checkbox" />
-          </label>
-        </div>
-        <div className="h-4" />
-        <div className="w-4/5 flex-1">
-          <ApplicationFilterer />
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default ReviewApplicationsPage;

@@ -1,5 +1,9 @@
 mutation createApplication($data: CreateApplicationInput!) {
   createApplication(data: $data) {
-    applicationId
+    userId
+    applicationType
+    applicationStatus
+    applicationJson
+    createdAt
   }
 }
