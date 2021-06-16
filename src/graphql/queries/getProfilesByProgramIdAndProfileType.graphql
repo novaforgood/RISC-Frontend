@@ -1,0 +1,18 @@
+query getProfilesByProgramIdAndProfileType(
+  $programId: String!
+  $profileType: String!
+) {
+  getProfilesByProgramIdAndProfileType(
+    programId: $programId
+    profileType: $profileType
+  ) {
+    userId
+    user {
+      userId
+      email
+      firstName
+      lastName
+      profilePictureUrl
+    }
+  }
+}
