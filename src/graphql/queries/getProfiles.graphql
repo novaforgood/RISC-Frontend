@@ -1,0 +1,12 @@
+query getProfiles($programId: String!, $profileType: String!) {
+  getProfiles(programId: $programId, profileType: $profileType) {
+    profileId
+    user {
+      userId
+      email
+      firstName
+      lastName
+      profilePictureUrl
+    }
+  }
+}
