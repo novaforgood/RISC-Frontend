@@ -72,6 +72,8 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
     }));
   }
 
+  loadingCreateChatRequest; // TODO: Use this variable
+
   const timeslots = generateTimeslots(selectedDay, 15, weeklyAvailabilities);
 
   return (
