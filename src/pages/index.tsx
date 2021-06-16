@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Button } from "../components/atomic";
-import Form, { Question } from "../components/Form";
+import Form from "../components/Form";
 import { useGetMyUserQuery } from "../generated/graphql";
 import { PageGetProgramBySlugComp } from "../generated/page";
+import { Question } from "../types/Form";
 import { useAuth } from "../utils/firebase/auth";
 
 const IndexPage: PageGetProgramBySlugComp = (_) => {
