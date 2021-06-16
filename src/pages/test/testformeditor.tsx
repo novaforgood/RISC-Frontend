@@ -1,7 +1,8 @@
 import { nanoid } from "nanoid";
 import React, { useState } from "react";
 import { Text } from "../../components/atomic";
-import FormSchemaEditor, { Question } from "../../components/FormSchemaEditor";
+import FormSchemaEditor from "../../components/FormSchemaEditor";
+import { Question } from "../../types/Form";
 
 const TestPage = ({}) => {
   const [formQuestions, setFormQuestions] = useState<Question[]>([

@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import Select from "../atomic/Select";
 import { DeleteIcon, DragHandle } from "./icons";
-import { Question } from "./index";
+import { Question } from "../../types/Form";
 import { getUpdateFunction } from "./utils";
 
 interface FormQuestionSchemaEditorProps {
@@ -227,6 +227,7 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
 
               {questionPreview()}
             </div>
+            <div className="h-4"></div>
           </div>
         );
       }}
