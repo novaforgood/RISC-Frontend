@@ -15,6 +15,7 @@
     "@headlessui/react": "^1.2.0",
     "classnames": "^2.3.1",
     "date-fns": "^2.22.1",
+    "dateformat": "^4.5.1",
     "firebase": "^8.4.2",
     "graphql": "^15.5.0",
     "lodash": "^4.17.21",
