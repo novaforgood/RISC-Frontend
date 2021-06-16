@@ -167,7 +167,7 @@ export const ChatRequestFilterer = ({ profileId }: ChatsFiltererProps) => {
       x.filter((y) => y.chatRequestStatus === ChatRequestStatus.PendingReview),
     Upcoming: (x) =>
       x.filter((y) => y.chatRequestStatus === ChatRequestStatus.Accepted),
-    Past: (x) => x.filter((y) => y.chatStartTime < new Date().getTime),
+    Past: (x) => x.filter((y) => y.chatStartTime < new Date().getTime()),
   };
 
   return (
