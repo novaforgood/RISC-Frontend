@@ -13,9 +13,11 @@ const NoMentorshipHome: Page = () => {
       <div>
         <Text h3>You are currently not a part of any mentorship programs</Text>
       </div>
-      <Button className="w-80 m-9">
+      <Button className="w-96 m-9">
         <Link href="/my/applications">
-          <Text h3>Check Application Statuses</Text>
+          <a>
+            <Text h3>Check Application Statuses</Text>
+          </a>
         </Link>
       </Button>
     </div>

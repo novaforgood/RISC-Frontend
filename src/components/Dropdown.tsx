@@ -6,6 +6,8 @@ type DropdownProps = {
   button: ReactNode;
 };
 
+// Adapted from https://tailwindui.com/components/application-ui/elements/dropdowns
+
 function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(" ");
 }
