@@ -35,14 +35,16 @@ const TextEditor = () => {
     return "not-handled";
   };
 
+  //TODO: Keyboard shortcuts for different block types
   const keyBindingFn = (e: React.KeyboardEvent) => {
-    e.preventDefault();
     if (
       e.key === "Digit1" /* `S` key */ &&
       KeyBindingUtil.hasCommandModifier(e) /* + `Ctrl` key */
     ) {
+      e.preventDefault();
       return BlockTypes["header-one"];
     } else if (e.key === "Digit2" && KeyBindingUtil.hasCommandModifier(e)) {
+      e.preventDefault();
       return BlockTypes["header-two"];
     }
     //else...

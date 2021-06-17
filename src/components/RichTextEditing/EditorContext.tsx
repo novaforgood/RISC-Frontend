@@ -66,16 +66,14 @@ const useProvideEditor = (storedState = defaultContentState) => {
 };
 
 type ContextProps = HTMLAttributes<HTMLDivElement> & {
-  currentHomepage?: string | undefined;
+  currentHomepage?: RawDraftContentState;
 };
 
 export const EditorProvider = ({
   currentHomepage = undefined,
   ...props
 }: ContextProps) => {
-  const editor = useProvideEditor(
-    currentHomepage ? JSON.parse(currentHomepage) : {}
-  );
+  const editor = useProvideEditor(currentHomepage);
   return <EditorContext.Provider {...props} value={editor} />;
 };
 
