@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { Button, Input, Text } from "../components/atomic";
 import { defaultContentState } from "../components/RichTextEditing";
-import InputPreview from "../components/InputPreview";
+import UploadIconWithPreview from "../components/UploadIconWithPreview";
 import {
   CreateProgramInput,
   useCreateProgramMutation,
@@ -44,7 +44,6 @@ const CreateProgramPage: Page = () => {
     return name.length && name.match(/^[a-zA-Z0-9]{4,}$/) && !name.match("/");
   };
 
-  //TODO: Convert file to server-hosted image and retrieve URL for creating program
   const callCreateProgram = () => {
     const createProgramInput: CreateProgramInput = {
       name: programName,
@@ -91,16 +90,15 @@ const CreateProgramPage: Page = () => {
 
   const stepOne = () => {
     return (
-      <div className="flex flex-col w-9/12">
-        <Text h1 b className="whitespace no-wrap">
+      <div className="flex flex-col w-9/10 space-y-6">
+        <Text h1 b className="whitespace-nowrap">
           Create your mentorship!
         </Text>
-        <div className="h-6" />
+        <div className="h-18" />
 
         <Text className="text-secondary">
           What is the name of your mentorship program?
         </Text>
-        <div className="h-6" />
 
         <div className="w-full">
           <Input
@@ -113,7 +111,6 @@ const CreateProgramPage: Page = () => {
             }}
           />
         </div>
-        <div className="h-3" />
 
         <Button
           disabled={programName.length == 0}
@@ -126,7 +123,6 @@ const CreateProgramPage: Page = () => {
         >
           Next
         </Button>
-        <div className="h-6" />
 
         <Text className="text-error">{displayError}</Text>
       </div>
@@ -135,7 +131,7 @@ const CreateProgramPage: Page = () => {
 
   const stepTwo = () => {
     return (
-      <div className="flex flex-col space-y-8">
+      <div className="flex flex-col space-y-10">
         <div>
           <Text h1 b>
             Program Details
@@ -148,7 +144,7 @@ const CreateProgramPage: Page = () => {
         <div>
           <Text b>Logo</Text>
           <div className="h-2" />
-          <InputPreview setFile={setProgramLogo} />
+          <UploadIconWithPreview setFile={setProgramLogo} setError={setError} />
         </div>
 
         <div>

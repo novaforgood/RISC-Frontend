@@ -1,11 +1,15 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "./atomic";
 
-type PreviewInput = {
-  setFile(file: File | null): void;
+type UploadIconWithPreviewProps = {
+  setFile: (file: File | null) => void;
+  setError: (error: string) => void;
 };
 
-const InputPreview = ({ setFile }: PreviewInput) => {
+const UploadIconWithPreview = ({
+  setFile,
+  setError,
+}: UploadIconWithPreviewProps) => {
   const [src, setSrc] = useState("/static/DefaultLogo.svg");
 
   return (
@@ -16,11 +20,15 @@ const InputPreview = ({ setFile }: PreviewInput) => {
       <Button variant="inverted" size="small">
         <label>
           <input
-            onChange={async (e: ChangeEvent<HTMLInputElement>) => {
+            onChange={(e) => {
               const file = e.target.files![0];
               const url = URL.createObjectURL(file);
-              setFile(file);
-              setSrc(url);
+              if (file && file.type.match("image.*")) {
+                setFile(file);
+                setSrc(url);
+              } else {
+                setError("The uploaded file was invalid.");
+              }
             }}
             className="hidden"
             type="file"
@@ -34,4 +42,4 @@ const InputPreview = ({ setFile }: PreviewInput) => {
   );
 };
 
-export default InputPreview;
+export default UploadIconWithPreview;
