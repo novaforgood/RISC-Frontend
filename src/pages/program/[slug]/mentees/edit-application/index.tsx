@@ -60,16 +60,6 @@ const EditMenteeApplicationPage: Page = (_) => {
             <div className="flex">
               <Button
                 size="small"
-                variant="inverted"
-                onClick={() => {
-                  window.open("./edit-application/preview", "_blank");
-                }}
-              >
-                Preview
-              </Button>
-              <div className="w-2"></div>
-              <Button
-                size="small"
                 disabled={!modified}
                 onClick={() => {
                   saveMenteeApplicationSchema();
