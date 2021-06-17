@@ -1,6 +1,6 @@
 import { format } from "date-fns";
-import React from "react";
-import { Text } from "../../components/atomic";
+import React, { useState } from "react";
+import { Modal, Text } from "../../components/atomic";
 import {
   ApplicationStatus,
   ApplicationType,
@@ -10,10 +10,71 @@ import {
   useGetApplicationsQuery,
   useRejectApplicationMutation,
 } from "../../generated/graphql";
+import { useCurrentProgram } from "../../hooks";
+import { Question } from "../../types/Form";
+import Form from "../Form";
 import InlineProfileAvatar from "../InlineProfileAvatar";
 import ListFilterer from "../ListFilterer";
 
 type ApplicationPartial = GetApplicationsQuery["getApplications"][number];
+
+function getApplicationSchemaFromJson(json: string): Question[] {
+  try {
+    return JSON.parse(json) as Question[];
+  } catch (_) {
+    return [];
+  }
+}
+
+type DetailsModalButtonProps = {
+  application: ApplicationPartial;
+};
+
+const DetailsModalButton = ({ application }: DetailsModalButtonProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const { currentProgram } = useCurrentProgram();
+
+  if (!currentProgram) {
+    return <></>;
+  }
+
+  return (
+    <>
+      <button onClick={() => setIsOpen(true)}>
+        <Text u>Details</Text>
+      </button>
+      <Modal
+        isOpen={isOpen}
+        onClose={() => {
+          setIsOpen(false);
+        }}
+      >
+        <div className="w-200">
+          <div className="flex">
+            <Text b h2>
+              Application for{" "}
+              {application.user.firstName + " " + application.user.lastName}
+            </Text>
+            <div className="flex-1" />
+            <button onClick={() => setIsOpen(false)}>
+              <Text u>close</Text>
+            </button>
+          </div>
+          <Form
+            questions={getApplicationSchemaFromJson(
+              application.applicationType == ApplicationType.Mentor
+                ? currentProgram.mentorApplicationSchemaJson
+                : currentProgram.menteeApplicationSchemaJson
+            )}
+            readonly
+            responses={JSON.parse(application.applicationJson)}
+          ></Form>
+        </div>
+      </Modal>
+    </>
+  );
+};
 
 type ApplicationReviewListItem = {
   application: ApplicationPartial;
@@ -49,9 +110,8 @@ const ApplicationReviewListItem = ({
   const getStatusIcon = (app: ApplicationPartial) => {
     switch (app.applicationStatus) {
       case ApplicationStatus.PendingReview:
-        // return <Text i>Pending</Text>;
         return (
-          <>
+          <div className="flex space-x-4">
             <button
               onClick={() => {
                 acceptApplicationMutation();
@@ -66,7 +126,7 @@ const ApplicationReviewListItem = ({
             >
               reject
             </button>
-          </>
+          </div>
         );
       case ApplicationStatus.Accepted:
         return <Text>Accepted</Text>;
@@ -77,14 +137,14 @@ const ApplicationReviewListItem = ({
 
   return (
     <div className="flex space-x-4">
-      <div className="w-8" />
+      <div className="w-40">{getStatusIcon(application)}</div>
       <InlineProfileAvatar user={application.user} />
       <div className="md:flex-1" />
       <Text className="hidden lg:inline">
         {format(new Date(application.createdAt), "MMM d, yyyy | h:mma")}
       </Text>
       <div className="flex-1" />
-      {getStatusIcon(application)}
+      <DetailsModalButton application={application} />
       <div className="md:w-8 lg:w-12" />
     </div>
   );
