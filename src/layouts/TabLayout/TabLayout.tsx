@@ -75,7 +75,7 @@ const TabLayout: React.FC<TabLayoutProps> & {
 } = ({ children, currentPageChildren }) => {
   return (
     <div className="flex h-screen w-screen">
-      <div className="w-64 flex-shrink-0 bg-white shadow-lg">
+      <div className="w-64 flex-shrink-0 bgWhite shadow-lg">
         <ProgramDropdown />
         <div className="overflow-y-auto">{children}</div>
       </div>
@@ -94,7 +94,7 @@ TabLayout.PageItem = ({ label, Icon, path }) => {
     "w-full pr-6 pl-8 py-1.5 flex items-center text-secondary cursor-pointer duration-150 select-none":
       true,
     "hover:bg-tertiary": !active,
-    "text-white bg-primary hover:bg-primary": active,
+    "textWhite bg-primary hover:bg-primary": active,
   });
 
   return (
