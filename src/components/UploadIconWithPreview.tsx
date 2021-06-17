@@ -1,16 +1,18 @@
-import React, { useState } from "react";
+import React, { HTMLAttributes, useState } from "react";
 import { Button } from "./atomic";
 
-type UploadIconWithPreviewProps = {
+type UploadIconWithPreviewProps = HTMLAttributes<HTMLDivElement> & {
   onFileChanged: (file: File | null) => void;
-  onError: (error: string) => void;
+  onErrorOccured: (error: string) => void;
+  initialSrc?: string;
 };
 
 const UploadIconWithPreview = ({
   onFileChanged,
-  onError,
+  onErrorOccured,
+  initialSrc,
 }: UploadIconWithPreviewProps) => {
-  const [src, setSrc] = useState("/static/DefaultLogo.svg");
+  const [src, setSrc] = useState(initialSrc || "/static/DefaultLogo.svg");
 
   return (
     <div className="flex items-center">
@@ -27,7 +29,7 @@ const UploadIconWithPreview = ({
                 onFileChanged(file);
                 setSrc(url);
               } else {
-                onError("The uploaded file was invalid.");
+                onErrorOccured("The uploaded file was invalid.");
               }
             }}
             className="hidden"

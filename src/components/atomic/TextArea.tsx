@@ -1,7 +1,7 @@
 import classNames from "classnames";
-import React, { HTMLAttributes } from "react";
+import React, { HTMLProps } from "react";
 
-type TextAreaProps = HTMLAttributes<HTMLTextAreaElement>;
+type TextAreaProps = HTMLProps<HTMLTextAreaElement>;
 
 //TODO: Implement color depending on theme
 const TextArea = ({ className = "", ...props }: TextAreaProps) => {
