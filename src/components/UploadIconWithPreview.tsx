@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { Button } from "./atomic";
 
 type UploadIconWithPreviewProps = {
-  setFile: (file: File | null) => void;
-  setError: (error: string) => void;
+  onFileChanged: (file: File | null) => void;
+  onError: (error: string) => void;
 };
 
 const UploadIconWithPreview = ({
-  setFile,
-  setError,
+  onFileChanged,
+  onError,
 }: UploadIconWithPreviewProps) => {
   const [src, setSrc] = useState("/static/DefaultLogo.svg");
 
@@ -24,10 +24,10 @@ const UploadIconWithPreview = ({
               const file = e.target.files![0];
               const url = URL.createObjectURL(file);
               if (file && file.type.match("image.*")) {
-                setFile(file);
+                onFileChanged(file);
                 setSrc(url);
               } else {
-                setError("The uploaded file was invalid.");
+                onError("The uploaded file was invalid.");
               }
             }}
             className="hidden"

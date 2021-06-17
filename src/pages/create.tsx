@@ -144,7 +144,10 @@ const CreateProgramPage: Page = () => {
         <div>
           <Text b>Logo</Text>
           <div className="h-2" />
-          <UploadIconWithPreview setFile={setProgramLogo} setError={setError} />
+          <UploadIconWithPreview
+            onFileChanged={setProgramLogo}
+            onError={setError}
+          />
         </div>
 
         <div>
