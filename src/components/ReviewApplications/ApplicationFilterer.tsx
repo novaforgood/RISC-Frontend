@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import React, { useState } from "react";
-import { Modal, Text } from "../../components/atomic";
+import { Button, Modal, Text } from "../../components/atomic";
 import {
   ApplicationStatus,
   ApplicationType,
@@ -13,6 +13,7 @@ import {
 import { useCurrentProgram } from "../../hooks";
 import { Question } from "../../types/Form";
 import Form from "../Form";
+import { CircledCheck, CircledCross } from "../icons";
 import InlineProfileAvatar from "../InlineProfileAvatar";
 import ListFilterer from "../ListFilterer";
 
@@ -32,6 +33,17 @@ type DetailsModalButtonProps = {
 
 const DetailsModalButton = ({ application }: DetailsModalButtonProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [acceptApplicationMutation] = useAcceptApplicationMutation({
+    variables: {
+      applicationId: application.applicationId,
+    },
+    refetchQueries: [
+      refetchGetApplicationsQuery({
+        programId: application.programId,
+        applicationType: application.applicationType,
+      }),
+    ],
+  });
 
   const { currentProgram } = useCurrentProgram();
 
@@ -50,16 +62,27 @@ const DetailsModalButton = ({ application }: DetailsModalButtonProps) => {
           setIsOpen(false);
         }}
       >
-        <div className="w-200">
-          <div className="flex">
+        <div className="space-y-4">
+          <div className="flex items-center">
             <Text b h2>
               Application for{" "}
               {application.user.firstName + " " + application.user.lastName}
             </Text>
-            <div className="flex-1" />
-            <button onClick={() => setIsOpen(false)}>
-              <Text u>close</Text>
-            </button>
+            <div className="w-40 flex-1"></div>
+            {application.applicationStatus === ApplicationStatus.Rejected && (
+              <>
+                <Text>Rejected by mistake? Accept</Text>
+                <div className="w-2" />
+                <button
+                  onClick={() => {
+                    acceptApplicationMutation();
+                    setIsOpen(false);
+                  }}
+                >
+                  <CircledCheck />
+                </button>
+              </>
+            )}
           </div>
           <Form
             questions={getApplicationSchemaFromJson(
@@ -70,6 +93,12 @@ const DetailsModalButton = ({ application }: DetailsModalButtonProps) => {
             readonly
             responses={JSON.parse(application.applicationJson)}
           ></Form>
+          <div className="flex">
+            <div className="flex-1"></div>
+            <Button size={"small"} onClick={() => setIsOpen(false)}>
+              close
+            </Button>
+          </div>
         </div>
       </Modal>
     </>
@@ -113,34 +142,38 @@ const ApplicationReviewListItem = ({
         return (
           <div className="flex space-x-4">
             <button
+              title="Reject Application"
               onClick={() => {
                 acceptApplicationMutation();
               }}
             >
-              accept
+              <CircledCheck />
             </button>
             <button
+              title="Accept Application"
               onClick={() => {
                 rejectApplicationMutation();
               }}
             >
-              reject
+              <CircledCross />
             </button>
           </div>
         );
       case ApplicationStatus.Accepted:
-        return <Text>Accepted</Text>;
+        return <Text b>Accepted</Text>;
       case ApplicationStatus.Rejected:
-        return <Text>Rejected</Text>;
+        return <Text b>Rejected</Text>;
     }
   };
 
   return (
     <div className="flex space-x-4">
-      <div className="w-40">{getStatusIcon(application)}</div>
-      <InlineProfileAvatar user={application.user} />
+      <div className="w-24">{getStatusIcon(application)}</div>
+      <div className="flex-1">
+        <InlineProfileAvatar user={application.user} />
+      </div>
       <div className="md:flex-1" />
-      <Text className="hidden lg:inline">
+      <Text className="hidden xl:inline">
         {format(new Date(application.createdAt), "MMM d, yyyy | h:mma")}
       </Text>
       <div className="flex-1" />
