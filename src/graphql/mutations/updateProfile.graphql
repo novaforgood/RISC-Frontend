@@ -1,0 +1,5 @@
+mutation updateProfile($profileId: String!, $data: UpdateProfileInput!) {
+  updateProfile(profileId: $profileId, data: $data) {
+    profileId
+  }
+}

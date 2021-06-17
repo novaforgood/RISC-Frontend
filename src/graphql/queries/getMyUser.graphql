@@ -8,6 +8,9 @@ query getMyUser {
     profiles {
       profileId
       profileType
+      profileJson
+      tagsJson
+      bio
       program {
         programId
         name
