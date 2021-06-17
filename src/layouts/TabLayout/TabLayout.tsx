@@ -63,6 +63,7 @@ export function joinPath(...args: string[]): string {
 
 interface TabLayoutProps {
   currentPageChildren: ReactNode;
+  footerChildren?: ReactNode;
 }
 const TabLayout: React.FC<TabLayoutProps> & {
   Separator: React.FC;
@@ -72,12 +73,15 @@ const TabLayout: React.FC<TabLayoutProps> & {
     label: string;
     Icon: React.FC<React.SVGProps<SVGSVGElement>>;
   }>;
-} = ({ children, currentPageChildren }) => {
+} = ({ children, currentPageChildren, footerChildren }) => {
   return (
     <div className="flex h-screen w-screen">
-      <div className="w-64 flex-shrink-0 bg-white shadow-lg">
+      <div className="h-full w-64 flex-shrink-0 bg-white shadow-lg relative">
         <ProgramDropdown />
         <div className="overflow-y-auto">{children}</div>
+        {footerChildren == null ? null : (
+          <div className="absolute bottom-0 p-2">{footerChildren}</div>
+        )}
       </div>
       <div className="flex-grow overflow-y-scroll overflow-x-hidden">
         {currentPageChildren}
