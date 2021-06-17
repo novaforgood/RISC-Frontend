@@ -24,6 +24,7 @@ const BlobCircle = () => {
 const CreateProgramPage: Page = () => {
   const [stage, setStage] = useState(0);
   const [programName, setProgramName] = useState("");
+  //@ts-ignore
   const [programLogo, setProgramLogo] = useState("/static/HappyBlobs.svg");
   const [programIdentifier, setProgramIdentifier] = useState("");
   //const [programIsPublic, setProgramIsPublic] = useState(true); // TODO: add checkbox on form for setting program public or not
@@ -144,7 +145,7 @@ const CreateProgramPage: Page = () => {
           <Button variant="inverted" size="small">
             Choose File
           </Button>
-          <input // TODO: display preview of logo
+          {/* <input // TODO: display preview of logo
             type="file"
             name="Program Logo"
             value={programLogo}
@@ -152,7 +153,7 @@ const CreateProgramPage: Page = () => {
             onChange={(e) => {
               setProgramLogo(e.target.value);
             }}
-          />
+          /> */}
         </div>
 
         <div className="h-6" />
