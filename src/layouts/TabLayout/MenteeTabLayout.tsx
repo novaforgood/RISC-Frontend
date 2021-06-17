@@ -1,12 +1,19 @@
-import { Home } from "../../components/icons";
-import TabLayout, { BaseTabLayoutProps } from "./TabLayout";
+import { Smile } from "../../components/icons";
+import TabLayout, { BaseTabLayoutProps, joinPath } from "./TabLayout";
 
 const { PageItem } = TabLayout;
 
-const MenteeTabLayout: React.FC<BaseTabLayoutProps> = ({ children }) => {
+const MenteeTabLayout: React.FC<BaseTabLayoutProps> = ({
+  children,
+  basePath,
+}) => {
   return (
     <TabLayout currentPageChildren={children}>
-      <PageItem label="Mentee tab layout" Icon={Home} path="/" />
+      <PageItem
+        label="View Mentors"
+        Icon={Smile}
+        path={joinPath(basePath, "mentors")}
+      />
     </TabLayout>
   );
 };

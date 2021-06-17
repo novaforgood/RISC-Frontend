@@ -2,8 +2,10 @@ import React from "react";
 import { Card, Text } from "../../../components/atomic";
 import { SetWeeklyAvailabilitiesCard } from "../../../components/Availabilities/SetWeeklyAvailabilitiesCard";
 import { useCurrentProfile } from "../../../hooks";
+import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
+import Page from "../../../types/Page";
 
-const SetAvailabilitiesPage = () => {
+const SetAvailabilitiesPage: Page = () => {
   const { currentProfile } = useCurrentProfile();
 
   if (!currentProfile) {
@@ -42,5 +44,9 @@ const SetAvailabilitiesPage = () => {
     </div>
   );
 };
+
+SetAvailabilitiesPage.getLayout = (page, pageProps) => (
+  <ChooseTabLayout {...pageProps}>{page}</ChooseTabLayout>
+);
 
 export default SetAvailabilitiesPage;
