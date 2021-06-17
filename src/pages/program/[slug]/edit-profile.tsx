@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Button, Text } from "../../../components/atomic";
+import { Button, Card, Text } from "../../../components/atomic";
 import Form, { ResponseJson } from "../../../components/Form";
 import {
   Maybe,
   UpdateProfileInput,
+  useGetMyUserQuery,
   useUpdateProfileMutation,
 } from "../../../generated/graphql";
 import {
@@ -33,23 +34,50 @@ function getResponsesFromJson(json: Maybe<string> | undefined): ResponseJson {
   }
 }
 
+function getTagsFromJson(json: Maybe<string> | undefined): Array<string> {
+  if (!json) return [];
+  try {
+    return JSON.parse(json);
+  } catch (e) {
+    return [];
+  }
+}
+
 const EditProfilePage: Page = (_) => {
   const { currentProgram } = useCurrentProgram();
   const { currentProfile, refetchCurrentProfile } = useCurrentProfile();
   const authorizationLevel = useAuthorizationLevel();
+  const { data } = useGetMyUserQuery();
   const [updateProfile] = useUpdateProfileMutation();
 
   const [profileJson, setProfileJson] = useState<ResponseJson>({});
   const [modified, setModified] = useState(false);
 
+  const [bio, setBio] = useState("");
+
   useEffect(() => {
     if (!currentProfile) return;
 
-    setProfileJson(getResponsesFromJson(currentProfile?.profileJson));
+    setBio(currentProfile.bio || "");
+    setProfileJson(getResponsesFromJson(currentProfile.profileJson));
     return () => {};
   }, [currentProfile]);
 
-  if (!currentProgram || !currentProfile) return <div>404</div>;
+  if (!currentProgram || !currentProfile || !data) return <div>404</div>;
+
+  const { profileId, tagsJson } = currentProfile;
+  const { firstName, lastName, profilePictureUrl } = data.getMyUser;
+  const tagsList = getTagsFromJson(tagsJson);
+  const tags = tagsList?.slice(0, 3).map((tag: string, index: number) => (
+    <div className="rounded-md bg-tertiary m-1 p-1" key={index}>
+      {tag}
+    </div>
+  ));
+  const moreTag = (
+    <div className="rounded-md border-primary border m-1 p-1">
+      + {tagsList.length - 3} more
+    </div>
+  );
 
   switch (authorizationLevel) {
     case AuthorizationLevel.Mentor:
@@ -57,7 +85,7 @@ const EditProfilePage: Page = (_) => {
       const isMentor = authorizationLevel === AuthorizationLevel.Mentor;
       return (
         <div className="h-screen bg-tertiary flex flex-col items-center py-20">
-          <div className="w-200">
+          <div className="w-200 flex flex-col items-center ">
             <div className="flex justify-between items-center w-full">
               <Text h2 b>
                 Edit My {isMentor ? "Mentor" : "Mentee"} Profile
@@ -70,10 +98,11 @@ const EditProfilePage: Page = (_) => {
                   onClick={() => {
                     const updateProfileInput: UpdateProfileInput = {
                       profileJson: JSON.stringify(profileJson),
+                      bio: bio,
                     };
                     updateProfile({
                       variables: {
-                        profileId: currentProfile.profileId,
+                        profileId: profileId,
                         data: updateProfileInput,
                       },
                     }).then(() => {
@@ -86,7 +115,41 @@ const EditProfilePage: Page = (_) => {
                 </Button>
               </div>
             </div>
-            <div className="h-4"></div>
+            <div className="h-8"></div>
+            <Card className="flex flex-col w-80 p-6 items-center border-0">
+              <div className="h-40 w-40 rounded-full bg-tertiary">
+                <img src={profilePictureUrl}></img>
+              </div>
+              <div className="h-4"></div>
+
+              <Text b className="text-body-1 text-center">
+                {firstName} {lastName}
+              </Text>
+              <div className="h-4"></div>
+
+              <div className="flex flex-wrap justify-center">
+                {tags}
+                {tags?.length > 3 ? moreTag : <div></div>}
+              </div>
+              <div className="h-4"></div>
+
+              <textarea
+                value={bio}
+                onChange={(e) => {
+                  setModified(true);
+                  setBio(e.target.value);
+                }}
+                className="p-2 shadow-sm focus:ring-secondary focus:border-primary mt-1 block sm:text-sm border border-secondary rounded-md"
+                placeholder="Bio"
+              ></textarea>
+              <div className="h-4"></div>
+
+              <Button disabled onClick={() => {}}>
+                View Profile
+              </Button>
+            </Card>
+            <div className="h-8"></div>
+
             <Form
               questions={getQuestionsFromJson(
                 isMentor
@@ -98,6 +161,7 @@ const EditProfilePage: Page = (_) => {
                 setModified(true);
                 setProfileJson(newResponses);
               }}
+              className="w-full"
             ></Form>
           </div>
         </div>

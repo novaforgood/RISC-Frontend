@@ -20,9 +20,9 @@ const MenteeTabLayout: React.FC<BaseTabLayoutProps> = ({
         path={joinPath(basePath, "my-chats")}
       />
       <PageItem
-        label="My Profile"
+        label="Edit My Profile"
         Icon={Home}
-        path={joinPath(basePath, "profile")}
+        path={joinPath(basePath, "edit-profile")}
       />
     </TabLayout>
   );
