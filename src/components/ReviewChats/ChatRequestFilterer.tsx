@@ -51,10 +51,14 @@ const DetailsModalButton = ({ chatRequest }: DetailsModalButtonProps) => {
               format(new Date(chatRequest.chatEndTime), "MMM d, yyyy | h:mma")}
           </Text>
           <div className="h-2" />
-          <Text>From {chatRequest.menteeProfile.user.firstName}:</Text>
-          <div className="w-full bg-tertiary rounded-md p-2">
-            <Text>{chatRequest.chatRequestMessage || ""}</Text>
-          </div>
+          {chatRequest.chatRequestMessage && (
+            <>
+              <Text>From {chatRequest.menteeProfile.user.firstName}:</Text>
+              <div className="w-full bg-tertiary rounded-md p-2">
+                <Text>{chatRequest.chatRequestMessage}</Text>
+              </div>
+            </>
+          )}
         </div>
       </Modal>
     </>
@@ -66,6 +70,9 @@ type ChatRequestListItemProps = {
 };
 
 const ChatRequestListItem = ({ chatRequest }: ChatRequestListItemProps) => {
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  const [rejectMessage, setRejectMessage] = useState("");
+
   const [acceptChatRequestMutation] = useAcceptChatRequestMutation({
     variables: {
       chatRequestId: chatRequest.chatRequestId,
@@ -78,9 +85,6 @@ const ChatRequestListItem = ({ chatRequest }: ChatRequestListItemProps) => {
   });
 
   const [rejectChatRequestMutation] = useRejectChatRequestMutation({
-    variables: {
-      chatRequestId: chatRequest.chatRequestId,
-    },
     refetchQueries: [
       refetchGetChatRequestsQuery({
         profileId: chatRequest.mentorProfileId,
@@ -101,7 +105,7 @@ const ChatRequestListItem = ({ chatRequest }: ChatRequestListItemProps) => {
           </button>
           <button
             onClick={() => {
-              rejectChatRequestMutation();
+              setIsRejectModalOpen(true);
             }}
           >
             reject
@@ -118,19 +122,68 @@ const ChatRequestListItem = ({ chatRequest }: ChatRequestListItemProps) => {
   };
 
   return (
-    <div className="flex space-x-4">
-      <div className="w-40">{getAcceptRejectButtons()}</div>
-      <InlineProfileAvatar user={chatRequest.menteeProfile.user} />
-      <div className="md:flex-1" />
-      <Text className="hidden lg:inline">
-        {format(new Date(chatRequest.chatStartTime), "MMM d, yyyy | h:mma") +
-          " - " +
-          format(new Date(chatRequest.chatEndTime), "MMM d, yyyy | h:mma")}
-      </Text>
-      <div className="flex-1" />
-      <DetailsModalButton chatRequest={chatRequest} />
-      <div className="md:w-8 lg:w-12" />
-    </div>
+    <>
+      <div className="flex space-x-4">
+        <div className="w-40">{getAcceptRejectButtons()}</div>
+        <InlineProfileAvatar user={chatRequest.menteeProfile.user} />
+        <div className="md:flex-1" />
+        <Text className="hidden lg:inline">
+          {format(new Date(chatRequest.chatStartTime), "MMM d, yyyy | h:mma") +
+            " - " +
+            format(new Date(chatRequest.chatEndTime), "MMM d, yyyy | h:mma")}
+        </Text>
+        <div className="flex-1" />
+        <DetailsModalButton chatRequest={chatRequest} />
+        <div className="md:w-8 lg:w-12" />
+      </div>
+      <Modal
+        isOpen={isRejectModalOpen}
+        onClose={() => {
+          setIsRejectModalOpen(false);
+        }}
+      >
+        <div className="p-4 flex flex-col items-center">
+          <div>
+            <Text>
+              Let {chatRequest.menteeProfile.user.firstName} know why you are
+              rejecting the request:
+            </Text>
+          </div>
+          <div className="h-6"></div>
+
+          <textarea
+            value={rejectMessage}
+            onChange={(e) => {
+              setRejectMessage(e.target.value);
+            }}
+            className="p-2 w-96 shadow-sm focus:ring-secondary focus:border-primary mt-1 block sm:text-sm border border-secondary rounded-md"
+            placeholder="Reason for rejection"
+          ></textarea>
+          <div className="h-8"></div>
+
+          <div className="flex">
+            <Button variant="inverted" size="small" onClick={() => {}}>
+              Cancel
+            </Button>
+            <div className="w-2"></div>
+            <Button
+              size="small"
+              onClick={() => {
+                rejectChatRequestMutation({
+                  variables: {
+                    chatRequestId: chatRequest.chatRequestId,
+                    chatRejectMessage: rejectMessage,
+                  },
+                });
+                setIsRejectModalOpen(false);
+              }}
+            >
+              Reject
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    </>
   );
 };
 

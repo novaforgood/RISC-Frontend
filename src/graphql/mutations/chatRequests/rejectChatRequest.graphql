@@ -1,5 +1,11 @@
-mutation rejectChatRequest($chatRequestId: String!) {
-  rejectChatRequest(chatRequestId: $chatRequestId) {
+mutation rejectChatRequest(
+  $chatRequestId: String!
+  $chatRejectMessage: String!
+) {
+  rejectChatRequest(
+    chatRequestId: $chatRequestId
+    chatRejectMessage: $chatRejectMessage
+  ) {
     chatRequestId
   }
 }
