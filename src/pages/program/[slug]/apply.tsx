@@ -83,7 +83,7 @@ const ProgramApplyPage: Page = (_) => {
   return (
     <>
       {/* For Testing */}
-      <Button
+      {/* <Button
         variant={formSubmitted ? "inverted" : "solid"}
         onClick={() => {
           setFormSubmitted(!formSubmitted);
@@ -91,7 +91,7 @@ const ProgramApplyPage: Page = (_) => {
         }}
       >
         Submitted: <pre>{formSubmitted ? "true" : "false"}</pre>
-      </Button>
+      </Button> */}
       <div className="min-w-screen h-screen bg-tertiary">
         {/* Nav bar goes here */}
         <div
