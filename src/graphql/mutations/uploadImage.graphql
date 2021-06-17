@@ -1,0 +1,15 @@
+mutation uploadImageWithoutResizing($file: Upload!) {
+  uploadImage(file: $file)
+}
+
+mutation uploadImageAndResize(
+  $file: Upload!
+  $resizeWidth: Int!
+  $resizeHeight: Int!
+) {
+  uploadImage(
+    file: $file
+    resizeWidth: $resizeWidth
+    resizeHeight: $resizeHeight
+  )
+}
