@@ -2,8 +2,14 @@ import React, { useEffect, useRef } from "react";
 import { blockRenderMap } from "./TextStyles";
 import { useEditor } from "./EditorContext";
 import Editor from "@draft-js-plugins/editor";
-import { RichUtils, DraftHandleValue, EditorState } from "draft-js";
-
+import {
+  RichUtils,
+  DraftHandleValue,
+  EditorState,
+  KeyBindingUtil,
+  getDefaultKeyBinding,
+} from "draft-js";
+import { BlockTypes } from ".";
 import "draft-js/dist/Draft.css";
 
 const TextEditor = () => {
@@ -16,15 +22,31 @@ const TextEditor = () => {
     command: string,
     newEditorState: EditorState
   ): DraftHandleValue => {
+    if (command in BlockTypes) {
+      setEditorState(RichUtils.toggleBlockType(editorState, command));
+      return "handled";
+    }
     let newState = RichUtils.handleKeyCommand(newEditorState, command);
 
     if (newState) {
       setEditorState(newState);
       return "handled";
     }
-
     return "not-handled";
-    // }
+  };
+
+  const keyBindingFn = (e: React.KeyboardEvent) => {
+    e.preventDefault();
+    if (
+      e.key === "Digit1" /* `S` key */ &&
+      KeyBindingUtil.hasCommandModifier(e) /* + `Ctrl` key */
+    ) {
+      return BlockTypes["header-one"];
+    } else if (e.key === "Digit2" && KeyBindingUtil.hasCommandModifier(e)) {
+      return BlockTypes["header-two"];
+    }
+    //else...
+    return getDefaultKeyBinding(e);
   };
 
   let contentState = editorState!.getCurrentContent();
@@ -75,6 +97,7 @@ const TextEditor = () => {
         plugins={plugins!}
         blockRenderMap={blockRenderMap}
         editorState={editorState!}
+        keyBindingFn={keyBindingFn}
         handleKeyCommand={handleKeyCommand}
         onChange={setEditorState}
         stripPastedStyles={true}

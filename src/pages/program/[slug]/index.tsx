@@ -1,6 +1,5 @@
-import type { GetServerSideProps } from "next";
-import { useRouter } from "next/router";
 import React from "react";
+import type { GetServerSideProps } from "next";
 import { Text, Card, Button } from "../../../components/atomic";
 import {
   EditorProvider,
@@ -8,9 +7,9 @@ import {
   ReadOnlyTextEditor,
   TextEditor,
   PublishButton,
+  defaultContentState,
 } from "../../../components/RichTextEditing";
 import { RawDraftContentState } from "draft-js";
-import { Program } from "../../../generated/graphql";
 import {
   PageGetProgramBySlugComp,
   ssrGetProgramBySlug,
@@ -19,19 +18,42 @@ import { AuthorizationLevel, useAuthorizationLevel } from "../../../hooks";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
 import Page from "../../../types/Page";
 import { parseParam } from "../../../utils";
-import { useAuth } from "../../../utils/firebase/auth";
+import { useRouter } from "next/router";
 
-const AdminHome = ({ programId, name, iconUrl, homepage }: Program) => (
+function getRawContentState(json: string): RawDraftContentState {
+  try {
+    return JSON.parse(json) as RawDraftContentState;
+  } catch (_) {
+    return defaultContentState;
+  }
+}
+
+type DisplayProgramHomepageProps = {
+  programId: string;
+  name: string;
+  iconUrl: string;
+  homepage: string;
+};
+
+const AdminHome = ({
+  programId,
+  name,
+  iconUrl,
+  homepage,
+}: DisplayProgramHomepageProps) => (
   <div className="box-border bg-tertiary min-h-screen py-32 px-36">
     <EditorProvider currentHomepage={homepage}>
       <PublishButton
-        className="transform -translate-y-20 z-10 float-right"
+        className="transform -translate-y-24 z-10 float-right"
         programId={programId}
       />
-      <Card className="box-border w-full px-16 py-10">
-        <div className="relative -top-24">
-          <img className="w-28 h-28" src={iconUrl} />
-          <div className="h-2" />
+      <Card className="box-border w-full px-16 p-8 z-0">
+        <img
+          className="w-28 h-28 relative -top-24"
+          src={iconUrl}
+          alt={`${name} Logo`}
+        />
+        <div className="relative -top-20">
           <Text h1 b>
             {name}
           </Text>
@@ -51,8 +73,8 @@ const ReadOnlyHome = ({
   iconUrl,
   homepage,
   inProgram = false,
-}: Program & { inProgram: boolean }) => {
-  const JSONHomepage: RawDraftContentState = JSON.parse(homepage);
+}: DisplayProgramHomepageProps & { inProgram?: boolean }) => {
+  const JSONHomepage: RawDraftContentState = getRawContentState(homepage);
   return (
     //TODO: Figure out whether the buttons at the top should be sticky
     <div className="box-border bg-tertiary min-h-screen py-32 px-36">
@@ -84,9 +106,8 @@ const ReadOnlyHome = ({
   );
 };
 
-const ProgramPage: PageGetProgramBySlugComp & Page = (props) => {
-  //@ts-ignore
-  const { user, signOut } = useAuth();
+//TODO: Change type of this to not any
+const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
   const authorizationLevel = useAuthorizationLevel();
   const router = useRouter();
 
@@ -121,7 +142,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const apolloProps = await ssrGetProgramBySlug
     .getServerPage({ variables: { slug: slug } }, ctx)
     .catch((_) => {
-      return { props: {} };
+      return {
+        props: {},
+      };
     });
 
   return apolloProps;

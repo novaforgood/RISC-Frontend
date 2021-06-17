@@ -7,6 +7,7 @@ type PublishButtonProps = HTMLAttributes<HTMLButtonElement> & {
   programId: string;
 };
 
+//TODO: Error notice when content fails to publish
 const PublishButton = ({ programId, ...props }: PublishButtonProps) => {
   const { getStringContentState, setPublishedContent, disablePublish } =
     useEditor();
@@ -26,6 +27,7 @@ const PublishButton = ({ programId, ...props }: PublishButtonProps) => {
       })
       .catch((err) => {
         console.log("Fail: ", err);
+        setPublishing(false);
       });
   };
 

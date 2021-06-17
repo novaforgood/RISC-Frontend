@@ -152,13 +152,14 @@ const UploadImageButton = (props: HTMLAttributes<HTMLButtonElement>) => {
   );
 };
 
+//TODO: Add responsiveness
 const ToolBar = (props: HTMLAttributes<HTMLDivElement>) => {
   return (
     <div
       onFocus={() => false}
       {...props}
       contentEditable={false}
-      className="bg-white rounded-md border border-inactive p-1 flex items-center justify-around space-x-2 text-center w-max"
+      className="bg-white rounded-md border border-inactive p-1 flex items-center justify-around space-x-2 text-center w-max "
     >
       {BLOCK_STYLES.map((option) => (
         <ToggleBlockButton
