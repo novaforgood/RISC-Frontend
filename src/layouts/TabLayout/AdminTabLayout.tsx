@@ -30,12 +30,12 @@ const AdminTabLayout: React.FC<BaseTabLayoutProps> = ({
         <PageItem
           label="Edit Mentor Application"
           Icon={Clipboard}
-          path={joinPath(basePath, "mentors", "editapplication")}
+          path={joinPath(basePath, "mentors", "edit-application")}
         />
         <PageItem
           label="Edit Mentor Profile"
           Icon={Clipboard}
-          path={joinPath(basePath, "mentors", "editprofile")}
+          path={joinPath(basePath, "mentors", "edit-profile")}
         />
       </Dropdown>
       <Separator />
@@ -53,12 +53,12 @@ const AdminTabLayout: React.FC<BaseTabLayoutProps> = ({
         <PageItem
           label="Edit Mentee Application"
           Icon={Clipboard}
-          path={joinPath(basePath, "mentees", "editapplication")}
+          path={joinPath(basePath, "mentees", "edit-application")}
         />
         <PageItem
           label="Edit Mentee Profile"
           Icon={Clipboard}
-          path={joinPath(basePath, "mentees", "editprofile")}
+          path={joinPath(basePath, "mentees", "edit-profile")}
         />
       </Dropdown>
       <Separator />

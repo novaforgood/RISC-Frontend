@@ -59,7 +59,7 @@ const EditMenteeProfilePage: Page = (_) => {
                 size="small"
                 variant="inverted"
                 onClick={() => {
-                  window.open("./editprofile/preview", "_blank");
+                  window.open("./edit-profile/preview", "_blank");
                 }}
               >
                 Preview

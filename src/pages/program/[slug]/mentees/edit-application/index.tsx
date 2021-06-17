@@ -15,32 +15,35 @@ function getQuestionsFromJson(json: string): Question[] {
   }
 }
 
-const EditMentorProfilePage: Page = (_) => {
+const EditMenteeApplicationPage: Page = (_) => {
   const { currentProgram, refetchCurrentProgram } = useCurrentProgram();
   const [updateProgram] = useUpdateProgramMutation();
-  const [profileSchema, setProfileSchema] = useState<Question[]>([]);
+  const [applicationSchema, setApplicationSchema] = useState<Question[]>([]);
   const [modified, setModified] = useState(false);
-  const [isSavingProfileSchema, setIsSavingProfileSchema] = useState(false);
-  isSavingProfileSchema; // TODO: If is saving, set loading state of button to true.
+  const [isSavingApplicationSchema, setIsSavingApplicationSchema] =
+    useState(false);
+  isSavingApplicationSchema; // TODO: If is saving, set loading state of button to true.
 
   useEffect(() => {
     if (!currentProgram) return;
-    setProfileSchema(
-      getQuestionsFromJson(currentProgram?.mentorProfileSchemaJson)
+    setApplicationSchema(
+      getQuestionsFromJson(currentProgram?.menteeApplicationSchemaJson)
     );
     return () => {};
   }, [currentProgram]);
 
-  const saveMentorProfileSchema = () => {
-    setIsSavingProfileSchema(true);
+  const saveMenteeApplicationSchema = () => {
+    setIsSavingApplicationSchema(true);
     updateProgram({
       variables: {
         programId: currentProgram?.programId!,
-        data: { mentorProfileSchemaJson: JSON.stringify(profileSchema) },
+        data: {
+          menteeApplicationSchemaJson: JSON.stringify(applicationSchema),
+        },
       },
     }).then(() => {
       refetchCurrentProgram();
-      setIsSavingProfileSchema(false);
+      setIsSavingApplicationSchema(false);
       setModified(false);
     });
   };
@@ -51,7 +54,7 @@ const EditMentorProfilePage: Page = (_) => {
         <div className="flex flex-col items-center">
           <div className="flex justify-between items-center w-full">
             <Text h2 b>
-              Edit Mentor Profile
+              Edit Mentee Application
             </Text>
             <div className="w-12"></div>
             <div className="flex">
@@ -59,7 +62,7 @@ const EditMentorProfilePage: Page = (_) => {
                 size="small"
                 variant="inverted"
                 onClick={() => {
-                  window.open("./editprofile/preview", "_blank");
+                  window.open("./edit-application/preview", "_blank");
                 }}
               >
                 Preview
@@ -69,7 +72,7 @@ const EditMentorProfilePage: Page = (_) => {
                 size="small"
                 disabled={!modified}
                 onClick={() => {
-                  saveMentorProfileSchema();
+                  saveMenteeApplicationSchema();
                 }}
               >
                 Save
@@ -80,10 +83,10 @@ const EditMentorProfilePage: Page = (_) => {
           <div className="h-8"></div>
 
           <FormSchemaEditor
-            questions={profileSchema}
+            questions={applicationSchema}
             onChange={(newQuestions) => {
               setModified(true);
-              setProfileSchema(newQuestions);
+              setApplicationSchema(newQuestions);
             }}
           ></FormSchemaEditor>
         </div>
@@ -92,8 +95,8 @@ const EditMentorProfilePage: Page = (_) => {
   );
 };
 
-EditMentorProfilePage.getLayout = (page, pageProps) => (
+EditMenteeApplicationPage.getLayout = (page, pageProps) => (
   <ChooseTabLayout {...pageProps}>{page}</ChooseTabLayout>
 );
 
-export default EditMentorProfilePage;
+export default EditMenteeApplicationPage;

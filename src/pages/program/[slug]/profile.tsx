@@ -66,16 +66,6 @@ const EditProfilePage: Page = (_) => {
               <div className="flex">
                 <Button
                   size="small"
-                  variant="inverted"
-                  onClick={() => {
-                    // window.open("./editapplication/preview", "_blank");
-                  }}
-                >
-                  Preview
-                </Button>
-                <div className="w-2"></div>
-                <Button
-                  size="small"
                   disabled={!modified}
                   onClick={() => {
                     const updateProfileInput: UpdateProfileInput = {

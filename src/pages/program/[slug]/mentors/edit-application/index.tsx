@@ -15,7 +15,7 @@ function getQuestionsFromJson(json: string): Question[] {
   }
 }
 
-const EditMenteeApplicationPage: Page = (_) => {
+const EditMentorApplicationPage: Page = (_) => {
   const { currentProgram, refetchCurrentProgram } = useCurrentProgram();
   const [updateProgram] = useUpdateProgramMutation();
   const [applicationSchema, setApplicationSchema] = useState<Question[]>([]);
@@ -27,18 +27,18 @@ const EditMenteeApplicationPage: Page = (_) => {
   useEffect(() => {
     if (!currentProgram) return;
     setApplicationSchema(
-      getQuestionsFromJson(currentProgram?.menteeApplicationSchemaJson)
+      getQuestionsFromJson(currentProgram?.mentorApplicationSchemaJson)
     );
     return () => {};
   }, [currentProgram]);
 
-  const saveMenteeApplicationSchema = () => {
+  const saveMentorApplicationSchema = () => {
     setIsSavingApplicationSchema(true);
     updateProgram({
       variables: {
         programId: currentProgram?.programId!,
         data: {
-          menteeApplicationSchemaJson: JSON.stringify(applicationSchema),
+          mentorApplicationSchemaJson: JSON.stringify(applicationSchema),
         },
       },
     }).then(() => {
@@ -54,7 +54,7 @@ const EditMenteeApplicationPage: Page = (_) => {
         <div className="flex flex-col items-center">
           <div className="flex justify-between items-center w-full">
             <Text h2 b>
-              Edit Mentee Application
+              Edit Mentor Application
             </Text>
             <div className="w-12"></div>
             <div className="flex">
@@ -62,7 +62,7 @@ const EditMenteeApplicationPage: Page = (_) => {
                 size="small"
                 variant="inverted"
                 onClick={() => {
-                  window.open("./editapplication/preview", "_blank");
+                  window.open("./edit-application/preview", "_blank");
                 }}
               >
                 Preview
@@ -72,7 +72,7 @@ const EditMenteeApplicationPage: Page = (_) => {
                 size="small"
                 disabled={!modified}
                 onClick={() => {
-                  saveMenteeApplicationSchema();
+                  saveMentorApplicationSchema();
                 }}
               >
                 Save
@@ -95,8 +95,8 @@ const EditMenteeApplicationPage: Page = (_) => {
   );
 };
 
-EditMenteeApplicationPage.getLayout = (page, pageProps) => (
+EditMentorApplicationPage.getLayout = (page, pageProps) => (
   <ChooseTabLayout {...pageProps}>{page}</ChooseTabLayout>
 );
 
-export default EditMenteeApplicationPage;
+export default EditMentorApplicationPage;
