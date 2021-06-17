@@ -15,6 +15,7 @@ generates:
       scalars:
         DateInterval: DateInterval
         Timestamp: number
+        Upload: any
   src/generated/page.tsx:
     config:
       reactApolloVersion: 3
