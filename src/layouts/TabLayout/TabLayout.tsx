@@ -29,7 +29,7 @@ const Arrow: React.FC<ArrowProps> = ({ down }) => {
         y2="-0.75"
         transform="matrix(-0.716702 0.697379 0.477583 0.878587 12 2)"
         stroke="#737373"
-        stroke-width="1.5"
+        strokeWidth="1.5"
       />
       <line
         y1="-0.75"
@@ -37,7 +37,7 @@ const Arrow: React.FC<ArrowProps> = ({ down }) => {
         y2="-0.75"
         transform="matrix(0.716702 0.697379 -0.477583 0.878587 0 2)"
         stroke="#737373"
-        stroke-width="1.5"
+        strokeWidth="1.5"
       />
     </svg>
   );
@@ -77,7 +77,7 @@ const TabLayout: React.FC<TabLayoutProps> & {
     <div className="flex h-screen w-screen">
       <div className="w-64 flex-shrink-0 bg-white shadow-lg">
         <ProgramDropdown />
-        <div className="overflow-y-scroll">{children}</div>
+        <div className="overflow-y-auto">{children}</div>
       </div>
       <div className="flex-grow overflow-y-scroll overflow-x-hidden">
         {currentPageChildren}
@@ -105,7 +105,7 @@ TabLayout.PageItem = ({ label, Icon, path }) => {
           className="p-2 h-9 w-9 duration-150 flex-none"
         />
         <div className="w-1 flex-none" />
-        <Text className="whitespace-nowrap">{label}</Text>
+        <Text className="whitespace-nowrap overflow-ellipsis">{label}</Text>
       </div>
     </Link>
   );

@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { Button, Input, Text } from "../components/atomic";
+import { defaultContentState } from "../components/RichTextEditing";
 import {
   CreateProgramInput,
   useCreateProgramMutation,
@@ -23,7 +24,8 @@ const BlobCircle = () => {
 const CreateProgramPage: Page = () => {
   const [stage, setStage] = useState(0);
   const [programName, setProgramName] = useState("");
-  const [programLogo, setProgramLogo] = useState("");
+  //@ts-ignore
+  const [programLogo, setProgramLogo] = useState("/static/HappyBlobs.svg");
   const [programIdentifier, setProgramIdentifier] = useState("");
   //const [programIsPublic, setProgramIsPublic] = useState(true); // TODO: add checkbox on form for setting program public or not
   const [createProgram] = useCreateProgramMutation();
@@ -48,7 +50,7 @@ const CreateProgramPage: Page = () => {
       description: "", // a lotta dummy strings for now since the form doesn't specify them
       slug: programIdentifier,
       iconUrl: programLogo,
-      homepage: programIdentifier,
+      homepage: JSON.stringify(defaultContentState),
       mentorProfileSchemaJson: "",
       menteeProfileSchemaJson: "",
       mentorApplicationSchemaJson: "",
@@ -143,7 +145,7 @@ const CreateProgramPage: Page = () => {
           <Button variant="inverted" size="small">
             Choose File
           </Button>
-          <input // TODO: display preview of logo
+          {/* <input // TODO: display preview of logo
             type="file"
             name="Program Logo"
             value={programLogo}
@@ -151,7 +153,7 @@ const CreateProgramPage: Page = () => {
             onChange={(e) => {
               setProgramLogo(e.target.value);
             }}
-          />
+          /> */}
         </div>
 
         <div className="h-6" />

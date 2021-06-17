@@ -50,6 +50,13 @@ module.exports = {
       },
       cursor: {
         grab: "grab",
+        "s-resize": "s-resize",
+        "w-resize": "w-resize",
+        "se-resize": "se-resize",
+        "sw-resize": "sw-resize",
+      },
+      maxHeight: {
+        "3/4": "75%",
       },
       transitionProperty: {
         background: "background-color",
