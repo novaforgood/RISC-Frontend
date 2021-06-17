@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { Button } from "../components/atomic";
-import Form from "../components/Form";
+import Form, { dummyForm } from "../components/Form";
 import { useGetMyUserQuery } from "../generated/graphql";
 import { PageGetProgramBySlugComp } from "../generated/page";
-import { Question } from "../types/Form";
 import { useAuth } from "../utils/firebase/auth";
 
 const IndexPage: PageGetProgramBySlugComp = (_) => {
@@ -12,22 +11,6 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
 
   const [responses, setResponses] = useState({});
   const [formChanged, setFormChanged] = useState(false);
-
-  // Dummy data
-  const dummyForm: Question[] = [
-    {
-      id: "0ABC",
-      title: "Test Question",
-      type: "short-answer",
-      description: "",
-    },
-    {
-      id: "1ABC",
-      title: "Test Question",
-      type: "short-answer",
-      description: "",
-    },
-  ];
 
   return (
     <>

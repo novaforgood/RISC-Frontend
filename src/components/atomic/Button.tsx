@@ -25,7 +25,7 @@ const Button = ({
       disabled:bg-inactive"]:
       variant === "solid",
 
-    ["bg-white text-black border border-black \
+    ["bg-transparent text-black border border-black \
       hover:ring-primary hover:font-bold \
       active:bg-primary active:text-white \
       disabled:text-inactive disabled:border disabled:border-inactive \
