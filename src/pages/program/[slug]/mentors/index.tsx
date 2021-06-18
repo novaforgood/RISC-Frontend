@@ -402,8 +402,9 @@ const MentorCard = ({ mentor }: MentorCardProps) => {
         {mentor.tags?.length > 3 ? moreTag : <div></div>}
       </div> */}
       <div className="h-4"></div>
-
-      <Text>{mentor.bio}</Text>
+      <div className="h-24 w-full text-center break-words overflow-hidden overflow-ellipsis">
+        {mentor.bio}
+      </div>
       <div className="h-4"></div>
 
       <Button

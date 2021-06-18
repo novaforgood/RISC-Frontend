@@ -1,4 +1,4 @@
-import { Calendar, Home, User, Users } from "../../components/icons";
+import { Calendar, Home, Smile, User } from "../../components/icons";
 import TabLayout, { BaseTabLayoutProps, joinPath } from "./TabLayout";
 
 const { PageItem } = TabLayout;
@@ -17,7 +17,7 @@ const MentorTabLayout: React.FC<BaseTabLayoutProps> = ({
       />
       <PageItem
         label="Chat Requests"
-        Icon={Users}
+        Icon={Smile}
         path={joinPath(basePath, "chat-requests")}
       />
       <PageItem

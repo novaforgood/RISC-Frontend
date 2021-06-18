@@ -6,10 +6,12 @@ import { Card, Input, Text } from "./atomic";
 type TextAskerProps = TextQuestion & {
   initResponse: string;
   readonly: boolean;
+  showDescriptions: boolean;
   onChange: (id: string, answer: string) => void;
 };
 
 export type ResponseJson = { [key: string]: string };
+
 type FormProps = {
   questions: Question[];
   responses?: ResponseJson;
@@ -17,6 +19,7 @@ type FormProps = {
   onAutosave?: (responses: ResponseJson) => void; // Takes in answer json and send it to db
   autosaveInterval?: number;
   readonly?: boolean;
+  showDescriptions?: boolean;
   className?: string;
 };
 
@@ -47,6 +50,7 @@ const TextAsker = ({
   type,
   initResponse,
   readonly,
+  showDescriptions,
   onChange,
 }: TextAskerProps) => {
   const [answer, setAnswer] = useState(initResponse); // Replace with responses
@@ -55,7 +59,7 @@ const TextAsker = ({
     <div>
       <Text b>{title}</Text>
       <div className="h-1" />
-      {description && (
+      {showDescriptions && description && (
         <Fragment>
           <Text className="text-secondary">{description}</Text>
           <div className="h-1" />
@@ -91,6 +95,7 @@ const Form = ({
   onAutosave = () => {},
   autosaveInterval = 3000,
   readonly = false,
+  showDescriptions = true,
   className,
 }: FormProps) => {
   const debouncedAutosave = _.debounce(() => {
@@ -116,6 +121,7 @@ const Form = ({
                   {...question}
                   initResponse={responses[`${question.id}`] || ""}
                   readonly={readonly}
+                  showDescriptions={showDescriptions}
                   onChange={handleChange}
                   key={i}
                 ></TextAsker>

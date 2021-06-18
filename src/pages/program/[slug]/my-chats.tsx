@@ -18,7 +18,7 @@ const MentorApplicationsPage: Page = () => {
     <div className="flex flex-col items-center w-full mx-auto h-full">
       <div className="flex w-full items-center">
         <Text h2 b>
-          Chat Requests
+          My Chats
         </Text>
       </div>
       <div className="h-4" />
