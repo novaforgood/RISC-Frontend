@@ -100,6 +100,7 @@ const ChatRequestListItem = ({ chatRequest }: ChatRequestListItemProps) => {
       return (
         <div className="flex space-x-4">
           <button
+            className="hover:bg-inactive p-1 rounded"
             title="Accept Chat Request"
             onClick={() => {
               acceptChatRequestMutation();
@@ -108,6 +109,7 @@ const ChatRequestListItem = ({ chatRequest }: ChatRequestListItemProps) => {
             <CircledCheck />
           </button>
           <button
+            className="hover:bg-inactive p-1 rounded"
             title="Reject Chat Request"
             onClick={() => {
               setIsRejectModalOpen(true);
@@ -128,7 +130,7 @@ const ChatRequestListItem = ({ chatRequest }: ChatRequestListItemProps) => {
 
   return (
     <>
-      <div className="flex space-x-4">
+      <div className="flex items-center space-x-4 p-3 hover:bg-tertiary duration-150 rounded">
         <div className="w-24">{getAcceptRejectButtons()}</div>
         <div className="flex-1">
           <InlineProfileAvatar user={chatRequest.menteeProfile.user} />
@@ -208,7 +210,8 @@ type ChatRequestsListProps = {
 const ChatRequestsList = ({ title, chatRequests }: ChatRequestsListProps) => {
   return (
     <div className="flex flex-col px-8 py-6">
-      <Text h2>{title}</Text>
+      <Text h3>{title}</Text>
+      <div className="h-4"></div>
       {chatRequests.map((cr) => (
         <ChatRequestListItem key={cr.chatRequestId} chatRequest={cr} />
       ))}

@@ -16,7 +16,7 @@ const MentorTabLayout: React.FC<BaseTabLayoutProps> = ({
         path={joinPath(basePath, "availabilities")}
       />
       <PageItem
-        label="My Chats"
+        label="Chat Requests"
         Icon={Home}
         path={joinPath(basePath, "chat-requests")}
       />
