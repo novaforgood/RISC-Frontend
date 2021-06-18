@@ -1,4 +1,4 @@
-import { addMinutes, getDay, isBefore } from "date-fns";
+import { addMinutes, getDay } from "date-fns";
 import dateFormat from "dateformat";
 import React, { Fragment, useEffect, useState } from "react";
 import {
@@ -35,7 +35,7 @@ function generateTimeslots(
     if (getDay(avail.startTime) === getDay(day)) {
       let d = avail.startTime;
       let n = 1;
-      while (isBefore(addMinutes(d, minutesPerTimeslot * n), avail.endTime)) {
+      while (addMinutes(d, minutesPerTimeslot * n) <= avail.endTime) {
         timeslots.push({
           startTime: addMinutes(d, minutesPerTimeslot * (n - 1)),
           endTime: addMinutes(d, minutesPerTimeslot * n),
@@ -53,16 +53,18 @@ interface BookAChatProps {
 }
 const BookAChat = ({ mentor }: BookAChatProps) => {
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
-  const [selectedTimeslot, setSelectedTimeslot] =
-    useState<DateInterval | null>(null);
+  const [selectedTimeslot, setSelectedTimeslot] = useState<DateInterval | null>(
+    null
+  );
   const [sendChatModalOpen, setSendChatModalOpen] = useState(false);
   const { data, error } = useGetWeeklyAvailabilitiesQuery({
     variables: { profileId: mentor.profileId },
   });
 
   const [createChatRequest] = useCreateChatRequestMutation();
-  const [loadingCreateChatRequest, setLoadingCreateChatRequest] =
-    useState(false);
+  const [loadingCreateChatRequest, setLoadingCreateChatRequest] = useState(
+    false
+  );
   const [chatRequestMessage, setChatRequestMessage] = useState("");
   let weeklyAvailabilities: DateInterval[] = [];
   if (!error && data) {
@@ -74,7 +76,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
 
   loadingCreateChatRequest; // TODO: Use this variable
 
-  const timeslots = generateTimeslots(selectedDay, 15, weeklyAvailabilities);
+  const timeslots = generateTimeslots(selectedDay, 30, weeklyAvailabilities);
 
   return (
     <div>
@@ -121,7 +123,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
           <div className="h-80 box-border flex flex-col gap-2 overflow-y-scroll">
             {timeslots.map((timeslot) => {
               return (
-                <div
+                <button
                   className="border border-inactive text-center w-full p-2 cursor-pointer hover:border-primary duration-150"
                   onClick={() => {
                     setSendChatModalOpen(true);
@@ -131,7 +133,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
                 >
                   {dateFormat(timeslot.startTime, "h:MMtt")} -{" "}
                   {dateFormat(timeslot.endTime, "h:MMtt")}
-                </div>
+                </button>
               );
             })}
           </div>
@@ -394,11 +396,11 @@ const ViewMentorsPage: Page = () => {
 
   const sortDropdown = () => {
     return (
-      <div className="flex">
+      <div className="flex items-center">
         <Text b>Sort By</Text>
         <div className="w-2"></div>
         <select
-          className="h-5"
+          className="h-8 rounded-md"
           name="sort"
           /*onChange={setSortBy(e.target.value)}*/
         >
@@ -420,7 +422,7 @@ const ViewMentorsPage: Page = () => {
         </Text>
         {sortDropdown()}
       </div>
-      <Input className="h-5 w-full" placeholder="Search..."></Input>
+      <Input className="w-full" placeholder="Search..."></Input>
       <div className="h-8"></div>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {mentors?.map((mentor: MentorProfile, index: number) => {
