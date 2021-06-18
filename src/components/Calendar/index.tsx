@@ -118,7 +118,8 @@ const Calendar = ({
           const inMonth = monthyear[0] === day.getMonth();
           const selected =
             selectedDay && selectedDay.getTime() === day.getTime();
-          const hasTimeslots = occupiedWeekdays.has(i % 7) || isOverrided[i];
+          const hasTimeslots =
+            day > new Date() && (occupiedWeekdays.has(i % 7) || isOverrided[i]);
           const selectable = inMonth && (selectAnyDay || hasTimeslots);
 
           const backgroundStyles = classNames({
