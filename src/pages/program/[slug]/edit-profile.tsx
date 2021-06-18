@@ -139,7 +139,7 @@ const EditProfilePage: Page = (_) => {
                   setModified(true);
                   setBio(e.target.value);
                 }}
-                className="p-2 shadow-sm focus:ring-secondary focus:border-primary mt-1 block sm:text-sm border border-secondary rounded-md"
+                className="resize-none p-2 shadow-sm focus:ring-secondary focus:border-primary mt-1 block sm:text-sm border border-secondary rounded-md"
                 placeholder="Bio"
               ></textarea>
               <div className="h-4"></div>

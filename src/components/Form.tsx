@@ -65,6 +65,7 @@ const TextAsker = ({
         className="w-full"
         placeholder={type == "short-answer" ? "Short text" : "Long text"}
         readOnly={readonly}
+        disabled={readonly}
         value={answer}
         onChange={(e) => {
           setAnswer(e.target.value);
