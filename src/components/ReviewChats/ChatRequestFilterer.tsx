@@ -9,6 +9,7 @@ import {
   useRejectChatRequestMutation,
 } from "../../generated/graphql";
 import { Button, Modal, Text } from "../atomic";
+import { CircledCheck, CircledCross } from "../icons";
 import InlineProfileAvatar from "../InlineProfileAvatar";
 import ListFilterer from "../ListFilterer";
 
@@ -22,7 +23,9 @@ const DetailsModalButton = ({ chatRequest }: DetailsModalButtonProps) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <>
-      <button onClick={() => setIsOpen(true)}>Details</button>
+      <button onClick={() => setIsOpen(true)}>
+        <Text u>Details</Text>
+      </button>
       <Modal
         isOpen={isOpen}
         onClose={() => {
@@ -97,25 +100,27 @@ const ChatRequestListItem = ({ chatRequest }: ChatRequestListItemProps) => {
       return (
         <div className="flex space-x-4">
           <button
+            title="Accept Chat Request"
             onClick={() => {
               acceptChatRequestMutation();
             }}
           >
-            accept
+            <CircledCheck />
           </button>
           <button
+            title="Reject Chat Request"
             onClick={() => {
               setIsRejectModalOpen(true);
             }}
           >
-            reject
+            <CircledCross />
           </button>
         </div>
       );
     } else if (chatRequest.chatRequestStatus === ChatRequestStatus.Accepted) {
-      return <Text>Accepted</Text>;
+      return <Text b>Accepted</Text>;
     } else if (chatRequest.chatRequestStatus === ChatRequestStatus.Rejected) {
-      return <Text>Rejected</Text>;
+      return <Text b>Rejected</Text>;
     } else {
       return <></>;
     }
@@ -124,8 +129,10 @@ const ChatRequestListItem = ({ chatRequest }: ChatRequestListItemProps) => {
   return (
     <>
       <div className="flex space-x-4">
-        <div className="w-40">{getAcceptRejectButtons()}</div>
-        <InlineProfileAvatar user={chatRequest.menteeProfile.user} />
+        <div className="w-24">{getAcceptRejectButtons()}</div>
+        <div className="flex-1">
+          <InlineProfileAvatar user={chatRequest.menteeProfile.user} />
+        </div>
         <div className="md:flex-1" />
         <Text className="hidden lg:inline">
           {format(new Date(chatRequest.chatStartTime), "MMM d, yyyy | h:mma") +
@@ -162,7 +169,13 @@ const ChatRequestListItem = ({ chatRequest }: ChatRequestListItemProps) => {
           <div className="h-8"></div>
 
           <div className="flex">
-            <Button variant="inverted" size="small" onClick={() => {}}>
+            <Button
+              variant="inverted"
+              size="small"
+              onClick={() => {
+                setIsRejectModalOpen(false);
+              }}
+            >
               Cancel
             </Button>
             <div className="w-2"></div>
@@ -194,9 +207,8 @@ type ChatRequestsListProps = {
 
 const ChatRequestsList = ({ title, chatRequests }: ChatRequestsListProps) => {
   return (
-    <div className="flex flex-col px-8 py-6">
+    <div className="flex flex-col px-8 py-6 space-y-6">
       <Text h2>{title}</Text>
-      <div className="h-4" />
       {chatRequests.map((cr) => (
         <ChatRequestListItem key={cr.chatRequestId} chatRequest={cr} />
       ))}

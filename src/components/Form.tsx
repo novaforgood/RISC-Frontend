@@ -55,7 +55,7 @@ const TextAsker = ({
       title={title}
       placeholder={type == "short-answer" ? "Short text" : "Long text"} // Want this branching to be in the Form switch statement, but couldn't get types to work in args of this function
       value={answer}
-      readOnly={readonly}
+      tabIndex={readonly ? -1 : undefined}
       onChange={(e) => {
         setAnswer(e.target.value);
         onChange(id, e.target.value);

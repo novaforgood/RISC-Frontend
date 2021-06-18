@@ -25,8 +25,11 @@ const DetailsModalButton = ({ chatRequest }: DetailsModalButtonProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <>
-      <button onClick={() => setIsOpen(true)}>Details</button>
+    <div className="flex flex-1">
+      <div className="flex-1" />
+      <button onClick={() => setIsOpen(true)}>
+        <Text u>Details</Text>
+      </button>
       <Modal
         isOpen={isOpen}
         onClose={() => {
@@ -61,8 +64,12 @@ const DetailsModalButton = ({ chatRequest }: DetailsModalButtonProps) => {
           {chatRequest.chatRequestStatus === ChatRequestStatus.Rejected && (
             <>
               <Text>Reason for rejection:</Text>
-              <div className="w-full bg-tertiary rounded-md p-2">
-                <Text>{chatRequest.chatRejectMessage || ""}</Text>
+              <div className="w-full bg-tertiary rounded-md p-4">
+                {chatRequest.chatRejectMessage ? (
+                  <Text>{chatRequest.chatRejectMessage}</Text>
+                ) : (
+                  <Text i>No reason given.</Text>
+                )}
               </div>
             </>
           )}
@@ -75,7 +82,7 @@ const DetailsModalButton = ({ chatRequest }: DetailsModalButtonProps) => {
           </div>
         </div>
       </Modal>
-    </>
+    </div>
   );
 };
 
@@ -87,11 +94,15 @@ const MyChatsListItem = ({ chatRequest }: MyChatsListItemProps) => {
   return (
     <div className="flex space-x-4">
       <div className="w-40">
-        <Text>{chatRequestStatusToTextMap[chatRequest.chatRequestStatus]}</Text>
+        <Text b>
+          {chatRequestStatusToTextMap[chatRequest.chatRequestStatus]}
+        </Text>
       </div>
-      <InlineProfileAvatar user={chatRequest.mentorProfile.user} />
+      <div className="flex-1">
+        <InlineProfileAvatar user={chatRequest.mentorProfile.user} />
+      </div>
       <div className="md:flex-1" />
-      <Text className="hidden lg:inline">
+      <Text className="hidden xl:inline">
         {format(new Date(chatRequest.chatStartTime), "MMM d, yyyy | h:mma") +
           " - " +
           format(new Date(chatRequest.chatEndTime), "MMM d, yyyy | h:mma")}
@@ -110,9 +121,8 @@ type MyChatsListProps = {
 
 const MyChatsList = ({ title, chatRequests }: MyChatsListProps) => {
   return (
-    <div className="flex flex-col px-8 py-6">
+    <div className="flex flex-col px-8 py-6 space-y-6">
       <Text h2>{title}</Text>
-      <div className="h-4" />
       {chatRequests.map((cr) => (
         <MyChatsListItem key={cr.chatRequestId} chatRequest={cr} />
       ))}
