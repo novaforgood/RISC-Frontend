@@ -1,5 +1,6 @@
 import { addMinutes, getDay } from "date-fns";
 import dateFormat from "dateformat";
+import Fuse from "fuse.js";
 import React, { Fragment, useEffect, useState } from "react";
 import {
   Button,
@@ -75,16 +76,18 @@ interface BookAChatProps {
 }
 const BookAChat = ({ mentor }: BookAChatProps) => {
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
-  const [selectedTimeslot, setSelectedTimeslot] =
-    useState<DateInterval | null>(null);
+  const [selectedTimeslot, setSelectedTimeslot] = useState<DateInterval | null>(
+    null
+  );
   const [sendChatModalOpen, setSendChatModalOpen] = useState(false);
   const { data, error } = useGetWeeklyAvailabilitiesQuery({
     variables: { profileId: mentor.profileId },
   });
 
   const [createChatRequest] = useCreateChatRequestMutation();
-  const [loadingCreateChatRequest, setLoadingCreateChatRequest] =
-    useState(false);
+  const [loadingCreateChatRequest, setLoadingCreateChatRequest] = useState(
+    false
+  );
   const [chatRequestMessage, setChatRequestMessage] = useState("");
   let weeklyAvailabilities: DateInterval[] = [];
   if (!error && data) {
@@ -415,6 +418,7 @@ const MentorCard = ({ mentor }: MentorCardProps) => {
 const ViewMentorsPage: Page = () => {
   //const [getMentors, { mentorsData }] = useGetMentorssLazyQuery();
   //const [sortBy, setSortBy] = useState("");
+  const [searchText, setSearchText] = useState("");
 
   const { currentProgram } = useCurrentProgram();
   const { data } = useGetProfilesQuery({
@@ -423,26 +427,33 @@ const ViewMentorsPage: Page = () => {
       profileType: ProfileType.Mentor,
     },
   });
-  const mentors = data?.getProfiles;
+  let unfiltered = data?.getProfiles || [];
 
-  const sortDropdown = () => {
-    return (
-      <div className="flex items-center">
-        <Text b>Sort By</Text>
-        <div className="w-2"></div>
-        <select
-          className="h-8 rounded-md"
-          name="sort"
-          /*onChange={setSortBy(e.target.value)}*/
-        >
-          <option value="latest">Date Joined (latest)</option>
-          <option value="earliest">Date Joined (earliest)</option>
-          <option value="atoz">Name (A-Z)</option>
-          <option value="ztoa">Name (Z-A)</option>
-        </select>
-      </div>
-    );
-  };
+  const fuse = new Fuse(unfiltered, {
+    keys: ["user.firstName", "user.lastName", "profileJson"],
+  });
+  const mentors = searchText
+    ? fuse.search(searchText).map((x) => x.item)
+    : unfiltered;
+
+  // const sortDropdown = () => {
+  //   return (
+  //     <div className="flex items-center">
+  //       <Text b>Sort By</Text>
+  //       <div className="w-2"></div>
+  //       <select
+  //         className="h-8 rounded-md"
+  //         name="sort"
+  //         /*onChange={setSortBy(e.target.value)}*/
+  //       >
+  //         <option value="latest">Date Joined (latest)</option>
+  //         <option value="earliest">Date Joined (earliest)</option>
+  //         <option value="atoz">Name (A-Z)</option>
+  //         <option value="ztoa">Name (Z-A)</option>
+  //       </select>
+  //     </div>
+  //   );
+  // };
 
   return (
     <Fragment>
@@ -451,9 +462,14 @@ const ViewMentorsPage: Page = () => {
         <Text b h2>
           All Mentors
         </Text>
-        {sortDropdown()}
+        {/* {sortDropdown()} */}
       </div>
-      <Input className="w-full" placeholder="Search..."></Input>
+      <Input
+        className="w-full"
+        placeholder="Search..."
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
+      ></Input>
       <div className="h-8"></div>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {mentors?.map((mentor: MentorProfile, index: number) => {
