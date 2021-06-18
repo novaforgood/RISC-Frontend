@@ -1,4 +1,5 @@
 import dateFormat from "dateformat";
+import router from "next/router";
 import { Card, Text } from "../../components/atomic";
 import { BackArrow, CircledCheckSolid } from "../../components/icons";
 import {
@@ -6,7 +7,6 @@ import {
   useGetMyUserApplicationsQuery,
 } from "../../generated/graphql";
 import Page from "../../types/Page";
-import Link from "next/link";
 
 const ApplicationsViewer: Page = () => {
   const applications =
@@ -17,9 +17,14 @@ const ApplicationsViewer: Page = () => {
       <div></div>
       <div className="max-w-4xl mx-auto p-10">
         {/* TODO: My Applications text should be aligned with the Card below it */}
-        <Link href="/">
-          <BackArrow className="h-10 w-10 inline hover:cursor-pointer"></BackArrow>
-        </Link>
+        <button
+          className="focus:border-0"
+          onClick={() => {
+            router.back();
+          }}
+        >
+          <BackArrow className="h-10 w-10 inline hover:cursor-pointer" />
+        </button>
         <Text h2 b className="inline">
           My Applications
         </Text>
