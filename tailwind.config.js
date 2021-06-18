@@ -39,6 +39,20 @@ module.exports = {
       boxShadow: {
         border: "0px 0px 2px 2px #BFBFBD, inset 0px 0px 2px 2px #BFBFBD",
       },
+      cursor: {
+        grab: "grab",
+        "s-resize": "s-resize",
+        "w-resize": "w-resize",
+        "se-resize": "se-resize",
+        "sw-resize": "sw-resize",
+      },
+      height: {
+        "3/4-screen": "75vh",
+        "9/10": "90%",
+      },
+      maxHeight: {
+        "3/4": "75%",
+      },
       spacing: {
         0.25: "0.0625rem",
         13.5: "3.375rem",
@@ -48,27 +62,11 @@ module.exports = {
         160: "40rem",
         200: "50rem",
       },
-      cursor: {
-        grab: "grab",
-        "s-resize": "s-resize",
-        "w-resize": "w-resize",
-        "se-resize": "se-resize",
-        "sw-resize": "sw-resize",
-      },
-      maxHeight: {
-        "3/4": "75%",
-      },
       transitionProperty: {
         background: "background-color",
         152: "38rem",
       },
-      transitionProperty: {
-        background: "background-color",
-      },
       width: {
-        "9/10": "90%",
-      },
-      height: {
         "9/10": "90%",
       },
       zIndex: {
