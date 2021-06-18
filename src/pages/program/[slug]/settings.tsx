@@ -11,6 +11,7 @@ import {
   ProfileType,
   useGetProfilesQuery,
   useUpdateProgramMutation,
+  useUploadImageAndResizeMutation,
 } from "../../../generated/graphql";
 import { useCurrentProgram } from "../../../hooks";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
@@ -60,6 +61,7 @@ const SettingsPage: Page = () => {
   };
 
   //TODO: Image Upload and Resize => URL save
+  const [uploadImageAndResizeMutation] = useUploadImageAndResizeMutation();
   const [updateProgram] = useUpdateProgramMutation();
   const [mentorshipName, setMentorshipName] = useState(name);
   const [mentorshipDescription, setMentorshipDescription] =
@@ -171,13 +173,25 @@ const SettingsPage: Page = () => {
             Reset to Last Saved
           </Button>
           <Button
-            onClick={() => {
-              //TODO: REMOVE THIS AND ACTUALLY UPDATE PROGRAM LOGO
-              console.log(programLogo);
+            onClick={async () => {
+              let newIconUrl = iconUrl;
+              if (programLogo) {
+                let imageUrl = await uploadImageAndResizeMutation({
+                  variables: {
+                    file: programLogo,
+                    resizeWidth: 256,
+                    resizeHeight: 256,
+                  },
+                });
+                if (imageUrl.data) {
+                  newIconUrl = imageUrl.data.uploadImage;
+                }
+              }
               updateProgram({
                 variables: {
                   programId,
                   data: {
+                    iconUrl: newIconUrl,
                     name: mentorshipName,
                     description: mentorshipDescription,
                   },
