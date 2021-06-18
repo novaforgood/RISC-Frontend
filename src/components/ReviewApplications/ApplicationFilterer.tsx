@@ -167,7 +167,7 @@ const ApplicationReviewListItem = ({
   };
 
   return (
-    <div className="flex space-x-4">
+    <div className="flex space-x-4 p-3 hover:bg-tertiary duration-150 rounded">
       <div className="w-24">{getStatusIcon(application)}</div>
       <div className="flex-1">
         <InlineProfileAvatar user={application.user} />
@@ -193,8 +193,9 @@ const ApplicationReviewList = ({
   applications,
 }: ApplicationReviewListProps) => {
   return (
-    <div className="flex flex-col px-8 py-6 space-y-4">
+    <div className="flex flex-col px-8 py-6">
       <Text h3>{title}</Text>
+      <div className="h-4"></div>
       {applications.map((app) => (
         <ApplicationReviewListItem key={app.user.userId} application={app} />
       ))}

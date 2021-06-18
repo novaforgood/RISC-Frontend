@@ -70,7 +70,13 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
             </Text>
           </div>
           <div className="h-10"></div>
-          <Button size="auto" className="h-14 w-80">
+          <Button
+            size="auto"
+            className="h-14 w-80"
+            onClick={() => {
+              router.push("/signup");
+            }}
+          >
             Get started for free
           </Button>
         </div>

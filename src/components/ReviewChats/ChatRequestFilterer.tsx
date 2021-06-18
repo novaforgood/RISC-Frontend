@@ -207,7 +207,7 @@ type ChatRequestsListProps = {
 
 const ChatRequestsList = ({ title, chatRequests }: ChatRequestsListProps) => {
   return (
-    <div className="flex flex-col px-8 py-6 space-y-6">
+    <div className="flex flex-col px-8 py-6">
       <Text h2>{title}</Text>
       {chatRequests.map((cr) => (
         <ChatRequestListItem key={cr.chatRequestId} chatRequest={cr} />
