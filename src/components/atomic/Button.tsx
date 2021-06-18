@@ -3,7 +3,7 @@ import React, { ButtonHTMLAttributes } from "react";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "solid" | "inverted"; // Default solid
-  size?: "small" | "medium" | "large"; // Default medium
+  size?: "small" | "medium" | "large" | "auto"; // Default medium
 };
 
 const Button = ({
@@ -36,6 +36,7 @@ const Button = ({
     "h-14 w-41": size === "medium",
     "h-9 w-41": size === "small",
     "h-16 w-86": size === "large",
+    "": size === "auto",
 
     // Override styles
     [`${className}`]: true,

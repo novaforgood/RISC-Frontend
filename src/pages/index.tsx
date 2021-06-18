@@ -1,61 +1,88 @@
-import React, { useState } from "react";
-import { Button } from "../components/atomic";
-import Form, { dummyForm } from "../components/Form";
-import { useGetMyUserQuery } from "../generated/graphql";
+import { useRouter } from "next/router";
+import React from "react";
+import { Button, Text } from "../components/atomic";
 import { PageGetProgramBySlugComp } from "../generated/page";
+import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";
 import { useAuth } from "../utils/firebase/auth";
 
-const IndexPage: PageGetProgramBySlugComp = (_) => {
-  const { user, signOut } = useAuth();
-  const { data } = useGetMyUserQuery();
+const BlobCircle = () => {
+  const sizes = "h-24 w-24";
+  return (
+    <div
+      className={`${sizes} rounded-full bg-skyblue overflow-hidden flex justify-center items-end pointer-events-none`}
+    >
+      <img src="/static/HappyBlobs.svg" className="w-11/12 select-none" />
+    </div>
+  );
+};
 
-  const [responses, setResponses] = useState({});
-  const [formChanged, setFormChanged] = useState(false);
+const IndexPage: PageGetProgramBySlugComp = (_) => {
+  const router = useRouter();
+  const authorizationLevel = useAuthorizationLevel();
+  const { signOut, user } = useAuth();
+
+  console.log(authorizationLevel, user);
+  if (authorizationLevel === AuthorizationLevel.Unauthenticated)
+    return (
+      <div className="h-screen w-full p-8">
+        <div className="w-full flex items-center justify-between">
+          <img src="/static/DarkTextLogo.svg" />
+          <div className="flex">
+            <Button
+              variant="inverted"
+              size="small"
+              onClick={() => {
+                router.push("/signup");
+              }}
+            >
+              Login
+            </Button>
+            <div className="w-4"></div>
+            <Button
+              size="small"
+              onClick={() => {
+                router.push("/signup");
+              }}
+            >
+              Sign up
+            </Button>
+          </div>
+        </div>
+        <div className="w-160 pt-36 pl-36">
+          <BlobCircle />
+          <div className="h-4"></div>
+
+          <div>
+            <Text h1 b>
+              Your mentorship program starts here
+            </Text>
+          </div>
+          <div className="h-4"></div>
+
+          <div>
+            <Text>
+              Mentor Center works to make peer mentorship accessible and
+              manageable for any organization.
+            </Text>
+          </div>
+          <div className="h-10"></div>
+          <Button size="auto" className="h-14 w-80">
+            Get started for free
+          </Button>
+        </div>
+      </div>
+    );
 
   return (
-    <>
-      <a href="/create">Create Program</a>
-      <div className="h-4"></div>
-      <div>{JSON.stringify(data?.getMyUser)}</div>
-      <div className="h-4"></div>
-      {user ? <p>Hi, {user.displayName}</p> : <p>Join us!</p>}
-      {user ? (
-        <button
-          onClick={() => {
-            signOut();
-          }}
-        >
-          Sign Out
-        </button>
-      ) : (
-        <a href="/login">Log In</a>
-      )}
-      {/* Form */}
-      <Form
-        questions={dummyForm}
-        responses={responses}
-        onChange={() => {
-          setFormChanged(true);
-          console.log("onChange");
-        }}
-        onAutosave={(response) => {
-          setResponses(response);
-          console.log("onAutosave");
-          console.log(response);
-        }}
-        readonly
-        className="m-20"
-      ></Form>
+    <div>
       <Button
-        disabled={!formChanged}
         onClick={() => {
-          console.log("Submitted!");
-          console.log(responses);
+          signOut();
         }}
       >
-        Submit
+        Sign out
       </Button>
-    </>
+    </div>
   );
 };
 

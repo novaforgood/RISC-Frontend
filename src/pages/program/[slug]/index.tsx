@@ -1,24 +1,25 @@
-import React from "react";
+import { RawDraftContentState } from "draft-js";
 import type { GetServerSideProps } from "next";
-import { Text, Card, Button } from "../../../components/atomic";
+import { useRouter } from "next/router";
+import React from "react";
+import { Button, Card, Text } from "../../../components/atomic";
 import {
+  defaultContentState,
   EditorProvider,
-  ToolBar,
+  PublishButton,
   ReadOnlyTextEditor,
   TextEditor,
-  PublishButton,
-  defaultContentState,
+  ToolBar,
 } from "../../../components/RichTextEditing";
-import { RawDraftContentState } from "draft-js";
 import {
   PageGetProgramBySlugComp,
   ssrGetProgramBySlug,
 } from "../../../generated/page";
 import { AuthorizationLevel, useAuthorizationLevel } from "../../../hooks";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
+import PageContainer from "../../../layouts/PageContainer";
 import Page from "../../../types/Page";
 import { parseParam } from "../../../utils";
-import { useRouter } from "next/router";
 
 function getRawContentState(json: string): RawDraftContentState {
   try {
@@ -41,7 +42,7 @@ const AdminHome = ({
   iconUrl,
   homepage,
 }: DisplayProgramHomepageProps) => (
-  <div className="box-border bg-tertiary min-h-screen py-32 px-36">
+  <div className="pt-24">
     <EditorProvider currentHomepage={getRawContentState(homepage)}>
       <PublishButton
         className="transform -translate-y-24 z-10 float-right"
@@ -134,7 +135,9 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
 export default ProgramPage;
 
 ProgramPage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps}>{page}</ChooseTabLayout>
+  <ChooseTabLayout {...pageProps}>
+    <PageContainer>{page}</PageContainer>
+  </ChooseTabLayout>
 );
 
 // TODO: Extract this function because it'll probably be reused

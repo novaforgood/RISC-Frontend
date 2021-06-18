@@ -50,13 +50,13 @@ const useAuthorizationLevel = () => {
   const myUserData = data?.getMyUser;
 
   useEffect(() => {
-    if (user && myUserData && router) {
+    if (myUserData && router) {
       const slug = parseParam(router.query.slug);
       setAuthLevel(getAuthorizationLevel(user, myUserData, slug));
     }
     return () => {};
   }, [myUserData, router, user]);
-
+  console.log("lma");
   return authLevel;
 };
 

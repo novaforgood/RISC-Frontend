@@ -194,7 +194,7 @@ const ApplicationReviewList = ({
 }: ApplicationReviewListProps) => {
   return (
     <div className="flex flex-col px-8 py-6 space-y-4">
-      <Text h2>{title}</Text>
+      <Text h3>{title}</Text>
       {applications.map((app) => (
         <ApplicationReviewListItem key={app.user.userId} application={app} />
       ))}

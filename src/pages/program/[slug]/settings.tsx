@@ -1,10 +1,10 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, Fragment, useState } from "react";
 import {
-  Text,
-  TextArea,
   Button,
   Card,
   Input,
+  Text,
+  TextArea,
 } from "../../../components/atomic";
 import UploadIconWithPreview from "../../../components/UploadIconWithPreview";
 import {
@@ -14,6 +14,7 @@ import {
 } from "../../../generated/graphql";
 import { useCurrentProgram } from "../../../hooks";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
+import PageContainer from "../../../layouts/PageContainer";
 import Page from "../../../types/Page";
 
 type User = {
@@ -49,7 +50,7 @@ const AdminBox = (user: User) => {
 };
 
 const SettingsPage: Page = () => {
-  const { currentProgram } = useCurrentProgram();
+  const { currentProgram, refetchCurrentProgram } = useCurrentProgram();
   const { programId, name, description, iconUrl, slug } = currentProgram || {
     programId: "",
     name: "",
@@ -77,15 +78,11 @@ const SettingsPage: Page = () => {
   if (!currentProgram || error) return <div>Loading... </div>;
 
   return (
-    <div className="bg-tertiary min-h-screen w-full">
-      <div className="h-6" />
-      <div className="w-3/4 mx-auto">
-        <Text h1 b>
-          Settings
-        </Text>
-      </div>
-      <div className="h-4" />
-      <Card className="w-3/4 h-3/4-screen m-auto flex flex-col p-12 space-y-6 overflow-y-auto">
+    <Fragment>
+      <Text h2 b>
+        Settings
+      </Text>
+      <Card className="flex flex-col p-12 space-y-6 overflow-y-auto">
         <Text h3 b>
           Mentorship Details
         </Text>
@@ -186,8 +183,10 @@ const SettingsPage: Page = () => {
                     description: mentorshipDescription,
                   },
                 },
+              }).then(() => {
+                refetchCurrentProgram();
+                setModified(false);
               });
-              setModified(false);
             }}
             disabled={!modified}
             size="small"
@@ -207,12 +206,14 @@ const SettingsPage: Page = () => {
           + add admin
         </Button>
       </Card>
-    </div>
+    </Fragment>
   );
 };
 
 SettingsPage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps}>{page}</ChooseTabLayout>
+  <ChooseTabLayout {...pageProps}>
+    <PageContainer>{page}</PageContainer>
+  </ChooseTabLayout>
 );
 
 export default SettingsPage;

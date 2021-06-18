@@ -1,6 +1,6 @@
 import { addMinutes, getDay } from "date-fns";
 import dateFormat from "dateformat";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import {
   Button,
   Card,
@@ -22,6 +22,7 @@ import {
 } from "../../../../generated/graphql";
 import { useCurrentProgram } from "../../../../hooks";
 import ChooseTabLayout from "../../../../layouts/ChooseTabLayout";
+import PageContainer from "../../../../layouts/PageContainer";
 import { Question } from "../../../../types/Form";
 import Page from "../../../../types/Page";
 
@@ -74,18 +75,16 @@ interface BookAChatProps {
 }
 const BookAChat = ({ mentor }: BookAChatProps) => {
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
-  const [selectedTimeslot, setSelectedTimeslot] = useState<DateInterval | null>(
-    null
-  );
+  const [selectedTimeslot, setSelectedTimeslot] =
+    useState<DateInterval | null>(null);
   const [sendChatModalOpen, setSendChatModalOpen] = useState(false);
   const { data, error } = useGetWeeklyAvailabilitiesQuery({
     variables: { profileId: mentor.profileId },
   });
 
   const [createChatRequest] = useCreateChatRequestMutation();
-  const [loadingCreateChatRequest, setLoadingCreateChatRequest] = useState(
-    false
-  );
+  const [loadingCreateChatRequest, setLoadingCreateChatRequest] =
+    useState(false);
   const [chatRequestMessage, setChatRequestMessage] = useState("");
   let weeklyAvailabilities: DateInterval[] = [];
   if (!error && data) {
@@ -446,7 +445,7 @@ const ViewMentorsPage: Page = () => {
   };
 
   return (
-    <div className="bg-tertiary w-full min-h-screen p-5 justify-center items-center">
+    <Fragment>
       <div className="h-1"></div>
       <div className="flex justify-between">
         <Text b h2>
@@ -461,12 +460,14 @@ const ViewMentorsPage: Page = () => {
           return <MentorCard mentor={mentor} key={index} />;
         })}
       </div>
-    </div>
+    </Fragment>
   );
 };
 
 ViewMentorsPage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps}>{page}</ChooseTabLayout>
+  <ChooseTabLayout {...pageProps}>
+    <PageContainer>{page}</PageContainer>
+  </ChooseTabLayout>
 );
 
 export default ViewMentorsPage;
