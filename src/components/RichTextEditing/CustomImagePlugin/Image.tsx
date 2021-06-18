@@ -52,12 +52,13 @@ export default React.forwardRef<HTMLDivElement, ImageProps>(
     const {
       src,
       alt,
+      file,
       width,
       height,
       difference = 0,
       entityKey,
     } = contentState.getEntity(block.getEntityAt(0)).getData();
-
+    console.log(file);
     const mergeData = (newData: { [key: string]: any }) => {
       contentState.mergeEntityData(entityKey, newData);
     };

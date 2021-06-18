@@ -9,16 +9,14 @@ type PublishButtonProps = HTMLAttributes<HTMLButtonElement> & {
 
 //TODO: Error notice when content fails to publish
 const PublishButton = ({ programId, ...props }: PublishButtonProps) => {
-  const { getStringContentState, setPublishedContent, disablePublish } =
-    useEditor();
+  const { uploadImagesAndPublishContent, disablePublish } = useEditor();
   const [updateProgram] = useUpdateProgramMutation();
   const [publishing, setPublishing] = useState(false);
 
-  const save = () => {
+  const save = async () => {
     //TODO: Convert locally-hosted images to server-hosted images
     setPublishing(true);
-    const contentState = getStringContentState!();
-    setPublishedContent!();
+    const contentState = await uploadImagesAndPublishContent!();
     updateProgram({
       variables: { data: { homepage: contentState }, programId },
     })

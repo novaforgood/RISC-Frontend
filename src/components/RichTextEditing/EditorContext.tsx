@@ -9,21 +9,20 @@ import _ from "lodash";
 
 import createImagePlugin, { ImageEditorPlugin } from "./CustomImagePlugin";
 import { EditorPlugin } from "@draft-js-plugins/editor";
+import { useUploadImageWithoutResizingMutation } from "../../generated/graphql";
 
 const imagePlugin = createImagePlugin();
 
 export interface EditorStateInterface {
   editorState: EditorState;
   setEditorState: (prop: EditorState) => void;
-  getStringContentState?: () => string;
-  setPublishedContent?: () => void;
+  uploadImagesAndPublishContent?: () => Promise<string>;
   disablePublish?: boolean;
   imagePlugin?: ImageEditorPlugin;
   plugins?: EditorPlugin[];
 }
 
 export const defaultContentState: RawDraftContentState = {
-  entityMap: {},
   blocks: [
     {
       text: "",
@@ -34,6 +33,7 @@ export const defaultContentState: RawDraftContentState = {
       entityRanges: [],
     },
   ],
+  entityMap: {},
 };
 
 const EditorContext =
@@ -41,21 +41,34 @@ const EditorContext =
 
 //Works with publish only- will need to change for autosave
 const useProvideEditor = (storedState = defaultContentState) => {
+  const [uploadImageWithoutResizing] = useUploadImageWithoutResizingMutation();
   const [editorState, setEditorState] = useState(
     EditorState.createWithContent(convertFromRaw(storedState))
   );
-  const [publishedContent, setPublishedContent] = useState(storedState);
-
-  const getStringContentState = () => {
-    return JSON.stringify(convertToRaw(editorState.getCurrentContent()));
-  };
-
+  const [publishedContent, setPublishedContent] = useState(
+    convertToRaw(editorState.getCurrentContent())
+  );
   return {
     editorState,
     setEditorState,
-    getStringContentState,
-    setPublishedContent: () =>
-      setPublishedContent(convertToRaw(editorState.getCurrentContent())),
+    uploadImagesAndPublishContent: async () => {
+      const contentState = editorState.getCurrentContent();
+      for (const block of convertToRaw(contentState).blocks) {
+        //if the block is an image, upload image and host
+        if (block.type == "atomic") {
+          console.log(block);
+          let photoUrl = await uploadImageWithoutResizing({
+            variables: {
+              file: block.data!.file,
+            },
+          });
+          contentState.mergeEntityData(block.key, { src: photoUrl });
+        }
+      }
+      //contentState now has different properties
+      setPublishedContent(convertToRaw(contentState));
+      return JSON.stringify(contentState);
+    },
     disablePublish: _.isEqual(
       convertToRaw(editorState.getCurrentContent()),
       publishedContent

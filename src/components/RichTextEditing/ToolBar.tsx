@@ -114,8 +114,9 @@ const uploadImage = ({
 
   if (file && file.type.match("image.*")) {
     let url = URL.createObjectURL(file);
-    const data: ImgHTMLAttributes<HTMLImageElement> = {
+    const data = {
       alt: file.name,
+      file: file,
     };
     setEditorState(imagePlugin!.addImage(editorState, url, data));
 
