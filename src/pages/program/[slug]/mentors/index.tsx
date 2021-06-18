@@ -333,6 +333,7 @@ const ProfileModal = ({
               )}
               responses={getResponsesFromJson(mentor.profileJson)}
               readonly
+              showDescriptions={false}
             />
           </div>
         );

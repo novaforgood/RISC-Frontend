@@ -92,6 +92,7 @@ const DetailsModalButton = ({ application }: DetailsModalButtonProps) => {
             )}
             readonly
             responses={JSON.parse(application.applicationJson)}
+            showDescriptions={false}
           ></Form>
           <div className="flex">
             <div className="flex-1"></div>
