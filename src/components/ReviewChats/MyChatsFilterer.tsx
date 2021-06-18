@@ -92,7 +92,7 @@ type MyChatsListItemProps = {
 
 const MyChatsListItem = ({ chatRequest }: MyChatsListItemProps) => {
   return (
-    <div className="flex space-x-4">
+    <div className="flex space-x-4 hover:bg-tertiary p-3">
       <div className="w-40">
         <Text b>
           {chatRequestStatusToTextMap[chatRequest.chatRequestStatus]}
@@ -121,8 +121,9 @@ type MyChatsListProps = {
 
 const MyChatsList = ({ title, chatRequests }: MyChatsListProps) => {
   return (
-    <div className="flex flex-col px-8 py-6 space-y-6">
-      <Text h2>{title}</Text>
+    <div className="flex flex-col px-8 py-6">
+      <Text h3>{title}</Text>
+      <div className="h-4"></div>
       {chatRequests.map((cr) => (
         <MyChatsListItem key={cr.chatRequestId} chatRequest={cr} />
       ))}
