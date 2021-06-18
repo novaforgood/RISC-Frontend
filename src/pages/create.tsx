@@ -7,6 +7,7 @@ import {
   CreateProgramInput,
   useCreateProgramMutation,
   useGetMyUserQuery,
+  useUploadImageAndResizeMutation,
 } from "../generated/graphql";
 import RedirectIfNotLoggedIn from "../layouts/RedirectIfNotLoggedIn";
 import Page from "../types/Page";
@@ -33,6 +34,7 @@ const CreateProgramPage: Page = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { refetch: refetchMyUserData } = useGetMyUserQuery();
+  const [uploadImageAndResizeMutation] = useUploadImageAndResizeMutation();
 
   const validateProgramName = (name: string) => {
     // check string is not whitespace; can ask product for more constraints on names
@@ -44,15 +46,25 @@ const CreateProgramPage: Page = () => {
     return name.length && name.match(/^[a-zA-Z0-9]{4,}$/) && !name.match("/");
   };
 
-  const callCreateProgram = () => {
+  const callCreateProgram = async () => {
+    let iconUrl = "/static/DefaultLogo.svg";
+
+    if (programLogo) {
+      // Ideally, the image upload wouldn't block, but that requires more significant changes to the backend
+      // For now, the backend resizes icons to small sizes anyway, so the load time shouldn't be too long
+      let imageUrl = await uploadImageAndResizeMutation({
+        variables: { file: programLogo, resizeWidth: 256, resizeHeight: 256 },
+      });
+      if (imageUrl.data) {
+        iconUrl = imageUrl.data?.uploadImage;
+      }
+    }
+
     const createProgramInput: CreateProgramInput = {
       name: programName,
       description: "", // a lotta dummy strings for now since the form doesn't specify them
       slug: programIdentifier,
-      //TODO: Send the actual URL of the icon in
-      iconUrl: programLogo
-        ? "/static/HappyBlobs.svg"
-        : "/static/DefaultLogo.svg",
+      iconUrl: iconUrl,
       homepage: JSON.stringify(defaultContentState),
       mentorProfileSchemaJson: "",
       menteeProfileSchemaJson: "",

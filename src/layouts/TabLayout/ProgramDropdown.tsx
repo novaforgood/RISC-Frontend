@@ -16,7 +16,7 @@ const ProgramDropdown = () => {
           <div className="flex p-2 items-center ">
             <img
               className="h-10 w-10 object-contain border border-inactive rounded"
-              src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/1/13/Enchanted_Diamond_Pickaxe.gif"
+              src={currentProgram?.iconUrl || "/static/DefaultLogo.svg"}
             />
             <div className="w-3 flex-shrink-0"></div>
             <Text className="whitespace-nowrap truncate">
@@ -51,7 +51,7 @@ const ProgramDropdown = () => {
                     <div className={styles}>
                       <img
                         className="h-8 w-8 object-contain border border-inactive rounded"
-                        src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/1/13/Enchanted_Diamond_Pickaxe.gif"
+                        src={program.iconUrl || "/static/DefaultLogo.svg"}
                       />
                       <div className="w-3 flex-shrink-0"></div>
                       <Text className="truncate">{program.name}</Text>

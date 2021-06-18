@@ -32,6 +32,7 @@ const UploadIconWithPreview = ({
             }}
             className="hidden"
             type="file"
+            accept="image/*"
           />
           <div className="w-full h-full flex items-center justify-center cursor-pointer">
             Choose File
