@@ -1,6 +1,9 @@
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment, ReactNode } from "react";
 import { useAuth } from "../utils/firebase/auth";
+import Link from "next/link";
+import { useGetMyUserQuery } from "../generated/graphql";
+import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";
 
 type DropdownProps = {
   button: ReactNode;
@@ -14,6 +17,7 @@ function classNames(...classes: any[]) {
 
 export default function Dropdown({ button }: DropdownProps) {
   const { user, signOut } = useAuth();
+  const authorizationLevel = useAuthorizationLevel();
 
   return (
     <Menu as="div" className="relative inline-block text-left">
@@ -34,7 +38,7 @@ export default function Dropdown({ button }: DropdownProps) {
               className="origin-bottom-left  mb-4 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
             >
               <div className="py-1">
-                <Menu.Item>
+                {/* <Menu.Item>
                   {({ active }) => (
                     <a
                       href="#"
@@ -46,20 +50,25 @@ export default function Dropdown({ button }: DropdownProps) {
                       General Profile
                     </a>
                   )}
-                </Menu.Item>
-                <Menu.Item>
-                  {({ active }) => (
-                    <a
-                      href="#"
-                      className={classNames(
-                        active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-                        "block px-4 py-2 text-sm"
-                      )}
-                    >
-                      My Applications
-                    </a>
-                  )}
-                </Menu.Item>
+                </Menu.Item> */}
+                {authorizationLevel != AuthorizationLevel.Admin && (
+                  <Menu.Item>
+                    {({ active }) => (
+                      <Link href="/my/applications">
+                        <a
+                          className={classNames(
+                            active
+                              ? "bg-gray-100 text-gray-900"
+                              : "text-gray-700",
+                            "block px-4 py-2 text-sm"
+                          )}
+                        >
+                          My Applications
+                        </a>
+                      </Link>
+                    )}
+                  </Menu.Item>
+                )}
                 {user ? (
                   <Menu.Item>
                     {({ active }) => (
