@@ -36,7 +36,7 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
               variant="inverted"
               size="small"
               onClick={() => {
-                router.push("/signup");
+                router.push("/login");
               }}
             >
               Login

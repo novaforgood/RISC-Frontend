@@ -60,13 +60,13 @@ const ProgramDropdown = () => {
                 </Menu.Item>
               );
             })}
-            <Menu.Item>
+            {/* <Menu.Item>
               <Link href="/join">
                 <div className="p-2 w-full cursor-pointer hover:bg-tertiary">
                   Join a mentorship
                 </div>
               </Link>
-            </Menu.Item>
+            </Menu.Item> */}
             <Menu.Item>
               <Link href="/create">
                 <div className="p-2 w-full cursor-pointer hover:bg-tertiary">
