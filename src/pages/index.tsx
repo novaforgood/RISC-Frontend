@@ -1,12 +1,12 @@
 import Link from "next/link";
-import router, { useRouter } from "next/router";
-import React from "react";
-import { Button, Text } from "../components/atomic";
+import { useRouter } from "next/router";
+import React, { useState } from "react";
+import { Button, Card, Text } from "../components/atomic";
+import { useGetMyUserQuery } from "../generated/graphql";
 import { PageGetProgramBySlugComp } from "../generated/page";
 import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";
 import NoProgramTabLayout from "../layouts/TabLayout/NoProgramTabLayout";
 import Page from "../types/Page";
-import { useAuth } from "../utils/firebase/auth";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24";
@@ -22,10 +22,7 @@ const BlobCircle = () => {
 const IndexPage: PageGetProgramBySlugComp = (_) => {
   const router = useRouter();
   const authorizationLevel = useAuthorizationLevel();
-  // TODO: Signout
-  const { user } = useAuth();
 
-  console.log(authorizationLevel, user);
   if (authorizationLevel === AuthorizationLevel.Unauthenticated)
     return (
       <div className="h-screen w-full p-8">
@@ -87,31 +84,64 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
 };
 
 const NoMentorshipHome: Page = () => {
-  return (
-    <NoProgramTabLayout basePath={router.asPath}>
-      <div className="h-screen flex flex-col justify-center items-center">
-        <div>
-          <Text h3>
-            You are currently not a part of any mentorship programs
-          </Text>
+  const { data } = useGetMyUserQuery();
+  const router = useRouter();
+  const [isApplicatonClicked, setIsApplicatonClicked] = useState(false);
+  const [isCreateClicked, setIsCreateClicked] = useState(false);
+
+  if (data?.getMyUser.profiles.length == 0) {
+    return (
+      <NoProgramTabLayout basePath={router.asPath}>
+        <div className="h-screen flex flex-col justify-center items-center">
+          <div>
+            <Text h3>
+              You are currently not a part of any mentorship programs
+            </Text>
+          </div>
+          <Button
+            className="w-96 mt-9"
+            onClick={() => {
+              setIsApplicatonClicked(true);
+            }}
+          >
+            <Link href="/my/applications">
+              <a>
+                <Text h3>
+                  {isApplicatonClicked
+                    ? "Rerouting..."
+                    : "Check Application Statuses"}
+                </Text>
+              </a>
+            </Link>
+          </Button>
+          <Button
+            variant="inverted"
+            className="w-96 mt-9"
+            onClick={() => {
+              setIsCreateClicked(true);
+            }}
+          >
+            <Link href="/create">
+              <a>
+                <Text h3>
+                  {isCreateClicked ? "Rerouting..." : "Create a Mentorship"}
+                </Text>
+              </a>
+            </Link>
+          </Button>
         </div>
-        <Button className="w-96 mt-9">
-          <Link href="/my/applications">
-            <a>
-              <Text h3>Check Application Statuses</Text>
-            </a>
-          </Link>
-        </Button>
-        <Button variant="inverted" className="w-96 mt-9">
-          <Link href="/create">
-            <a>
-              <Text h3>Create a Mentorship</Text>
-            </a>
-          </Link>
-        </Button>
+      </NoProgramTabLayout>
+    );
+  } else {
+    router.push("program/" + data?.getMyUser.profiles[0].program.slug);
+    return (
+      <div className="h-screen w-screen flex justify-center items-center">
+        <Card className="p-9">
+          <Text h3>Rerouting...</Text>
+        </Card>
       </div>
-    </NoProgramTabLayout>
-  );
+    );
+  }
 };
 
 export default IndexPage;

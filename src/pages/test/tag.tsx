@@ -12,8 +12,6 @@ const IndexPage = () => {
         variant="solid"
         onClick={() => {
           getUser();
-          console.log("hi");
-          console.log(data);
         }}
       >
         Get users

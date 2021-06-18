@@ -128,7 +128,6 @@ const SettingsPage: Page = () => {
           />
           <Button
             onClick={() => {
-              console.log("clicked");
               const link = document.getElementById(
                 "mentorship-link"
               ) as HTMLInputElement;

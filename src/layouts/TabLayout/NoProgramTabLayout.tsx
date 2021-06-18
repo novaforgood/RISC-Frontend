@@ -1,6 +1,4 @@
 import { useRouter } from "next/router";
-import { Text } from "../../components/atomic";
-import Dropdown from "../../components/Dropdown";
 import RedirectIfNotLoggedIn from "../../layouts/RedirectIfNotLoggedIn";
 import { useAuth } from "../../utils/firebase/auth";
 import TabLayout, { BaseTabLayoutProps } from "./TabLayout";
@@ -20,31 +18,7 @@ const NoProgramTabLayout: React.FC<BaseTabLayoutProps> = ({ children }) => {
     );
   }
 
-  const photoURL: string =
-    user == null || user.photoURL == null || user.photoURL == ""
-      ? "/static/DefaultProfilePicture.png"
-      : user.photoURL;
-
-  const footer = (
-    <Dropdown
-      button={
-        <div className="inline-flex items-center">
-          <img
-            className="h-10 w-10 object-contain border border-inactive rounded-full"
-            src={photoURL}
-          />
-          <Text className="ml-4">{user.displayName}</Text>
-        </div>
-      }
-    />
-  );
-
-  return (
-    <TabLayout
-      currentPageChildren={children}
-      footerChildren={footer}
-    ></TabLayout>
-  );
+  return <TabLayout currentPageChildren={children}></TabLayout>;
 };
 
 export default NoProgramTabLayout;

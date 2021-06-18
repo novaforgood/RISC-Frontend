@@ -21,8 +21,6 @@ const Checkbox = ({
     ["border-3 bg-primary fill-white"]: checked,
   });
 
-  console.log(checked);
-
   return (
     <div className="relative flex items-center p-4">
       <svg className="h-5 w-5 fill-none stroke-white stroke-2 strokeLinecap-round absolute z-10 pointer-events-none">

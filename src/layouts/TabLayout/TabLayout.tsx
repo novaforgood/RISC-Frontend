@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { ReactNode, useEffect, useState } from "react";
 import { Text } from "../../components/atomic";
+import TabFooterMenu from "../../components/TabFooterMenu";
 import LocalStorage from "../../utils/localstorage";
 import ProgramDropdown from "./ProgramDropdown";
 
@@ -73,15 +74,13 @@ const TabLayout: React.FC<TabLayoutProps> & {
     label: string;
     Icon: React.FC<React.SVGProps<SVGSVGElement>>;
   }>;
-} = ({ children, currentPageChildren, footerChildren }) => {
+} = ({ children, currentPageChildren }) => {
   return (
     <div className="flex h-screen w-screen">
       <div className="h-full w-64 flex-shrink-0 bg-white shadow-lg relative">
         <ProgramDropdown />
         <div className="overflow-y-auto">{children}</div>
-        {footerChildren && (
-          <div className="absolute bottom-0 p-2">{footerChildren}</div>
-        )}
+        <TabFooterMenu />
       </div>
       <div className="flex-grow overflow-y-scroll overflow-x-hidden">
         {currentPageChildren}

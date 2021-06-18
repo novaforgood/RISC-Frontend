@@ -56,7 +56,6 @@ const useAuthorizationLevel = () => {
     }
     return () => {};
   }, [myUserData, router, user]);
-  console.log("lma");
   return authLevel;
 };
 
