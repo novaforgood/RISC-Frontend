@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, Fragment, useState } from "react";
 import {
   Button,
   Card,
@@ -14,6 +14,7 @@ import {
 } from "../../../generated/graphql";
 import { useCurrentProgram } from "../../../hooks";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
+import PageContainer from "../../../layouts/PageContainer";
 import Page from "../../../types/Page";
 
 type User = {
@@ -77,15 +78,11 @@ const SettingsPage: Page = () => {
   if (!currentProgram || error) return <div>Loading... </div>;
 
   return (
-    <div className="bg-tertiary min-h-screen w-full pb-10">
-      <div className="h-6" />
-      <div className="w-3/4 mx-auto">
-        <Text h1 b>
-          Settings
-        </Text>
-      </div>
-      <div className="h-4" />
-      <Card className="w-3/4 m-auto flex flex-col p-12 space-y-6 overflow-y-auto">
+    <Fragment>
+      <Text h2 b>
+        Settings
+      </Text>
+      <Card className="flex flex-col p-12 space-y-6 overflow-y-auto">
         <Text h3 b>
           Mentorship Details
         </Text>
@@ -209,12 +206,14 @@ const SettingsPage: Page = () => {
           + add admin
         </Button>
       </Card>
-    </div>
+    </Fragment>
   );
 };
 
 SettingsPage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps}>{page}</ChooseTabLayout>
+  <ChooseTabLayout {...pageProps}>
+    <PageContainer>{page}</PageContainer>
+  </ChooseTabLayout>
 );
 
 export default SettingsPage;

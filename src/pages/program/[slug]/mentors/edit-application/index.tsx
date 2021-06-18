@@ -4,6 +4,7 @@ import FormSchemaEditor from "../../../../../components/FormSchemaEditor";
 import { useUpdateProgramMutation } from "../../../../../generated/graphql";
 import { useCurrentProgram } from "../../../../../hooks";
 import ChooseTabLayout from "../../../../../layouts/ChooseTabLayout";
+import PageContainer from "../../../../../layouts/PageContainer";
 import { Question } from "../../../../../types/Form";
 import Page from "../../../../../types/Page";
 
@@ -49,44 +50,42 @@ const EditMentorApplicationPage: Page = (_) => {
   };
 
   return (
-    <div>
-      <div className="h-screen bg-tertiary flex flex-col items-center py-16 border-box overflow-y-scroll">
-        <div className="flex flex-col items-center">
-          <div className="flex justify-between items-center w-full">
-            <Text h2 b>
-              Edit Mentor Application
-            </Text>
-            <div className="w-12"></div>
-            <div className="flex">
-              <Button
-                size="small"
-                disabled={!modified}
-                onClick={() => {
-                  saveMentorApplicationSchema();
-                }}
-              >
-                Save
-              </Button>
-            </div>
-          </div>
-
-          <div className="h-8"></div>
-
-          <FormSchemaEditor
-            questions={applicationSchema}
-            onChange={(newQuestions) => {
-              setModified(true);
-              setApplicationSchema(newQuestions);
+    <div className="flex flex-col items-center">
+      <div className="flex justify-between items-center w-full">
+        <Text h2 b>
+          Edit Mentor Application
+        </Text>
+        <div className="w-12"></div>
+        <div className="flex">
+          <Button
+            size="small"
+            disabled={!modified}
+            onClick={() => {
+              saveMentorApplicationSchema();
             }}
-          ></FormSchemaEditor>
+          >
+            Save
+          </Button>
         </div>
       </div>
+
+      <div className="h-8"></div>
+
+      <FormSchemaEditor
+        questions={applicationSchema}
+        onChange={(newQuestions) => {
+          setModified(true);
+          setApplicationSchema(newQuestions);
+        }}
+      ></FormSchemaEditor>
     </div>
   );
 };
 
 EditMentorApplicationPage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps}>{page}</ChooseTabLayout>
+  <ChooseTabLayout {...pageProps}>
+    <PageContainer>{page}</PageContainer>
+  </ChooseTabLayout>
 );
 
 export default EditMentorApplicationPage;
