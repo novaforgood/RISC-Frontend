@@ -1,0 +1,14 @@
+query getMyUserApplications {
+  getMyUser {
+    applications {
+      program {
+        name
+        slug
+        iconUrl
+      }
+      applicationStatus
+      applicationType
+      createdAt
+    }
+  }
+}

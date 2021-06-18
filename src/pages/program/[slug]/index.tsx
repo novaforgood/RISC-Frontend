@@ -1,6 +1,7 @@
 import { RawDraftContentState } from "draft-js";
 import type { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import React from "react";
 import { Button, Card, Text } from "../../../components/atomic";
 import {
@@ -75,6 +76,8 @@ const ReadOnlyHome = ({
   homepage,
   inProgram = false,
 }: DisplayProgramHomepageProps & { inProgram?: boolean }) => {
+  const router = useRouter();
+
   console.log(homepage);
   const JSONHomepage: RawDraftContentState = getRawContentState(homepage);
   return (
@@ -85,11 +88,13 @@ const ReadOnlyHome = ({
       ) : (
         <div className="flex transform -translate-y-20 float-right z-10">
           <Button variant="inverted" size="small">
-            Apply to Mentor
+            <Link href={router.asPath + "/apply?as=mentor"}>
+              Apply to Mentor
+            </Link>
           </Button>
           <div className="w-4" />
           <Button variant="solid" size="small">
-            Join
+            <Link href={router.asPath + "/apply?as=mentee"}>Join</Link>
           </Button>
         </div>
       )}

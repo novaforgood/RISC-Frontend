@@ -1,0 +1,7 @@
+query getProgramById($programId: String!) {
+  getProgramById(programId: $programId) {
+    name
+    slug
+    iconUrl
+  }
+}
