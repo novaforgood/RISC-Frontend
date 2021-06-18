@@ -21,7 +21,11 @@ import {
   useGetProfilesQuery,
   useGetWeeklyAvailabilitiesQuery,
 } from "../../../../generated/graphql";
-import { useCurrentProgram } from "../../../../hooks";
+import {
+  AuthorizationLevel,
+  useAuthorizationLevel,
+  useCurrentProgram,
+} from "../../../../hooks";
 import ChooseTabLayout from "../../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../../layouts/PageContainer";
 import { Question } from "../../../../types/Form";
@@ -260,6 +264,7 @@ const ProfileModal = ({
 }: ProfileModalProps) => {
   const [stage, setStage] = useState(ProfileModalStage.VIEW_PROFILE);
   const { currentProgram } = useCurrentProgram();
+  const authorizationLevel = useAuthorizationLevel();
 
   useEffect(() => {
     if (isOpen === true) setStage(ProfileModalStage.VIEW_PROFILE);
@@ -302,6 +307,7 @@ const ProfileModal = ({
                 <div className="flex">
                   <Button
                     size="small"
+                    disabled={authorizationLevel !== AuthorizationLevel.Mentee}
                     onClick={() => {
                       setStage(ProfileModalStage.BOOK_CHAT);
                     }}
@@ -309,9 +315,14 @@ const ProfileModal = ({
                     Book a Chat
                   </Button>
                   <div className="w-2"></div>
-                  <Button size="small" variant="inverted">
+                  <Button
+                    size="small"
+                    variant="inverted"
+                    disabled={authorizationLevel !== AuthorizationLevel.Mentee}
+                  >
                     Request Mentor
                   </Button>
+                  <button />
                 </div>
               </div>
             </div>
@@ -364,16 +375,16 @@ interface MentorCardProps {
 const MentorCard = ({ mentor }: MentorCardProps) => {
   const [profileModalOpen, setProfileModalOpen] = useState(false);
 
-  const tags = mentor.tags?.slice(0, 3).map((tag: string, index: number) => (
-    <div className="rounded-md bg-tertiary m-1 p-1" key={index}>
-      {tag}
-    </div>
-  ));
-  const moreTag = (
-    <div className="rounded-md border-primary border m-1 p-1">
-      + {mentor.tags?.length - 3} more
-    </div>
-  );
+  // const tags = mentor.tags?.slice(0, 3).map((tag: string, index: number) => (
+  //   <div className="rounded-md bg-tertiary m-1 p-1" key={index}>
+  //     {tag}
+  //   </div>
+  // ));
+  // const moreTag = (
+  //   <div className="rounded-md border-primary border m-1 p-1">
+  //     + {mentor.tags?.length - 3} more
+  //   </div>
+  // );
 
   return (
     <Card className="flex flex-col p-6 place-items-center border-0">
@@ -385,12 +396,11 @@ const MentorCard = ({ mentor }: MentorCardProps) => {
       <Text b className="text-body-1 text-center">
         {mentor.user.firstName} {mentor.user.lastName}
       </Text>
-      <div className="h-4"></div>
-
+      {/* <div className="h-4"></div>
       <div className="flex flex-wrap justify-center">
         {tags}
         {mentor.tags?.length > 3 ? moreTag : <div></div>}
-      </div>
+      </div> */}
       <div className="h-4"></div>
 
       <Text>{mentor.bio}</Text>
