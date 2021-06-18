@@ -1,18 +1,12 @@
 import { Card, Text } from "../../components/atomic";
 import { BackArrow } from "../../components/icons";
-import {
-  Application,
-  GetProgramByIdDocument,
-  useGetMyUserApplicationsQuery,
-  useGetProgramByIdQuery,
-} from "../../generated/graphql";
+import { useGetMyUserApplicationsQuery } from "../../generated/graphql";
 import Page from "../../types/Page";
 
 const ApplicationsViewer: Page = () => {
-  const applications =
-    useGetMyUserApplicationsQuery().data?.getMyUser.applications;
+  const applications = useGetMyUserApplicationsQuery().data?.getMyUser
+    .applications;
 
-  console.log("applications", applications);
   return (
     <div className=" min-w-screen h-screen bg-tertiary">
       <div></div>
@@ -31,12 +25,6 @@ const ApplicationsViewer: Page = () => {
             </>
           ) : (
             applications.map((app) => {
-              // const program = useGetProgramByIdQuery({
-              //   variables: {
-              //     programId: app.programId,
-              //   },
-              // });
-
               return (
                 <div className="flex">
                   {/* TODO: Need to fetch profile */}

@@ -1,12 +1,11 @@
+import { useRouter } from "next/router";
 import { Text } from "../../components/atomic";
 import Dropdown from "../../components/Dropdown";
-import { Home } from "../../components/icons";
-import TabLayout, { BaseTabLayoutProps } from "./TabLayout";
-import { useAuth } from "../../utils/firebase/auth";
-import { useRouter } from "next/router";
 import RedirectIfNotLoggedIn from "../../layouts/RedirectIfNotLoggedIn";
+import { useAuth } from "../../utils/firebase/auth";
+import TabLayout, { BaseTabLayoutProps } from "./TabLayout";
 
-const { PageItem } = TabLayout;
+// const { PageItem } = TabLayout;
 
 // TODO: Make this actually fetch picture from db
 
