@@ -44,9 +44,7 @@ const ProgramApplyPage: Page = (_) => {
   const { Admin, Mentor, Mentee } = AuthorizationLevel;
 
   const applicant: string | string[] = router.query.as;
-  const path: string = router.asPath;
-
-  console.log(router);
+  // const path: string = router.asPath;
 
   const getApplicationType = (): ApplicationType | null => {
     switch (applicant) {
@@ -73,17 +71,18 @@ const ProgramApplyPage: Page = (_) => {
     );
 
   // There must be a better/more direct way of checking whether the program exists or not.
-  if (currentProgram?.name == null)
+  if (currentProgram?.name == null) {
     return (
       <div className="h-screen w-screen flex flex-col justify-center items-center">
         <Text h1>The program you are looking for does not exist</Text>
       </div>
     );
+  }
 
   return (
     <>
       {/* For Testing */}
-      <Button
+      {/* <Button
         variant={formSubmitted ? "inverted" : "solid"}
         onClick={() => {
           setFormSubmitted(!formSubmitted);
@@ -91,7 +90,7 @@ const ProgramApplyPage: Page = (_) => {
         }}
       >
         Submitted: <pre>{formSubmitted ? "true" : "false"}</pre>
-      </Button>
+      </Button> */}
       <div className="min-w-screen h-screen bg-tertiary">
         {/* Nav bar goes here */}
         <div
@@ -128,15 +127,8 @@ const ProgramApplyPage: Page = (_) => {
               ></Form>
               <div className="flex justify-between mt-10">
                 <Button variant="inverted">
-                  <Link
-                    href={
-                      // Returns relative URL to homepage of program
-                      path.slice(0, path.indexOf("/", 1) + 1) +
-                      router.query.slug
-                    }
-                  >
-                    Back
-                  </Link>
+                  {/* Might be unstable */}
+                  <Link href={"/program/" + router.query.slug}>Back</Link>
                 </Button>
                 <Button
                   disabled={!formChanged}

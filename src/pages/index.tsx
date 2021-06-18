@@ -1,8 +1,11 @@
-import { useRouter } from "next/router";
+import Link from "next/link";
+import router, { useRouter } from "next/router";
 import React from "react";
 import { Button, Text } from "../components/atomic";
 import { PageGetProgramBySlugComp } from "../generated/page";
 import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";
+import NoProgramTabLayout from "../layouts/TabLayout/NoProgramTabLayout";
+import Page from "../types/Page";
 import { useAuth } from "../utils/firebase/auth";
 
 const BlobCircle = () => {
@@ -19,7 +22,8 @@ const BlobCircle = () => {
 const IndexPage: PageGetProgramBySlugComp = (_) => {
   const router = useRouter();
   const authorizationLevel = useAuthorizationLevel();
-  const { signOut, user } = useAuth();
+  // TODO: Signout
+  const { user } = useAuth();
 
   console.log(authorizationLevel, user);
   if (authorizationLevel === AuthorizationLevel.Unauthenticated)
@@ -32,7 +36,7 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
               variant="inverted"
               size="small"
               onClick={() => {
-                router.push("/signup");
+                router.push("/login");
               }}
             >
               Login
@@ -73,16 +77,34 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
       </div>
     );
 
+  return <NoMentorshipHome />;
+};
+
+const NoMentorshipHome: Page = () => {
   return (
-    <div>
-      <Button
-        onClick={() => {
-          signOut();
-        }}
-      >
-        Sign out
-      </Button>
-    </div>
+    <NoProgramTabLayout basePath={router.asPath}>
+      <div className="h-screen flex flex-col justify-center items-center">
+        <div>
+          <Text h3>
+            You are currently not a part of any mentorship programs
+          </Text>
+        </div>
+        <Button className="w-96 mt-9">
+          <Link href="/my/applications">
+            <a>
+              <Text h3>Check Application Statuses</Text>
+            </a>
+          </Link>
+        </Button>
+        <Button variant="inverted" className="w-96 mt-9">
+          <Link href="/create">
+            <a>
+              <Text h3>Create a Mentorship</Text>
+            </a>
+          </Link>
+        </Button>
+      </div>
+    </NoProgramTabLayout>
   );
 };
 

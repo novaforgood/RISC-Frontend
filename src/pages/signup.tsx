@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
-import { Button, Text } from "../components/atomic";
+import React, { useState } from "react";
+import { Button, Checkbox, Text } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
 import { CreateUserInput, useCreateUserMutation } from "../generated/graphql";
 import { useAuth } from "../utils/firebase/auth";
@@ -24,6 +24,7 @@ const SignUpPage = () => {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [tocChecked, setTocChecked] = useState(false);
   const router = useRouter();
   const [createUser] = useCreateUserMutation();
 
@@ -139,12 +140,20 @@ const SignUpPage = () => {
           />
           <div className="h-6" />
 
-          <Text>
-            TODO: I read and agree to the{" "}
-            <Text u b>
-              Terms and Conditions
+          <div className="flex items-center">
+            <Checkbox
+              checked={tocChecked}
+              onCheck={() => {
+                setTocChecked(!tocChecked);
+              }}
+            />
+            <Text>
+              I read and agree to the{" "}
+              <Text u b>
+                Terms and Conditions
+              </Text>
             </Text>
-          </Text>
+          </div>
           <div className="h-6" />
 
           <Button
@@ -184,9 +193,7 @@ const SignUpPage = () => {
           </Button>
           <div className="h-6" />
 
-          <Text className="text-error">
-            {displayError ? displayError : "TODO: Proper error box"}
-          </Text>
+          <Text className="text-error">{displayError ? displayError : ""}</Text>
 
           {/* {auth ? (
             <button onClick={() => signOut()}>Sign Out</button>

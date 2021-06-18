@@ -124,9 +124,7 @@ const LoginPage = () => {
             Login
           </Button>
           <div className="h-6" />
-          <Text className="text-error">
-            {displayError + "TODO: Proper error box"}
-          </Text>
+          <Text className="text-error">{displayError}</Text>
         </div>
       </div>
     </div>
