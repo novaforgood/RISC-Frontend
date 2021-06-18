@@ -7,7 +7,6 @@ import { PageGetProgramBySlugComp } from "../generated/page";
 import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";
 import NoProgramTabLayout from "../layouts/TabLayout/NoProgramTabLayout";
 import Page from "../types/Page";
-import { useAuth } from "../utils/firebase/auth";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24";
@@ -23,10 +22,7 @@ const BlobCircle = () => {
 const IndexPage: PageGetProgramBySlugComp = (_) => {
   const router = useRouter();
   const authorizationLevel = useAuthorizationLevel();
-  // TODO: Signout
-  const { user } = useAuth();
 
-  console.log(authorizationLevel, user);
   if (authorizationLevel === AuthorizationLevel.Unauthenticated)
     return (
       <div className="h-screen w-full p-8">

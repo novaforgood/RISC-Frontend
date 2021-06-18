@@ -1,18 +1,25 @@
+import dateFormat from "dateformat";
 import { Card, Text } from "../../components/atomic";
-import { BackArrow } from "../../components/icons";
-import { useGetMyUserApplicationsQuery } from "../../generated/graphql";
+import { BackArrow, CircledCheckSolid } from "../../components/icons";
+import {
+  ApplicationStatus,
+  useGetMyUserApplicationsQuery,
+} from "../../generated/graphql";
 import Page from "../../types/Page";
+import Link from "next/link";
 
 const ApplicationsViewer: Page = () => {
-  const applications = useGetMyUserApplicationsQuery().data?.getMyUser
-    .applications;
+  const applications =
+    useGetMyUserApplicationsQuery().data?.getMyUser.applications;
 
   return (
     <div className=" min-w-screen h-screen bg-tertiary">
       <div></div>
       <div className="max-w-4xl mx-auto p-10">
         {/* TODO: My Applications text should be aligned with the Card below it */}
-        <BackArrow className="h-10 w-10 inline"></BackArrow>
+        <Link href="/">
+          <BackArrow className="h-10 w-10 inline hover:cursor-pointer"></BackArrow>
+        </Link>
         <Text h2 b className="inline">
           My Applications
         </Text>
@@ -24,13 +31,26 @@ const ApplicationsViewer: Page = () => {
               <Text>No active applications</Text>
             </>
           ) : (
-            applications.map((app) => {
+            applications.map((app, i) => {
+              const status = () => {
+                switch (app.applicationStatus) {
+                  case ApplicationStatus.Accepted:
+                    return <CircledCheckSolid />;
+                  case ApplicationStatus.Rejected:
+                    return "Rejected";
+                  case ApplicationStatus.PendingReview:
+                    return "Submitted";
+                }
+              };
+
               return (
-                <div className="flex">
+                <div className="flex mt-4" key={i}>
                   {/* TODO: Need to fetch profile */}
-                  <div className="flex-1"></div>
-                  <div className="flex-1">{app.createdAt}</div>
-                  <div className="flex-1">{app.applicationStatus}</div>
+                  <div className="flex-1">{app.program.name}</div>
+                  <div className="flex-1 text-center">
+                    {dateFormat(app.createdAt, "mmm d, yyyy | h:MMtt")}
+                  </div>
+                  <div className="flex-1 flex justify-center">{status()}</div>
                 </div>
               );
             })

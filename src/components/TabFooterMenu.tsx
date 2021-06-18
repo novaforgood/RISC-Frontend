@@ -15,7 +15,7 @@ const TabFooterMenu = () => {
 
   const photoURL: string =
     user == null || user.photoURL == null || user.photoURL == ""
-      ? "/static/DefaultProfilePicture.png"
+      ? "/static/HappyBlobs.svg"
       : user.photoURL;
 
   return (

@@ -48,7 +48,6 @@ const Calendar = ({
       const idx = dateDiffInDays(days[0], timeslot.startTime);
       ret[idx] = true;
     }
-    console.log(ret);
     return ret;
   }, [days, availabilities]);
 
@@ -124,7 +123,8 @@ const Calendar = ({
 
           const backgroundStyles = classNames({
             "h-11 w-11 mx-auto flex justify-center items-center cursor-pointer select-none rounded-full \
-            transition-background duration-100": true,
+            transition-background duration-100":
+              true,
             "pointer-events-none": !selectable,
             "bg-inactive": hasTimeslots,
             "hover:bg-secondary": !selected,
