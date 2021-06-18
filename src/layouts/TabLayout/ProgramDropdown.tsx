@@ -34,7 +34,7 @@ const ProgramDropdown = () => {
           leaveTo="transform opacity-0 scale-95"
         >
           <Menu.Items
-            className="absolute -right-12 w-64 mt-1 origin-top-right bg-white rounded-md 
+            className="absolute -right-12 w-72 mt-1 origin-top-right bg-white rounded-md 
             shadow-lg ring-1 ring-primary ring-opacity-5 focus:outline-none"
           >
             {data?.getMyUser?.profiles.map((profile, i) => {
