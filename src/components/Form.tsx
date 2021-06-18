@@ -1,8 +1,7 @@
 import _ from "lodash";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import type { Question, TextQuestion } from "../types/Form";
-import { Card } from "./atomic";
-import TitledInput from "./TitledInput";
+import { Card, Input, Text } from "./atomic";
 
 type TextAskerProps = TextQuestion & {
   initResponse: string;
@@ -10,11 +9,12 @@ type TextAskerProps = TextQuestion & {
   onChange: (id: string, answer: string) => void;
 };
 
+export type ResponseJson = { [key: string]: string };
 type FormProps = {
   questions: Question[];
-  responses?: { [key: string]: string };
-  onChange?: (responses: Object) => void;
-  onAutosave?: (responses: Object) => void; // Takes in answer json and send it to db
+  responses?: ResponseJson;
+  onChange?: (responses: ResponseJson) => void;
+  onAutosave?: (responses: ResponseJson) => void; // Takes in answer json and send it to db
   autosaveInterval?: number;
   readonly?: boolean;
   className?: string;
@@ -43,6 +43,7 @@ export var dummyForm: Question[] = [
 const TextAsker = ({
   id,
   title,
+  description,
   type,
   initResponse,
   readonly,
@@ -51,16 +52,27 @@ const TextAsker = ({
   const [answer, setAnswer] = useState(initResponse); // Replace with responses
 
   return (
-    <TitledInput
-      title={title}
-      placeholder={type == "short-answer" ? "Short text" : "Long text"} // Want this branching to be in the Form switch statement, but couldn't get types to work in args of this function
-      value={answer}
-      tabIndex={readonly ? -1 : undefined}
-      onChange={(e) => {
-        setAnswer(e.target.value);
-        onChange(id, e.target.value);
-      }}
-    ></TitledInput>
+    <div>
+      <Text b>{title}</Text>
+      <div className="h-1" />
+      {description && (
+        <Fragment>
+          <Text className="text-secondary">{description}</Text>
+          <div className="h-1" />
+        </Fragment>
+      )}
+      <Input
+        className="w-full"
+        placeholder={type == "short-answer" ? "Short text" : "Long text"}
+        readOnly={readonly}
+        disabled={readonly}
+        value={answer}
+        onChange={(e) => {
+          setAnswer(e.target.value);
+          onChange(id, e.target.value);
+        }}
+      ></Input>
+    </div>
   );
 };
 

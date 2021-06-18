@@ -57,16 +57,6 @@ const EditMentorProfilePage: Page = (_) => {
             <div className="flex">
               <Button
                 size="small"
-                variant="inverted"
-                onClick={() => {
-                  window.open("./editprofile/preview", "_blank");
-                }}
-              >
-                Preview
-              </Button>
-              <div className="w-2"></div>
-              <Button
-                size="small"
                 disabled={!modified}
                 onClick={() => {
                   saveMentorProfileSchema();

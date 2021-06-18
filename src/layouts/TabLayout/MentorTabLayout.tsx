@@ -19,6 +19,11 @@ const MentorTabLayout: React.FC<BaseTabLayoutProps> = ({
         Icon={Home}
         path={joinPath(basePath, "chat-requests")}
       />
+      <PageItem
+        label="Edit My Profile"
+        Icon={Home}
+        path={joinPath(basePath, "edit-profile")}
+      />
     </TabLayout>
   );
 };
