@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { Text } from "../../components/atomic";
-import Dropdown from "../../components/Dropdown";
+import DropdownMenu from "../../components/DropdownMenu";
 import RedirectIfNotLoggedIn from "../../layouts/RedirectIfNotLoggedIn";
 import { useAuth } from "../../utils/firebase/auth";
 import TabLayout, { BaseTabLayoutProps } from "./TabLayout";
@@ -26,7 +26,7 @@ const NoProgramTabLayout: React.FC<BaseTabLayoutProps> = ({ children }) => {
       : user.photoURL;
 
   const footer = (
-    <Dropdown
+    <DropdownMenu
       button={
         <div className="inline-flex items-center">
           <img

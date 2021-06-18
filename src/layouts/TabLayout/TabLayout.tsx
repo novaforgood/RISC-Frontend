@@ -5,6 +5,7 @@ import React, { ReactNode, useEffect, useState } from "react";
 import { Text } from "../../components/atomic";
 import LocalStorage from "../../utils/localstorage";
 import ProgramDropdown from "./ProgramDropdown";
+import TabFooterMenu from "../../components/TabFooterMenu";
 
 interface ArrowProps {
   down: boolean;
@@ -79,9 +80,7 @@ const TabLayout: React.FC<TabLayoutProps> & {
       <div className="h-full w-64 flex-shrink-0 bg-white shadow-lg relative">
         <ProgramDropdown />
         <div className="overflow-y-auto">{children}</div>
-        {footerChildren && (
-          <div className="absolute bottom-0 p-2">{footerChildren}</div>
-        )}
+        <TabFooterMenu />
       </div>
       <div className="flex-grow overflow-y-scroll overflow-x-hidden">
         {currentPageChildren}
