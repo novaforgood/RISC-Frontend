@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { Button, Card, Modal, Text } from "../components/atomic";
+import { Button, Card, Text } from "../components/atomic";
 import { useGetMyUserQuery } from "../generated/graphql";
 import { PageGetProgramBySlugComp } from "../generated/page";
 import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";

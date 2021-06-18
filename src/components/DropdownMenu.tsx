@@ -1,9 +1,8 @@
 import { Menu, Transition } from "@headlessui/react";
-import { Fragment, ReactNode } from "react";
-import { useAuth } from "../utils/firebase/auth";
 import Link from "next/link";
-import { useGetMyUserQuery } from "../generated/graphql";
+import { Fragment, ReactNode } from "react";
 import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";
+import { useAuth } from "../utils/firebase/auth";
 
 type DropdownProps = {
   button: ReactNode;
