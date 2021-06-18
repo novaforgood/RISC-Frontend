@@ -9,6 +9,7 @@ const MenteeTabLayout: React.FC<BaseTabLayoutProps> = ({
 }) => {
   return (
     <TabLayout currentPageChildren={children}>
+      <PageItem label="Homepage" Icon={Home} path={joinPath(basePath)} />
       <PageItem
         label="View Mentors"
         Icon={Smile}

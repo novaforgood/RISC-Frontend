@@ -9,6 +9,7 @@ const MentorTabLayout: React.FC<BaseTabLayoutProps> = ({
 }) => {
   return (
     <TabLayout currentPageChildren={children}>
+      <PageItem label="Homepage" Icon={Home} path={joinPath(basePath)} />
       <PageItem
         label="My Availabilities"
         Icon={Home}
