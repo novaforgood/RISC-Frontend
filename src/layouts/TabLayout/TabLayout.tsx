@@ -75,7 +75,7 @@ const TabLayout: React.FC<TabLayoutProps> & {
 } = ({ children, currentPageChildren }) => {
   return (
     <div className="flex h-screen w-screen">
-      <div className="w-64 flex-shrink-0 bgWhite shadow-lg">
+      <div className="w-72 flex-shrink-0 bgWhite shadow-lg">
         <ProgramDropdown />
         <div className="overflow-y-auto">{children}</div>
       </div>
