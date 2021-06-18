@@ -23,7 +23,7 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
   const router = useRouter();
   const authorizationLevel = useAuthorizationLevel();
   // TODO: Signout
-  const { signOut, user } = useAuth();
+  const { user } = useAuth();
 
   console.log(authorizationLevel, user);
   if (authorizationLevel === AuthorizationLevel.Unauthenticated)
@@ -89,10 +89,17 @@ const NoMentorshipHome: Page = () => {
             You are currently not a part of any mentorship programs
           </Text>
         </div>
-        <Button className="w-96 m-9">
+        <Button className="w-96 mt-9">
           <Link href="/my/applications">
             <a>
               <Text h3>Check Application Statuses</Text>
+            </a>
+          </Link>
+        </Button>
+        <Button variant="inverted" className="w-96 mt-9">
+          <Link href="/create">
+            <a>
+              <Text h3>Create a Mentorship</Text>
             </a>
           </Link>
         </Button>

@@ -41,9 +41,10 @@ const NoProgramTabLayout: React.FC<BaseTabLayoutProps> = ({ children }) => {
   );
 
   return (
-    <TabLayout currentPageChildren={children} footerChildren={footer}>
-      <PageItem label="Create a Mentorship" Icon={Home} path={"/create"} />
-    </TabLayout>
+    <TabLayout
+      currentPageChildren={children}
+      footerChildren={footer}
+    ></TabLayout>
   );
 };
 

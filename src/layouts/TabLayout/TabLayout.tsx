@@ -79,7 +79,7 @@ const TabLayout: React.FC<TabLayoutProps> & {
       <div className="h-full w-64 flex-shrink-0 bg-white shadow-lg relative">
         <ProgramDropdown />
         <div className="overflow-y-auto">{children}</div>
-        {footerChildren == null ? null : (
+        {footerChildren && (
           <div className="absolute bottom-0 p-2">{footerChildren}</div>
         )}
       </div>
