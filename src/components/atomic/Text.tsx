@@ -1,5 +1,5 @@
-import React, { HTMLAttributes } from "react";
 import classNames from "classnames";
+import React, { HTMLAttributes } from "react";
 
 type TextProps = HTMLAttributes<HTMLDivElement> & {
   h1?: boolean;

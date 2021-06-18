@@ -1,10 +1,10 @@
 import React, { ChangeEvent, useState } from "react";
 import {
-  Text,
-  TextArea,
   Button,
   Card,
   Input,
+  Text,
+  TextArea,
 } from "../../../components/atomic";
 import UploadIconWithPreview from "../../../components/UploadIconWithPreview";
 import {
@@ -49,7 +49,7 @@ const AdminBox = (user: User) => {
 };
 
 const SettingsPage: Page = () => {
-  const { currentProgram } = useCurrentProgram();
+  const { currentProgram, refetchCurrentProgram } = useCurrentProgram();
   const { programId, name, description, iconUrl, slug } = currentProgram || {
     programId: "",
     name: "",
@@ -77,7 +77,7 @@ const SettingsPage: Page = () => {
   if (!currentProgram || error) return <div>Loading... </div>;
 
   return (
-    <div className="bg-tertiary min-h-screen w-full">
+    <div className="bg-tertiary min-h-screen w-full pb-10">
       <div className="h-6" />
       <div className="w-3/4 mx-auto">
         <Text h1 b>
@@ -85,7 +85,7 @@ const SettingsPage: Page = () => {
         </Text>
       </div>
       <div className="h-4" />
-      <Card className="w-3/4 h-3/4-screen m-auto flex flex-col p-12 space-y-6 overflow-y-auto">
+      <Card className="w-3/4 m-auto flex flex-col p-12 space-y-6 overflow-y-auto">
         <Text h3 b>
           Mentorship Details
         </Text>
@@ -186,8 +186,10 @@ const SettingsPage: Page = () => {
                     description: mentorshipDescription,
                   },
                 },
+              }).then(() => {
+                refetchCurrentProgram();
+                setModified(false);
               });
-              setModified(false);
             }}
             disabled={!modified}
             size="small"
