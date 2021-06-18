@@ -3,6 +3,7 @@ import { Text } from "../../../components/atomic";
 import { MyChatsFilterer } from "../../../components/ReviewChats/MyChatsFilterer";
 import { useCurrentProfile } from "../../../hooks";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
+import PageContainer from "../../../layouts/PageContainer";
 import Page from "../../../types/Page";
 
 const MentorApplicationsPage: Page = () => {
@@ -14,24 +15,24 @@ const MentorApplicationsPage: Page = () => {
   }
 
   return (
-    <div className="bg-tertiary h-screen">
-      <div className="flex flex-col items-center w-full mx-auto h-full">
-        <div className="flex w-11/12 items-center">
-          <Text h1 b>
-            Chat Requests
-          </Text>
-        </div>
-        <div className="h-4" />
-        <div className="w-11/12 flex-1">
-          <MyChatsFilterer profileId={currentProfile.profileId} />
-        </div>
+    <div className="flex flex-col items-center w-full mx-auto h-full">
+      <div className="flex w-full items-center">
+        <Text h2 b>
+          My Chats
+        </Text>
+      </div>
+      <div className="h-4" />
+      <div className="w-full flex-1">
+        <MyChatsFilterer profileId={currentProfile.profileId} />
       </div>
     </div>
   );
 };
 
 MentorApplicationsPage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps}>{page}</ChooseTabLayout>
+  <ChooseTabLayout {...pageProps}>
+    <PageContainer>{page}</PageContainer>
+  </ChooseTabLayout>
 );
 
 export default MentorApplicationsPage;

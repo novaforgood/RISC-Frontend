@@ -61,7 +61,7 @@ const SignUpPage = () => {
                       email: res.user?.email!,
                       firstName: arr[0] || "",
                       lastName: arr[1] || "",
-                      profilePictureUrl: "",
+                      profilePictureUrl: res.user?.photoURL || "",
                     };
                     createUser({ variables: { data: createUserInput } }).then(
                       () => {

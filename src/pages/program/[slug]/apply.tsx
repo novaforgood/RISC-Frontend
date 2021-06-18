@@ -121,6 +121,7 @@ const ProgramApplyPage: Page = (_) => {
                 onChange={() => {
                   setFormChanged(true);
                 }}
+                showDescriptions={false}
                 // onAutosave={(response) => {
                 //   setResponses(response);
                 // }}
