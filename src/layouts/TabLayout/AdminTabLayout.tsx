@@ -1,4 +1,4 @@
-import { Clipboard, Home, Settings, Smile } from "../../components/icons";
+import { Clipboard, Home, Settings, User, Users } from "../../components/icons";
 import TabLayout, { BaseTabLayoutProps, joinPath } from "./TabLayout";
 
 const { PageItem, Dropdown, Separator } = TabLayout;
@@ -19,8 +19,13 @@ const AdminTabLayout: React.FC<BaseTabLayoutProps> = ({
       <Dropdown label="Mentors" id="admin-mentors">
         <PageItem
           label="View Mentors"
-          Icon={Smile}
+          Icon={Users}
           path={joinPath(basePath, "mentors")}
+        />
+        <PageItem
+          label="Edit Mentor Profile"
+          Icon={User}
+          path={joinPath(basePath, "mentors", "edit-profile")}
         />
         <PageItem
           label="Mentor Applications"
@@ -32,18 +37,18 @@ const AdminTabLayout: React.FC<BaseTabLayoutProps> = ({
           Icon={Clipboard}
           path={joinPath(basePath, "mentors", "edit-application")}
         />
-        <PageItem
-          label="Edit Mentor Profile"
-          Icon={Clipboard}
-          path={joinPath(basePath, "mentors", "edit-profile")}
-        />
       </Dropdown>
       <Separator />
       <Dropdown label="Mentees" id="admin-mentees">
         <PageItem
           label="View Mentees"
-          Icon={Smile}
+          Icon={Users}
           path={joinPath(basePath, "mentees")}
+        />
+        <PageItem
+          label="Edit Mentee Profile"
+          Icon={User}
+          path={joinPath(basePath, "mentees", "edit-profile")}
         />
         <PageItem
           label="Mentee Applications"
@@ -54,11 +59,6 @@ const AdminTabLayout: React.FC<BaseTabLayoutProps> = ({
           label="Edit Mentee Application"
           Icon={Clipboard}
           path={joinPath(basePath, "mentees", "edit-application")}
-        />
-        <PageItem
-          label="Edit Mentee Profile"
-          Icon={Clipboard}
-          path={joinPath(basePath, "mentees", "edit-profile")}
         />
       </Dropdown>
       <Separator />
