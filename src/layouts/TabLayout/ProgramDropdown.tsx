@@ -9,6 +9,7 @@ import { useCurrentProgram } from "../../hooks";
 const ProgramDropdown = () => {
   const { currentProgram } = useCurrentProgram();
   const { data } = useGetMyUserQuery();
+
   return (
     <div>
       <Menu as="div" className="relative text-left">
@@ -18,7 +19,7 @@ const ProgramDropdown = () => {
               className="h-10 w-10 object-contain border border-inactive rounded"
               src={currentProgram?.iconUrl || "/static/DefaultLogo.svg"}
             />
-            <div className="w-3 flex-shrink-0"></div>
+            <div className="w-3 flex-shrink-0" />
             <Text className="whitespace-nowrap truncate">
               {currentProgram?.name}
             </Text>
