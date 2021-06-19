@@ -43,7 +43,7 @@ const AdminHome = ({
   iconUrl,
   homepage,
 }: DisplayProgramHomepageProps) => (
-  <div className="pt-24">
+  <div className="pt-24 overflow-hidden">
     <EditorProvider currentHomepage={getRawContentState(homepage)}>
       <PublishButton
         className="transform -translate-y-24 z-10 float-right"
@@ -81,7 +81,7 @@ const ReadOnlyHome = ({
   const JSONHomepage: RawDraftContentState = getRawContentState(homepage);
   return (
     //TODO: Figure out whether the buttons at the top should be sticky
-    <div className="box-border bg-tertiary min-h-screen py-32 px-10">
+    <div className="box-border bg-tertiary min-h-screen py-32 px-36 overflow-hidden">
       {inProgram ? (
         <></>
       ) : (
