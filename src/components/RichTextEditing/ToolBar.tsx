@@ -1,9 +1,9 @@
-import React, { HTMLAttributes, ChangeEvent, ImgHTMLAttributes } from "react";
+import React, { HTMLAttributes, ChangeEvent } from "react";
 import { EditorStateInterface, useEditor } from "./EditorContext";
 import { INLINE_STYLES, BLOCK_STYLES } from "./TextStyles";
 import classNames from "classnames";
 
-import { EditorState, Modifier, RichUtils } from "draft-js";
+import { RichUtils } from "draft-js";
 
 type UploadImageProps = {
   e: ChangeEvent<HTMLInputElement>;
