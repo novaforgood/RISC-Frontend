@@ -3,7 +3,7 @@ import { EditorStateInterface, useEditor } from "./EditorContext";
 import { INLINE_STYLES, BLOCK_STYLES } from "./TextStyles";
 import classNames from "classnames";
 
-import { RichUtils } from "draft-js";
+import { EditorState, Modifier, RichUtils } from "draft-js";
 
 type UploadImageProps = {
   e: ChangeEvent<HTMLInputElement>;
@@ -160,7 +160,7 @@ const ToolBar = (props: HTMLAttributes<HTMLDivElement>) => {
       onFocus={() => false}
       {...props}
       contentEditable={false}
-      className="bg-white rounded-md border border-inactive p-1 flex items-center justify-around space-x-2 text-center w-max "
+      className="bg-white rounded-md border border-inactive p-1 flex items-center justify-around space-x-2 text-center w-max"
     >
       {BLOCK_STYLES.map((option) => (
         <ToggleBlockButton

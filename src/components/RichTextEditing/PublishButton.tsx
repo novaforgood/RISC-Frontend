@@ -9,28 +9,30 @@ type PublishButtonProps = HTMLAttributes<HTMLButtonElement> & {
 
 //TODO: Error notice when content fails to publish
 const PublishButton = ({ programId, ...props }: PublishButtonProps) => {
-  const { uploadImagesAndPublishContent, disablePublish } = useEditor();
+  const { uploadImagesAndGetHomepage, publishable, setPublishable } =
+    useEditor();
   const [updateProgram] = useUpdateProgramMutation();
-  const [publishing, setPublishing] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const save = async () => {
     //TODO: Convert locally-hosted images to server-hosted images
-    setPublishing(true);
-    const contentState = await uploadImagesAndPublishContent!();
+    setLoading(true);
+    const contentState = await uploadImagesAndGetHomepage!();
     updateProgram({
       variables: { data: { homepage: contentState }, programId },
     })
       .then(() => {
-        setPublishing(false);
+        setLoading(false);
+        setPublishable!(false);
       })
       .catch((err) => {
         console.log("Fail: ", err);
-        setPublishing(false);
+        setLoading(false);
       });
   };
 
   return (
-    <Button disabled={disablePublish! || publishing} onClick={save} {...props}>
+    <Button disabled={!publishable || loading} onClick={save} {...props}>
       Publish
     </Button>
   );

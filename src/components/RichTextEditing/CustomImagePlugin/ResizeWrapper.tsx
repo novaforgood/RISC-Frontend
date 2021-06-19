@@ -87,18 +87,20 @@ export default React.forwardRef<HTMLDivElement, ResizeWrapperProps>(
       };
     };
 
-    const setBounds = () => {
+    const setBounds = (ratio: number) => {
       const container = containerRef.current;
       if (container) {
+        const style = container.style;
         if (size.horizontal) {
-          container.style.minWidth = `20%`;
-          container.style.maxWidth = `90%`;
+          style.minWidth = `20%`;
+          style.maxWidth = `90%`;
         } else {
-          container.style.minWidth = `${20 * size.ratio}vh`;
-          container.style.maxWidth = `${65 * size.ratio}vh`;
-          container.style.minHeight = `20vh`;
-          container.style.maxHeight = `70vh`;
+          style.minWidth = `${20 * ratio}vh`;
+          style.maxWidth = `${70 * ratio}vh`;
+          style.minHeight = `20vh`;
+          style.maxHeight = `70vh`;
         }
+        style.height = "auto";
       }
     };
 
@@ -140,7 +142,9 @@ export default React.forwardRef<HTMLDivElement, ResizeWrapperProps>(
 
       document.addEventListener("mousemove", mousemove);
       document.addEventListener("mouseup", function mouseup() {
-        mergeData({ difference: adjustedSize.fullHorizontal - size.width });
+        //Right after mousemove, the values aren't set yet
+        const { width } = getBounds();
+        mergeData({ difference: width - size.width });
         document.removeEventListener("mousemove", mousemove);
         document.removeEventListener("mouseup", mouseup);
       });
@@ -151,153 +155,139 @@ export default React.forwardRef<HTMLDivElement, ResizeWrapperProps>(
       const child = childRef.current;
       if (child) {
         child.firstChild?.addEventListener("load", async () => {
-          const props = getBounds();
-          await setSize(props);
-          mergeData({ width: props.width, height: props.height });
-          setBounds();
-          if (difference) {
-            const width = props.width + difference;
-            const height = props.height + difference;
-            setAdjustedSize({
-              halfHorizontal: width / 2,
-              halfVertical: height / 2,
-              fullHorizontal: width,
-              fullVertical: height,
-            });
+          if (!difference) {
+            const props = getBounds();
+            await setSize(props);
+            mergeData({ width: props.width, height: props.height });
+            setBounds(props.ratio);
           }
         });
       }
     }, []);
 
-    useEffect(() => {
-      if (edit) {
-        getBounds();
-      }
-    }, [edit]);
-
-    //TODO: Determine suitable minimum and maximum width
     //TODO: Picture alignment
-    //TODO: Make size consistent when in and out of edit mode
     return (
-      <div className="max-w-full select-none" {...props}>
-        <div className="w-max h-max max-w-full m-auto" ref={containerRef}>
-          <div
-            ref={ref}
-            tabIndex={0}
-            className="w-max h-max max-w-full"
-            onClick={() => setEdit(true)}
-            onBlur={() => setEdit(false)}
-          >
-            {edit ? (
-              <>
-                <ResizeSquare
-                  id="top-left"
-                  cursor="se-resize"
-                  style={{
-                    transform: `translate(${OFFSET}px,${OFFSET}px)`,
-                  }}
-                  onMouseDown={(e: React.MouseEvent<HTMLDivElement>) =>
-                    resize(e, Direction.LEFT)
-                  }
-                />
-                <ResizeSquare
-                  id="top"
-                  cursor="s-resize"
-                  style={{
-                    transform: `translate(${
-                      adjustedSize.halfHorizontal + OFFSET
-                    }px,${OFFSET}px)`,
-                  }}
-                  onMouseDown={(e: React.MouseEvent<HTMLDivElement>) =>
-                    resize(e, Direction.TOP)
-                  }
-                />
-                <ResizeSquare
-                  id="top-right"
-                  cursor="sw-resize"
-                  style={{
-                    transform: `translate(${
-                      adjustedSize.fullHorizontal + OFFSET
-                    }px,${OFFSET}px)`,
-                  }}
-                  onMouseDown={(e: React.MouseEvent<HTMLDivElement>) =>
-                    resize(e, Direction.RIGHT)
-                  }
-                />
-                <ResizeSquare
-                  id="direction"
-                  cursor="w-resize"
-                  style={{
-                    transform: `translate(${OFFSET}px,${
-                      adjustedSize.halfVertical + OFFSET
-                    }px)`,
-                  }}
-                  onMouseDown={(e: React.MouseEvent<HTMLDivElement>) =>
-                    resize(e, Direction.LEFT)
-                  }
-                />
-                <ResizeSquare
-                  id="right"
-                  cursor="w-resize"
-                  style={{
-                    transform: `translate(${
-                      adjustedSize.fullHorizontal + OFFSET
-                    }px,${adjustedSize.halfVertical + OFFSET}px)`,
-                  }}
-                  onMouseDown={(e: React.MouseEvent<HTMLDivElement>) =>
-                    resize(e, Direction.RIGHT)
-                  }
-                />
-                <div
-                  ref={childRef}
-                  className="border-4 border-skyblue h-full w-full pointer-events-none select-none"
-                >
-                  {children}
-                </div>
-                <ResizeSquare
-                  id="bottom-direction"
-                  cursor="sw-resize"
-                  style={{
-                    transform: `translate(${OFFSET}px,${OFFSET}px)`,
-                  }}
-                  onMouseDown={(e: React.MouseEvent<HTMLDivElement>) =>
-                    resize(e, Direction.LEFT)
-                  }
-                />
-                <ResizeSquare
-                  id="bottom"
-                  cursor="s-resize"
-                  style={{
-                    transform: `translate(${
-                      adjustedSize.halfHorizontal + OFFSET
-                    }px,${OFFSET}px)`,
-                  }}
-                  onMouseDown={(e: React.MouseEvent<HTMLDivElement>) =>
-                    resize(e, Direction.BOTTOM)
-                  }
-                />
-                <ResizeSquare
-                  id="bottom-right"
-                  cursor="se-resize"
-                  style={{
-                    transform: `translate(${
-                      adjustedSize.fullHorizontal + OFFSET
-                    }px,${OFFSET}px)`,
-                  }}
-                  onMouseDown={(e: React.MouseEvent<HTMLDivElement>) =>
-                    resize(e, Direction.RIGHT)
-                  }
-                />
-              </>
-            ) : (
+      <div
+        className="box-border max-w-full m-auto"
+        ref={containerRef}
+        {...props}
+      >
+        <div
+          ref={ref}
+          tabIndex={0}
+          className="w-full h-full"
+          onClick={() => {
+            getBounds();
+            setEdit(true);
+          }}
+          onBlur={() => setEdit(false)}
+        >
+          {edit ? (
+            <>
+              <ResizeSquare
+                id="top-left"
+                cursor="se-resize"
+                style={{
+                  transform: `translate(${OFFSET}px,${OFFSET}px)`,
+                }}
+                onMouseDown={(e: React.MouseEvent<HTMLDivElement>) =>
+                  resize(e, Direction.LEFT)
+                }
+              />
+              <ResizeSquare
+                id="top"
+                cursor="s-resize"
+                style={{
+                  transform: `translate(${
+                    adjustedSize.halfHorizontal + OFFSET
+                  }px,${OFFSET}px)`,
+                }}
+                onMouseDown={(e: React.MouseEvent<HTMLDivElement>) =>
+                  resize(e, Direction.TOP)
+                }
+              />
+              <ResizeSquare
+                id="top-right"
+                cursor="sw-resize"
+                style={{
+                  transform: `translate(${
+                    adjustedSize.fullHorizontal + OFFSET
+                  }px,${OFFSET}px)`,
+                }}
+                onMouseDown={(e: React.MouseEvent<HTMLDivElement>) =>
+                  resize(e, Direction.RIGHT)
+                }
+              />
+              <ResizeSquare
+                id="direction"
+                cursor="w-resize"
+                style={{
+                  transform: `translate(${OFFSET}px,${
+                    adjustedSize.halfVertical + OFFSET
+                  }px)`,
+                }}
+                onMouseDown={(e: React.MouseEvent<HTMLDivElement>) =>
+                  resize(e, Direction.LEFT)
+                }
+              />
+              <ResizeSquare
+                id="right"
+                cursor="w-resize"
+                style={{
+                  transform: `translate(${
+                    adjustedSize.fullHorizontal + OFFSET
+                  }px,${adjustedSize.halfVertical + OFFSET}px)`,
+                }}
+                onMouseDown={(e: React.MouseEvent<HTMLDivElement>) =>
+                  resize(e, Direction.RIGHT)
+                }
+              />
               <div
-                className="border-4 border-white h-full w-full"
                 ref={childRef}
+                className="border-4 border-skyblue h-full w-full pointer-events-none select-none"
               >
                 {children}
               </div>
-            )}
-          </div>
+              <ResizeSquare
+                id="bottom-direction"
+                cursor="sw-resize"
+                style={{
+                  transform: `translate(${OFFSET}px,${OFFSET}px)`,
+                }}
+                onMouseDown={(e: React.MouseEvent<HTMLDivElement>) =>
+                  resize(e, Direction.LEFT)
+                }
+              />
+              <ResizeSquare
+                id="bottom"
+                cursor="s-resize"
+                style={{
+                  transform: `translate(${
+                    adjustedSize.halfHorizontal + OFFSET
+                  }px,${OFFSET}px)`,
+                }}
+                onMouseDown={(e: React.MouseEvent<HTMLDivElement>) =>
+                  resize(e, Direction.BOTTOM)
+                }
+              />
+              <ResizeSquare
+                id="bottom-right"
+                cursor="se-resize"
+                style={{
+                  transform: `translate(${
+                    adjustedSize.fullHorizontal + OFFSET
+                  }px,${OFFSET}px)`,
+                }}
+                onMouseDown={(e: React.MouseEvent<HTMLDivElement>) =>
+                  resize(e, Direction.RIGHT)
+                }
+              />
+            </>
+          ) : (
+            <div className="border-4 border-white h-full w-full" ref={childRef}>
+              {children}
+            </div>
+          )}
         </div>
       </div>
     );

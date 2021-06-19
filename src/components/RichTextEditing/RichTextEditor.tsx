@@ -13,7 +13,7 @@ import { BlockTypes } from ".";
 import "draft-js/dist/Draft.css";
 
 const TextEditor = () => {
-  const { editorState, setEditorState, plugins } = useEditor();
+  const { editorState, setEditorState, setPublishable, plugins } = useEditor();
   const editor = useRef<HTMLDivElement | null>(null);
 
   let forwardRef = useRef<any>(null);
@@ -101,7 +101,10 @@ const TextEditor = () => {
         editorState={editorState!}
         keyBindingFn={keyBindingFn}
         handleKeyCommand={handleKeyCommand}
-        onChange={setEditorState}
+        onChange={(es: EditorState) => {
+          setPublishable!(true);
+          setEditorState(es);
+        }}
         stripPastedStyles={true}
         placeholder="Edit here..."
         ref={(el: any) => {
