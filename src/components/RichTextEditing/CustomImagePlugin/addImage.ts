@@ -6,7 +6,6 @@ const AddImage = (
   url: string,
   extraData: ImgHTMLAttributes<HTMLImageElement>
 ): EditorState => {
-  console.log(extraData);
   const urlType = "IMAGE";
   const contentState = editorState.getCurrentContent();
   const contentStateWithEntity = contentState.createEntity(
@@ -21,7 +20,7 @@ const AddImage = (
     " "
   );
 
-  newEditorState.getCurrentContent().mergeEntityData(entityKey, { entityKey });
+  // newEditorState.getCurrentContent().mergeEntityData(entityKey, { entityKey });
 
   return EditorState.forceSelection(
     newEditorState,

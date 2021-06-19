@@ -16,8 +16,9 @@ const imagePlugin = createImagePlugin();
 export interface EditorStateInterface {
   editorState: EditorState;
   setEditorState: (prop: EditorState) => void;
-  uploadImagesAndPublishContent?: () => Promise<string>;
-  disablePublish?: boolean;
+  uploadImagesAndGetHomepage?: () => Promise<string>;
+  publishable?: boolean;
+  setPublishable?: (bool: boolean) => void;
   imagePlugin?: ImageEditorPlugin;
   plugins?: EditorPlugin[];
 }
@@ -45,34 +46,38 @@ const useProvideEditor = (storedState = defaultContentState) => {
   const [editorState, setEditorState] = useState(
     EditorState.createWithContent(convertFromRaw(storedState))
   );
-  const [publishedContent, setPublishedContent] = useState(
-    convertToRaw(editorState.getCurrentContent())
-  );
+  const [publishable, setPublishable] = useState(false);
+
   return {
     editorState,
     setEditorState,
-    uploadImagesAndPublishContent: async () => {
+    uploadImagesAndGetHomepage: async () => {
       const contentState = editorState.getCurrentContent();
-      for (const block of convertToRaw(contentState).blocks) {
-        //if the block is an image, upload image and host
-        if (block.type == "atomic") {
-          console.log(block);
+      const rawContentState = convertToRaw(contentState);
+      const entityKeys = Object.keys(rawContentState.entityMap);
+      for (const key of entityKeys) {
+        const entityData = rawContentState.entityMap[key].data;
+        if (entityData.file) {
           let photoUrl = await uploadImageWithoutResizing({
             variables: {
-              file: block.data!.file,
+              file: entityData.file,
             },
           });
-          contentState.mergeEntityData(block.key, { src: photoUrl });
+          delete entityData.file;
+
+          contentState.replaceEntityData(entityData.entityKey, {
+            ...entityData,
+            src: photoUrl.data?.uploadImage,
+          });
         }
       }
+
       //contentState now has different properties
-      setPublishedContent(convertToRaw(contentState));
-      return JSON.stringify(contentState);
+      const newRawContentState = convertToRaw(contentState);
+      return JSON.stringify(newRawContentState);
     },
-    disablePublish: _.isEqual(
-      convertToRaw(editorState.getCurrentContent()),
-      publishedContent
-    ),
+    publishable,
+    setPublishable,
     imagePlugin,
     plugins: [imagePlugin],
   };

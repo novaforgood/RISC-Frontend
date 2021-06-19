@@ -25,9 +25,15 @@ export interface ImageProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export default React.forwardRef<HTMLDivElement, ImageProps>(
-  /**This forwarded ref returns null: need to figure out why */
   (props, ref): ReactElement => {
-    const { block, className, theme = {}, readonly, ...otherProps } = props;
+    const {
+      block,
+      className,
+      theme = {},
+      readonly,
+      contentState,
+      ...otherProps
+    } = props;
     // leveraging destructuring to omit certain properties from props
     const {
       blockProps, // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -40,7 +46,6 @@ export default React.forwardRef<HTMLDivElement, ImageProps>(
       tree, // eslint-disable-line @typescript-eslint/no-unused-vars
       blockStyleFn, // eslint-disable-line @typescript-eslint/no-unused-vars
       preventScroll, // eslint-disable-line @typescript-eslint/no-unused-vars
-      contentState,
       style,
       ...elementProps
     } = otherProps;
@@ -49,19 +54,22 @@ export default React.forwardRef<HTMLDivElement, ImageProps>(
       className,
       readonly ? "m-auto" : "h-full w-full"
     );
+    // const [extraData, setExtraData] = useState(
+    //   contentState.getEntity(block.getEntityAt(0)).getData()
+    // );
     const {
       src,
       alt,
-      file,
       width,
       height,
       difference = 0,
-      entityKey,
     } = contentState.getEntity(block.getEntityAt(0)).getData();
-    console.log(file);
-    const mergeData = (newData: { [key: string]: any }) => {
-      contentState.mergeEntityData(entityKey, newData);
+    const entityKey = block.getEntityAt(0);
+
+    const mergeData = (data: Object) => {
+      contentState.mergeEntityData(entityKey, data);
     };
+
     return readonly ? (
       <img
         className={combinedClassName}
@@ -76,6 +84,8 @@ export default React.forwardRef<HTMLDivElement, ImageProps>(
       <ResizeWrapper
         ref={ref}
         mergeData={mergeData}
+        width={width + difference}
+        height={height + difference}
         difference={difference}
         {...elementProps}
       >

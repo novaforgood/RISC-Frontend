@@ -59,7 +59,7 @@ const AdminHome = ({
           <Text h1 b>
             {name}
           </Text>
-          <div className="box-border w-full bg-white sticky top-0 py-4 z-10 rounded-md">
+          <div className="w-full bg-white sticky -top-10 p-4 z-10 rounded-md">
             <ToolBar />
           </div>
           <div className="h-2" />
@@ -78,7 +78,6 @@ const ReadOnlyHome = ({
 }: DisplayProgramHomepageProps & { inProgram?: boolean }) => {
   const router = useRouter();
 
-  console.log(homepage);
   const JSONHomepage: RawDraftContentState = getRawContentState(homepage);
   return (
     //TODO: Figure out whether the buttons at the top should be sticky
