@@ -82,9 +82,7 @@ const TabLayout: React.FC<TabLayoutProps> & {
         <div className="overflow-y-auto">{children}</div>
         <TabFooterMenu />
       </div>
-      <div className="flex-grow overflow-y-scroll overflow-x-hidden">
-        {currentPageChildren}
-      </div>
+      <div className="flex-grow overflow-x-hidden">{currentPageChildren}</div>
     </div>
   );
 };
