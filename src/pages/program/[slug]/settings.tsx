@@ -1,4 +1,4 @@
-import React, { ChangeEvent, Fragment, useState } from "react";
+import React, { ChangeEvent, Fragment, useEffect, useState } from "react";
 import {
   Button,
   Card,
@@ -12,6 +12,7 @@ import {
   useGetProfilesQuery,
   useUpdateProgramMutation,
   useUploadImageAndResizeMutation,
+  refetchGetMyUserQuery,
 } from "../../../generated/graphql";
 import { useCurrentProgram } from "../../../hooks";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
@@ -77,6 +78,11 @@ const SettingsPage: Page = () => {
     },
   });
 
+  useEffect(() => {
+    setMentorshipName(name);
+    setMentorshipDescription(description);
+  }, []);
+
   if (!currentProgram || error) return <div>Loading... </div>;
 
   return (
@@ -110,6 +116,7 @@ const SettingsPage: Page = () => {
           <Input
             id="mentorship-name"
             className="col-span-2 overflow-ellipsis"
+            placeholder="Organization Name"
             value={mentorshipName}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               setMentorshipName(e.target.value);
@@ -153,6 +160,7 @@ const SettingsPage: Page = () => {
           <div className="h-4" />
           <TextArea
             className="resize-none w-full h-32"
+            placeholder="Organization Description"
             value={mentorshipDescription}
             onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
               setMentorshipDescription(e.target.value);
@@ -198,6 +206,12 @@ const SettingsPage: Page = () => {
                 },
               }).then(() => {
                 refetchCurrentProgram();
+                refetchGetMyUserQuery();
+                SettingsPage.getLayout = (page, pageProps) => (
+                  <ChooseTabLayout {...pageProps}>
+                    <PageContainer>{page}</PageContainer>
+                  </ChooseTabLayout>
+                );
                 setModified(false);
               });
             }}

@@ -15,7 +15,6 @@ const PublishButton = ({ programId, ...props }: PublishButtonProps) => {
   const [loading, setLoading] = useState(false);
 
   const save = async () => {
-    //TODO: Convert locally-hosted images to server-hosted images
     setLoading(true);
     const contentState = await uploadImagesAndGetHomepage!();
     updateProgram({

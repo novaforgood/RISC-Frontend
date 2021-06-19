@@ -29,6 +29,7 @@ export default React.forwardRef<HTMLDivElement, ImageProps>(
     const {
       block,
       className,
+      style,
       theme = {},
       readonly,
       contentState,
@@ -46,7 +47,6 @@ export default React.forwardRef<HTMLDivElement, ImageProps>(
       tree, // eslint-disable-line @typescript-eslint/no-unused-vars
       blockStyleFn, // eslint-disable-line @typescript-eslint/no-unused-vars
       preventScroll, // eslint-disable-line @typescript-eslint/no-unused-vars
-      style,
       ...elementProps
     } = otherProps;
     const combinedClassName = classNames(
@@ -54,9 +54,7 @@ export default React.forwardRef<HTMLDivElement, ImageProps>(
       className,
       readonly ? "m-auto" : "h-full w-full"
     );
-    // const [extraData, setExtraData] = useState(
-    //   contentState.getEntity(block.getEntityAt(0)).getData()
-    // );
+
     const {
       src,
       alt,

@@ -6,15 +6,14 @@ import {
   RichUtils,
   DraftHandleValue,
   EditorState,
-  KeyBindingUtil,
-  getDefaultKeyBinding,
+  // KeyBindingUtil,
+  // getDefaultKeyBinding,
 } from "draft-js";
 import { BlockTypes } from ".";
 import "draft-js/dist/Draft.css";
 
 const TextEditor = () => {
   const { editorState, setEditorState, setPublishable, plugins } = useEditor();
-  const editor = useRef<HTMLDivElement | null>(null);
 
   let forwardRef = useRef<any>(null);
 
@@ -36,20 +35,20 @@ const TextEditor = () => {
   };
 
   //TODO: Keyboard shortcuts for different block types
-  const keyBindingFn = (e: React.KeyboardEvent) => {
-    if (
-      e.key === "Digit1" /* `S` key */ &&
-      KeyBindingUtil.hasCommandModifier(e) /* + `Ctrl` key */
-    ) {
-      e.preventDefault();
-      return BlockTypes["header-one"];
-    } else if (e.key === "Digit2" && KeyBindingUtil.hasCommandModifier(e)) {
-      e.preventDefault();
-      return BlockTypes["header-two"];
-    }
-    //else...
-    return getDefaultKeyBinding(e);
-  };
+  // const keyBindingFn = (e: React.KeyboardEvent) => {
+  //   if (
+  //     e.key === "Digit1" /* `S` key */ &&
+  //     KeyBindingUtil.hasCommandModifier(e) /* + `Ctrl` key */
+  //   ) {
+  //     e.preventDefault();
+  //     return BlockTypes["header-one"];
+  //   } else if (e.key === "Digit2" && KeyBindingUtil.hasCommandModifier(e)) {
+  //     e.preventDefault();
+  //     return BlockTypes["header-two"];
+  //   }
+  //   //else...
+  //   return getDefaultKeyBinding(e);
+  // };
 
   let contentState = editorState!.getCurrentContent();
 
@@ -85,30 +84,22 @@ const TextEditor = () => {
     }
   }, [contentState.getFirstBlock()]);
 
-  /**Receiving the following warning:
-   * Expected server HTML to contain a matching <div> in <div>.
-   */
   return (
-    <div
-      onClick={focus}
-      ref={editor}
-      className="max-h-3/4 box-border flex-grow m-1.5"
-    >
+    <div onClick={focus} className="max-h-3/4 box-border flex-grow m-1.5">
       <Editor
         editorKey="temp-key" //Necessary to prevent server from rendering a separate editor
         plugins={plugins!}
         blockRenderMap={blockRenderMap}
         editorState={editorState!}
-        keyBindingFn={keyBindingFn}
+        // keyBindingFn={keyBindingFn}
         handleKeyCommand={handleKeyCommand}
         preserveSelectionOnBlur={true}
         onChange={(es: EditorState) => {
           if (editorState.getCurrentContent() !== es.getCurrentContent()) {
             setPublishable!(true);
           }
-          setEditorState;
+          setEditorState(es);
         }}
-        stripPastedStyles={true}
         placeholder="Edit here..."
         ref={(el: any) => {
           forwardRef = el;
