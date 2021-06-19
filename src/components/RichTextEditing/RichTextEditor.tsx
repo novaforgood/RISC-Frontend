@@ -101,9 +101,12 @@ const TextEditor = () => {
         editorState={editorState!}
         keyBindingFn={keyBindingFn}
         handleKeyCommand={handleKeyCommand}
+        preserveSelectionOnBlur={true}
         onChange={(es: EditorState) => {
-          setPublishable!(true);
-          setEditorState(es);
+          if (editorState.getCurrentContent() !== es.getCurrentContent()) {
+            setPublishable!(true);
+          }
+          setEditorState;
         }}
         stripPastedStyles={true}
         placeholder="Edit here..."

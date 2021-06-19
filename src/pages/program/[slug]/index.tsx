@@ -51,7 +51,7 @@ const AdminHome = ({
       />
       <Card className="box-border w-full px-16 p-8 z-0">
         <img
-          className="w-28 h-28 relative -top-24"
+          className="w-28 h-28 relative rounded-md -top-24"
           src={iconUrl}
           alt={`${name} Logo`}
         />
@@ -99,7 +99,7 @@ const ReadOnlyHome = ({
       )}
       <Card className="box-border w-full px-16 py-10">
         <div className="relative -top-24">
-          <img className="w-28 h-28" src={iconUrl} />
+          <img className="w-28 h-28 rounded-md" src={iconUrl} />
           <div className="h-2" />
           <Text h1 b>
             {name}
