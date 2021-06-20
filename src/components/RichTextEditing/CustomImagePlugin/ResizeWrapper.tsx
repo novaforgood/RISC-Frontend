@@ -35,13 +35,17 @@ const ResizeSquare = ({ cursor, ...props }: ResizeSquareProps) => {
 };
 
 type ResizeWrapperProps = HTMLProps<HTMLDivElement> & {
-  difference: number;
+  sizeProps: {
+    width?: number;
+    height?: number;
+    difference?: number;
+  };
   mergeData: (newContent: Object) => void;
 };
 
 //Allows the children of this component to be resized
 export default React.forwardRef<HTMLDivElement, ResizeWrapperProps>(
-  ({ className, children, mergeData, difference, ...props }, ref) => {
+  ({ className, children, mergeData, sizeProps, ...props }, ref) => {
     const { setPublishable } = useEditor();
     //Used for storing original proportions
     const [size, setSize] = useState({
@@ -102,7 +106,6 @@ export default React.forwardRef<HTMLDivElement, ResizeWrapperProps>(
       }
     };
 
-    //TODO: Vertical boxes scaling (Can only scale horizontally & diagonally right now)
     const resize = (
       e_click: React.MouseEvent<HTMLDivElement>,
       direction: Direction[]
@@ -110,7 +113,7 @@ export default React.forwardRef<HTMLDivElement, ResizeWrapperProps>(
       const mousemove = (e_move: MouseEvent) => {
         const container = containerRef.current;
         if (container) {
-          //If the resizing is on a direction resize box, invert the difference
+          //If the resizing is on a direction resize box, invert the sizeProps
           let dif = 0;
           for (const dir of direction) {
             switch (dir) {
@@ -150,13 +153,27 @@ export default React.forwardRef<HTMLDivElement, ResizeWrapperProps>(
     useEffect(() => {
       const child = childRef.current;
       if (child) {
+        const { width, height, difference } = sizeProps;
         child.firstChild?.addEventListener("load", async () => {
-          if (!difference) {
-            const props = getBounds();
-            await setSize(props);
-            mergeData({ width: props.width, height: props.height });
+          let props;
+          if (difference || (width && height)) {
+            props = {
+              width: width!,
+              height: height!,
+              ratio: height == 0 ? 1 : width! / height!,
+              horizontal: width! > height!,
+            };
             setBounds(props.ratio);
+            containerRef.current!.style.width = `${
+              width! + (difference ? difference : 0)
+            }px`;
+            containerRef.current!.style.height = "auto";
+          } else {
+            props = getBounds();
+            mergeData({ width: props.width, height: props.height });
           }
+          await setSize(props);
+          setBounds(props.ratio);
         });
       }
     }, []);

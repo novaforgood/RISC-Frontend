@@ -126,7 +126,8 @@ const uploadImage = ({
 };
 
 const UploadImageButton = (props: HTMLAttributes<HTMLButtonElement>) => {
-  const { editorState, setEditorState, imagePlugin } = useEditor();
+  const { editorState, setEditorState, setPublishable, imagePlugin } =
+    useEditor();
   return (
     <button {...props}>
       <label>
@@ -140,6 +141,7 @@ const UploadImageButton = (props: HTMLAttributes<HTMLButtonElement>) => {
                 imagePlugin,
                 ...props,
               });
+            setPublishable!(true);
           }}
           className="hidden"
           type="file"
