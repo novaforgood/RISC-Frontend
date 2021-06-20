@@ -1,7 +1,7 @@
 import { RawDraftContentState } from "draft-js";
 import type { GetServerSideProps } from "next";
-import { useRouter } from "next/router";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React from "react";
 import { Button, Card, Text } from "../../../components/atomic";
 import {
@@ -82,7 +82,7 @@ const ReadOnlyHome = ({
   const JSONHomepage: RawDraftContentState = getRawContentState(homepage);
   return (
     //TODO: Figure out whether the buttons at the top should be sticky
-    <div className="box-border bg-tertiary min-h-screen py-32 px-36">
+    <div className="box-border bg-tertiary min-h-screen py-32 px-10">
       {inProgram ? (
         <></>
       ) : (

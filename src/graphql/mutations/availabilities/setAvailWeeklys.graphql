@@ -1,0 +1,8 @@
+mutation setAvailWeeklys(
+  $profileId: String!
+  $availabilities: [DateInterval!]!
+) {
+  setAvailWeeklys(profileId: $profileId, availabilities: $availabilities) {
+    profileId
+  }
+}

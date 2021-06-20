@@ -16,9 +16,9 @@ import {
 import React, { useState } from "react";
 import {
   DateInterval,
-  refetchGetWeeklyAvailabilitiesQuery,
-  useGetWeeklyAvailabilitiesQuery,
-  useSetWeeklyAvailabilitiesMutation,
+  refetchGetAvailWeeklysQuery,
+  useGetAvailWeeklysQuery,
+  useSetAvailWeeklysMutation,
 } from "../../generated/graphql";
 import { Button, Text } from "../atomic";
 import Select from "../atomic/Select";
@@ -157,25 +157,21 @@ type SetWeeklyAvailabilitiesCardProps = {
 export const SetWeeklyAvailabilitiesCard = ({
   profileId,
 }: SetWeeklyAvailabilitiesCardProps) => {
-  const { data, loading, error } = useGetWeeklyAvailabilitiesQuery({
+  const { data, loading, error } = useGetAvailWeeklysQuery({
     variables: {
       profileId,
     },
   });
 
-  const [setWeeklyAvailabilitiesMutation] = useSetWeeklyAvailabilitiesMutation({
-    refetchQueries: [
-      refetchGetWeeklyAvailabilitiesQuery({
-        profileId,
-      }),
-    ],
+  const [setWeeklyAvailabilitiesMutation] = useSetAvailWeeklysMutation({
+    refetchQueries: [refetchGetAvailWeeklysQuery({ profileId })],
   });
   const [allDayAvailableError, setAllDayAvailableError] = useState(-1); // Index of error
 
   let weeklyAvailabilities: DateInterval[] = [];
 
   if (!loading && !error && data) {
-    weeklyAvailabilities = data.getWeeklyAvailabilities.map((x) => ({
+    weeklyAvailabilities = data.getAvailWeeklys.map((x) => ({
       startTime: new Date(x.startTime),
       endTime: new Date(x.endTime),
     }));
@@ -240,22 +236,21 @@ export const SetWeeklyAvailabilitiesCard = ({
     });
   };
 
-  const editWeeklyAvailability = (dateIntervalIndex: number) => (
-    newDateInterval: DateInterval
-  ) => {
-    const newWeeklyAvailabilities = [
-      ...weeklyAvailabilities.slice(0, dateIntervalIndex),
-      ...weeklyAvailabilities.slice(dateIntervalIndex + 1),
-      newDateInterval,
-    ].sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
-    setWeeklyAvailabilitiesMutation({
-      variables: {
-        profileId: profileId,
-        availabilities: newWeeklyAvailabilities,
-      },
-    });
-    setAllDayAvailableError(-1);
-  };
+  const editWeeklyAvailability =
+    (dateIntervalIndex: number) => (newDateInterval: DateInterval) => {
+      const newWeeklyAvailabilities = [
+        ...weeklyAvailabilities.slice(0, dateIntervalIndex),
+        ...weeklyAvailabilities.slice(dateIntervalIndex + 1),
+        newDateInterval,
+      ].sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
+      setWeeklyAvailabilitiesMutation({
+        variables: {
+          profileId: profileId,
+          availabilities: newWeeklyAvailabilities,
+        },
+      });
+      setAllDayAvailableError(-1);
+    };
 
   const deleteWeeklyAvailability = (dateIntervalIndex: number) => () => {
     const newWeeklyAvailabilities = [

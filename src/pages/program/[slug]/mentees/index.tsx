@@ -17,8 +17,8 @@ import {
   Maybe,
   ProfileType,
   useCreateChatRequestMutation,
+  useGetAvailWeeklysQuery,
   useGetProfilesQuery,
-  useGetWeeklyAvailabilitiesQuery,
 } from "../../../../generated/graphql";
 import {
   AuthorizationLevel,
@@ -82,7 +82,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
   const [selectedTimeslot, setSelectedTimeslot] =
     useState<DateInterval | null>(null);
   const [sendChatModalOpen, setSendChatModalOpen] = useState(false);
-  const { data, error } = useGetWeeklyAvailabilitiesQuery({
+  const { data, error } = useGetAvailWeeklysQuery({
     variables: { profileId: mentor.profileId },
   });
 
@@ -92,7 +92,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
   const [chatRequestMessage, setChatRequestMessage] = useState("");
   let weeklyAvailabilities: DateInterval[] = [];
   if (!error && data) {
-    weeklyAvailabilities = data.getWeeklyAvailabilities.map((x) => ({
+    weeklyAvailabilities = data.getAvailWeeklys.map((x) => ({
       startTime: new Date(x.startTime),
       endTime: new Date(x.endTime),
     }));
