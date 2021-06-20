@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { GetProfilesQuery, Maybe } from "../generated/graphql";
-import { useAuthorizationLevel, useCurrentProgram } from "../hooks";
+import { useCurrentProgram } from "../hooks";
 import { Question } from "../types/Form";
 import { Button, Modal, Text } from "./atomic";
 import BookAChat from "./BookAChat";
@@ -42,7 +42,6 @@ const ProfileModal = ({
 }: ProfileModalProps) => {
   const [stage, setStage] = useState(ProfileModalStage.VIEW_PROFILE);
   const { currentProgram } = useCurrentProgram();
-  const authorizationLevel = useAuthorizationLevel();
 
   useEffect(() => {
     if (isOpen === true) setStage(ProfileModalStage.VIEW_PROFILE);

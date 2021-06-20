@@ -5,7 +5,14 @@ import React, {
   HTMLAttributes,
   MutableRefObject,
   ReactNode,
+  useEffect,
+  useState,
 } from "react";
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 type ModalProps = HTMLAttributes<HTMLDivElement> & {
   isOpen: boolean;
   onClose: () => void;
@@ -21,10 +28,22 @@ const Modal = ({
   initialFocus,
   backgroundColor,
 }: ModalProps) => {
+  const [isOpenDelayed, setIsOpenDelayed] = useState(isOpen);
+
+  useEffect(() => {
+    const changeIsOpenDelayed = async () => {
+      await sleep(200);
+      setIsOpenDelayed(isOpen);
+    };
+    changeIsOpenDelayed();
+    return () => {};
+  }, [isOpen]);
+
   const overlayStyles = classNames({
     "fixed inset-0 bg-black": true,
     "opacity-20": isOpen,
   });
+
   return (
     <Fragment>
       <Transition show={isOpen} as={Fragment}>
@@ -69,7 +88,7 @@ const Modal = ({
                   backgroundColor || "white"
                 } shadow-xl rounded-2xl`}
               >
-                {children}
+                {(isOpen || isOpenDelayed) && children}
               </div>
             </Transition.Child>
           </div>
