@@ -43,7 +43,7 @@ const AdminHome = ({
   iconUrl,
   homepage,
 }: DisplayProgramHomepageProps) => (
-  <div className="pt-24 overflow-hidden">
+  <div className="pt-24">
     <EditorProvider currentHomepage={getRawContentState(homepage)}>
       <PublishButton
         className="transform -translate-y-24 z-10 float-right"

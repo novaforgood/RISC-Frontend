@@ -1,4 +1,9 @@
-import React, { HTMLAttributes, ReactElement } from "react";
+import React, {
+  HTMLAttributes,
+  ReactElement,
+  useEffect,
+  useState,
+} from "react";
 import classNames from "classnames";
 import { ContentBlock, ContentState } from "draft-js";
 import { ImagePluginTheme } from "../CustomImagePlugin";
@@ -54,7 +59,7 @@ export default React.forwardRef<HTMLDivElement, ImageProps>(
       className,
       readonly ? "m-auto" : "h-full w-full"
     );
-
+    const [entityKey, _] = useState(block.getEntityAt(0));
     const {
       src,
       alt,
@@ -62,12 +67,14 @@ export default React.forwardRef<HTMLDivElement, ImageProps>(
       height,
       difference = 0,
     } = contentState.getEntity(block.getEntityAt(0)).getData();
-    const entityKey = block.getEntityAt(0);
+
+    useEffect(() => {
+      contentState.mergeEntityData(entityKey, { entityKey });
+    }, []);
 
     const mergeData = (data: Object) => {
       contentState.mergeEntityData(entityKey, data);
     };
-
     return readonly ? (
       <img
         className={combinedClassName}
@@ -75,16 +82,14 @@ export default React.forwardRef<HTMLDivElement, ImageProps>(
         alt={alt}
         style={{
           width: `${width + difference}px`,
-          height: `${height + difference}px`,
+          height: "auto",
         }}
       />
     ) : (
       <ResizeWrapper
         ref={ref}
         mergeData={mergeData}
-        width={width + difference}
-        height={height + difference}
-        difference={difference}
+        sizeProps={{ difference, width, height }}
         {...elementProps}
       >
         <img src={src} alt={alt} className={combinedClassName} />
