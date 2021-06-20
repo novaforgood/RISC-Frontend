@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { Button, Text } from "../components/atomic";
+import { Button, Checkbox, Text, Modal } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
 import { CreateUserInput, useCreateUserMutation } from "../generated/graphql";
 import { useAuth } from "../utils/firebase/auth";
@@ -22,7 +22,9 @@ const getTimezone = (): string => {
 };
 
 const SignUpPage = () => {
-  const { signUpWithEmail, signInWithGoogle } = useAuth();
+  const { signUpWithEmail, signInWithGoogle, signOut } = useAuth();
+  const [createUser] = useCreateUserMutation();
+  const [modalOpen, setModalOpen] = useState(false);
   const [displayError, setDisplayError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,10 +32,20 @@ const SignUpPage = () => {
   const [lastName, setLastName] = useState("");
   // const [tocChecked, setTocChecked] = useState(false);
   const router = useRouter();
-  const [createUser] = useCreateUserMutation();
 
   return (
     <div className="flex w-screen min-h-screen">
+      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+        <div className="flex flex-col space-y-2 justify-center">
+          <Text>
+            A verification email has been sent to your inbox. Please verify
+            before logging in.
+          </Text>
+          <Button size="small" onClick={() => setModalOpen(false)}>
+            Go to Email
+          </Button>
+        </div>
+      </Modal>
       <div className="hidden md:grid md:w-1/3 bg-primary min-h-screen relative">
         <img
           src="/static/TextLogo.svg"
@@ -59,7 +71,7 @@ const SignUpPage = () => {
             onClick={() =>
               signInWithGoogle()
                 .then((res) => {
-                  if (res) {
+                  if (res.additionalUserInfo?.isNewUser) {
                     const arr = res.user?.displayName?.split(" ") || [];
                     const highResPhotoURL = res.user?.photoURL?.replace(
                       "s96-c",
@@ -72,12 +84,15 @@ const SignUpPage = () => {
                       profilePictureUrl: highResPhotoURL || "",
                       timezone: getTimezone(),
                     };
-                    createUser({ variables: { data: createUserInput } }).then(
-                      () => {
-                        router.push("/");
-                      }
+                    createUser({ variables: { data: createUserInput } });
+                    res.user?.sendEmailVerification();
+                    setModalOpen(true);
+                  } else {
+                    setDisplayError(
+                      "An account with this email already exists. Please log in."
                     );
                   }
+                  signOut();
                 })
                 .catch((e) => {
                   setDisplayError(e.message);
@@ -102,7 +117,6 @@ const SignUpPage = () => {
             <div className="h-0.25 flex-1 bg-inactive"></div>
           </div>
           <div className="h-6" />
-
           <form>
             <div className="flex w-full">
               <TitledInput
@@ -167,8 +181,7 @@ const SignUpPage = () => {
             <div className="h-6" /> */}
 
             <Button
-              onClick={(e) => {
-                e.preventDefault();
+              onClick={() => {
                 signUpWithEmail(email, password)
                   .catch((e) => {
                     setDisplayError(e.message);
@@ -183,7 +196,6 @@ const SignUpPage = () => {
                         profilePictureUrl: "",
                         timezone: getTimezone(),
                       };
-
                       Promise.all([
                         createUser({ variables: { data: createUserInput } }),
                         res.user?.updateProfile({
@@ -192,10 +204,13 @@ const SignUpPage = () => {
                         }),
                       ])
                         .then(() => {
-                          router.push("/");
+                          res.user?.sendEmailVerification();
+                          signOut();
+                          setModalOpen(true);
                         })
                         .catch((e) => {
                           setDisplayError(e.message);
+                          signOut();
                         });
                     }
                   });
@@ -203,11 +218,12 @@ const SignUpPage = () => {
             >
               Sign Up
             </Button>
+            <div className="h-6" />
+
+            <Text className="text-error">
+              {displayError ? displayError : ""}
+            </Text>
           </form>
-          <div className="h-6" />
-
-          <Text className="text-error">{displayError ? displayError : ""}</Text>
-
           {/* {auth ? (
             <button onClick={() => signOut()}>Sign Out</button>
           ) : (

@@ -17,7 +17,7 @@ const BlobCircle = () => {
 };
 
 const LoginPage = () => {
-  const { signInWithEmail, signInWithGoogle } = useAuth();
+  const { signInWithEmail, signInWithGoogle, signOut } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayError, setError] = useState("");
@@ -57,8 +57,23 @@ const LoginPage = () => {
           <button
             onClick={() =>
               signInWithGoogle()
-                .then((_) => {
-                  redirectAfterLoggingIn();
+                .catch((e) => setError(e.message))
+                .then(async (res) => {
+                  if (res) {
+                    if (res.additionalUserInfo?.isNewUser) {
+                      res.user?.delete();
+                      setError(
+                        "An account with this email has not been created yet."
+                      );
+                    } else if (!res.user?.emailVerified) {
+                      signOut();
+                      setError(
+                        "Please verify your email address before logging in."
+                      );
+                    } else {
+                      redirectAfterLoggingIn();
+                    }
+                  }
                 })
                 .catch((e) => setError(e.message))
             }
