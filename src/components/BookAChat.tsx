@@ -81,7 +81,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
           <Calendar
             availabilities={{
               weekly: weeklyAvailabilities,
-              overrideDays: [],
+              overrideDates: [],
               overrideTimeslots: [],
             }}
             onSelect={(newSelectedDay) => {

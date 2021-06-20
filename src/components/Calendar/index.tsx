@@ -11,7 +11,7 @@ import { dateDiffInDays, getDaysInThisMonth } from "./utils";
 // Types
 type Availabilities = {
   weekly: DateInterval[];
-  overrideDays: DateInterval[];
+  overrideDates: DateInterval[];
   overrideTimeslots: DateInterval[];
 };
 
@@ -45,7 +45,7 @@ const Calendar = ({
   let isOverrided = useMemo(() => {
     const ret: { [key: number]: boolean } = {};
     if (!days || days.length == 0) return ret;
-    for (let timeslot of availabilities.overrideDays) {
+    for (let timeslot of availabilities.overrideTimeslots) {
       const idxStart = dateDiffInDays(days[0], timeslot.startTime);
       ret[idxStart] = true;
       const idxEnd = dateDiffInDays(days[0], timeslot.endTime);
