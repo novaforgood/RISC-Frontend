@@ -1,0 +1,11 @@
+mutation setAvailOverrideTimeslots(
+  $profileId: String!
+  $availabilities: [DateInterval!]!
+) {
+  setAvailOverrideTimeslots(
+    profileId: $profileId
+    availabilities: $availabilities
+  ) {
+    profileId
+  }
+}

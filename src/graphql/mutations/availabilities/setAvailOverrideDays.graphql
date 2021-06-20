@@ -1,0 +1,8 @@
+mutation setAvailOverrideDays(
+  $profileId: String!
+  $availabilities: [DateInterval!]!
+) {
+  setAvailOverrideDays(profileId: $profileId, availabilities: $availabilities) {
+    profileId
+  }
+}
