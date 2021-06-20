@@ -20,6 +20,7 @@ import {
   useGetAvailWeeklysQuery,
   useSetAvailWeeklysMutation,
 } from "../../generated/graphql";
+import useTimezoneConverters from "../../hooks/useTimezoneConverters";
 import { Button, Text } from "../atomic";
 import Select from "../atomic/Select";
 import { weekdayNames } from "../Calendar/data";
@@ -162,6 +163,7 @@ export const SetWeeklyAvailabilitiesCard = ({
       profileId,
     },
   });
+  const { toUTC, fromUTC } = useTimezoneConverters();
 
   const [setWeeklyAvailabilitiesMutation] = useSetAvailWeeklysMutation({
     refetchQueries: [refetchGetAvailWeeklysQuery({ profileId })],
@@ -170,10 +172,10 @@ export const SetWeeklyAvailabilitiesCard = ({
 
   let weeklyAvailabilities: DateInterval[] = [];
 
-  if (!loading && !error && data) {
+  if (!loading && !error && data && fromUTC) {
     weeklyAvailabilities = data.getAvailWeeklys.map((x) => ({
-      startTime: new Date(x.startTime),
-      endTime: new Date(x.endTime),
+      startTime: fromUTC(new Date(x.startTime)),
+      endTime: fromUTC(new Date(x.endTime)),
     }));
   }
 
@@ -225,8 +227,16 @@ export const SetWeeklyAvailabilitiesCard = ({
       setAllDayAvailableError(getDay(date));
       return;
     }
+    if (!toUTC) {
+      console.log("Error: toUTC is undefined");
+      return;
+    }
+
     const newWeeklyAvailabilities = weeklyAvailabilities
-      .concat(newAvailability)
+      .concat({
+        startTime: toUTC(newAvailability.startTime),
+        endTime: toUTC(newAvailability.endTime),
+      })
       .sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
     console.log(newWeeklyAvailabilities);
     setWeeklyAvailabilitiesMutation({
@@ -239,10 +249,17 @@ export const SetWeeklyAvailabilitiesCard = ({
 
   const editWeeklyAvailability =
     (dateIntervalIndex: number) => (newDateInterval: DateInterval) => {
+      if (!toUTC) {
+        console.log("Error: toUTC is not defined.");
+        return;
+      }
       const newWeeklyAvailabilities = [
         ...weeklyAvailabilities.slice(0, dateIntervalIndex),
         ...weeklyAvailabilities.slice(dateIntervalIndex + 1),
-        newDateInterval,
+        {
+          startTime: toUTC(newDateInterval.startTime),
+          endTime: toUTC(newDateInterval.endTime),
+        },
       ].sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
       setWeeklyAvailabilitiesMutation({
         variables: {

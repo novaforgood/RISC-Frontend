@@ -37,7 +37,7 @@ const SetAvailabilitiesPage: Page = () => {
           <Text>Time Zone: </Text>
           <div className="w-2"></div>
           <Select
-            className="w-64"
+            className="w-80"
             value={myTimezone}
             options={getTimezoneSelectOptions()}
             onSelect={(newTimezone) => {
