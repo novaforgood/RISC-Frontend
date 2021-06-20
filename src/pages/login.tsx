@@ -65,11 +65,6 @@ const LoginPage = () => {
                       setError(
                         "An account with this email has not been created yet."
                       );
-                    } else if (!res.user?.emailVerified) {
-                      signOut();
-                      setError(
-                        "Please verify your email address before logging in."
-                      );
                     } else {
                       redirectAfterLoggingIn();
                     }
@@ -130,15 +125,22 @@ const LoginPage = () => {
             <div className="h-6" />
 
             <Button
-              type="submit"
-              onClick={(e) => {
-                e.preventDefault();
+              onClick={() => {
                 signInWithEmail(email, password)
-                  .then((_) => {
-                    redirectAfterLoggingIn();
-                  })
                   .catch((error) => {
                     setError(error.message);
+                  })
+                  .then((res) => {
+                    if (res) {
+                      if (!res.user?.emailVerified) {
+                        signOut();
+                        setError(
+                          "Please verify your email address before logging in."
+                        );
+                      } else {
+                        redirectAfterLoggingIn();
+                      }
+                    }
                   });
               }}
             >
