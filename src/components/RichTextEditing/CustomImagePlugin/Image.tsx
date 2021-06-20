@@ -1,9 +1,4 @@
-import React, {
-  HTMLAttributes,
-  ReactElement,
-  useEffect,
-  useState,
-} from "react";
+import React, { HTMLAttributes, ReactElement, useEffect } from "react";
 import classNames from "classnames";
 import { ContentBlock, ContentState } from "draft-js";
 import { ImagePluginTheme } from "../CustomImagePlugin";
@@ -59,14 +54,14 @@ export default React.forwardRef<HTMLDivElement, ImageProps>(
       className,
       readonly ? "m-auto" : "h-full w-full"
     );
-    const [entityKey, _] = useState(block.getEntityAt(0));
+    const entityKey = block.getEntityAt(0);
     const {
       src,
       alt,
       width,
       height,
       difference = 0,
-    } = contentState.getEntity(block.getEntityAt(0)).getData();
+    } = contentState.getEntity(entityKey).getData();
 
     useEffect(() => {
       contentState.mergeEntityData(entityKey, { entityKey });
