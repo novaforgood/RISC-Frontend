@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { getDay } from "date-fns";
+import { addDays, getDay } from "date-fns";
 import _ from "lodash";
 import React, { useMemo, useState } from "react";
 import { Text } from "../../components/atomic";
@@ -120,16 +120,18 @@ const Calendar = ({
           const inMonth = monthyear[0] === day.getMonth();
           const selected =
             selectedDay && selectedDay.getTime() === day.getTime();
-          const hasTimeslots =
-            day > new Date() && (occupiedWeekdays.has(i % 7) || isOverrided[i]);
-          const selectable = inMonth && (selectAnyDay || hasTimeslots);
+          const hasTimeslots = occupiedWeekdays.has(i % 7) || isOverrided[i];
+          const selectable =
+            day > addDays(new Date(), -1) &&
+            inMonth &&
+            (selectAnyDay || hasTimeslots);
 
           const backgroundStyles = classNames({
             "h-11 w-11 mx-auto flex justify-center items-center cursor-pointer select-none rounded-full \
             transition-background duration-100":
               true,
             "pointer-events-none": !selectable,
-            "bg-inactive": hasTimeslots,
+            "bg-inactive": selectable,
             "hover:bg-secondary": !selected,
             "text-white bg-black": selected,
             "opacity-0 pointer-events-none": !inMonth,

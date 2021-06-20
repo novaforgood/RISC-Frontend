@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, Text } from "../../../components/atomic";
 import Select from "../../../components/atomic/Select";
+import { SetAvailabilityOverridesCard } from "../../../components/Availabilities/SetAvailabilityOverridesCard";
 import { SetWeeklyAvailabilitiesCard } from "../../../components/Availabilities/SetWeeklyAvailabilitiesCard";
 import {
   refetchGetMyUserQuery,
@@ -52,11 +53,11 @@ const SetAvailabilitiesPage: Page = () => {
           <Card className="flex-1 py-4">
             <SetWeeklyAvailabilitiesCard profileId={currentProfile.profileId} />
           </Card>
-          {/* <Card className="flex-1 py-4">
-              <SetAvailabilityOverridesCard
-                profileId={currentProfile.profileId}
-              />
-            </Card> */}
+          <Card className="flex-1 py-4">
+            <SetAvailabilityOverridesCard
+              profileId={currentProfile.profileId}
+            />
+          </Card>
         </div>
       </div>
     </div>
