@@ -1,4 +1,5 @@
 import { Listbox, Transition } from "@headlessui/react";
+import classNames from "classnames";
 import { isEqual } from "date-fns";
 import { Fragment } from "react";
 
@@ -26,11 +27,13 @@ interface SelectProps<T> {
   options: { label: string; value: T }[];
   value: T;
   onSelect?: (selectedValue: T) => void;
+  className?: string;
 }
 const Select = <T extends string | Date>({
   options,
   value,
   onSelect = () => {},
+  className,
 }: SelectProps<T>) => {
   const valueToLabel = (value: T) => {
     return options.find((x) =>
@@ -40,8 +43,13 @@ const Select = <T extends string | Date>({
     )?.label;
   };
 
+  const styles = classNames({
+    "w-auto": !className,
+    [`${className}`]: className,
+  });
+
   return (
-    <div className="w-auto">
+    <div className={styles}>
       <Listbox
         value={value}
         onChange={(selectedValue) => {
