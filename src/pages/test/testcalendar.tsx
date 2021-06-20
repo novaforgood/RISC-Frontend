@@ -44,8 +44,9 @@ const SAMPLE_AVAILABILITIES = {
     { startTime: new Date(), endTime: new Date() },
     { startTime: new Date("June 17 2021"), endTime: new Date("June 17 2021") },
   ],
-  overrides: [
+  overrideDays: [
     { startTime: new Date("June 8 2021"), endTime: new Date() },
     { startTime: new Date("June 25 2021"), endTime: new Date() },
   ],
+  overrideTimeslots: [],
 };

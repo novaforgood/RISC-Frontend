@@ -228,6 +228,7 @@ export const SetWeeklyAvailabilitiesCard = ({
     const newWeeklyAvailabilities = weeklyAvailabilities
       .concat(newAvailability)
       .sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
+    console.log(newWeeklyAvailabilities);
     setWeeklyAvailabilitiesMutation({
       variables: {
         profileId: profileId,

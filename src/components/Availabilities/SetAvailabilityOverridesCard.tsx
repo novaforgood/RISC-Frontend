@@ -59,6 +59,8 @@ export const SetAvailabilityOverridesCard = ({
     availOverrideTimeslots =
       availOverrideTimeslotsData.getAvailOverrideTimeslots;
   }
+  availOverrideDays;
+  availOverrideTimeslots;
 
   return (
     <div className="flex flex-col">

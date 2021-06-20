@@ -1,5 +1,5 @@
 import { useGetMyUserQuery } from "../generated/graphql";
-import { useCurrentProgram } from "../hooks";
+import useCurrentProgram from "./useCurrentProgram";
 
 const useCurrentProfile = () => {
   const { data, refetch } = useGetMyUserQuery();
