@@ -276,8 +276,11 @@ const ProfileModal = ({
           <div>
             <div className="flex">
               <div className="flex flex-col items-center">
-                <div className="h-40 w-40 rounded-full bg-inactive">
-                  <img src={mentor.user.profilePictureUrl}></img>
+                <div className="h-40 w-40 rounded-full bg-tertiary object-cover overflow-hidden">
+                  <img
+                    className="w-full h-full"
+                    src={mentor.user.profilePictureUrl}
+                  />
                 </div>
                 <div className="h-4"></div>
                 <Text b1 b>
@@ -387,7 +390,7 @@ const MentorCard = ({ mentor }: MentorCardProps) => {
 
   return (
     <Card className="flex flex-col p-6 place-items-center border-0">
-      <div className="h-40 w-40 rounded-full bg-tertiary object-fit overflow-hidden">
+      <div className="h-40 w-40 rounded-full bg-tertiary object-cover overflow-hidden">
         <img className="w-full h-full" src={mentor.user.profilePictureUrl} />
       </div>
       <div className="h-4" />

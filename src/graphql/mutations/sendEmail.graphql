@@ -1,0 +1,8 @@
+mutation sendEmail(
+  $email: String!
+  $code: String!
+  $programId: String!
+  $name: String!
+) {
+  sendEmail(email: $email, code: $code, programId: $programId, name: $name)
+}

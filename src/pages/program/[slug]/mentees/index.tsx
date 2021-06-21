@@ -16,9 +16,12 @@ import {
   GetProfilesQuery,
   Maybe,
   ProfileType,
+  MailCodes,
   useCreateChatRequestMutation,
   useGetProfilesQuery,
   useGetWeeklyAvailabilitiesQuery,
+  useSendEmailMutation,
+  UpdateProgramInput,
 } from "../../../../generated/graphql";
 import {
   AuthorizationLevel,
@@ -76,8 +79,9 @@ function generateTimeslots(
 
 interface BookAChatProps {
   mentor: MentorProfile;
+  programId: string;
 }
-const BookAChat = ({ mentor }: BookAChatProps) => {
+const BookAChat = ({ mentor, programId }: BookAChatProps) => {
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [selectedTimeslot, setSelectedTimeslot] =
     useState<DateInterval | null>(null);
@@ -97,6 +101,8 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
       endTime: new Date(x.endTime),
     }));
   }
+
+  const [sendEmail] = useSendEmailMutation();
 
   loadingCreateChatRequest; // TODO: Use this variable
 
@@ -234,6 +240,14 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
                   setLoadingCreateChatRequest(false);
                   setSendChatModalOpen(false);
                 });
+                sendEmail({
+                  variables: {
+                    email: mentor.user.email,
+                    code: MailCodes.BOOK_CHAT,
+                    programId: programId,
+                    name: `${mentor.user.firstName} ${mentor.user.lastName}`,
+                  },
+                });
               }}
             >
               Send
@@ -275,8 +289,11 @@ const ProfileModal = ({
           <div>
             <div className="flex">
               <div className="flex flex-col items-center">
-                <div className="h-40 w-40 rounded-full bg-inactive">
-                  <img src={mentor.user.profilePictureUrl}></img>
+                <div className="h-40 w-40 rounded-full bg-tertiary object-cover overflow-hidden">
+                  <img
+                    className="w-full h-full"
+                    src={mentor.user.profilePictureUrl}
+                  />
                 </div>
                 <div className="h-4"></div>
                 <Text b1 b>
@@ -345,7 +362,7 @@ const ProfileModal = ({
             >
               Back
             </Button>
-            <BookAChat mentor={mentor} />
+            <BookAChat mentor={mentor} program={currentProgram} />
           </div>
         );
     }
