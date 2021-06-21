@@ -1,0 +1,5 @@
+mutation updateUserTimezone($timezone: String!) {
+  updateUserTimezone(timezone: $timezone) {
+    userId
+  }
+}
