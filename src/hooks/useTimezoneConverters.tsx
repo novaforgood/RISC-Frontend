@@ -2,8 +2,8 @@ import { utcToZonedTime, zonedTimeToUtc } from "date-fns-tz";
 import { useGetMyUserQuery } from "../generated/graphql";
 
 const useTimezoneConverters = () => {
-  const { loading, data } = useGetMyUserQuery();
-  if (loading || !data) {
+  const { data } = useGetMyUserQuery();
+  if (!data) {
     return { toUTC: undefined, fromUTC: undefined };
   }
 
