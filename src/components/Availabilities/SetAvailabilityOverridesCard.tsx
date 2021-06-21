@@ -69,7 +69,6 @@ const EditAvailOverrideDayModalContents = ({
       endTime: toUTC(timeslot.endTime),
     }));
     if (overrideDate.availOverrideDateId === "__I_AM_A_NEW_OVERRIDE_DATE__") {
-      console.log("Create");
       // Create
       return createAvailOverrideDateMutation({
         variables: {

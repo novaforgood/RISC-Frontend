@@ -98,7 +98,7 @@ export const SetWeeklyAvailabilitiesCard = ({
       return;
     }
     if (!toUTC) {
-      console.log("Error: toUTC is undefined");
+      console.log("Error: toUTC is not defined.");
       return;
     }
 

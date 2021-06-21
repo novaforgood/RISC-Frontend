@@ -1,31 +1,55 @@
 import React from "react";
 import { Card, Text } from "../../../components/atomic";
-import Select from "../../../components/atomic/Select";
 import { SetAvailabilityOverridesCard } from "../../../components/Availabilities/SetAvailabilityOverridesCard";
 import { SetWeeklyAvailabilitiesCard } from "../../../components/Availabilities/SetWeeklyAvailabilitiesCard";
-import {
-  refetchGetMyUserQuery,
-  useGetMyUserQuery,
-  useUpdateUserMutation,
-} from "../../../generated/graphql";
+import { useGetMyUserQuery } from "../../../generated/graphql";
 import { useCurrentProfile } from "../../../hooks";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../layouts/PageContainer";
 import Page from "../../../types/Page";
-import { getTimezoneSelectOptions } from "../../../utils";
+
+// type SelectTimezoneProps = {
+//   profileId: string;
+//   currentTimezone: string;
+// };
+// const SelectTimezone = ({
+//   profileId,
+//   currentTimezone,
+// }: SelectTimezoneProps) => {
+//   const [updateUserTimezone] = useUpdateUserTimezoneMutation({
+//     refetchQueries: [
+//       refetchGetMyUserQuery(),
+//       refetchGetAvailOverrideDatesQuery({
+//         profileId: profileId,
+//       }),
+//       refetchGetAvailWeeklysQuery({
+//         profileId: profileId,
+//       }),
+//     ],
+//   });
+//   return (
+//     <Select
+//       className="w-80"
+//       value={currentTimezone}
+//       options={getTimezoneSelectOptions()}
+//       onSelect={(newTimezone) => {
+//         updateUserTimezone({ variables: { timezone: newTimezone } });
+//       }}
+//     />
+//   );
+// };
 
 const SetAvailabilitiesPage: Page = () => {
-  const [updateUser] = useUpdateUserMutation({
-    refetchQueries: [refetchGetMyUserQuery()],
-  });
   const { currentProfile } = useCurrentProfile();
+
   const { data } = useGetMyUserQuery();
 
   if (!currentProfile || !data) {
     return <></>;
   }
 
-  const myTimezone = data.getMyUser.timezone;
+  // const myTimezone = data.getMyUser.timezone;
+  const myTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   return (
     <div>
@@ -37,14 +61,11 @@ const SetAvailabilitiesPage: Page = () => {
         <div className="flex items-center">
           <Text>Time Zone: </Text>
           <div className="w-2"></div>
-          <Select
-            className="w-80"
-            value={myTimezone}
-            options={getTimezoneSelectOptions()}
-            onSelect={(newTimezone) => {
-              updateUser({ variables: { data: { timezone: newTimezone } } });
-            }}
-          />
+          <div>{myTimezone}</div>
+          {/* <SelectTimezone
+            profileId={currentProfile.profileId}
+            currentTimezone={myTimezone}
+          /> */}
         </div>
       </div>
       <div className="h-4" />

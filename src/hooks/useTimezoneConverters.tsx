@@ -7,7 +7,8 @@ const useTimezoneConverters = () => {
     return { toUTC: undefined, fromUTC: undefined };
   }
 
-  const myTimezone = data.getMyUser.timezone;
+  // const myTimezone = data.getMyUser.timezone;
+  const myTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   const toUTC = (time: Date): Date => {
     return zonedTimeToUtc(time, myTimezone);
