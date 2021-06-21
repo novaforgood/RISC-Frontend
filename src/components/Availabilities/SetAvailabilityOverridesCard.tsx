@@ -216,35 +216,41 @@ const EditAvailOverrideDayModalContents = ({
             <Text>
               Selected date: {format(overrideDate.startTime, "MMMM d, yyyy")}
             </Text>
+            <div className="h-2"></div>
             {timeslots.map((timeslot, timeslotIndex) => {
               const date = startOfDay(overrideDate?.startTime);
               if (getDay(timeslot.startTime) !== getDay(date)) {
                 return <React.Fragment key={timeslotIndex}></React.Fragment>;
               }
               return (
-                <SetDateInterval
-                  key={timeslotIndex}
-                  date={startOfDay(timeslot.startTime)}
-                  intervalsForDate={timeslots}
-                  selectedInterval={timeslot}
-                  onEditInterval={(newInterval) => {
-                    editTimeslot(timeslotIndex, newInterval);
-                  }}
-                  onDeleteInterval={() => {
-                    deleteTimeslot(timeslotIndex);
-                  }}
-                />
+                <div className="py-2">
+                  <SetDateInterval
+                    key={timeslotIndex}
+                    date={startOfDay(timeslot.startTime)}
+                    intervalsForDate={timeslots}
+                    selectedInterval={timeslot}
+                    onEditInterval={(newInterval) => {
+                      editTimeslot(timeslotIndex, newInterval);
+                    }}
+                    onDeleteInterval={() => {
+                      deleteTimeslot(timeslotIndex);
+                    }}
+                  />
+                </div>
               );
             })}
-            <Button
-              size="small"
-              variant="inverted"
-              onClick={() => {
-                addTimeslot();
-              }}
-            >
-              add time
-            </Button>
+            <div className="h-2"></div>
+            <div>
+              <Button
+                size="small"
+                variant="inverted"
+                onClick={() => {
+                  addTimeslot();
+                }}
+              >
+                add time
+              </Button>
+            </div>
           </div>
         </div>
       ) : (
@@ -255,6 +261,7 @@ const EditAvailOverrideDayModalContents = ({
       <div className="flex">
         <Button
           size="small"
+          variant="inverted"
           onClick={() => {
             onClose();
           }}
@@ -297,27 +304,42 @@ const AvailOverrideDateSection = ({
 
   return (
     <Fragment>
-      <div className="flex">
-        <button
-          onClick={() => {
-            setModalOpen(true);
-          }}
-        >
-          {overrideDate.profileId}
-        </button>
-        <button
-          className="rounded p-2 hover:bg-tertiary cursor-pointer"
-          onClick={() => {
-            deleteAvailOverrideDateMutation({
-              variables: {
-                availOverrideDateId: overrideDate.availOverrideDateId,
-              },
-            });
-          }}
-        >
-          <DeleteIcon />
-        </button>
+      <div className="flex items-center justify-between w-full px-12 py-2">
+        <div>
+          <Text b>{format(overrideDate.startTime, "MMMM d, yyyy")}</Text>
+        </div>
+        <div className="flex">
+          <button
+            onClick={() => {
+              setModalOpen(true);
+            }}
+          >
+            <Text u>edit</Text>
+          </button>
+          <div className="w-2"></div>
+          <button
+            className="h-6 w-6 rounded p-1 hover:bg-tertiary cursor-pointer"
+            onClick={() => {
+              deleteAvailOverrideDateMutation({
+                variables: {
+                  availOverrideDateId: overrideDate.availOverrideDateId,
+                },
+              });
+            }}
+          >
+            <DeleteIcon />
+          </button>
+        </div>
       </div>
+      {overrideDate.availOverrideTimeslots.map((timeslot) => {
+        return (
+          <div className="px-12 py-1">
+            {format(new Date(timeslot.startTime), "h:mm aaa")} -{" "}
+            {format(new Date(timeslot.endTime), "h:mm aaa")}
+          </div>
+        );
+      })}
+      <div className="h-2"></div>
       <Modal
         isOpen={modalOpen}
         onClose={() => {
@@ -381,15 +403,18 @@ export const SetAvailabilityOverridesCard = ({
         })}
         <div className="w-full h-px bg-inactive" />
       </div>
-      <Button
-        variant="inverted"
-        size="small"
-        onClick={() => {
-          setEditAvailOverrideDayModalOpen(true);
-        }}
-      >
-        add exception
-      </Button>
+      <div className="h-4"></div>
+      <div className="flex px-12">
+        <Button
+          variant="inverted"
+          size="small"
+          onClick={() => {
+            setEditAvailOverrideDayModalOpen(true);
+          }}
+        >
+          add exception
+        </Button>
+      </div>
       <Modal
         isOpen={editAvailOverrideDayModalOpen}
         onClose={() => {
