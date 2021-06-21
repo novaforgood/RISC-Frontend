@@ -80,18 +80,16 @@ interface BookAChatProps {
 }
 const BookAChat = ({ mentor }: BookAChatProps) => {
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
-  const [selectedTimeslot, setSelectedTimeslot] = useState<DateInterval | null>(
-    null
-  );
+  const [selectedTimeslot, setSelectedTimeslot] =
+    useState<DateInterval | null>(null);
   const [sendChatModalOpen, setSendChatModalOpen] = useState(false);
   const { data, error } = useGetWeeklyAvailabilitiesQuery({
     variables: { profileId: mentor.profileId },
   });
 
   const [createChatRequest] = useCreateChatRequestMutation();
-  const [loadingCreateChatRequest, setLoadingCreateChatRequest] = useState(
-    false
-  );
+  const [loadingCreateChatRequest, setLoadingCreateChatRequest] =
+    useState(false);
   const [chatRequestMessage, setChatRequestMessage] = useState("");
   let weeklyAvailabilities: DateInterval[] = [];
   if (!error && data) {
@@ -389,10 +387,10 @@ const MentorCard = ({ mentor }: MentorCardProps) => {
 
   return (
     <Card className="flex flex-col p-6 place-items-center border-0">
-      <div className="h-40 w-40 rounded-full bg-tertiary">
-        <img src={mentor.user.profilePictureUrl}></img>
+      <div className="h-40 w-40 rounded-full bg-tertiary object-fit overflow-hidden">
+        <img className="w-full h-full" src={mentor.user.profilePictureUrl} />
       </div>
-      <div className="h-4"></div>
+      <div className="h-4" />
 
       <Text b className="text-body-1 text-center">
         {mentor.user.firstName} {mentor.user.lastName}
