@@ -1,3 +1,5 @@
+import { format } from "date-fns";
+import { utcToZonedTime, zonedTimeToUtc } from "date-fns-tz";
 import timezoneRawData from "./data/timezones.json";
 
 export function parseParam(slug: string | string[] | undefined) {
@@ -9,11 +11,14 @@ export function parseParam(slug: string | string[] | undefined) {
 }
 
 export function getTimezoneSelectOptions() {
+  const myTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const now = new Date();
   return timezoneRawData.map((timezoneRaw) => {
     return {
-      label: `${timezoneRaw.alternativeName} (${
-        timezoneRaw.rawFormat.split(" ")[0]
-      })`,
+      label: `${timezoneRaw.alternativeName} (${format(
+        utcToZonedTime(zonedTimeToUtc(now, myTimezone), timezoneRaw.name),
+        "h:mm aaa"
+      )})`,
       value: timezoneRaw.name,
     };
   });

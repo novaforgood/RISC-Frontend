@@ -9,7 +9,6 @@ import {
 import React, { Fragment, useState } from "react";
 import {
   DateInterval,
-  GetAvailOverrideDatesQuery,
   refetchGetAvailOverrideDatesQuery,
   useCreateAvailOverrideDateMutation,
   useDeleteAvailOverrideDateMutation,
@@ -22,11 +21,19 @@ import Calendar from "../Calendar";
 import { DeleteIcon } from "../FormSchemaEditor/icons";
 import { SetDateInterval } from "./SetDateInterval";
 
-type AvailOverrideDayPartial =
-  GetAvailOverrideDatesQuery["getAvailOverrideDates"][number];
+type AvailOverrideDate = {
+  profileId: string;
+  startTime: Date;
+  endTime: Date;
+  availOverrideDateId: string;
+  availOverrideTimeslots: {
+    startTime: Date;
+    endTime: Date;
+  }[];
+};
 
 type EditAvailOverrideDayModalContentsProps = {
-  initOverrideDate?: AvailOverrideDayPartial | null;
+  initOverrideDate?: any | null;
   profileId: string;
   onClose: () => void;
 };
@@ -35,16 +42,11 @@ const EditAvailOverrideDayModalContents = ({
   profileId,
   onClose = () => {},
 }: EditAvailOverrideDayModalContentsProps) => {
-  const { fromUTC, toUTC } = useTimezoneConverters();
+  const { toUTC } = useTimezoneConverters();
   const [overrideDate, setOverrideDay] =
-    useState<AvailOverrideDayPartial | null>(initOverrideDate);
+    useState<AvailOverrideDate | null>(initOverrideDate);
   const [timeslots, setTimeslots] = useState(
-    overrideDate?.availOverrideTimeslots.map((t) => {
-      return {
-        startTime: fromUTC!(new Date(t.startTime)),
-        endTime: fromUTC!(new Date(t.endTime)),
-      };
-    }) || []
+    overrideDate?.availOverrideTimeslots || []
   );
 
   const [updateAvailOverrideDateMutation] = useUpdateAvailOverrideDateMutation({
@@ -61,15 +63,20 @@ const EditAvailOverrideDayModalContents = ({
     if (!toUTC) {
       throw new Error("Error: toUTC is undefined.");
     }
+
+    const newTimeslots = timeslots.map((timeslot) => ({
+      startTime: toUTC(timeslot.startTime),
+      endTime: toUTC(timeslot.endTime),
+    }));
     if (overrideDate.availOverrideDateId === "__I_AM_A_NEW_OVERRIDE_DATE__") {
       console.log("Create");
       // Create
       return createAvailOverrideDateMutation({
         variables: {
           data: {
-            startTime: overrideDate.startTime,
-            endTime: overrideDate.endTime,
-            availOverrideTimeslots: timeslots,
+            startTime: toUTC(overrideDate.startTime).getTime(),
+            endTime: toUTC(overrideDate.endTime).getTime(),
+            availOverrideTimeslots: newTimeslots,
             profileId: profileId,
           },
         },
@@ -80,9 +87,9 @@ const EditAvailOverrideDayModalContents = ({
         variables: {
           availOverrideDateId: overrideDate.availOverrideDateId,
           data: {
-            startTime: overrideDate.startTime,
-            endTime: overrideDate.endTime,
-            availOverrideTimeslots: timeslots,
+            startTime: toUTC(overrideDate.startTime).getTime(),
+            endTime: toUTC(overrideDate.endTime).getTime(),
+            availOverrideTimeslots: newTimeslots,
           },
         },
       });
@@ -190,8 +197,8 @@ const EditAvailOverrideDayModalContents = ({
           if (newSelectedDay)
             setOverrideDay((prev) => {
               const newDay = {
-                startTime: newSelectedDay?.getTime(),
-                endTime: addDays(newSelectedDay, 1).getTime(),
+                startTime: newSelectedDay,
+                endTime: addDays(newSelectedDay, 1),
               };
               if (prev) {
                 prev = { ...prev, ...newDay };
@@ -290,7 +297,7 @@ const EditAvailOverrideDayModalContents = ({
 };
 
 type AvailOverrideDateSectionProps = {
-  overrideDate: AvailOverrideDayPartial;
+  overrideDate: AvailOverrideDate;
 };
 const AvailOverrideDateSection = ({
   overrideDate,
@@ -374,15 +381,34 @@ export const SetAvailabilityOverridesCard = ({
 
   const [editAvailOverrideDayModalOpen, setEditAvailOverrideDayModalOpen] =
     useState(false);
+  const { fromUTC } = useTimezoneConverters();
+  if (!fromUTC) return <Fragment />;
 
-  let availOverrideDates: AvailOverrideDayPartial[] = [];
+  let availOverrideDates: AvailOverrideDate[] = [];
   if (
     !availOverrideDatesLoading &&
     !availOverrideDatesError &&
     availOverrideDatesData
   ) {
-    availOverrideDates = availOverrideDatesData.getAvailOverrideDates;
+    availOverrideDates = availOverrideDatesData.getAvailOverrideDates.map(
+      (date) => {
+        return {
+          ...date,
+          startTime: fromUTC(new Date(date.startTime)),
+          endTime: fromUTC(new Date(date.endTime)),
+          availOverrideTimeslots: date.availOverrideTimeslots.map(
+            (timeslot) => ({
+              startTime: fromUTC(new Date(timeslot.startTime)),
+              endTime: fromUTC(new Date(timeslot.endTime)),
+            })
+          ),
+        };
+      }
+    );
   }
+  console.log(
+    Intl.DateTimeFormat.supportedLocalesOf(["ban", "id-u-co-pinyin", "de-ID"])
+  );
 
   return (
     <div className="flex flex-col">
