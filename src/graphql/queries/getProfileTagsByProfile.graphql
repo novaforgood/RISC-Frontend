@@ -1,0 +1,5 @@
+query getProfileTagsByProfile($profileId: String!) {
+  getProfileTagsByProfile(profileId: $profileId) {
+    profileId
+  }
+}

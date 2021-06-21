@@ -1,0 +1,5 @@
+query getProfileTagsByProgram($programId: String!) {
+  getProfileTagsByProgram(programId: $programId) {
+    programId
+  }
+}

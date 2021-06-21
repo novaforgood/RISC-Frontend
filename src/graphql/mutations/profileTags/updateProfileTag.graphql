@@ -1,0 +1,9 @@
+mutation updateProfileTag(
+  $profileTagId: String!
+  $data: UpdateProfileTagInput!
+) {
+  updateProfileTag(profileTagId: $profileTagId, data: $data) {
+    profileTagId
+    name
+  }
+}
