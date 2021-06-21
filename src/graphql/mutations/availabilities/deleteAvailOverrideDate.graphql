@@ -1,0 +1,3 @@
+mutation deleteAvailOverrideDate($availOverrideDateId: String!) {
+  deleteAvailOverrideDate(availOverrideDateId: $availOverrideDateId)
+}

@@ -1,0 +1,5 @@
+mutation createAvailOverrideDate($data: CreateAvailOverrideDateInput!) {
+  createAvailOverrideDate(data: $data) {
+    availOverrideDateId
+  }
+}

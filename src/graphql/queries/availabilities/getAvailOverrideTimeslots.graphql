@@ -1,7 +1,0 @@
-query getAvailOverrideTimeslots($profileId: String!) {
-  getAvailOverrideTimeslots(profileId: $profileId) {
-    profileId
-    startTime
-    endTime
-  }
-}
