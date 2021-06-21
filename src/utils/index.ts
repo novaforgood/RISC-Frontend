@@ -23,3 +23,10 @@ export function getTimezoneSelectOptions() {
     };
   });
 }
+
+const emailForm = new RegExp(
+  /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+);
+export function validateEmail(email: string) {
+  return email && emailForm.test(email);
+}

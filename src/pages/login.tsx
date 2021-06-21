@@ -94,7 +94,10 @@ const LoginPage = () => {
           <div>
             <div className="flex justify-between">
               <Text b>Password</Text>
-              <Text>TODO: Forgot password?</Text>
+
+              <Text className="text-darkblue hover:underline">
+                <Link href="/reset-password">Forgot Password?</Link>
+              </Text>
             </div>
             <div className="h-1" />
             <Input
@@ -106,7 +109,7 @@ const LoginPage = () => {
               onChange={(e) => {
                 setPassword(e.target.value);
               }}
-            ></Input>
+            />
           </div>
           <div className="h-6" />
 

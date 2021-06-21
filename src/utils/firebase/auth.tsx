@@ -5,6 +5,9 @@ import firebase from "./firebase";
 interface AuthContext {
   user: firebase.User | null;
   loading: boolean;
+  //TODO: customize the forget password flow instead of directly through firebase's ugly ui
+  // confirmPasswordReset: (c: string, n: string) => Promise<void>;
+  sendPasswordResetEmail: (e: string) => Promise<void>;
   signUpWithEmail: (
     e: string,
     p: string
@@ -26,6 +29,14 @@ function useProvideAuth() {
   const clearCache = () => {
     client.resetStore();
     localStorage.clear();
+  };
+
+  // const confirmPasswordReset = (code: string, newPassword: string) => {
+  //   return firebase.auth().confirmPasswordReset(code, newPassword);
+  // };
+
+  const sendPasswordResetEmail = (email: string) => {
+    return firebase.auth().sendPasswordResetEmail(email);
   };
 
   const signUpWithEmail = async (email: string, password: string) => {
@@ -81,6 +92,8 @@ function useProvideAuth() {
   return {
     user,
     loading,
+    // confirmPasswordReset,
+    sendPasswordResetEmail,
     signUpWithEmail,
     signInWithEmail,
     signInWithGoogle,
