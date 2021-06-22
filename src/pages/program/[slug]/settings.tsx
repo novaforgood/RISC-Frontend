@@ -62,8 +62,8 @@ const SettingsPage: Page = () => {
   };
 
   //TODO: Image Upload and Resize => URL save
-  const [uploadImageAndResizeMutation] = useUploadImageAndResizeMutation({ refetchQueries: [refetchGetMyUserQuery()]});
-  const [updateProgram] = useUpdateProgramMutation();
+  const [uploadImageAndResizeMutation] = useUploadImageAndResizeMutation();
+  const [updateProgram] = useUpdateProgramMutation({ refetchQueries: [refetchGetMyUserQuery()]});
   const [mentorshipName, setMentorshipName] = useState(name);
   const [mentorshipDescription, setMentorshipDescription] =
     useState(description);
