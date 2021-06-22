@@ -9,10 +9,10 @@ import {
 import UploadIconWithPreview from "../../../components/UploadIconWithPreview";
 import {
   ProfileType,
+  refetchGetMyUserQuery,
   useGetProfilesQuery,
   useUpdateProgramMutation,
   useUploadImageAndResizeMutation,
-  refetchGetMyUserQuery,
 } from "../../../generated/graphql";
 import { useCurrentProgram } from "../../../hooks";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
@@ -62,7 +62,7 @@ const SettingsPage: Page = () => {
   };
 
   //TODO: Image Upload and Resize => URL save
-  const [uploadImageAndResizeMutation] = useUploadImageAndResizeMutation();
+  const [uploadImageAndResizeMutation] = useUploadImageAndResizeMutation({ refetchQueries: [refetchGetMyUserQuery()]});
   const [updateProgram] = useUpdateProgramMutation();
   const [mentorshipName, setMentorshipName] = useState(name);
   const [mentorshipDescription, setMentorshipDescription] =
@@ -206,7 +206,6 @@ const SettingsPage: Page = () => {
                 },
               }).then(() => {
                 refetchCurrentProgram();
-                refetchGetMyUserQuery();
                 SettingsPage.getLayout = (page, pageProps) => (
                   <ChooseTabLayout {...pageProps}>
                     <PageContainer>{page}</PageContainer>
