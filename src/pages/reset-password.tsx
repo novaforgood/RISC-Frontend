@@ -169,7 +169,7 @@ const SuccessfulReset = () => (
 
 const ResetPasswordPage: Page = () => {
   const [email, setEmail] = useState("");
-  const [stage, setStage] = useState(ResetPasswordStages.SuccessfulReset);
+  const [stage, setStage] = useState(ResetPasswordStages.InputEmail);
   const [error, setError] = useState("");
 
   const getStage = () => {
