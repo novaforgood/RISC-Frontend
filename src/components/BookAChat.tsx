@@ -1,13 +1,15 @@
 import { addMinutes, getDay } from "date-fns";
 import dateFormat from "dateformat";
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import {
   CreateChatRequestInput,
   DateInterval,
   GetProfilesQuery,
   useCreateChatRequestMutation,
+  useGetAvailOverrideDatesQuery,
   useGetAvailWeeklysQuery,
 } from "../generated/graphql";
+import useTimezoneConverters from "../hooks/useTimezoneConverters";
 import { Button, Card, Modal, Text } from "./atomic";
 import Calendar from "./Calendar";
 
@@ -37,31 +39,76 @@ function generateTimeslots(
   return timeslots;
 }
 
+function compareDateIntervals(a: DateInterval, b: DateInterval) {
+  const [aStart, aEnd] = [a.startTime.getTime(), a.endTime.getTime()];
+  const [bStart, bEnd] = [b.startTime.getTime(), b.endTime.getTime()];
+  if (aStart > bStart) return 1;
+  else if (aStart < bStart) return -1;
+  else {
+    if (aEnd < bEnd) return 1;
+    else if (aEnd > bEnd) return -1;
+    else return 0;
+  }
+}
+
 interface BookAChatProps {
   mentor: MentorProfile;
 }
 const BookAChat = ({ mentor }: BookAChatProps) => {
+  const { fromUTC, toUTC } = useTimezoneConverters();
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [selectedTimeslot, setSelectedTimeslot] =
     useState<DateInterval | null>(null);
   const [sendChatModalOpen, setSendChatModalOpen] = useState(false);
-  const { data, error } = useGetAvailWeeklysQuery({
-    variables: { profileId: mentor.profileId },
-  });
+  const { data: availWeeklyData, error: availWeeklyError } =
+    useGetAvailWeeklysQuery({
+      variables: { profileId: mentor.profileId },
+    });
+  const { data: availOverrideDateData, error: availOverrideDateError } =
+    useGetAvailOverrideDatesQuery({
+      variables: { profileId: mentor.profileId },
+    });
 
   const [createChatRequest] = useCreateChatRequestMutation();
   const [loadingCreateChatRequest, setLoadingCreateChatRequest] =
     useState(false);
   const [chatRequestMessage, setChatRequestMessage] = useState("");
-  let weeklyAvailabilities: DateInterval[] = [];
-  if (!error && data) {
-    weeklyAvailabilities = data.getAvailWeeklys.map((x) => ({
-      startTime: new Date(x.startTime),
-      endTime: new Date(x.endTime),
-    }));
-  }
 
   loadingCreateChatRequest; // TODO: Use this variable
+
+  if (!fromUTC || !toUTC) return <Fragment />;
+
+  const extractDates = (
+    input: {
+      startTime: number;
+      endTime: number;
+    }[]
+  ): DateInterval[] => {
+    return input.map((d) => ({
+      startTime: fromUTC(new Date(d.startTime)),
+      endTime: fromUTC(new Date(d.endTime)),
+    }));
+  };
+
+  let weeklyAvailabilities: DateInterval[] = [];
+  let availOverrideDates: DateInterval[] = [];
+  let availOverrideTimeslots: DateInterval[] = [];
+  if (!availWeeklyError && availWeeklyData) {
+    weeklyAvailabilities = extractDates(availWeeklyData.getAvailWeeklys).sort(
+      compareDateIntervals
+    );
+  }
+  if (!availOverrideDateError && availOverrideDateData) {
+    availOverrideDates = extractDates(
+      availOverrideDateData.getAvailOverrideDates
+    ).sort(compareDateIntervals);
+    availOverrideDateData.getAvailOverrideDates.forEach((availDate) => {
+      availOverrideTimeslots.concat(
+        extractDates(availDate.availOverrideTimeslots)
+      );
+    });
+    availOverrideTimeslots.sort(compareDateIntervals);
+  }
 
   const timeslots = generateTimeslots(selectedDay, 30, weeklyAvailabilities);
 
