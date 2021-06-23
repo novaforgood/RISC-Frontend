@@ -16,12 +16,9 @@ import {
   GetProfilesQuery,
   Maybe,
   ProfileType,
-  MailCodes,
   useCreateChatRequestMutation,
   useGetProfilesQuery,
   useGetWeeklyAvailabilitiesQuery,
-  useSendEmailMutation,
-  UpdateProgramInput,
 } from "../../../../generated/graphql";
 import {
   AuthorizationLevel,
@@ -79,9 +76,8 @@ function generateTimeslots(
 
 interface BookAChatProps {
   mentor: MentorProfile;
-  programId: string;
 }
-const BookAChat = ({ mentor, programId }: BookAChatProps) => {
+const BookAChat = ({ mentor }: BookAChatProps) => {
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [selectedTimeslot, setSelectedTimeslot] =
     useState<DateInterval | null>(null);
@@ -101,8 +97,6 @@ const BookAChat = ({ mentor, programId }: BookAChatProps) => {
       endTime: new Date(x.endTime),
     }));
   }
-
-  const [sendEmail] = useSendEmailMutation();
 
   loadingCreateChatRequest; // TODO: Use this variable
 
@@ -240,14 +234,6 @@ const BookAChat = ({ mentor, programId }: BookAChatProps) => {
                   setLoadingCreateChatRequest(false);
                   setSendChatModalOpen(false);
                 });
-                sendEmail({
-                  variables: {
-                    email: mentor.user.email,
-                    code: MailCodes.BOOK_CHAT,
-                    programId: programId,
-                    name: `${mentor.user.firstName} ${mentor.user.lastName}`,
-                  },
-                });
               }}
             >
               Send
@@ -362,7 +348,7 @@ const ProfileModal = ({
             >
               Back
             </Button>
-            <BookAChat mentor={mentor} program={currentProgram} />
+            <BookAChat mentor={mentor} />
           </div>
         );
     }

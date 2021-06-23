@@ -8,6 +8,7 @@ import {
   useGetChatRequestsQuery,
   useRejectChatRequestMutation,
 } from "../../generated/graphql";
+import { useCurrentProgram } from "../../hooks";
 import { Button, Modal, Text } from "../atomic";
 import { CircledCheck, CircledCross } from "../icons";
 import InlineProfileAvatar from "../InlineProfileAvatar";
@@ -73,12 +74,14 @@ type ChatRequestListItemProps = {
 };
 
 const ChatRequestListItem = ({ chatRequest }: ChatRequestListItemProps) => {
+  const {currentProgram} = useCurrentProgram();
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [rejectMessage, setRejectMessage] = useState("");
 
   const [acceptChatRequestMutation] = useAcceptChatRequestMutation({
     variables: {
       chatRequestId: chatRequest.chatRequestId,
+      programId: currentProgram ? currentProgram.programId : ""
     },
     refetchQueries: [
       refetchGetChatRequestsQuery({
@@ -188,6 +191,7 @@ const ChatRequestListItem = ({ chatRequest }: ChatRequestListItemProps) => {
                   variables: {
                     chatRequestId: chatRequest.chatRequestId,
                     chatRejectMessage: rejectMessage,
+                    programId: currentProgram ? currentProgram.programId : ""
                   },
                 });
                 setIsRejectModalOpen(false);
@@ -213,7 +217,7 @@ const ChatRequestsList = ({ title, chatRequests }: ChatRequestsListProps) => {
       <Text h3>{title}</Text>
       <div className="h-4"></div>
       {chatRequests.map((cr) => (
-        <ChatRequestListItem key={cr.chatRequestId} chatRequest={cr} />
+        <ChatRequestListItem key={cr.chatRequestId} chatRequest={cr}/>
       ))}
     </div>
   );
