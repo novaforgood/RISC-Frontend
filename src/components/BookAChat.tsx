@@ -39,18 +39,6 @@ function generateTimeslots(
   return timeslots;
 }
 
-function compareDateIntervals(a: DateInterval, b: DateInterval) {
-  const [aStart, aEnd] = [a.startTime.getTime(), a.endTime.getTime()];
-  const [bStart, bEnd] = [b.startTime.getTime(), b.endTime.getTime()];
-  if (aStart > bStart) return 1;
-  else if (aStart < bStart) return -1;
-  else {
-    if (aEnd < bEnd) return 1;
-    else if (aEnd > bEnd) return -1;
-    else return 0;
-  }
-}
-
 interface BookAChatProps {
   mentor: MentorProfile;
 }
@@ -94,20 +82,18 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
   let availOverrideDates: DateInterval[] = [];
   let availOverrideTimeslots: DateInterval[] = [];
   if (!availWeeklyError && availWeeklyData) {
-    weeklyAvailabilities = extractDates(availWeeklyData.getAvailWeeklys).sort(
-      compareDateIntervals
-    );
+    weeklyAvailabilities = extractDates(availWeeklyData.getAvailWeeklys);
   }
   if (!availOverrideDateError && availOverrideDateData) {
     availOverrideDates = extractDates(
       availOverrideDateData.getAvailOverrideDates
-    ).sort(compareDateIntervals);
+    );
     availOverrideDateData.getAvailOverrideDates.forEach((availDate) => {
       availOverrideTimeslots.concat(
         extractDates(availDate.availOverrideTimeslots)
       );
     });
-    availOverrideTimeslots.sort(compareDateIntervals);
+    availOverrideTimeslots;
   }
 
   const timeslots = generateTimeslots(selectedDay, 30, weeklyAvailabilities);
@@ -126,15 +112,13 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
       <div className="flex">
         <Card className="p-12">
           <Calendar
-            availabilities={{
-              weekly: weeklyAvailabilities,
-              overrideDates: [],
-              overrideTimeslots: [],
-            }}
             onSelect={(newSelectedDay) => {
               setSelectedDay(newSelectedDay);
             }}
             selectedDay={selectedDay}
+            getSelectableDates={(month, year) => {
+              return [new Date()]
+            }}
           />
         </Card>
 

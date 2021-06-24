@@ -187,11 +187,6 @@ const EditAvailOverrideDayModalContents = ({
       <div className="h-8"></div>
       <Calendar
         selectAnyDay
-        availabilities={{
-          weekly: [],
-          overrideDates: [],
-          overrideTimeslots: [],
-        }}
         onSelect={(newSelectedDay) => {
           if (newSelectedDay)
             setOverrideDay((prev) => {

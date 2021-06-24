@@ -1,12 +1,11 @@
 import classNames from "classnames";
-import { addDays, getDay } from "date-fns";
-import _ from "lodash";
+import { addDays } from "date-fns";
 import React, { useMemo, useState } from "react";
 import { Text } from "../../components/atomic";
 import { DateInterval } from "../../generated/graphql";
 import { monthNames, weekdayNamesAbbreviated } from "./data";
 import { Arrow } from "./icons";
-import { dateDiffInDays, getDaysInThisMonth } from "./utils";
+import { getDaysInThisMonth } from "./utils";
 
 // Types
 type Availabilities = {
@@ -21,15 +20,18 @@ const initYear = today.getFullYear();
 
 interface CalendarProps {
   onSelect: (date: Date | null) => void;
-  availabilities: Availabilities;
   selectedDay: Date | null;
   selectAnyDay?: boolean;
+  getSelectableDates?: (month: number, year: number) => Date[];
 }
 const Calendar = ({
   onSelect = () => {},
   selectedDay,
-  availabilities,
+
   selectAnyDay = false,
+  getSelectableDates = () => {
+    return [];
+  },
 }: CalendarProps) => {
   const [monthyear, setMonthyear] = useState<[number, number]>([
     initMonth,
@@ -41,27 +43,13 @@ const Calendar = ({
 
   if (!days) return <></>;
 
-  // isOverrided: Map from [idx in date array] => [if date has an override]
-  let isOverrided = useMemo(() => {
-    const ret: { [key: number]: boolean } = {};
-    if (!days || days.length == 0) return ret;
-    for (let timeslot of availabilities.overrideTimeslots) {
-      const idxStart = dateDiffInDays(days[0], timeslot.startTime);
-      ret[idxStart] = true;
-      const idxEnd = dateDiffInDays(days[0], timeslot.endTime);
-      ret[idxEnd] = true;
+  const selectableDatesSet = useMemo(() => {
+    let val = new Set();
+    for (const date of getSelectableDates(...monthyear)) {
+      val.add(date.getDate());
     }
-    return ret;
-  }, [days, availabilities]);
-
-  let occupiedWeekdays = _.reduce(
-    availabilities.weekly,
-    (prev, curr) => {
-      prev.add(getDay(curr.startTime));
-      return prev;
-    },
-    new Set()
-  );
+    return val;
+  }, [monthyear]);
 
   return (
     <div className="w-96">
@@ -120,11 +108,10 @@ const Calendar = ({
           const inMonth = monthyear[0] === day.getMonth();
           const selected =
             selectedDay && selectedDay.getTime() === day.getTime();
-          const hasTimeslots = occupiedWeekdays.has(i % 7) || isOverrided[i];
           const selectable =
             day > addDays(new Date(), -1) &&
             inMonth &&
-            (selectAnyDay || hasTimeslots);
+            (selectAnyDay || selectableDatesSet.has(day.getDate()));
 
           const backgroundStyles = classNames({
             "h-11 w-11 mx-auto flex justify-center items-center cursor-pointer select-none rounded-full \
