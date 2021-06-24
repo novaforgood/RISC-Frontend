@@ -117,7 +117,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
             }}
             selectedDay={selectedDay}
             getSelectableDates={(month, year) => {
-              return [new Date()]
+              return [new Date()];
             }}
           />
         </Card>

@@ -18,7 +18,7 @@ export function dateDiffInDays(a: Date, b: Date) {
  * @param year
  * @returns List of days in [month] of [year].
  */
-export function getDaysInThisMonth(month: number, year: number) {
+export function getDatesInThisMonth(month: number, year: number) {
   var date = new Date(year, month, 1);
   var days = [];
 
@@ -41,4 +41,26 @@ export function getDaysInThisMonth(month: number, year: number) {
     date.setDate(date.getDate() + 1);
   }
   return days;
+}
+
+export function padDatesInMonth(dates: Date[]) {
+  const newDates = [...dates];
+
+  // Add days until previous Sunday
+  let tempDate = new Date(newDates[0]);
+  tempDate.setDate(tempDate.getDate() - 1);
+  while (tempDate.getDay() != 6) {
+    newDates.unshift(new Date(tempDate));
+    tempDate.setDate(tempDate.getDate() - 1);
+  }
+
+  // Add days until Saturday
+  tempDate = new Date(newDates[newDates.length - 1]);
+  tempDate.setDate(tempDate.getDate() + 1);
+  while (tempDate.getDay() != 0) {
+    newDates.push(new Date(tempDate));
+    tempDate.setDate(tempDate.getDate() + 1);
+  }
+
+  return newDates;
 }

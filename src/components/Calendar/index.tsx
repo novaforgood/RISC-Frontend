@@ -5,7 +5,7 @@ import { Text } from "../../components/atomic";
 import { DateInterval } from "../../generated/graphql";
 import { monthNames, weekdayNamesAbbreviated } from "./data";
 import { Arrow } from "./icons";
-import { getDaysInThisMonth } from "./utils";
+import { getDatesInThisMonth, padDatesInMonth } from "./utils";
 
 // Types
 type Availabilities = {
@@ -38,7 +38,7 @@ const Calendar = ({
     initYear,
   ]);
   const [days, setDays] = useState<Date[]>(
-    getDaysInThisMonth(initMonth, initYear)
+    padDatesInMonth(getDatesInThisMonth(initMonth, initYear))
   );
 
   if (!days) return <></>;
@@ -69,7 +69,7 @@ const Calendar = ({
                 } else {
                   newMonthYear = [prevMonth - 1, prevYear];
                 }
-                setDays(getDaysInThisMonth(...newMonthYear));
+                setDays(padDatesInMonth(getDatesInThisMonth(...newMonthYear)));
                 return newMonthYear;
               });
             }}
@@ -86,7 +86,7 @@ const Calendar = ({
                 } else {
                   newMonthYear = [prevMonth + 1, prevYear];
                 }
-                setDays(getDaysInThisMonth(...newMonthYear));
+                setDays(padDatesInMonth(getDatesInThisMonth(...newMonthYear)));
                 return newMonthYear;
               });
             }}
