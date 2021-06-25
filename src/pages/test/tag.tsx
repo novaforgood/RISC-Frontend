@@ -1,20 +1,25 @@
 import React from "react";
 import { Button, Card, Tag, Text } from "../../components/atomic";
 import {
-  useGetUsersLazyQuery,
   useGetProfileTagsByProgramLazyQuery,
   useCreateProfileTagMutation,
+  useUpdateProfileTagMutation,
   CreateProfileTagInput,
+  UpdateProfileTagInput,
 } from "../../generated/graphql";
 
 const IndexPage = () => {
-  const [getUser, { data }] = useGetUsersLazyQuery();
-  const [getTags, { tags }] = useGetProfileTagsByProgramLazyQuery();
+  const [getTags, { data }] = useGetProfileTagsByProgramLazyQuery();
   const [createTag] = useCreateProfileTagMutation();
+  const [updateTag] = useUpdateProfileTagMutation();
 
   let createTagInput: CreateProfileTagInput = {
     name: "blah",
-    programId: "xfMHQGFjgb0VEKQZtuyKv",
+    programId: "c95bd919-093c-46b8-a42e-0f492e961b42",
+  };
+  let updateTagInput: UpdateProfileTagInput = {
+    profileTagId: data?.getProfileTagsByProgram[0].profileTagId,
+    name: "updated-blah",
   };
 
   return (
@@ -23,17 +28,33 @@ const IndexPage = () => {
         size="medium"
         variant="solid"
         onClick={() => {
-          getUser();
           createTag({
             variables: { data: createTagInput },
           });
-          getTags({ variables: { programId: "xfMHQGFjgb0VEKQZtuyKv" } });
+          getTags({
+            variables: { programId: "c95bd919-093c-46b8-a42e-0f492e961b42" },
+          });
         }}
       >
         Get users
       </Button>
+      <Button
+        onClick={() => {
+          console.log(updateTagInput);
+          updateTag({
+            variables: {
+              profileTagId: updateTagInput.profileTagId,
+              data: updateTagInput,
+            },
+          })
+            .then(console.log("yay"))
+            .catch(console.log("nay"));
+        }}
+      >
+        update
+      </Button>
       <p>{JSON.stringify(data)}</p>
-      <p>{JSON.stringify(tags)}</p>
+
       <Card className="h-60 w-60">
         <Text>Blaah</Text>
         <div className="h-1"></div>
