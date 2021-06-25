@@ -8,10 +8,12 @@ import {
   useCreateChatRequestMutation,
   useGetAvailOverrideDatesQuery,
   useGetAvailWeeklysQuery,
-} from "../generated/graphql";
-import useTimezoneConverters from "../hooks/useTimezoneConverters";
-import { Button, Card, Modal, Text } from "./atomic";
-import Calendar from "./Calendar";
+} from "../../generated/graphql";
+import useTimezoneConverters from "../../hooks/useTimezoneConverters";
+import { Button, Card, Modal, Text } from "../atomic";
+import Calendar from "../Calendar";
+import { getDatesInThisMonth } from "../Calendar/utils";
+import { mergeIntervalLists } from "./utils";
 
 type MentorProfile = GetProfilesQuery["getProfiles"][number];
 
@@ -36,7 +38,15 @@ function generateTimeslots(
     }
   }
 
-  return timeslots;
+  return timeslots.map((t) => {
+    t.startTime.setDate(day.getDate());
+    t.startTime.setMonth(day.getMonth());
+    t.startTime.setFullYear(day.getFullYear());
+    t.endTime.setDate(day.getDate());
+    t.endTime.setMonth(day.getMonth());
+    t.endTime.setFullYear(day.getFullYear());
+    return t;
+  });
 }
 
 interface BookAChatProps {
@@ -81,6 +91,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
   let weeklyAvailabilities: DateInterval[] = [];
   let availOverrideDates: DateInterval[] = [];
   let availOverrideTimeslots: DateInterval[] = [];
+
   if (!availWeeklyError && availWeeklyData) {
     weeklyAvailabilities = extractDates(availWeeklyData.getAvailWeeklys);
   }
@@ -89,7 +100,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
       availOverrideDateData.getAvailOverrideDates
     );
     availOverrideDateData.getAvailOverrideDates.forEach((availDate) => {
-      availOverrideTimeslots.concat(
+      availOverrideTimeslots = availOverrideTimeslots.concat(
         extractDates(availDate.availOverrideTimeslots)
       );
     });
@@ -117,7 +128,29 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
             }}
             selectedDay={selectedDay}
             getSelectableDates={(month, year) => {
-              return [new Date()];
+              const dates = getDatesInThisMonth(month, year);
+              let allTimeslots: DateInterval[] = [];
+              for (let date of dates) {
+                const t = generateTimeslots(date, 30, weeklyAvailabilities);
+                allTimeslots = allTimeslots.concat(t);
+              }
+
+              const minusOverrideDates = mergeIntervalLists(
+                allTimeslots,
+                availOverrideDates,
+                (inA, inB) => inA && !inB
+              );
+              console.log(minusOverrideDates);
+              console.log(availOverrideTimeslots);
+              const withOverrideTimeslots = mergeIntervalLists(
+                minusOverrideDates,
+                availOverrideTimeslots,
+                (inA, inB) => inA || inB
+              );
+              const selectableDates = withOverrideTimeslots.map(
+                (slot) => slot.startTime
+              );
+              return selectableDates.filter((d) => d.getMonth() === month);
             }}
           />
         </Card>

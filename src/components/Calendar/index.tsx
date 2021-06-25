@@ -49,7 +49,7 @@ const Calendar = ({
       val.add(date.getDate());
     }
     return val;
-  }, [monthyear]);
+  }, [monthyear, getSelectableDates]);
 
   return (
     <div className="w-96">
