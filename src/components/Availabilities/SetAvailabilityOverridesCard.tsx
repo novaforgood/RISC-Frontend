@@ -186,13 +186,13 @@ const EditAvailOverrideDayModalContents = ({
       </div>
       <div className="h-8"></div>
       <Calendar
-        selectAnyDay
-        onSelect={(newSelectedDay) => {
-          if (newSelectedDay)
+        selectAnyDate
+        onSelect={(newSelectedDate) => {
+          if (newSelectedDate)
             setOverrideDay((prev) => {
               const newDay = {
-                startTime: newSelectedDay,
-                endTime: addDays(newSelectedDay, 1),
+                startTime: newSelectedDate,
+                endTime: addDays(newSelectedDate, 1),
               };
               if (prev) {
                 prev = { ...prev, ...newDay };
@@ -208,7 +208,7 @@ const EditAvailOverrideDayModalContents = ({
               return prev;
             });
         }}
-        selectedDay={overrideDate ? new Date(overrideDate.startTime) : null}
+        selectedDate={overrideDate ? new Date(overrideDate.startTime) : null}
       />
       <div className="h-8"></div>
       {overrideDate ? (

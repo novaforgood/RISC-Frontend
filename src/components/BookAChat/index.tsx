@@ -1,6 +1,6 @@
 import { addMinutes, getDay } from "date-fns";
 import dateFormat from "dateformat";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useMemo, useState } from "react";
 import {
   CreateChatRequestInput,
   DateInterval,
@@ -17,15 +17,35 @@ import { mergeIntervalLists } from "./utils";
 
 type MentorProfile = GetProfilesQuery["getProfiles"][number];
 
-function generateTimeslots(
-  day: Date | null,
+function intervalsToTimeslots(
+  minutesPerTimeslot: number,
+  dateIntervals: DateInterval[]
+): DateInterval[] {
+  const timeslots: DateInterval[] = [];
+  for (let interval of dateIntervals) {
+    let d = interval.startTime;
+    let n = 1;
+    while (addMinutes(d, minutesPerTimeslot * n) <= interval.endTime) {
+      timeslots.push({
+        startTime: addMinutes(d, minutesPerTimeslot * (n - 1)),
+        endTime: addMinutes(d, minutesPerTimeslot * n),
+      });
+      n += 1;
+    }
+  }
+
+  return timeslots;
+}
+
+function generateWeeklyTimeslotsOnDate(
+  date: Date | null,
   minutesPerTimeslot: number,
   weeklyAvailabilities: DateInterval[]
 ) {
-  if (!day) return [];
+  if (!date) return [];
   const timeslots: DateInterval[] = [];
   for (let avail of weeklyAvailabilities) {
-    if (getDay(avail.startTime) === getDay(day)) {
+    if (getDay(avail.startTime) === getDay(date)) {
       let d = avail.startTime;
       let n = 1;
       while (addMinutes(d, minutesPerTimeslot * n) <= avail.endTime) {
@@ -39,12 +59,12 @@ function generateTimeslots(
   }
 
   return timeslots.map((t) => {
-    t.startTime.setDate(day.getDate());
-    t.startTime.setMonth(day.getMonth());
-    t.startTime.setFullYear(day.getFullYear());
-    t.endTime.setDate(day.getDate());
-    t.endTime.setMonth(day.getMonth());
-    t.endTime.setFullYear(day.getFullYear());
+    t.startTime.setDate(date.getDate());
+    t.startTime.setMonth(date.getMonth());
+    t.startTime.setFullYear(date.getFullYear());
+    t.endTime.setDate(date.getDate());
+    t.endTime.setMonth(date.getMonth());
+    t.endTime.setFullYear(date.getFullYear());
     return t;
   });
 }
@@ -54,7 +74,7 @@ interface BookAChatProps {
 }
 const BookAChat = ({ mentor }: BookAChatProps) => {
   const { fromUTC, toUTC } = useTimezoneConverters();
-  const [selectedDay, setSelectedDay] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTimeslot, setSelectedTimeslot] =
     useState<DateInterval | null>(null);
   const [sendChatModalOpen, setSendChatModalOpen] = useState(false);
@@ -107,7 +127,31 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
     availOverrideTimeslots;
   }
 
-  const timeslots = generateTimeslots(selectedDay, 30, weeklyAvailabilities);
+  const timeslots = useMemo(() => {
+    let ret = generateWeeklyTimeslotsOnDate(
+      selectedDate,
+      30,
+      weeklyAvailabilities
+    );
+    ret = mergeIntervalLists(
+      ret,
+      availOverrideDates,
+      (inA, inB) => inA && !inB
+    );
+    ret = mergeIntervalLists(
+      ret,
+      availOverrideTimeslots,
+      (inA, inB) => inA || inB
+    );
+    return intervalsToTimeslots(30, ret).filter(
+      (slot) => slot.startTime.getDate() === selectedDate?.getDate()
+    );
+  }, [
+    selectedDate,
+    weeklyAvailabilities,
+    availOverrideDates,
+    availOverrideTimeslots,
+  ]);
 
   return (
     <div>
@@ -123,25 +167,26 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
       <div className="flex">
         <Card className="p-12">
           <Calendar
-            onSelect={(newSelectedDay) => {
-              setSelectedDay(newSelectedDay);
+            onSelect={(newSelectedDate) => {
+              setSelectedDate(newSelectedDate);
             }}
-            selectedDay={selectedDay}
+            selectedDate={selectedDate}
             getSelectableDates={(month, year) => {
               const dates = getDatesInThisMonth(month, year);
               let allTimeslots: DateInterval[] = [];
               for (let date of dates) {
-                const t = generateTimeslots(date, 30, weeklyAvailabilities);
+                const t = generateWeeklyTimeslotsOnDate(
+                  date,
+                  30,
+                  weeklyAvailabilities
+                );
                 allTimeslots = allTimeslots.concat(t);
               }
-
               const minusOverrideDates = mergeIntervalLists(
                 allTimeslots,
                 availOverrideDates,
                 (inA, inB) => inA && !inB
               );
-              console.log(minusOverrideDates);
-              console.log(availOverrideTimeslots);
               const withOverrideTimeslots = mergeIntervalLists(
                 minusOverrideDates,
                 availOverrideTimeslots,
@@ -165,8 +210,8 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
           <div className="h-2"></div>
           <div>
             <Text b className="text-secondary">
-              {selectedDay
-                ? dateFormat(selectedDay, "dddd, mmmm dS, yyyy")
+              {selectedDate
+                ? dateFormat(selectedDate, "dddd, mmmm dS, yyyy")
                 : "Select a day to see slots"}
             </Text>
           </div>

@@ -20,15 +20,15 @@ const initYear = today.getFullYear();
 
 interface CalendarProps {
   onSelect: (date: Date | null) => void;
-  selectedDay: Date | null;
-  selectAnyDay?: boolean;
+  selectedDate: Date | null;
+  selectAnyDate?: boolean;
   getSelectableDates?: (month: number, year: number) => Date[];
 }
 const Calendar = ({
   onSelect = () => {},
-  selectedDay,
+  selectedDate,
 
-  selectAnyDay = false,
+  selectAnyDate = false,
   getSelectableDates = () => {
     return [];
   },
@@ -107,11 +107,11 @@ const Calendar = ({
           // Determine if theres availabilities on this day.
           const inMonth = monthyear[0] === day.getMonth();
           const selected =
-            selectedDay && selectedDay.getTime() === day.getTime();
+            selectedDate && selectedDate.getTime() === day.getTime();
           const selectable =
             day > addDays(new Date(), -1) &&
             inMonth &&
-            (selectAnyDay || selectableDatesSet.has(day.getDate()));
+            (selectAnyDate || selectableDatesSet.has(day.getDate()));
 
           const backgroundStyles = classNames({
             "h-11 w-11 mx-auto flex justify-center items-center cursor-pointer select-none rounded-full \
