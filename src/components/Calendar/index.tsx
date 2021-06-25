@@ -2,17 +2,9 @@ import classNames from "classnames";
 import { addDays } from "date-fns";
 import React, { useMemo, useState } from "react";
 import { Text } from "../../components/atomic";
-import { DateInterval } from "../../generated/graphql";
 import { monthNames, weekdayNamesAbbreviated } from "./data";
 import { Arrow } from "./icons";
 import { getDatesInThisMonth, padDatesInMonth } from "./utils";
-
-// Types
-type Availabilities = {
-  weekly: DateInterval[];
-  overrideDates: DateInterval[];
-  overrideTimeslots: DateInterval[];
-};
 
 const today = new Date();
 const initMonth = today.getMonth();
