@@ -45,16 +45,17 @@ function generateWeeklyTimeslotsOnDate(
   if (!date) return [];
   const timeslots: DateInterval[] = [];
   for (let avail of weeklyAvailabilities) {
-    if (getDay(avail.startTime) === getDay(date)) {
-      let d = avail.startTime;
-      let n = 1;
-      while (addMinutes(d, minutesPerTimeslot * n) <= avail.endTime) {
+    let d = avail.startTime;
+    let n = 1;
+    while (addMinutes(d, minutesPerTimeslot * n) <= avail.endTime) {
+      const start = addMinutes(d, minutesPerTimeslot * (n - 1));
+      const end = addMinutes(d, minutesPerTimeslot * n);
+      if (getDay(start) === getDay(date))
         timeslots.push({
-          startTime: addMinutes(d, minutesPerTimeslot * (n - 1)),
-          endTime: addMinutes(d, minutesPerTimeslot * n),
+          startTime: start,
+          endTime: end,
         });
-        n += 1;
-      }
+      n += 1;
     }
   }
 
@@ -124,7 +125,6 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
         extractDates(availDate.availOverrideTimeslots)
       );
     });
-    availOverrideTimeslots;
   }
 
   const timeslots = useMemo(() => {
@@ -182,6 +182,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
                 );
                 allTimeslots = allTimeslots.concat(t);
               }
+              console.log(allTimeslots);
               const minusOverrideDates = mergeIntervalLists(
                 allTimeslots,
                 availOverrideDates,
@@ -192,9 +193,10 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
                 availOverrideTimeslots,
                 (inA, inB) => inA || inB
               );
-              const selectableDates = withOverrideTimeslots.map(
-                (slot) => slot.startTime
-              );
+              const selectableDates = intervalsToTimeslots(
+                30,
+                withOverrideTimeslots
+              ).map((slot) => slot.startTime);
               return selectableDates.filter((d) => d.getMonth() === month);
             }}
           />

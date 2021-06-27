@@ -9,6 +9,7 @@ const useTimezoneConverters = () => {
 
   // const myTimezone = data.getMyUser.timezone;
   const myTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  // const myTimezone = "Pacific/Honolulu";
 
   const toUTC = (time: Date): Date => {
     return zonedTimeToUtc(time, myTimezone);
