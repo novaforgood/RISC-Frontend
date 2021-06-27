@@ -21,7 +21,7 @@ export function dateDiffInDays(a: Date, b: Date) {
  * @returns List of days in [month] of [year].
  */
 export function getDatesInThisMonth(month: number, year: number) {
-  var date = new Date(year, month, 1);
+  var date = new Date(year, month, 1, 0, 0, 0, 0);
   var days = [];
 
   while (date.getMonth() === month) {

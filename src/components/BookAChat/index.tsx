@@ -1,4 +1,4 @@
-import { addMinutes, getDay } from "date-fns";
+import { addMinutes } from "date-fns";
 import dateFormat from "dateformat";
 import React, { Fragment, useMemo, useState } from "react";
 import {
@@ -43,14 +43,14 @@ function generateWeeklyTimeslotsOnDate(
   weeklyAvailabilities: DateInterval[]
 ) {
   if (!date) return [];
-  const timeslots: DateInterval[] = [];
+  let timeslots: DateInterval[] = [];
   for (let avail of weeklyAvailabilities) {
     let d = avail.startTime;
     let n = 1;
     while (addMinutes(d, minutesPerTimeslot * n) <= avail.endTime) {
       const start = addMinutes(d, minutesPerTimeslot * (n - 1));
       const end = addMinutes(d, minutesPerTimeslot * n);
-      if (getDay(start) === getDay(date))
+      if (start.getDay() === date.getDay())
         timeslots.push({
           startTime: start,
           endTime: end,
@@ -59,14 +59,17 @@ function generateWeeklyTimeslotsOnDate(
     }
   }
 
+  const [d, m, y] = [date.getDate(), date.getMonth(), date.getFullYear()];
+
   return timeslots.map((t) => {
-    t.startTime.setDate(date.getDate());
-    t.startTime.setMonth(date.getMonth());
-    t.startTime.setFullYear(date.getFullYear());
-    t.endTime.setDate(date.getDate());
-    t.endTime.setMonth(date.getMonth());
-    t.endTime.setFullYear(date.getFullYear());
-    return t;
+    let temp = t;
+    temp.startTime.setFullYear(y);
+    temp.startTime.setMonth(m);
+    temp.startTime.setDate(d);
+    temp.endTime.setFullYear(y);
+    temp.endTime.setMonth(m);
+    temp.endTime.setDate(d);
+    return temp;
   });
 }
 
@@ -201,7 +204,6 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
                   (d) => d.getMonth() === month && d.getFullYear() === year
                 );
 
-              console.log(year);
               return selectableDates;
             }}
           />

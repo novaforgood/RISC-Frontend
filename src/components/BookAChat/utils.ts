@@ -82,14 +82,14 @@ export function mergeIntervalLists(
   let currEndpoint =
     endpointsA[0] < endpointsB[0] ? endpointsA[0] : endpointsB[0];
 
-  while (currEndpoint !== maxDate) {
+  while (currEndpoint < maxDate) {
     const inA =
       currEndpoint !== maxDate &&
-      endpointsA[ai] != maxDate &&
+      endpointsA[ai] < maxDate &&
       (currEndpoint < endpointsA[ai] ? ai % 2 === 1 : ai % 2 === 0);
     const inB =
       currEndpoint !== maxDate &&
-      endpointsB[bi] !== maxDate &&
+      endpointsB[bi] < maxDate &&
       (currEndpoint < endpointsB[bi] ? bi % 2 === 1 : bi % 2 === 0);
     const inRes = operation(inA, inB);
 
@@ -99,11 +99,8 @@ export function mergeIntervalLists(
     if (currEndpoint == endpointsA[ai]) ai += 1;
     if (currEndpoint == endpointsB[bi]) bi += 1;
 
-    if (endpointsA[ai] === maxDate) currEndpoint = endpointsB[bi];
-    else if (endpointsB[bi] === maxDate) currEndpoint = endpointsA[ai];
-    else
-      currEndpoint =
-        endpointsA[ai] < endpointsB[bi] ? endpointsA[ai] : endpointsB[bi];
+    currEndpoint =
+      endpointsA[ai] < endpointsB[bi] ? endpointsA[ai] : endpointsB[bi];
   }
   return unflattenIntervalList(res);
 }
