@@ -100,7 +100,6 @@ const SignUpPage = () => {
                       "An account with this email already exists. Please log in."
                     );
                   }
-                  signOut();
                 })
                 .catch((e) => {
                   setDisplayError(e.message);
