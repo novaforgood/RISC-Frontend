@@ -119,6 +119,7 @@ const NoMentorshipHome: Page = () => {
             className="w-96 mt-9"
             onClick={() => {
               setIsCreateClicked(true);
+              console.log(isCreateClicked);
             }}
           >
             <Link href="/create">
