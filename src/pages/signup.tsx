@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import React, { useState } from "react";
 import { Button, Checkbox, Text, Modal } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
@@ -33,10 +33,18 @@ const SignUpPage = () => {
   // const [tocChecked, setTocChecked] = useState(false);
   const router = useRouter();
 
+  const redirectAfterLoggingIn = () => {
+    if (router.query.to && typeof router.query.to === "string") {
+      router.push(router.query.to);
+    } else {
+      router.push("/");
+    }
+  };
+
   return (
     <div className="flex w-screen min-h-screen">
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-        <div className="flex flex-col space-y-2 justify-center">
+        <div className="flex flex-col space-y-2 justify-items-center items-center">
           <Text>
             A verification email has been sent to your inbox. Please verify
             before logging in.
@@ -72,6 +80,7 @@ const SignUpPage = () => {
               signInWithGoogle()
                 .then((res) => {
                   if (res.additionalUserInfo?.isNewUser) {
+                    //no need for verification
                     const arr = res.user?.displayName?.split(" ") || [];
                     const highResPhotoURL = res.user?.photoURL?.replace(
                       "s96-c",
@@ -85,8 +94,7 @@ const SignUpPage = () => {
                       timezone: getTimezone(),
                     };
                     createUser({ variables: { data: createUserInput } });
-                    res.user?.sendEmailVerification();
-                    setModalOpen(true);
+                    redirectAfterLoggingIn();
                   } else {
                     setDisplayError(
                       "An account with this email already exists. Please log in."
@@ -179,6 +187,45 @@ const SignUpPage = () => {
               </Text>
             </div>
             <div className="h-6" /> */}
+
+            <Button
+              onClick={() => {
+                signUpWithEmail(email, password)
+                  .catch((e) => {
+                    setDisplayError(e.message);
+                  })
+                  .then((res) => {
+                    // TODO: Valid profilePictureURL and photoURL
+                    if (res) {
+                      const createUserInput: CreateUserInput = {
+                        email: res.user?.email!,
+                        firstName: firstName,
+                        lastName: lastName,
+                        profilePictureUrl: "",
+                        timezone: getTimezone(),
+                      };
+                      res.user?.sendEmailVerification();
+                      signOut();
+                      setModalOpen(true);
+                      Promise.all([
+                        createUser({ variables: { data: createUserInput } }),
+                        res.user?.updateProfile({
+                          displayName: firstName + " " + lastName,
+                          photoURL: "",
+                        }),
+                      ])
+                        .then(() => {})
+                        .catch((e) => {
+                          setDisplayError(e.message);
+                          signOut();
+                        });
+                    }
+                  });
+              }}
+            >
+              Sign Up
+            </Button>
+            <div className="h-6" />
 
             <Button
               onClick={() => {
