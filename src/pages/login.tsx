@@ -113,11 +113,11 @@ const LoginPage = () => {
           <Button
             onClick={() => {
               signInWithEmail(email, password)
-                .catch((error) => {
-                  setError(error.message);
-                })
                 .then((_) => {
                   redirectAfterLoggingIn();
+                })
+                .catch((error) => {
+                  setError(error.message);
                 });
             }}
           >
