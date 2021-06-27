@@ -51,7 +51,7 @@ const AdminHome = ({
       />
       <Card className="box-border w-full px-16 p-8 z-0">
         <img
-          className="w-28 h-28 relative -top-24"
+          className="w-28 h-28 relative rounded-md -top-24"
           src={iconUrl}
           alt={`${name} Logo`}
         />
@@ -59,7 +59,7 @@ const AdminHome = ({
           <Text h1 b>
             {name}
           </Text>
-          <div className="box-border w-full bg-white sticky top-0 py-4 z-10 rounded-md">
+          <div className="w-full bg-white sticky -top-10 p-4 z-10 rounded-md">
             <ToolBar />
           </div>
           <div className="h-2" />
@@ -78,11 +78,10 @@ const ReadOnlyHome = ({
 }: DisplayProgramHomepageProps & { inProgram?: boolean }) => {
   const router = useRouter();
 
-  console.log(homepage);
   const JSONHomepage: RawDraftContentState = getRawContentState(homepage);
   return (
     //TODO: Figure out whether the buttons at the top should be sticky
-    <div className="box-border bg-tertiary min-h-screen py-32 px-10">
+    <div className="box-border bg-tertiary min-h-screen py-32 px-36 overflow-hidden">
       {inProgram ? (
         <></>
       ) : (
@@ -100,7 +99,7 @@ const ReadOnlyHome = ({
       )}
       <Card className="box-border w-full px-16 py-10">
         <div className="relative -top-24">
-          <img className="w-28 h-28" src={iconUrl} />
+          <img className="w-28 h-28 rounded-md" src={iconUrl} />
           <div className="h-2" />
           <Text h1 b>
             {name}

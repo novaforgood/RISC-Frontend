@@ -9,21 +9,21 @@ import _ from "lodash";
 
 import createImagePlugin, { ImageEditorPlugin } from "./CustomImagePlugin";
 import { EditorPlugin } from "@draft-js-plugins/editor";
+import { useUploadImageWithoutResizingMutation } from "../../generated/graphql";
 
 const imagePlugin = createImagePlugin();
 
 export interface EditorStateInterface {
   editorState: EditorState;
   setEditorState: (prop: EditorState) => void;
-  getStringContentState?: () => string;
-  setPublishedContent?: () => void;
-  disablePublish?: boolean;
+  uploadImagesAndGetHomepage?: () => Promise<string>;
+  publishable?: boolean;
+  setPublishable?: (bool: boolean) => void;
   imagePlugin?: ImageEditorPlugin;
   plugins?: EditorPlugin[];
 }
 
 export const defaultContentState: RawDraftContentState = {
-  entityMap: {},
   blocks: [
     {
       text: "",
@@ -34,6 +34,7 @@ export const defaultContentState: RawDraftContentState = {
       entityRanges: [],
     },
   ],
+  entityMap: {},
 };
 
 const EditorContext =
@@ -41,25 +42,42 @@ const EditorContext =
 
 //Works with publish only- will need to change for autosave
 const useProvideEditor = (storedState = defaultContentState) => {
+  const [uploadImageWithoutResizing] = useUploadImageWithoutResizingMutation();
   const [editorState, setEditorState] = useState(
     EditorState.createWithContent(convertFromRaw(storedState))
   );
-  const [publishedContent, setPublishedContent] = useState(storedState);
-
-  const getStringContentState = () => {
-    return JSON.stringify(convertToRaw(editorState.getCurrentContent()));
-  };
+  const [publishable, setPublishable] = useState(false);
 
   return {
     editorState,
     setEditorState,
-    getStringContentState,
-    setPublishedContent: () =>
-      setPublishedContent(convertToRaw(editorState.getCurrentContent())),
-    disablePublish: _.isEqual(
-      convertToRaw(editorState.getCurrentContent()),
-      publishedContent
-    ),
+    uploadImagesAndGetHomepage: async () => {
+      const contentState = editorState.getCurrentContent();
+      const rawContentState = convertToRaw(contentState);
+      const entityKeys = Object.keys(rawContentState.entityMap);
+      for (const key of entityKeys) {
+        const entityData = rawContentState.entityMap[key].data;
+        if (entityData.file) {
+          let photoUrl = await uploadImageWithoutResizing({
+            variables: {
+              file: entityData.file,
+            },
+          });
+          delete entityData.file;
+
+          contentState.replaceEntityData(entityData.entityKey, {
+            ...entityData,
+            src: photoUrl.data?.uploadImage,
+          });
+        }
+      }
+
+      //contentState now has different properties
+      const newRawContentState = convertToRaw(contentState);
+      return JSON.stringify(newRawContentState);
+    },
+    publishable,
+    setPublishable,
     imagePlugin,
     plugins: [imagePlugin],
   };

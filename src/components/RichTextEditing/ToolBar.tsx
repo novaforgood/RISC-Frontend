@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, ChangeEvent, ImgHTMLAttributes } from "react";
+import React, { HTMLAttributes, ChangeEvent } from "react";
 import { EditorStateInterface, useEditor } from "./EditorContext";
 import { INLINE_STYLES, BLOCK_STYLES } from "./TextStyles";
 import classNames from "classnames";
@@ -22,7 +22,7 @@ const ToggleStyleButton = ({
 }: ButtonProps) => {
   const { editorState, setEditorState } = useEditor();
   const styles = classNames({
-    "hover:bg-inactive rounded-md cursor-pointer px-1 py-0.5": true,
+    "hover:bg-inactive rounded-md cursor-pointer px-1 py-0.5 w-6 flex justify-center": true,
     "bg-inactive font-bold": editorState?.getCurrentInlineStyle().has(type),
     [`${className}`]: true,
   });
@@ -114,8 +114,9 @@ const uploadImage = ({
 
   if (file && file.type.match("image.*")) {
     let url = URL.createObjectURL(file);
-    const data: ImgHTMLAttributes<HTMLImageElement> = {
+    const data = {
       alt: file.name,
+      file: file,
     };
     setEditorState(imagePlugin!.addImage(editorState, url, data));
 
@@ -125,7 +126,8 @@ const uploadImage = ({
 };
 
 const UploadImageButton = (props: HTMLAttributes<HTMLButtonElement>) => {
-  const { editorState, setEditorState, imagePlugin } = useEditor();
+  const { editorState, setEditorState, setPublishable, imagePlugin } =
+    useEditor();
   return (
     <button {...props}>
       <label>
@@ -139,6 +141,7 @@ const UploadImageButton = (props: HTMLAttributes<HTMLButtonElement>) => {
                 imagePlugin,
                 ...props,
               });
+            setPublishable!(true);
           }}
           className="hidden"
           type="file"
@@ -159,7 +162,7 @@ const ToolBar = (props: HTMLAttributes<HTMLDivElement>) => {
       onFocus={() => false}
       {...props}
       contentEditable={false}
-      className="bg-white rounded-md border border-inactive p-1 flex items-center justify-around space-x-2 text-center w-max "
+      className="bg-white rounded-md border border-inactive p-1 flex items-center justify-around space-x-2 text-center w-max"
     >
       {BLOCK_STYLES.map((option) => (
         <ToggleBlockButton

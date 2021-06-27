@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, ReactElement } from "react";
+import React, { HTMLAttributes, ReactElement, useEffect } from "react";
 import classNames from "classnames";
 import { ContentBlock, ContentState } from "draft-js";
 import { ImagePluginTheme } from "../CustomImagePlugin";
@@ -25,9 +25,16 @@ export interface ImageProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export default React.forwardRef<HTMLDivElement, ImageProps>(
-  /**This forwarded ref returns null: need to figure out why */
   (props, ref): ReactElement => {
-    const { block, className, theme = {}, readonly, ...otherProps } = props;
+    const {
+      block,
+      className,
+      style,
+      theme = {},
+      readonly,
+      contentState,
+      ...otherProps
+    } = props;
     // leveraging destructuring to omit certain properties from props
     const {
       blockProps, // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -40,8 +47,6 @@ export default React.forwardRef<HTMLDivElement, ImageProps>(
       tree, // eslint-disable-line @typescript-eslint/no-unused-vars
       blockStyleFn, // eslint-disable-line @typescript-eslint/no-unused-vars
       preventScroll, // eslint-disable-line @typescript-eslint/no-unused-vars
-      contentState,
-      style,
       ...elementProps
     } = otherProps;
     const combinedClassName = classNames(
@@ -49,17 +54,21 @@ export default React.forwardRef<HTMLDivElement, ImageProps>(
       className,
       readonly ? "m-auto" : "h-full w-full"
     );
+    const entityKey = block.getEntityAt(0);
     const {
       src,
       alt,
       width,
       height,
       difference = 0,
-      entityKey,
-    } = contentState.getEntity(block.getEntityAt(0)).getData();
+    } = contentState.getEntity(entityKey).getData();
 
-    const mergeData = (newData: { [key: string]: any }) => {
-      contentState.mergeEntityData(entityKey, newData);
+    useEffect(() => {
+      contentState.mergeEntityData(entityKey, { entityKey });
+    }, []);
+
+    const mergeData = (data: Object) => {
+      contentState.mergeEntityData(entityKey, data);
     };
     return readonly ? (
       <img
@@ -68,14 +77,14 @@ export default React.forwardRef<HTMLDivElement, ImageProps>(
         alt={alt}
         style={{
           width: `${width + difference}px`,
-          height: `${height + difference}px`,
+          height: "auto",
         }}
       />
     ) : (
       <ResizeWrapper
         ref={ref}
         mergeData={mergeData}
-        difference={difference}
+        sizeProps={{ difference, width, height }}
         {...elementProps}
       >
         <img src={src} alt={alt} className={combinedClassName} />

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, Fragment, useState } from "react";
+import React, { ChangeEvent, Fragment, useEffect, useState } from "react";
 import {
   Button,
   Card,
@@ -9,8 +9,10 @@ import {
 import UploadIconWithPreview from "../../../components/UploadIconWithPreview";
 import {
   ProfileType,
+  refetchGetMyUserQuery,
   useGetProfilesQuery,
   useUpdateProgramMutation,
+  useUploadImageAndResizeMutation,
 } from "../../../generated/graphql";
 import { useCurrentProgram } from "../../../hooks";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
@@ -60,7 +62,8 @@ const SettingsPage: Page = () => {
   };
 
   //TODO: Image Upload and Resize => URL save
-  const [updateProgram] = useUpdateProgramMutation();
+  const [uploadImageAndResizeMutation] = useUploadImageAndResizeMutation();
+  const [updateProgram] = useUpdateProgramMutation({ refetchQueries: [refetchGetMyUserQuery()]});
   const [mentorshipName, setMentorshipName] = useState(name);
   const [mentorshipDescription, setMentorshipDescription] =
     useState(description);
@@ -74,6 +77,11 @@ const SettingsPage: Page = () => {
       profileType: ProfileType.Mentor,
     },
   });
+
+  useEffect(() => {
+    setMentorshipName(name);
+    setMentorshipDescription(description);
+  }, []);
 
   if (!currentProgram || error) return <div>Loading... </div>;
 
@@ -108,6 +116,7 @@ const SettingsPage: Page = () => {
           <Input
             id="mentorship-name"
             className="col-span-2 overflow-ellipsis"
+            placeholder="Organization Name"
             value={mentorshipName}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               setMentorshipName(e.target.value);
@@ -151,6 +160,7 @@ const SettingsPage: Page = () => {
           <div className="h-4" />
           <TextArea
             className="resize-none w-full h-32"
+            placeholder="Organization Description"
             value={mentorshipDescription}
             onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
               setMentorshipDescription(e.target.value);
@@ -171,19 +181,36 @@ const SettingsPage: Page = () => {
             Reset to Last Saved
           </Button>
           <Button
-            onClick={() => {
-              //TODO: REMOVE THIS AND ACTUALLY UPDATE PROGRAM LOGO
-              console.log(programLogo);
+            onClick={async () => {
+              let newIconUrl = iconUrl;
+              if (programLogo) {
+                let imageUrl = await uploadImageAndResizeMutation({
+                  variables: {
+                    file: programLogo,
+                    resizeWidth: 256,
+                    resizeHeight: 256,
+                  },
+                });
+                if (imageUrl.data) {
+                  newIconUrl = imageUrl.data.uploadImage;
+                }
+              }
               updateProgram({
                 variables: {
                   programId,
                   data: {
+                    iconUrl: newIconUrl,
                     name: mentorshipName,
                     description: mentorshipDescription,
                   },
                 },
               }).then(() => {
                 refetchCurrentProgram();
+                SettingsPage.getLayout = (page, pageProps) => (
+                  <ChooseTabLayout {...pageProps}>
+                    <PageContainer>{page}</PageContainer>
+                  </ChooseTabLayout>
+                );
                 setModified(false);
               });
             }}

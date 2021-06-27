@@ -20,8 +20,6 @@ const AddImage = (
     " "
   );
 
-  newEditorState.getCurrentContent().mergeEntityData(entityKey, { entityKey });
-
   return EditorState.forceSelection(
     newEditorState,
     newEditorState.getCurrentContent().getSelectionAfter()
