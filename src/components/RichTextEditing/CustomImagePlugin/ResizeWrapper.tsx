@@ -176,6 +176,7 @@ export default React.forwardRef<HTMLDivElement, ResizeWrapperProps>(
           setBounds(props.ratio);
         });
       }
+      return () => setPublishable!(true)
     }, []);
 
     //TODO: Picture alignment
