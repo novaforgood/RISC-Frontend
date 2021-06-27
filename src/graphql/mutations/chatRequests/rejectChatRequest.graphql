@@ -1,12 +1,10 @@
 mutation rejectChatRequest(
   $chatRequestId: String!
   $chatRejectMessage: String!
-  $programId: String!
 ) {
   rejectChatRequest(
     chatRequestId: $chatRequestId
     chatRejectMessage: $chatRejectMessage
-    programId: $programId
   ) {
     chatRequestId
   }
