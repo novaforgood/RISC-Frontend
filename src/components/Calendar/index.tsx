@@ -1,18 +1,10 @@
 import classNames from "classnames";
-import { getDay } from "date-fns";
-import _ from "lodash";
+import { addDays } from "date-fns";
 import React, { useMemo, useState } from "react";
 import { Text } from "../../components/atomic";
-import { DateInterval } from "../../generated/graphql";
 import { monthNames, weekdayNamesAbbreviated } from "./data";
 import { Arrow } from "./icons";
-import { dateDiffInDays, getDaysInThisMonth } from "./utils";
-
-// Types
-type Availabilities = {
-  weekly: DateInterval[];
-  overrides: DateInterval[];
-};
+import { getDatesInThisMonth, padDatesInMonth } from "./utils";
 
 const today = new Date();
 const initMonth = today.getMonth();
@@ -20,45 +12,36 @@ const initYear = today.getFullYear();
 
 interface CalendarProps {
   onSelect: (date: Date | null) => void;
-  availabilities: Availabilities;
-  selectedDay: Date | null;
-  selectAnyDay?: boolean;
+  selectedDate: Date | null;
+  selectAnyDate?: boolean;
+  getSelectableDates?: (month: number, year: number) => Date[];
 }
 const Calendar = ({
   onSelect = () => {},
-  selectedDay,
-  availabilities,
-  selectAnyDay = false,
+  selectedDate,
+
+  selectAnyDate = false,
+  getSelectableDates = () => {
+    return [];
+  },
 }: CalendarProps) => {
   const [monthyear, setMonthyear] = useState<[number, number]>([
     initMonth,
     initYear,
   ]);
   const [days, setDays] = useState<Date[]>(
-    getDaysInThisMonth(initMonth, initYear)
+    padDatesInMonth(getDatesInThisMonth(initMonth, initYear))
   );
 
   if (!days) return <></>;
 
-  // isOverrided: Map from [idx in date array] => [if date has an override]
-  let isOverrided = useMemo(() => {
-    const ret: { [key: number]: boolean } = {};
-    if (!days || days.length == 0) return ret;
-    for (let timeslot of availabilities.overrides) {
-      const idx = dateDiffInDays(days[0], timeslot.startTime);
-      ret[idx] = true;
+  const selectableDatesSet = useMemo(() => {
+    let val = new Set();
+    for (const date of getSelectableDates(...monthyear)) {
+      val.add(date.getDate());
     }
-    return ret;
-  }, [days, availabilities]);
-
-  let occupiedWeekdays = _.reduce(
-    availabilities.weekly,
-    (prev, curr) => {
-      prev.add(getDay(curr.startTime));
-      return prev;
-    },
-    new Set()
-  );
+    return val;
+  }, [monthyear, getSelectableDates]);
 
   return (
     <div className="w-96">
@@ -78,7 +61,7 @@ const Calendar = ({
                 } else {
                   newMonthYear = [prevMonth - 1, prevYear];
                 }
-                setDays(getDaysInThisMonth(...newMonthYear));
+                setDays(padDatesInMonth(getDatesInThisMonth(...newMonthYear)));
                 return newMonthYear;
               });
             }}
@@ -95,7 +78,7 @@ const Calendar = ({
                 } else {
                   newMonthYear = [prevMonth + 1, prevYear];
                 }
-                setDays(getDaysInThisMonth(...newMonthYear));
+                setDays(padDatesInMonth(getDatesInThisMonth(...newMonthYear)));
                 return newMonthYear;
               });
             }}
@@ -116,17 +99,18 @@ const Calendar = ({
           // Determine if theres availabilities on this day.
           const inMonth = monthyear[0] === day.getMonth();
           const selected =
-            selectedDay && selectedDay.getTime() === day.getTime();
-          const hasTimeslots =
-            day > new Date() && (occupiedWeekdays.has(i % 7) || isOverrided[i]);
-          const selectable = inMonth && (selectAnyDay || hasTimeslots);
+            selectedDate && selectedDate.getTime() === day.getTime();
+          const selectable =
+            day > addDays(new Date(), -1) &&
+            inMonth &&
+            (selectAnyDate || selectableDatesSet.has(day.getDate()));
 
           const backgroundStyles = classNames({
             "h-11 w-11 mx-auto flex justify-center items-center cursor-pointer select-none rounded-full \
             transition-background duration-100":
               true,
             "pointer-events-none": !selectable,
-            "bg-inactive": hasTimeslots,
+            "bg-inactive": selectable,
             "hover:bg-secondary": !selected,
             "text-white bg-black": selected,
             "opacity-0 pointer-events-none": !inMonth,

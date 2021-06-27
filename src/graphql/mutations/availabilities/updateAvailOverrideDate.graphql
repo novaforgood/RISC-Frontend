@@ -1,0 +1,11 @@
+mutation updateAvailOverrideDate(
+  $availOverrideDateId: String!
+  $data: UpdateAvailOverrideDateInput!
+) {
+  updateAvailOverrideDate(
+    availOverrideDateId: $availOverrideDateId
+    data: $data
+  ) {
+    availOverrideDateId
+  }
+}

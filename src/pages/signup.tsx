@@ -17,6 +17,10 @@ const BlobCircle = () => {
   );
 };
 
+const getTimezone = (): string => {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+};
+
 const SignUpPage = () => {
   const { signUpWithEmail, signInWithGoogle } = useAuth();
   const [displayError, setDisplayError] = useState("");
@@ -62,6 +66,7 @@ const SignUpPage = () => {
                       firstName: arr[0] || "",
                       lastName: arr[1] || "",
                       profilePictureUrl: res.user?.photoURL || "",
+                      timezone: getTimezone(),
                     };
                     createUser({ variables: { data: createUserInput } }).then(
                       () => {
@@ -170,6 +175,7 @@ const SignUpPage = () => {
                       firstName: firstName,
                       lastName: lastName,
                       profilePictureUrl: "",
+                      timezone: getTimezone(),
                     };
 
                     Promise.all([

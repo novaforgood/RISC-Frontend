@@ -1,9 +1,9 @@
 import classNames from "classnames";
 import React, { useEffect, useRef, useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
+import { Question } from "../../types/Form";
 import Select from "../atomic/Select";
 import { DeleteIcon, DragHandle } from "./icons";
-import { Question } from "../../types/Form";
 import { getUpdateFunction } from "./utils";
 
 interface FormQuestionSchemaEditorProps {
@@ -37,12 +37,14 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
 
   const singlelinePreviewStyles = classNames({
     "w-full px-2 py-1 rounded-md placeholder-secondary border-2 border-inactive resize-none box-border text-secondary bg-tertiary \
-    focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none pointer-events-none": true,
+    focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none pointer-events-none":
+      true,
   });
 
   const paragraphPreviewStyles = classNames({
     "w-full px-2 py-1 rounded-md placeholder-secondary border-2 border-inactive resize-none box-border text-secondary bg-tertiary \
-    focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none pointer-events-none": true,
+    focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none pointer-events-none":
+      true,
     "bg-tertiary": hovered,
   });
 
@@ -152,7 +154,7 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
                     placeholder="Question"
                     className={
                       "w-full px-2 py-1 rounded-md placeholder-secondary border border-inactive \
-                      resize-none box-border font-bold box-border \
+                      resize-none box-border font-bold  \
                       hover:border-secondary \
                       focus:ring-2 focus:ring-inactive focus:outline-none"
                     }
@@ -166,7 +168,7 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
                     placeholder="Description"
                     className={
                       "w-full px-2 py-1 rounded-md placeholder-secondary border border-inactive \
-                      resize-none box-border text-secondary box-border \
+                      resize-none box-border text-secondary \
                       hover:border-secondary \
                       focus:ring-2 focus:ring-inactive focus:outline-none"
                     }
@@ -194,7 +196,7 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
                   placeholder="Description"
                   className={
                     "flex-1 px-1.5 py-1 rounded-md placeholder-secondary border-2 border-inactive \
-                      resize-none box-border text-secondary box-border \
+                      resize-none box-border text-secondary \
                       hover:border-secondary hover:border-2 \
                       focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none"
                   }

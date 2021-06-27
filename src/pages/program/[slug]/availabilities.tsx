@@ -1,17 +1,55 @@
 import React from "react";
 import { Card, Text } from "../../../components/atomic";
+import { SetAvailabilityOverridesCard } from "../../../components/Availabilities/SetAvailabilityOverridesCard";
 import { SetWeeklyAvailabilitiesCard } from "../../../components/Availabilities/SetWeeklyAvailabilitiesCard";
+import { useGetMyUserQuery } from "../../../generated/graphql";
 import { useCurrentProfile } from "../../../hooks";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../layouts/PageContainer";
 import Page from "../../../types/Page";
 
+// type SelectTimezoneProps = {
+//   profileId: string;
+//   currentTimezone: string;
+// };
+// const SelectTimezone = ({
+//   profileId,
+//   currentTimezone,
+// }: SelectTimezoneProps) => {
+//   const [updateUserTimezone] = useUpdateUserTimezoneMutation({
+//     refetchQueries: [
+//       refetchGetMyUserQuery(),
+//       refetchGetAvailOverrideDatesQuery({
+//         profileId: profileId,
+//       }),
+//       refetchGetAvailWeeklysQuery({
+//         profileId: profileId,
+//       }),
+//     ],
+//   });
+//   return (
+//     <Select
+//       className="w-80"
+//       value={currentTimezone}
+//       options={getTimezoneSelectOptions()}
+//       onSelect={(newTimezone) => {
+//         updateUserTimezone({ variables: { timezone: newTimezone } });
+//       }}
+//     />
+//   );
+// };
+
 const SetAvailabilitiesPage: Page = () => {
   const { currentProfile } = useCurrentProfile();
 
-  if (!currentProfile) {
+  const { data } = useGetMyUserQuery();
+
+  if (!currentProfile || !data) {
     return <></>;
   }
+
+  // const myTimezone = data.getMyUser.timezone;
+  const myTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   return (
     <div>
@@ -20,9 +58,15 @@ const SetAvailabilitiesPage: Page = () => {
           My Availabilities
         </Text>
         <div className="flex-1" />
-        <Text>
-          Time Zone: {Intl.DateTimeFormat().resolvedOptions().timeZone}
-        </Text>
+        <div className="flex items-center">
+          <Text>Time Zone: </Text>
+          <div className="w-2"></div>
+          <div>{myTimezone}</div>
+          {/* <SelectTimezone
+            profileId={currentProfile.profileId}
+            currentTimezone={myTimezone}
+          /> */}
+        </div>
       </div>
       <div className="h-4" />
       <div className="w-full flex-1">
@@ -30,11 +74,11 @@ const SetAvailabilitiesPage: Page = () => {
           <Card className="flex-1 py-4">
             <SetWeeklyAvailabilitiesCard profileId={currentProfile.profileId} />
           </Card>
-          {/* <Card className="flex-1 py-4">
-              <SetAvailabilityOverridesCard
-                profileId={currentProfile.profileId}
-              />
-            </Card> */}
+          <Card className="flex-1 py-4">
+            <SetAvailabilityOverridesCard
+              profileId={currentProfile.profileId}
+            />
+          </Card>
         </div>
       </div>
     </div>

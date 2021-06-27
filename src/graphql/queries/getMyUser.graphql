@@ -5,6 +5,7 @@ query getMyUser {
     firstName
     lastName
     profilePictureUrl
+    timezone
     profiles {
       profileId
       profileType
@@ -17,9 +18,6 @@ query getMyUser {
         iconUrl
         slug
       }
-    }
-    applications {
-      programId
     }
   }
 }
