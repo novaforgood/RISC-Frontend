@@ -146,9 +146,10 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
       availOverrideTimeslots,
       (inA, inB) => inA || inB
     );
-    return intervalsToTimeslots(30, ret).filter(
-      (slot) => slot.startTime.getDate() === selectedDate?.getDate()
-    );
+    const currTime = new Date();
+    return intervalsToTimeslots(30, ret)
+      .filter((slot) => slot.startTime.getDate() === selectedDate?.getDate())
+      .filter((slot) => slot.startTime > currTime);
   }, [
     selectedDate,
     weeklyAvailabilities,
