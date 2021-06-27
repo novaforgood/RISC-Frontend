@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import {
   ChatRequestStatus,
   GetChatRequestsQuery,
@@ -8,12 +8,19 @@ import {
   useGetChatRequestsQuery,
   useRejectChatRequestMutation,
 } from "../../generated/graphql";
+import useTimezoneConverters from "../../hooks/useTimezoneConverters";
 import { Button, Modal, Text } from "../atomic";
 import { CircledCheck, CircledCross } from "../icons";
 import InlineProfileAvatar from "../InlineProfileAvatar";
 import ListFilterer from "../ListFilterer";
 
-type ChatRequestPartial = GetChatRequestsQuery["getChatRequests"][number];
+type ChatRequestPartial = Omit<
+  GetChatRequestsQuery["getChatRequests"][number],
+  "chatStartTime" | "chatEndTime"
+> & {
+  chatStartTime: Date;
+  chatEndTime: Date;
+};
 
 type DetailsModalButtonProps = {
   chatRequest: ChatRequestPartial;
@@ -46,12 +53,9 @@ const DetailsModalButton = ({ chatRequest }: DetailsModalButtonProps) => {
             <Button size={"small"}>View Profile</Button>
           </div>
           <Text>
-            {format(
-              new Date(chatRequest.chatStartTime),
-              "MMM d, yyyy | h:mma"
-            ) +
+            {format(chatRequest.chatStartTime, "MMM d, yyyy | h:mma") +
               " - " +
-              format(new Date(chatRequest.chatEndTime), "MMM d, yyyy | h:mma")}
+              format(chatRequest.chatEndTime, "MMM d, yyyy | h:mma")}
           </Text>
           <div className="h-2" />
           {chatRequest.chatRequestMessage && (
@@ -239,12 +243,25 @@ export const ChatRequestFilterer = ({ profileId }: ChatsFiltererProps) => {
       x.filter((y) => y.chatRequestStatus === ChatRequestStatus.PendingReview),
     Upcoming: (x) =>
       x.filter((y) => y.chatRequestStatus === ChatRequestStatus.Accepted),
-    Past: (x) => x.filter((y) => y.chatStartTime < new Date().getTime()),
+    Past: (x) =>
+      x.filter((y) => y.chatStartTime.getTime() < new Date().getTime()),
   };
+
+  const { fromUTC } = useTimezoneConverters();
+
+  if (!fromUTC || !data) return <Fragment />;
+
+  const chatRequests = data.getChatRequests.map((chatRequest) => {
+    return {
+      ...chatRequest,
+      chatStartTime: fromUTC(new Date(chatRequest.chatStartTime)),
+      chatEndTime: fromUTC(new Date(chatRequest.chatEndTime)),
+    };
+  });
 
   return (
     <ListFilterer
-      listToFilter={data ? data.getChatRequests : []}
+      listToFilter={chatRequests}
       filterOptions={filterOptions}
       defaultFilterOption={"New"}
       listComponent={(filterOption, filteredList) => (

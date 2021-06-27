@@ -182,7 +182,6 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
                 );
                 allTimeslots = allTimeslots.concat(t);
               }
-              console.log(allTimeslots);
               const minusOverrideDates = mergeIntervalLists(
                 allTimeslots,
                 availOverrideDates,
@@ -196,8 +195,14 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
               const selectableDates = intervalsToTimeslots(
                 30,
                 withOverrideTimeslots
-              ).map((slot) => slot.startTime);
-              return selectableDates.filter((d) => d.getMonth() === month);
+              )
+                .map((slot) => slot.startTime)
+                .filter(
+                  (d) => d.getMonth() === month && d.getFullYear() === year
+                );
+
+              console.log(year);
+              return selectableDates;
             }}
           />
         </Card>
@@ -298,8 +303,8 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
                 const createChatRequestInput: CreateChatRequestInput = {
                   mentorProfileId: mentor.profileId,
                   chatRequestMessage: chatRequestMessage,
-                  chatStartTime: selectedTimeslot.startTime.getTime(),
-                  chatEndTime: selectedTimeslot.endTime.getTime(),
+                  chatStartTime: toUTC(selectedTimeslot.startTime).getTime(),
+                  chatEndTime: toUTC(selectedTimeslot.endTime).getTime(),
                 };
                 createChatRequest({
                   variables: {

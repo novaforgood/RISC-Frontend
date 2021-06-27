@@ -1,3 +1,5 @@
+import { addDays } from "date-fns";
+
 /**
  *
  * @param a
@@ -22,23 +24,9 @@ export function getDatesInThisMonth(month: number, year: number) {
   var date = new Date(year, month, 1);
   var days = [];
 
-  // Add days until previous Sunday
-  var tempDate = new Date(date);
-  tempDate.setDate(date.getDate() - 1);
-  while (tempDate.getDay() != 6) {
-    days.unshift(new Date(tempDate));
-    tempDate.setDate(tempDate.getDate() - 1);
-  }
-
   while (date.getMonth() === month) {
     days.push(new Date(date));
-    date.setDate(date.getDate() + 1);
-  }
-
-  // Add days until Saturday
-  while (date.getDay() != 0) {
-    days.push(new Date(date));
-    date.setDate(date.getDate() + 1);
+    date = addDays(date, 1);
   }
   return days;
 }
