@@ -70,6 +70,11 @@ const EditMenteeApplicationPage: Page = (_) => {
       </div>
 
       <div className="h-8"></div>
+      <Text b2>
+        This page is for editing the questions that prospective mentees will
+        have to answer in order to join the program.
+      </Text>
+      <div className="h-8" />
 
       <FormSchemaEditor
         questions={applicationSchema}

@@ -67,7 +67,11 @@ const EditMentorProfilePage: Page = (_) => {
       </div>
 
       <div className="h-8"></div>
-
+      <Text b2>
+        This page is for editing the information that mentors will see when they
+        fill out their profiles for your organization.
+      </Text>
+      <div className="h-8" />
       <FormSchemaEditor
         questions={profileSchema}
         onChange={(newQuestions) => {

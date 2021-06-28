@@ -12,6 +12,11 @@ import {
 import RedirectIfNotLoggedIn from "../layouts/RedirectIfNotLoggedIn";
 import Page from "../types/Page";
 
+const EXAMPLE_MENTOR_APPLICATION = `[{"id":"b8AJJ84IzMFWGTkt_lxG9","title":"Why do you want to join this program?","description":"It helps to be specific with your answer!","type":"long-answer"},{"id":"zXA9E77Mcglv_0LV4Hv8H","title":"What specific skills or experiences do you have that make you fit for this program?","description":"","type":"long-answer"}]`;
+const EXAMPLE_MENTOR_PROFILE = `[{"id":"j2dVlUIKow3HqSxVX5Hxp","title":"What are you looking for out of potential mentees?","description":"","type":"short-answer"},{"id":"bXB9TrYI1IJWlOlDE7k_n","title":"Tell us a little bit about your profession/position/other.","description":"","type":"long-answer"}]`;
+const EXAMPLE_MENTEE_APPLICATION = `[{"id":"qlEHm6cKjuX3nHSchVBGL","title":"What do you hope to get from joining our program?","description":"It helps to be specific here!","type":"long-answer"},{"id":"3x7BYtuTIttI9NiAw-46o","title":"How did you find out about us?","description":"","type":"short-answer"}]`;
+const EXAMPLE_MENTEE_PROFILE = `[{"id":"KDAhd2WnA4RfnLKZzZbaF","title":"What are you looking for from a mentor?","description":"It helps to be specific here!","type":"long-answer"},{"id":"pD2qaE7YAZppUcC9lwGtf","title":"What are some of your goals?","description":"","type":"short-answer"}]`;
+
 const BlobCircle = () => {
   const sizes = "h-24 w-24 md:h-64 md:w-64 lg:h-80 lg:w-80";
   return (
@@ -43,7 +48,7 @@ const CreateProgramPage: Page = () => {
 
   const validateProgramIdentifier = (name: string) => {
     // check string is valid for url; can ask product for more constraints on names
-    return name.length && name.match(/^[a-zA-Z0-9]{4,}$/) && !name.match("/");
+    return name.length && name.match(/^[a-zA-Z0-9\-]{4,}$/) && !name.match("/");
   };
 
   const callCreateProgram = async () => {
@@ -66,10 +71,10 @@ const CreateProgramPage: Page = () => {
       slug: programIdentifier,
       iconUrl: iconUrl,
       homepage: JSON.stringify(defaultContentState),
-      mentorProfileSchemaJson: "",
-      menteeProfileSchemaJson: "",
-      mentorApplicationSchemaJson: "",
-      menteeApplicationSchemaJson: "",
+      mentorProfileSchemaJson: EXAMPLE_MENTOR_PROFILE,
+      menteeProfileSchemaJson: EXAMPLE_MENTEE_PROFILE,
+      mentorApplicationSchemaJson: EXAMPLE_MENTOR_APPLICATION,
+      menteeApplicationSchemaJson: EXAMPLE_MENTEE_APPLICATION,
       public: true,
     };
 

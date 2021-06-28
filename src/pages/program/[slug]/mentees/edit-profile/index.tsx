@@ -33,6 +33,7 @@ const EditMenteeProfilePage: Page = (_) => {
   }, [currentProgram]);
 
   const saveMenteeProfileSchema = () => {
+    console.log(JSON.stringify(profileSchema));
     setIsSavingProfileSchema(true);
     updateProgram({
       variables: {
@@ -66,7 +67,12 @@ const EditMenteeProfilePage: Page = (_) => {
         </div>
       </div>
 
-      <div className="h-8"></div>
+      <div className="h-8" />
+      <Text b2>
+        This page is for editing the information that mentees will see when they
+        fill out their profiles for your organization.
+      </Text>
+      <div className="h-8" />
 
       <FormSchemaEditor
         questions={profileSchema}
