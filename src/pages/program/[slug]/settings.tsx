@@ -63,7 +63,9 @@ const SettingsPage: Page = () => {
 
   //TODO: Image Upload and Resize => URL save
   const [uploadImageAndResizeMutation] = useUploadImageAndResizeMutation();
-  const [updateProgram] = useUpdateProgramMutation({ refetchQueries: [refetchGetMyUserQuery()]});
+  const [updateProgram] = useUpdateProgramMutation({
+    refetchQueries: [refetchGetMyUserQuery()],
+  });
   const [mentorshipName, setMentorshipName] = useState(name);
   const [mentorshipDescription, setMentorshipDescription] =
     useState(description);
@@ -117,7 +119,7 @@ const SettingsPage: Page = () => {
             id="mentorship-name"
             className="col-span-2 overflow-ellipsis"
             placeholder="Organization Name"
-            value={mentorshipName}
+            value={mentorshipName || name}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               setMentorshipName(e.target.value);
               setModified(true);
@@ -141,6 +143,7 @@ const SettingsPage: Page = () => {
                 "mentorship-link"
               ) as HTMLInputElement;
 
+              //TODO: ExecCommand has been deprecated although copy command is still supported on most browsers
               link.focus();
               link.disabled = false;
               link.select();
@@ -161,7 +164,7 @@ const SettingsPage: Page = () => {
           <TextArea
             className="resize-none w-full h-32"
             placeholder="Organization Description"
-            value={mentorshipDescription}
+            value={mentorshipDescription || description}
             onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
               setMentorshipDescription(e.target.value);
               setModified(true);

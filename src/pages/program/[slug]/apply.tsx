@@ -70,6 +70,7 @@ const ProgramApplyPage: Page = (_) => {
       </div>
     );
 
+  // This creates a flash before applying when the program exists
   // There must be a better/more direct way of checking whether the program exists or not.
   if (currentProgram?.name == null) {
     return (

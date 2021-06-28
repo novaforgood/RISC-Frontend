@@ -32,12 +32,12 @@ const UploadIconWithPreview = ({
                 onErrorOccured("The uploaded file was invalid.");
               }
             }}
-            className="hidden"
+            className="hidden overflow-ellipsis"
             type="file"
             accept="image/*"
           />
-          <div className="w-full h-full flex items-center justify-center cursor-pointer">
-            Choose File
+          <div className="w-full h-full p-4 flex items-center justify-center cursor-pointer">
+            Upload
           </div>
         </label>
       </Button>
