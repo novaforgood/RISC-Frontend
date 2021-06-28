@@ -17,7 +17,7 @@ const BlobCircle = () => {
 };
 
 const LoginPage = () => {
-  const { signInWithEmail, signInWithGoogle, signOut } = useAuth();
+  const { signInWithEmail, signInWithGoogle } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayError, setError] = useState("");
