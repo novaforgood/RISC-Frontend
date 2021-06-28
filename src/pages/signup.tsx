@@ -204,8 +204,6 @@ const SignUpPage = () => {
                         timezone: getTimezone(),
                       };
                       res.user?.sendEmailVerification();
-                      signOut();
-                      setModalOpen(true);
                       Promise.all([
                         createUser({ variables: { data: createUserInput } }),
                         res.user?.updateProfile({
@@ -213,6 +211,9 @@ const SignUpPage = () => {
                           photoURL: "",
                         }),
                       ])
+                        .then(() => {
+                          router.push("/verify");
+                        })
                         .then(() => {})
                         .catch((e) => {
                           setDisplayError(e.message);

@@ -66,7 +66,7 @@ const LoginPage = () => {
                         "An account with this email has not been created yet."
                       );
                     } else {
-                      redirectAfterLoggingIn();
+                      // redirectAfterLoggingIn();
                     }
                   }
                 })
