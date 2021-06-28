@@ -81,51 +81,55 @@ const LoginPage = () => {
             <div className="h-0.25 flex-1 bg-inactive"></div>
           </div>
           <div className="h-6" />
-          <TitledInput
-            title="Email"
-            name="Email"
-            // type="email"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-          />
-          <div className="h-3" />
-          <div>
-            <div className="flex justify-between">
-              <Text b>Password</Text>
-
-              <Text className="text-darkblue hover:underline">
-                <Link href="/reset-password">Forgot Password?</Link>
-              </Text>
-            </div>
-            <div className="h-1" />
-            <Input
-              className="w-full"
-              title="Password"
-              name="Password"
-              type="password"
-              value={password}
+          <form>
+            <TitledInput
+              title="Email"
+              name="Email"
+              // type="email"
+              value={email}
               onChange={(e) => {
-                setPassword(e.target.value);
+                setEmail(e.target.value);
               }}
             />
-          </div>
-          <div className="h-6" />
+            <div className="h-3" />
+            <div>
+              <div className="flex justify-between">
+                <Text b>Password</Text>
 
-          <Button
-            onClick={() => {
-              signInWithEmail(email, password)
-                .then((_) => {
-                  redirectAfterLoggingIn();
-                })
-                .catch((error) => {
-                  setError(error.message);
-                });
-            }}
-          >
-            Login
-          </Button>
+                <Text className="text-darkblue hover:underline">
+                  <Link href="/reset-password">Forgot Password?</Link>
+                </Text>
+              </div>
+              <div className="h-1" />
+              <Input
+                className="w-full"
+                title="Password"
+                name="Password"
+                type="password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
+              />
+            </div>
+            <div className="h-6" />
+
+            <Button
+              type="submit"
+              onClick={(e) => {
+                e.preventDefault();
+                signInWithEmail(email, password)
+                  .then((_) => {
+                    redirectAfterLoggingIn();
+                  })
+                  .catch((error) => {
+                    setError(error.message);
+                  });
+              }}
+            >
+              Login
+            </Button>
+          </form>
           <div className="h-6" />
           <Text className="text-error">{displayError}</Text>
         </div>

@@ -103,104 +103,107 @@ const SignUpPage = () => {
           </div>
           <div className="h-6" />
 
-          <div className="flex w-full">
+          <form>
+            <div className="flex w-full">
+              <TitledInput
+                title="First Name"
+                name="First Name"
+                // type="email"
+                value={firstName}
+                className="flex-1"
+                onChange={(e) => {
+                  setFirstName(e.target.value);
+                }}
+              />
+              <div className="w-2" />
+              <TitledInput
+                title="Last Name"
+                name="Last Name"
+                value={lastName}
+                className="flex-1"
+                onChange={(e) => {
+                  setLastName(e.target.value);
+                }}
+              />
+            </div>
+            <div className="h-3" />
+
             <TitledInput
-              title="First Name"
-              name="First Name"
+              title="Email"
+              name="Email"
               // type="email"
-              value={firstName}
-              className="flex-1"
+              value={email}
               onChange={(e) => {
-                setFirstName(e.target.value);
+                setEmail(e.target.value);
               }}
             />
-            <div className="w-2" />
+            <div className="h-3" />
+
             <TitledInput
-              title="Last Name"
-              name="Last Name"
-              value={lastName}
-              className="flex-1"
+              title="Password"
+              name="Password"
+              type="password"
+              value={password}
               onChange={(e) => {
-                setLastName(e.target.value);
+                setPassword(e.target.value);
               }}
             />
-          </div>
-          <div className="h-3" />
+            <div className="h-6" />
 
-          <TitledInput
-            title="Email"
-            name="Email"
-            // type="email"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-          />
-          <div className="h-3" />
-
-          <TitledInput
-            title="Password"
-            name="Password"
-            type="password"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-          />
-          <div className="h-6" />
-
-          <div className="flex items-center">
-            <Checkbox
-              checked={tocChecked}
-              onCheck={() => {
-                setTocChecked(!tocChecked);
-              }}
-            />
-            <Text>
-              I read and agree to the{" "}
-              <Text u b>
-                Terms and Conditions
+            <div className="flex items-center">
+              <Checkbox
+                checked={tocChecked}
+                onCheck={() => {
+                  setTocChecked(!tocChecked);
+                }}
+              />
+              <Text>
+                I read and agree to the{" "}
+                <Text u b>
+                  Terms and Conditions
+                </Text>
               </Text>
-            </Text>
-          </div>
-          <div className="h-6" />
+            </div>
+            <div className="h-6" />
 
-          <Button
-            onClick={() => {
-              signUpWithEmail(email, password)
-                .catch((e) => {
-                  setDisplayError(e.message);
-                })
-                .then((res) => {
-                  // TODO: Valid profilePictureURL and photoURL
-                  if (res) {
-                    const createUserInput: CreateUserInput = {
-                      email: res.user?.email!,
-                      firstName: firstName,
-                      lastName: lastName,
-                      profilePictureUrl: "",
-                      timezone: getTimezone(),
-                    };
+            <Button
+              onClick={(e) => {
+                e.preventDefault();
+                signUpWithEmail(email, password)
+                  .catch((e) => {
+                    setDisplayError(e.message);
+                  })
+                  .then((res) => {
+                    // TODO: Valid profilePictureURL and photoURL
+                    if (res) {
+                      const createUserInput: CreateUserInput = {
+                        email: res.user?.email!,
+                        firstName: firstName,
+                        lastName: lastName,
+                        profilePictureUrl: "",
+                        timezone: getTimezone(),
+                      };
 
-                    Promise.all([
-                      createUser({ variables: { data: createUserInput } }),
-                      res.user?.updateProfile({
-                        displayName: firstName + " " + lastName,
-                        photoURL: "",
-                      }),
-                    ])
-                      .then(() => {
-                        router.push("/");
-                      })
-                      .catch((e) => {
-                        setDisplayError(e.message);
-                      });
-                  }
-                });
-            }}
-          >
-            Sign Up
-          </Button>
+                      Promise.all([
+                        createUser({ variables: { data: createUserInput } }),
+                        res.user?.updateProfile({
+                          displayName: firstName + " " + lastName,
+                          photoURL: "",
+                        }),
+                      ])
+                        .then(() => {
+                          router.push("/");
+                        })
+                        .catch((e) => {
+                          setDisplayError(e.message);
+                        });
+                    }
+                  });
+              }}
+            >
+              Sign Up
+            </Button>
+          </form>
           <div className="h-6" />
 
           <Text className="text-error">{displayError ? displayError : ""}</Text>
