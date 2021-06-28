@@ -1,11 +1,11 @@
 import React from "react";
 import { Button, Card, Tag, Text } from "../../components/atomic";
 import {
-  useGetProfileTagsByProgramLazyQuery,
-  useCreateProfileTagMutation,
-  useUpdateProfileTagMutation,
   CreateProfileTagInput,
   UpdateProfileTagInput,
+  useCreateProfileTagMutation,
+  useGetProfileTagsByProgramLazyQuery,
+  useUpdateProfileTagMutation,
 } from "../../generated/graphql";
 
 const IndexPage = () => {

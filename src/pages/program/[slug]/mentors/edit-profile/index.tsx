@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Text } from "../../../../../components/atomic";
 import FormSchemaEditor from "../../../../../components/FormSchemaEditor";
+import TagSchemaEditor from "../../../../../components/tags/TagSchemaEditor";
 import { useUpdateProgramMutation } from "../../../../../generated/graphql";
 import { useCurrentProgram } from "../../../../../hooks";
 import ChooseTabLayout from "../../../../../layouts/ChooseTabLayout";
@@ -67,11 +68,8 @@ const EditMentorProfilePage: Page = (_) => {
       </div>
 
       <div className="h-8"></div>
-      <Text b2>
-        This page is for editing the information that mentors will see when they
-        fill out their profiles for your organization.
-      </Text>
-      <div className="h-8" />
+      <TagSchemaEditor tags={[]} onChange={() => {}} />
+
       <FormSchemaEditor
         questions={profileSchema}
         onChange={(newQuestions) => {
