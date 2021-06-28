@@ -67,7 +67,7 @@ const TextAsker = ({
       )}
       <Input
         className="w-full"
-        placeholder={type == "short-answer" ? "Short text" : "Long text"}
+        placeholder={type === "short-answer" ? "Short text" : "Long text"}
         readOnly={readonly}
         disabled={readonly}
         value={answer}
@@ -109,7 +109,30 @@ const Form = ({
     debouncedAutosave();
   };
 
-  return (
+  return readonly ? (
+    <div className="p-9">
+      <div className="space-y-6">
+        {questions.map((question, i) => {
+          switch (question.type) {
+            case "short-answer":
+            case "long-answer":
+              return (
+                <TextAsker
+                  {...question}
+                  initResponse={responses[`${question.id}`] || ""}
+                  readonly={readonly}
+                  showDescriptions={showDescriptions}
+                  onChange={handleChange}
+                  key={i}
+                ></TextAsker>
+              );
+            case "multiple-choice":
+              return;
+          }
+        })}
+      </div>
+    </div>
+  ) : (
     <Card className={"p-9 border-inactive rounded-xl " + className}>
       <div className="space-y-6">
         {questions.map((question, i) => {

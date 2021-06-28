@@ -61,11 +61,15 @@ const SignUpPage = () => {
                 .then((res) => {
                   if (res) {
                     const arr = res.user?.displayName?.split(" ") || [];
+                    const highResPhotoURL = res.user?.photoURL?.replace(
+                      "s96-c",
+                      "s400-c"
+                    );
                     const createUserInput: CreateUserInput = {
                       email: res.user?.email!,
                       firstName: arr[0] || "",
                       lastName: arr[1] || "",
-                      profilePictureUrl: res.user?.photoURL || "",
+                      profilePictureUrl: highResPhotoURL || "",
                       timezone: getTimezone(),
                     };
                     createUser({ variables: { data: createUserInput } }).then(
