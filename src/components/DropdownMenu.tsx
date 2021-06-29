@@ -14,6 +14,12 @@ function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(" ");
 }
 
+const ItemStyle = (active: Boolean) =>
+  classNames(
+    active ? "bg-gray-100 text-gray-900" : "text-gray-700",
+    "hover:bg-tertiary block px-4 py-2 text-sm"
+  );
+
 export default function Dropdown({ button }: DropdownProps) {
   const { user, signOut } = useAuth();
   const authorizationLevel = useAuthorizationLevel();
@@ -54,16 +60,7 @@ export default function Dropdown({ button }: DropdownProps) {
                   <Menu.Item>
                     {({ active }) => (
                       <Link href="/my/applications">
-                        <a
-                          className={classNames(
-                            active
-                              ? "bg-gray-100 text-gray-900"
-                              : "text-gray-700",
-                            "block px-4 py-2 text-sm"
-                          )}
-                        >
-                          My Applications
-                        </a>
+                        <a className={ItemStyle(active)}>My Applications</a>
                       </Link>
                     )}
                   </Menu.Item>
@@ -71,14 +68,18 @@ export default function Dropdown({ button }: DropdownProps) {
                 {user ? (
                   <Menu.Item>
                     {({ active }) => (
+                      <a href="/profile" className={ItemStyle(active)}>
+                        General Profile
+                      </a>
+                    )}
+                  </Menu.Item>
+                ) : null}
+                {user ? (
+                  <Menu.Item>
+                    {({ active }) => (
                       <a
                         href="/"
-                        className={classNames(
-                          active
-                            ? "bg-gray-100 text-gray-900"
-                            : "text-gray-700",
-                          "block px-4 py-2 text-sm"
-                        )}
+                        className={ItemStyle(active)}
                         onClick={() => {
                           signOut();
                         }}
