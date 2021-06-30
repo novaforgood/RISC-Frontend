@@ -1,3 +1,4 @@
+import { nanoid } from "nanoid";
 import {
   Fragment,
   InputHTMLAttributes,
@@ -8,10 +9,13 @@ import {
 import { Tag } from "../atomic";
 import { ProfileTag } from "./types";
 
-type AddTagInputProps = InputHTMLAttributes<HTMLInputElement>;
+type AddTagInputProps = {
+  onEnter: (newTagName: string) => void;
+} & InputHTMLAttributes<HTMLInputElement>;
 
-function AddTagInput(props: AddTagInputProps) {
+function AddTagInput({ onEnter, ...props }: AddTagInputProps) {
   const [edit, setEdit] = useState(false);
+  const [newTagName, setNewTagName] = useState("");
 
   const ref = useRef<HTMLInputElement | null>(null);
   const handleClickOutside = (event: MouseEvent) => {
@@ -34,15 +38,20 @@ function AddTagInput(props: AddTagInputProps) {
         ref={ref}
         autoFocus
         placeholder="type here"
-        // onKeyDown={(e) => {
-        //   if (e.key === "Enter") {
-        //     const val = e.target.value.trim();
-        //     if (val.length > 0) {
-        //       onEnter(e.target.value);
-        //       setEdit(false);
-        //     }
-        //   }
-        // }}
+        value={newTagName}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            const target = e.target as HTMLInputElement;
+            const val = target.value.trim();
+            if (val.length > 0) {
+              setNewTagName("");
+              onEnter(val);
+            }
+          }
+        }}
+        onChange={(e) => {
+          setNewTagName(e.target.value);
+        }}
         {...props}
       ></input>
       <div className="absolute">Press enter to add</div>
@@ -68,14 +77,24 @@ function TagSchemaEditor({
           <Fragment key={i}>
             <Tag
               onClick={() => {
-                onChange([]);
+                onChange(
+                  tags.filter((t) => t.profileTagId !== tag.profileTagId)
+                );
               }}
             >
               <div>{tag.name}</div>
             </Tag>
           </Fragment>
         ))}
-        <AddTagInput />
+        <AddTagInput
+          onEnter={(newTagName) => {
+            if (tags.find((tag) => tag.name === newTagName)) {
+              alert(`Cannot add tag: Tag "${newTagName}" already exists.`);
+              return;
+            }
+            onChange([...tags, { name: newTagName, profileTagId: nanoid() }]);
+          }}
+        />
       </div>
     </div>
   );

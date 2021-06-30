@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Button, Text } from "../../../../../components/atomic";
 import FormSchemaEditor from "../../../../../components/FormSchemaEditor";
 import TagSchemaEditor from "../../../../../components/tags/TagSchemaEditor";
-import { useUpdateProgramMutation } from "../../../../../generated/graphql";
+import { ProfileTag } from "../../../../../components/tags/types";
+import {
+  useGetProfileTagsByProgramQuery,
+  useUpdateProfileTagsOfProgramMutation,
+  useUpdateProgramMutation,
+} from "../../../../../generated/graphql";
 import { useCurrentProgram } from "../../../../../hooks";
 import ChooseTabLayout from "../../../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../../../layouts/PageContainer";
@@ -20,10 +25,16 @@ function getQuestionsFromJson(json: string): Question[] {
 const EditMentorProfilePage: Page = (_) => {
   const { currentProgram, refetchCurrentProgram } = useCurrentProgram();
   const [updateProgram] = useUpdateProgramMutation();
+  const [updateProfileTagsOfProgram] = useUpdateProfileTagsOfProgramMutation();
+  const { data: profileTagsData, refetch: refetchProfileTags } =
+    useGetProfileTagsByProgramQuery({
+      variables: { programId: currentProgram?.programId! },
+    });
   const [profileSchema, setProfileSchema] = useState<Question[]>([]);
+  const [profileTags, setProfileTags] = useState<ProfileTag[]>([]);
   const [modified, setModified] = useState(false);
-  const [isSavingProfileSchema, setIsSavingProfileSchema] = useState(false);
-  isSavingProfileSchema; // TODO: If is saving, set loading state of button to true.
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+  isSavingProfile; // TODO: If is saving, set loading state of button to true.
 
   useEffect(() => {
     if (!currentProgram) return;
@@ -33,16 +44,38 @@ const EditMentorProfilePage: Page = (_) => {
     return () => {};
   }, [currentProgram]);
 
-  const saveMentorProfileSchema = () => {
-    setIsSavingProfileSchema(true);
-    updateProgram({
-      variables: {
-        programId: currentProgram?.programId!,
-        data: { mentorProfileSchemaJson: JSON.stringify(profileSchema) },
-      },
-    }).then(() => {
+  useEffect(() => {
+    if (!profileTagsData) return;
+    setProfileTags(profileTagsData.getProfileTagsByProgram);
+    return () => {};
+  }, [profileTagsData]);
+
+  const saveProfile = () => {
+    if (!currentProgram) return;
+
+    setIsSavingProfile(true);
+
+    Promise.all([
+      updateProgram({
+        variables: {
+          programId: currentProgram.programId,
+          data: { mentorProfileSchemaJson: JSON.stringify(profileSchema) },
+        },
+      }),
+      updateProfileTagsOfProgram({
+        variables: {
+          programId: currentProgram.programId,
+          profileTags: profileTags.map((tag) => ({
+            profileTagId: tag.profileTagId,
+            name: tag.name,
+          })),
+        },
+      }),
+    ]).then(() => {
       refetchCurrentProgram();
-      setIsSavingProfileSchema(false);
+      refetchProfileTags({ programId: currentProgram.programId });
+
+      setIsSavingProfile(false);
       setModified(false);
     });
   };
@@ -59,7 +92,7 @@ const EditMentorProfilePage: Page = (_) => {
             size="small"
             disabled={!modified}
             onClick={() => {
-              saveMentorProfileSchema();
+              saveProfile();
             }}
           >
             Save
@@ -68,7 +101,13 @@ const EditMentorProfilePage: Page = (_) => {
       </div>
 
       <div className="h-8"></div>
-      <TagSchemaEditor tags={[]} onChange={() => {}} />
+      <TagSchemaEditor
+        tags={profileTags}
+        onChange={(newProfileTags) => {
+          setModified(true);
+          setProfileTags(newProfileTags);
+        }}
+      />
 
       <FormSchemaEditor
         questions={profileSchema}
