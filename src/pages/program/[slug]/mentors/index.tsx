@@ -16,21 +16,21 @@ type MentorProfile = GetProfilesQuery["getProfiles"][0];
 
 interface MentorCardProps {
   // TODO: Remove "any" and replace with proper fields
-  mentor: MentorProfile | any;
+  mentor: MentorProfile;
 }
 const MentorCard = ({ mentor }: MentorCardProps) => {
   const [profileModalOpen, setProfileModalOpen] = useState(false);
 
-  // const tags = mentor.tags?.slice(0, 3).map((tag: string, index: number) => (
-  //   <div className="rounded-md bg-tertiary m-1 p-1" key={index}>
-  //     {tag}
-  //   </div>
-  // ));
-  // const moreTag = (
-  //   <div className="rounded-md border-primary border m-1 p-1">
-  //     + {mentor.tags?.length - 3} more
-  //   </div>
-  // );
+  const tags = mentor.profileTags.slice(0, 3).map((tag, index: number) => (
+    <div className="rounded-md bg-tertiary m-1 p-1" key={index}>
+      {tag.name}
+    </div>
+  ));
+  const moreTag = (
+    <div className="rounded-md border-primary border m-1 p-1">
+      + {mentor.profileTags.length - 3} more
+    </div>
+  );
 
   return (
     <Card className="flex flex-col p-6 place-items-center border-0">
@@ -45,11 +45,11 @@ const MentorCard = ({ mentor }: MentorCardProps) => {
       <Text b className="text-body-1 text-center">
         {mentor.user.firstName} {mentor.user.lastName}
       </Text>
-      {/* <div className="h-4"></div>
+      <div className="h-4"></div>
       <div className="flex flex-wrap justify-center">
         {tags}
-        {mentor.tags?.length > 3 ? moreTag : <div></div>}
-      </div> */}
+        {mentor.profileTags.length > 3 ? moreTag : <div></div>}
+      </div>
       <div className="h-4"></div>
       <div className="h-24 w-full text-center break-words overflow-hidden overflow-ellipsis">
         {mentor.bio}
