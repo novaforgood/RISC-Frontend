@@ -1,18 +1,21 @@
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { Button, Card, Text } from "../components/atomic";
+import { BackArrow } from "../components/icons";
+import TitledInput from "../components/TitledInput";
+import UploadIconWithPreview from "../components/UploadIconWithPreview";
 import {
+  refetchGetMyUserQuery,
   useGetMyUserQuery,
   useUpdateUserMutation,
   useUploadImageAndResizeMutation,
 } from "../generated/graphql";
-import UploadIconWithPreview from "../components/UploadIconWithPreview";
-import TitledInput from "../components/TitledInput";
-import { BackArrow } from "../components/icons";
-import { useRouter } from "next/router";
 
 const GeneralProfile = () => {
   const { data } = useGetMyUserQuery();
-  const [updateUser] = useUpdateUserMutation();
+  const [updateUser] = useUpdateUserMutation({
+    refetchQueries: [refetchGetMyUserQuery()],
+  });
   const [uploadImageAndResizeMutation] = useUploadImageAndResizeMutation();
   const [modified, setModified] = useState(false);
   const [firstName, setFirstName] = useState(data?.getMyUser.firstName);
