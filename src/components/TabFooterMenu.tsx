@@ -1,4 +1,4 @@
-import { useAuth } from "../utils/firebase/auth";
+import { useGetMyUserQuery } from "../generated/graphql";
 import { Text } from "./atomic";
 import DropdownMenu from "./DropdownMenu";
 
@@ -7,16 +7,18 @@ import DropdownMenu from "./DropdownMenu";
 // TODO: Make this actually fetch picture from db
 
 const TabFooterMenu = () => {
-  const { user } = useAuth();
+  const { data } = useGetMyUserQuery();
 
-  if (user == null) {
+  if (data == null) {
     return <div></div>;
   }
 
-  const photoURL: string =
-    user == null || user.photoURL == null || user.photoURL == ""
+  const myData = data.getMyUser;
+
+  const profilePictureUrl: string =
+    myData.profilePictureUrl == null || myData.profilePictureUrl == ""
       ? "/static/HappyBlobs.svg"
-      : user.photoURL;
+      : myData.profilePictureUrl;
 
   return (
     <div className="w-full absolute bottom-0 p-2 bg-white">
@@ -25,9 +27,11 @@ const TabFooterMenu = () => {
           <div className="inline-flex items-center">
             <img
               className="h-10 w-10 object-contain border border-inactive rounded-full"
-              src={photoURL}
+              src={profilePictureUrl}
             />
-            <Text className="ml-4">{user.displayName}</Text>
+            <Text className="ml-4">
+              {myData.firstName} {myData.lastName}
+            </Text>
           </div>
         }
       />
