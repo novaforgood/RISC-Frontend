@@ -138,9 +138,9 @@ const EditProfilePage: Page = (_) => {
           </div>
           <div className="h-8"></div>
           <Card className="flex flex-col w-80 p-6 items-center border-0">
-            <div className="h-40 w-40 rounded-full object-cover bg-tertiary">
+            <div className="h-40 w-40 rounded-full object-cover bg-tertiary border border-inactive">
               <img
-                className="h-40 w-40 rounded-full"
+                className="h-full w-full rounded-full"
                 src={profilePictureUrl}
               ></img>
             </div>
