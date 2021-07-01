@@ -53,7 +53,7 @@ const ProfileModal = ({
     switch (stage) {
       case ProfileModalStage.VIEW_PROFILE:
         return (
-          <div>
+          <div className="w-full">
             <div className="flex">
               <div className="flex flex-col items-center">
                 <div className="h-40 w-40 rounded-full bg-inactive">
@@ -82,7 +82,7 @@ const ProfileModal = ({
                 </div>
                 <div className="h-4"></div>
 
-                <div className="flex justify-center">
+                <div className="flex ">
                   <Button
                     size="small"
                     // disabled={authorizationLevel !== AuthorizationLevel.Mentee}
@@ -107,17 +107,23 @@ const ProfileModal = ({
             <div className="h-6" />
             <div className="h-0.25 w-full bg-tertiary" />
             <div className="h-6" />
-            <div>
-              <Text b>Personal Bio</Text>
-            </div>
-            <div>
-              <Text>{profile.bio}</Text>
-            </div>
+
+            <Card className="p-6">
+              <div>
+                <Text b>Bio</Text>
+              </div>
+              <div className="h-1"></div>
+              <div>
+                <Text>{profile.bio}</Text>
+              </div>
+            </Card>
+
+            <div className="h-4"></div>
 
             <Card className="p-6">
               <Text b>Types of mentorship offered</Text>
               <div className="h-2"></div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 {profile.profileTags.map((tag) => {
                   return <Tag>{tag.name}</Tag>;
                 })}
@@ -162,7 +168,9 @@ const ProfileModal = ({
         onClose();
       }}
     >
-      <div className="flex p-4">{renderModalContents()}</div>
+      <div className="flex p-4 md:max-w-3xl lg:max-w-4xl">
+        {renderModalContents()}
+      </div>
     </Modal>
   );
 };

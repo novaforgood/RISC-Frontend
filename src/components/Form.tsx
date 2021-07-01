@@ -110,7 +110,7 @@ const Form = ({
   };
 
   return readonly ? (
-    <div className="p-6">
+    <Card className="p-6">
       <div className="space-y-6">
         {questions.map((question, i) => {
           switch (question.type) {
@@ -131,7 +131,7 @@ const Form = ({
           }
         })}
       </div>
-    </div>
+    </Card>
   ) : (
     <Card className={"p-6 border-inactive rounded-xl " + className}>
       <div className="space-y-6">
