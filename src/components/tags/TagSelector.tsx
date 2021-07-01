@@ -15,14 +15,14 @@ function TagSelector({
   const selectedTagSet = new Set(selectedTagIds);
 
   return (
-    <div className="flex">
+    <div className="flex flex-wrap gap-2">
       {selectableTags.map((tag, i) => {
         const tagIsSelected = selectedTagSet.has(tag.profileTagId);
 
         return (
           <Tag
             key={i}
-            variant={tagIsSelected ? "solid" : "outline"}
+            variant={tagIsSelected ? "dark" : "outline"}
             onClick={() => {
               console.log("lol");
               if (tagIsSelected) {

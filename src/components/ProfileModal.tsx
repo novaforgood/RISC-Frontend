@@ -24,21 +24,22 @@ function getResponsesFromJson(json: Maybe<string> | undefined): ResponseJson {
   }
 }
 
-type MentorProfile = GetProfilesQuery["getProfiles"][number];
+type Profile = GetProfilesQuery["getProfiles"][number];
 
 enum ProfileModalStage {
   VIEW_PROFILE = "VIEW_PROFILE",
   BOOK_CHAT = "BOOK_CHAT",
 }
+
 interface ProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
-  mentor: MentorProfile;
+  profile: Profile;
 }
 const ProfileModal = ({
   isOpen,
   onClose = () => {},
-  mentor,
+  profile,
 }: ProfileModalProps) => {
   const [stage, setStage] = useState(ProfileModalStage.VIEW_PROFILE);
   const { currentProgram } = useCurrentProgram();
@@ -55,15 +56,12 @@ const ProfileModal = ({
           <div>
             <div className="flex">
               <div className="flex flex-col items-center">
-                <div className="h-40 w-40 rounded-full object-cover bg-inactive">
-                  <img
-                    className="h-40 w-40 rounded-full"
-                    src={mentor.user.profilePictureUrl}
-                  ></img>
+                <div className="h-40 w-40 rounded-full bg-inactive">
+                  <img src={profile.user.profilePictureUrl}></img>
                 </div>
                 <div className="h-4"></div>
                 <Text b1 b>
-                  {mentor.user.firstName} {mentor.user.lastName}
+                  {profile.user.firstName} {profile.user.lastName}
                 </Text>
               </div>
               <div className="w-8"></div>
@@ -76,14 +74,7 @@ const ProfileModal = ({
                           <Text b>Email:</Text>
                         </td>
                         <td className="pl-4">
-                          <Text className="text-darkblue hover:underline">
-                            <a
-                              title="Email Mentor"
-                              href={`mailto:${mentor.user.email}`}
-                            >
-                              {mentor.user.email}
-                            </a>
-                          </Text>
+                          <Text>{profile.user.email}</Text>
                         </td>
                       </tr>
                     </table>
@@ -120,7 +111,7 @@ const ProfileModal = ({
               <Text b>Personal Bio</Text>
             </div>
             <div>
-              <Text>{mentor.bio}</Text>
+              <Text>{profile.bio}</Text>
             </div>
             <div className="h-6" />
             <div>
@@ -130,7 +121,7 @@ const ProfileModal = ({
               questions={getQuestionsFromJson(
                 currentProgram?.mentorProfileSchemaJson
               )}
-              responses={getResponsesFromJson(mentor.profileJson)}
+              responses={getResponsesFromJson(profile.profileJson)}
               readonly
               showDescriptions={false}
             />
@@ -147,7 +138,7 @@ const ProfileModal = ({
             >
               Back
             </Button>
-            <BookAChat mentor={mentor} />
+            <BookAChat mentor={profile} />
           </div>
         );
     }
