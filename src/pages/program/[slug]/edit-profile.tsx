@@ -174,7 +174,13 @@ const EditProfilePage: Page = (_) => {
           </Card>
           <div className="h-8"></div>
 
-          <Card className="flex flex-col  p-6 items-center border-0">
+          <Card className="flex flex-col p-6 items-start border-0">
+            <Text b>
+              {isMentor
+                ? "What kinds of mentorship do you offer?"
+                : "What kinds of mentorship are you looking for?"}
+            </Text>
+            <div className="h-2"></div>
             <TagSelector
               selectableTags={programTagsData.getProfileTagsByProgram}
               selectedTagIds={selectedTagIds}

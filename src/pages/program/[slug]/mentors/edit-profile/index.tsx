@@ -108,9 +108,7 @@ const EditMentorProfilePage: Page = (_) => {
         </Text>
         <div className="h-2"></div>
 
-        <Text>
-          Mentors will use this to show what type of mentorship they offer.
-        </Text>
+        <Text>What kinds of mentorship do your mentors offer?</Text>
         <div className="h-4"></div>
 
         <TagSchemaEditor
@@ -120,10 +118,15 @@ const EditMentorProfilePage: Page = (_) => {
             setProfileTags(newProfileTags);
           }}
         />
-        <div className="h-8"></div>
+        <div className="h-16"></div>
 
         <Text h3 b className="text-secondary">
           Edit questions
+        </Text>
+        <div className="h-2"></div>
+
+        <Text>
+          What should mentees know about a mentor before reaching out?
         </Text>
         <div className="h-4"></div>
 
