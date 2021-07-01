@@ -81,11 +81,11 @@ const ReadOnlyHome = ({
   const JSONHomepage: RawDraftContentState = getRawContentState(homepage);
   return (
     //TODO: Figure out whether the buttons at the top should be sticky
-    <div className="box-border bg-tertiary min-h-screen py-32 px-36 overflow-hidden">
+    <div className="box-border bg-tertiary min-h-screen px-18 py-16 lg:py-32 lg:px-36 overflow-hidden">
       {inProgram ? (
         <></>
       ) : (
-        <div className="flex transform -translate-y-20 float-right z-10">
+        <div className="flex transform -translate-y-14 lg:-translate-y-20 float-right z-10">
           <Button variant="inverted" size="small">
             <Link href={router.asPath + "/apply?as=mentor"}>
               Apply to Mentor

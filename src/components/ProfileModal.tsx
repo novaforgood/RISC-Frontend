@@ -55,8 +55,11 @@ const ProfileModal = ({
           <div>
             <div className="flex">
               <div className="flex flex-col items-center">
-                <div className="h-40 w-40 rounded-full bg-inactive">
-                  <img src={mentor.user.profilePictureUrl}></img>
+                <div className="h-40 w-40 rounded-full object-cover bg-inactive">
+                  <img
+                    className="h-40 w-40 rounded-full"
+                    src={mentor.user.profilePictureUrl}
+                  ></img>
                 </div>
                 <div className="h-4"></div>
                 <Text b1 b>
@@ -73,15 +76,22 @@ const ProfileModal = ({
                           <Text b>Email:</Text>
                         </td>
                         <td className="pl-4">
-                          <Text>{mentor.user.email}</Text>
+                          <Text className="text-darkblue hover:underline">
+                            <a
+                              title="Email Mentor"
+                              href={`mailto:${mentor.user.email}`}
+                            >
+                              {mentor.user.email}
+                            </a>
+                          </Text>
                         </td>
                       </tr>
                     </table>
                   </div>
                 </div>
-                <div className="h-2"></div>
+                <div className="h-4"></div>
 
-                <div className="flex">
+                <div className="flex justify-center">
                   <Button
                     size="small"
                     // disabled={authorizationLevel !== AuthorizationLevel.Mentee}
@@ -91,19 +101,31 @@ const ProfileModal = ({
                   >
                     Book a Chat
                   </Button>
-                  <div className="w-2"></div>
-                  <Button
+                  {/* <div className="w-2"></div> */}
+                  {/* <Button
                     size="small"
                     variant="inverted"
                     // disabled={authorizationLevel !== AuthorizationLevel.Mentee}
                   >
                     Request Mentor
-                  </Button>
+                  </Button> */}
                   <button />
                 </div>
               </div>
             </div>
-            <div className="h-12"></div>
+            <div className="h-6" />
+            <div className="h-0.25 w-full bg-tertiary" />
+            <div className="h-6" />
+            <div>
+              <Text b>Personal Bio</Text>
+            </div>
+            <div>
+              <Text>{mentor.bio}</Text>
+            </div>
+            <div className="h-6" />
+            <div>
+              <Text b>Questions</Text>
+            </div>
             <Form
               questions={getQuestionsFromJson(
                 currentProgram?.mentorProfileSchemaJson

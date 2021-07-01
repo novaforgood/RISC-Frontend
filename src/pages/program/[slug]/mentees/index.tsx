@@ -33,8 +33,11 @@ const MentorCard = ({ mentor }: MentorCardProps) => {
 
   return (
     <Card className="flex flex-col p-6 place-items-center border-0">
-      <div className="h-40 w-40 rounded-full bg-tertiary">
-        <img src={mentor.user.profilePictureUrl}></img>
+      <div className="h-40 w-40 rounded-full object-cover bg-tertiary">
+        <img
+          className="h-40 w-40 rounded-full"
+          src={mentor.user.profilePictureUrl}
+        ></img>
       </div>
       <div className="h-4"></div>
 

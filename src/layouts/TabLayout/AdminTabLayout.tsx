@@ -1,4 +1,11 @@
-import { Clipboard, Home, Settings, User, Users } from "../../components/icons";
+import {
+  Clipboard,
+  Edit,
+  Home,
+  Settings,
+  User,
+  Users,
+} from "../../components/icons";
 import TabLayout, { BaseTabLayoutProps, joinPath } from "./TabLayout";
 
 const { PageItem, Dropdown, Separator } = TabLayout;
@@ -34,7 +41,7 @@ const AdminTabLayout: React.FC<BaseTabLayoutProps> = ({
         />
         <PageItem
           label="Edit Mentor Application"
-          Icon={Clipboard}
+          Icon={Edit}
           path={joinPath(basePath, "mentors", "edit-application")}
         />
       </Dropdown>
@@ -57,7 +64,7 @@ const AdminTabLayout: React.FC<BaseTabLayoutProps> = ({
         />
         <PageItem
           label="Edit Mentee Application"
-          Icon={Clipboard}
+          Icon={Edit}
           path={joinPath(basePath, "mentees", "edit-application")}
         />
       </Dropdown>
