@@ -43,58 +43,54 @@ const FormSchemaEditor: React.FC<FormSchemaEditorProps> = ({
 
   return (
     <NoSSR>
-      <div className="w-80 sm:w-120 md:w-160 lg:w-200 flex flex-col">
-        <DragDropContext onDragEnd={_onDragEnd}>
-          <Droppable droppableId="allQuestions" type="questions">
-            {(provided, _) => {
-              return (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                  {questions.map((question, index) => (
-                    <Fragment key={question.id}>
-                      <FormQuestionSchemaEditor
-                        question={question}
-                        index={index}
-                        onChange={(newQuestion) => {
-                          const newQuestions = questions.map((question) => {
-                            if (question.id === newQuestion.id)
-                              return newQuestion;
-                            else return question;
-                          });
-                          onChange(newQuestions);
-                        }}
-                        onDelete={() => {
-                          onChange(
-                            questions.filter((s) => s.id != question.id)
-                          );
-                        }}
-                      />
-                    </Fragment>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              );
-            }}
-          </Droppable>
-        </DragDropContext>
-        <div className="h-4"></div>
-        <Button
-          size="small"
-          className="mx-auto"
-          onClick={() => {
-            onChange([
-              ...questions,
-              {
-                id: nanoid(),
-                title: "New question",
-                description: "",
-                type: "short-answer",
-              },
-            ]);
+      <DragDropContext onDragEnd={_onDragEnd}>
+        <Droppable droppableId="allQuestions" type="questions">
+          {(provided, _) => {
+            return (
+              <div {...provided.droppableProps} ref={provided.innerRef}>
+                {questions.map((question, index) => (
+                  <Fragment key={question.id}>
+                    <FormQuestionSchemaEditor
+                      question={question}
+                      index={index}
+                      onChange={(newQuestion) => {
+                        const newQuestions = questions.map((question) => {
+                          if (question.id === newQuestion.id)
+                            return newQuestion;
+                          else return question;
+                        });
+                        onChange(newQuestions);
+                      }}
+                      onDelete={() => {
+                        onChange(questions.filter((s) => s.id != question.id));
+                      }}
+                    />
+                  </Fragment>
+                ))}
+                {provided.placeholder}
+              </div>
+            );
           }}
-        >
-          Add Question
-        </Button>
-      </div>
+        </Droppable>
+      </DragDropContext>
+      <div className="h-4"></div>
+      <Button
+        size="small"
+        className="mx-auto"
+        onClick={() => {
+          onChange([
+            ...questions,
+            {
+              id: nanoid(),
+              title: "New question",
+              description: "",
+              type: "short-answer",
+            },
+          ]);
+        }}
+      >
+        Add Question
+      </Button>
     </NoSSR>
   );
 };

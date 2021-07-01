@@ -7,7 +7,7 @@ type TagProps = HTMLAttributes<HTMLElement> & {
 
 const Tag = ({ variant = "solid", className, onClick, ...props }: TagProps) => {
   const styles = classNames({
-    "inline-block rounded-xl border-2 px-1.5 m-1": true, // hover:cursor-pointer should only be true if there is an onClick behavior
+    "inline-block rounded-xl border-2 px-1.5": true, // hover:cursor-pointer should only be true if there is an onClick behavior
     "hover:cursor-pointer": onClick,
     "hover:cursor-default": !onClick,
     "bg-tertiary border-tertiary": variant === "solid",

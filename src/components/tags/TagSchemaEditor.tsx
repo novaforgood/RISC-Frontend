@@ -6,8 +6,22 @@ import {
   useRef,
   useState,
 } from "react";
-import { Tag } from "../atomic";
+import { Card, Tag } from "../atomic";
 import { ProfileTag } from "./types";
+
+function XIcon() {
+  return (
+    <svg
+      className="mt-0.5"
+      height="6pt"
+      viewBox="0 0 329 329"
+      width="6pt"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="m194.800781 164.769531 128.210938-128.214843c8.34375-8.339844 8.34375-21.824219 0-30.164063-8.339844-8.339844-21.824219-8.339844-30.164063 0l-128.214844 128.214844-128.210937-128.214844c-8.34375-8.339844-21.824219-8.339844-30.164063 0-8.34375 8.339844-8.34375 21.824219 0 30.164063l128.210938 128.214843-128.210938 128.214844c-8.34375 8.339844-8.34375 21.824219 0 30.164063 4.15625 4.160156 9.621094 6.25 15.082032 6.25 5.460937 0 10.921875-2.089844 15.082031-6.25l128.210937-128.214844 128.214844 128.214844c4.160156 4.160156 9.621094 6.25 15.082032 6.25 5.460937 0 10.921874-2.089844 15.082031-6.25 8.34375-8.339844 8.34375-21.824219 0-30.164063zm0 0" />
+    </svg>
+  );
+}
 
 type AddTagInputProps = {
   onEnter: (newTagName: string) => void;
@@ -34,7 +48,7 @@ function AddTagInput({ onEnter, ...props }: AddTagInputProps) {
   return edit ? (
     <div className="relative">
       <input
-        className="rounded"
+        className="rounded-xl border border-secondary px-1"
         ref={ref}
         autoFocus
         placeholder="type here"
@@ -57,7 +71,12 @@ function AddTagInput({ onEnter, ...props }: AddTagInputProps) {
       <div className="absolute">Press enter to add</div>
     </div>
   ) : (
-    <div onClick={() => setEdit(true)}>add tag +</div>
+    <div
+      onClick={() => setEdit(true)}
+      className="cursor-pointer rounded-xl border border-secondary px-2 hover:bg-tertiary"
+    >
+      add tag +
+    </div>
   );
 }
 
@@ -71,8 +90,8 @@ function TagSchemaEditor({
   onChange = () => {},
 }: TagSchemaEditorProps) {
   return (
-    <div className="w-full">
-      <div className="flex">
+    <Card className="w-full p-5">
+      <div className="flex items-center flex-wrap gap-2">
         {tags.map((tag, i) => (
           <Fragment key={i}>
             <Tag
@@ -81,8 +100,11 @@ function TagSchemaEditor({
                   tags.filter((t) => t.profileTagId !== tag.profileTagId)
                 );
               }}
+              className="hover:bg-inactive flex items-center"
             >
               <div>{tag.name}</div>
+              <div className="w-1.5"></div>
+              <XIcon />
             </Tag>
           </Fragment>
         ))}
@@ -96,7 +118,7 @@ function TagSchemaEditor({
           }}
         />
       </div>
-    </div>
+    </Card>
   );
 }
 

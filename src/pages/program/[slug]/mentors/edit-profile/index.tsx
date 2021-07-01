@@ -101,21 +101,40 @@ const EditMentorProfilePage: Page = (_) => {
       </div>
 
       <div className="h-8"></div>
-      <TagSchemaEditor
-        tags={profileTags}
-        onChange={(newProfileTags) => {
-          setModified(true);
-          setProfileTags(newProfileTags);
-        }}
-      />
 
-      <FormSchemaEditor
-        questions={profileSchema}
-        onChange={(newQuestions) => {
-          setModified(true);
-          setProfileSchema(newQuestions);
-        }}
-      ></FormSchemaEditor>
+      <div className="w-80 sm:w-120 md:w-160 lg:w-200 flex flex-col">
+        <Text h3 b className="text-secondary">
+          Edit tags
+        </Text>
+        <div className="h-2"></div>
+
+        <Text>
+          Mentors will use this to show what type of mentorship they offer.
+        </Text>
+        <div className="h-4"></div>
+
+        <TagSchemaEditor
+          tags={profileTags}
+          onChange={(newProfileTags) => {
+            setModified(true);
+            setProfileTags(newProfileTags);
+          }}
+        />
+        <div className="h-8"></div>
+
+        <Text h3 b className="text-secondary">
+          Edit questions
+        </Text>
+        <div className="h-4"></div>
+
+        <FormSchemaEditor
+          questions={profileSchema}
+          onChange={(newQuestions) => {
+            setModified(true);
+            setProfileSchema(newQuestions);
+          }}
+        ></FormSchemaEditor>
+      </div>
     </div>
   );
 };
