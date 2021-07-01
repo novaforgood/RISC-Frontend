@@ -73,7 +73,7 @@ const GeneralProfile = () => {
                       resizeWidth: 256,
                       resizeHeight: 256,
                     },
-                  }).catch((err) => setError(err));
+                  });
                   if (imageUrl.data) {
                     url = imageUrl.data.uploadImage;
                   }
