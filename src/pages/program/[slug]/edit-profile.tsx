@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Button, Card, Text } from "../../../components/atomic";
 import Form, { ResponseJson } from "../../../components/Form";
+import TagSelector from "../../../components/tags/TagSelector";
 import {
   Maybe,
   UpdateProfileInput,
   useGetMyUserQuery,
+  useGetProfileTagsByProfileQuery,
+  useGetProfileTagsByProgramQuery,
   useUpdateProfileMutation,
+  useUpdateProfileTagsOfProfileMutation,
 } from "../../../generated/graphql";
 import {
   AuthorizationLevel,
@@ -48,26 +52,53 @@ const EditProfilePage: Page = (_) => {
   const { currentProgram } = useCurrentProgram();
   const { currentProfile, refetchCurrentProfile } = useCurrentProfile();
   const authorizationLevel = useAuthorizationLevel();
-  const { data } = useGetMyUserQuery();
+  const { data: myUserData } = useGetMyUserQuery();
   const [updateProfile] = useUpdateProfileMutation();
 
+  const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
   const [profileJson, setProfileJson] = useState<ResponseJson>({});
   const [modified, setModified] = useState(false);
 
   const [bio, setBio] = useState("");
+
+  const [updateProfileTagsOfProfile] = useUpdateProfileTagsOfProfileMutation();
+  const { data: programTagsData } = useGetProfileTagsByProgramQuery({
+    variables: { programId: currentProgram?.programId! },
+  });
+  const { data: profileTagsData, refetch: refetchProfileTagsData } =
+    useGetProfileTagsByProfileQuery({
+      variables: { profileId: currentProfile?.profileId! },
+    });
 
   useEffect(() => {
     if (!currentProfile) return;
 
     setBio(currentProfile.bio || "");
     setProfileJson(getResponsesFromJson(currentProfile.profileJson));
+
     return () => {};
   }, [currentProfile]);
 
-  if (!currentProgram || !currentProfile || !data) return <div>404</div>;
+  useEffect(() => {
+    if (!profileTagsData) return;
+    setSelectedTagIds(
+      profileTagsData.getProfileTagsByProfile.map((t) => t.profileTagId)
+    );
+
+    return () => {};
+  }, [profileTagsData]);
+
+  if (
+    !currentProgram ||
+    !currentProfile ||
+    !myUserData ||
+    !programTagsData ||
+    !profileTagsData
+  )
+    return <div>404</div>;
 
   const { profileId, tagsJson } = currentProfile;
-  const { firstName, lastName, profilePictureUrl } = data.getMyUser;
+  const { firstName, lastName, profilePictureUrl } = myUserData.getMyUser;
   const tagsList = getTagsFromJson(tagsJson);
   const tags = tagsList?.slice(0, 3).map((tag: string, index: number) => (
     <div className="rounded-md bg-tertiary m-1 p-1" key={index}>
@@ -85,7 +116,7 @@ const EditProfilePage: Page = (_) => {
     case AuthorizationLevel.Mentee:
       const isMentor = authorizationLevel === AuthorizationLevel.Mentor;
       return (
-        <div className="flex flex-col items-center ">
+        <div className="flex flex-col items-center">
           <div className="flex justify-between items-center w-full">
             <Text h2 b>
               Edit My {isMentor ? "Mentor" : "Mentee"} Profile
@@ -100,13 +131,26 @@ const EditProfilePage: Page = (_) => {
                     profileJson: JSON.stringify(profileJson),
                     bio: bio,
                   };
-                  updateProfile({
-                    variables: {
-                      profileId: profileId,
-                      data: updateProfileInput,
-                    },
-                  }).then(() => {
+
+                  Promise.all([
+                    updateProfile({
+                      variables: {
+                        profileId: profileId,
+                        data: updateProfileInput,
+                      },
+                    }),
+                    updateProfileTagsOfProfile({
+                      variables: {
+                        profileId: currentProfile.profileId,
+                        profileTagIds: selectedTagIds,
+                      },
+                    }),
+                  ]).then(() => {
                     if (refetchCurrentProfile) refetchCurrentProfile();
+                    if (refetchProfileTagsData)
+                      refetchProfileTagsData({
+                        profileId: currentProfile.profileId,
+                      });
                     setModified(false);
                   });
                 }}
@@ -150,6 +194,18 @@ const EditProfilePage: Page = (_) => {
             <Button disabled onClick={() => {}}>
               View Profile
             </Button>
+          </Card>
+          <div className="h-8"></div>
+
+          <Card className="flex flex-col  p-6 items-center border-0">
+            <TagSelector
+              selectableTags={programTagsData.getProfileTagsByProgram}
+              selectedTagIds={selectedTagIds}
+              onChange={(newSelectedTagIds) => {
+                setModified(true);
+                setSelectedTagIds(newSelectedTagIds);
+              }}
+            />
           </Card>
           <div className="h-8"></div>
 
