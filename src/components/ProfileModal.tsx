@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { GetProfilesQuery, Maybe } from "../generated/graphql";
 import { useCurrentProgram } from "../hooks";
 import { Question } from "../types/Form";
-import { Button, Modal, Text } from "./atomic";
+import { Button, Card, Modal, Tag, Text } from "./atomic";
 import BookAChat from "./BookAChat";
 import Form, { ResponseJson } from "./Form";
 
@@ -92,8 +92,8 @@ const ProfileModal = ({
                   >
                     Book a Chat
                   </Button>
-                  {/* <div className="w-2"></div> */}
-                  {/* <Button
+                  {/* <div className="w-2"></div>
+                  <Button
                     size="small"
                     variant="inverted"
                     // disabled={authorizationLevel !== AuthorizationLevel.Mentee}
@@ -113,10 +113,18 @@ const ProfileModal = ({
             <div>
               <Text>{profile.bio}</Text>
             </div>
-            <div className="h-6" />
-            <div>
-              <Text b>Questions</Text>
-            </div>
+
+            <Card className="p-6">
+              <Text b>Types of mentorship offered</Text>
+              <div className="h-2"></div>
+              <div className="flex gap-2">
+                {profile.profileTags.map((tag) => {
+                  return <Tag>{tag.name}</Tag>;
+                })}
+              </div>
+            </Card>
+            <div className="h-4"></div>
+
             <Form
               questions={getQuestionsFromJson(
                 currentProgram?.mentorProfileSchemaJson
