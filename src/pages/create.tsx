@@ -32,6 +32,9 @@ const CreateProgramPage: Page = () => {
   const [stage, setStage] = useState(0);
   const [programName, setProgramName] = useState("");
   const [programLogo, setProgramLogo] = useState<File | null>(null);
+  const [programLogoURL, setProgramLogoURL] = useState(
+    "/static/DefaultLogo.svg"
+  );
   const [programIdentifier, setProgramIdentifier] = useState("");
   //const [programIsPublic, setProgramIsPublic] = useState(true); // TODO: add checkbox on form for setting program public or not
   const [createProgram] = useCreateProgramMutation();
@@ -163,7 +166,8 @@ const CreateProgramPage: Page = () => {
           <div className="h-2" />
           <UploadIconWithPreview
             onFileChanged={setProgramLogo}
-            onErrorOccured={setError}
+            src={programLogoURL}
+            onSrcChange={setProgramLogoURL}
           />
         </div>
 

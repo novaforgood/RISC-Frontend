@@ -71,6 +71,7 @@ const SettingsPage: Page = () => {
     useState(description);
   const [modified, setModified] = useState(false);
   const [programLogo, setProgramLogo] = useState<File | null>();
+  const [programLogoURL, setProgramLogoURL] = useState(iconUrl);
   const [err, setError] = useState("");
 
   const { data, error } = useGetProfilesQuery({
@@ -107,8 +108,8 @@ const SettingsPage: Page = () => {
               setProgramLogo(file);
               setModified(true);
             }}
-            onErrorOccured={setError}
-            initialSrc={iconUrl}
+            src={programLogoURL}
+            onSrcChange={setProgramLogoURL}
           />
           <div />
           <div />
@@ -207,15 +208,17 @@ const SettingsPage: Page = () => {
                     description: mentorshipDescription,
                   },
                 },
-              }).then(() => {
-                refetchCurrentProgram();
-                SettingsPage.getLayout = (page, pageProps) => (
-                  <ChooseTabLayout {...pageProps}>
-                    <PageContainer>{page}</PageContainer>
-                  </ChooseTabLayout>
-                );
-                setModified(false);
-              });
+              })
+                .then(() => {
+                  refetchCurrentProgram();
+                  SettingsPage.getLayout = (page, pageProps) => (
+                    <ChooseTabLayout {...pageProps}>
+                      <PageContainer>{page}</PageContainer>
+                    </ChooseTabLayout>
+                  );
+                  setModified(false);
+                })
+                .catch((err) => setError(err));
             }}
             disabled={!modified}
             size="small"
