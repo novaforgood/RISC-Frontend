@@ -6,7 +6,6 @@ import {
   Maybe,
   UpdateProfileInput,
   useGetMyUserQuery,
-  useGetProfileTagsByProfileQuery,
   useGetProfileTagsByProgramQuery,
   useUpdateProfileMutation,
   useUpdateProfileTagsOfProfileMutation,
@@ -65,36 +64,18 @@ const EditProfilePage: Page = (_) => {
   const { data: programTagsData } = useGetProfileTagsByProgramQuery({
     variables: { programId: currentProgram?.programId! },
   });
-  const { data: profileTagsData, refetch: refetchProfileTagsData } =
-    useGetProfileTagsByProfileQuery({
-      variables: { profileId: currentProfile?.profileId! },
-    });
 
   useEffect(() => {
     if (!currentProfile) return;
 
     setBio(currentProfile.bio || "");
     setProfileJson(getResponsesFromJson(currentProfile.profileJson));
+    setSelectedTagIds(currentProfile.profileTags.map((t) => t.profileTagId));
 
     return () => {};
   }, [currentProfile]);
 
-  useEffect(() => {
-    if (!profileTagsData) return;
-    setSelectedTagIds(
-      profileTagsData.getProfileTagsByProfile.map((t) => t.profileTagId)
-    );
-
-    return () => {};
-  }, [profileTagsData]);
-
-  if (
-    !currentProgram ||
-    !currentProfile ||
-    !myUserData ||
-    !programTagsData ||
-    !profileTagsData
-  )
+  if (!currentProgram || !currentProfile || !myUserData || !programTagsData)
     return <div>404</div>;
 
   const { profileId, tagsJson } = currentProfile;
@@ -147,10 +128,6 @@ const EditProfilePage: Page = (_) => {
                     }),
                   ]).then(() => {
                     if (refetchCurrentProfile) refetchCurrentProfile();
-                    if (refetchProfileTagsData)
-                      refetchProfileTagsData({
-                        profileId: currentProfile.profileId,
-                      });
                     setModified(false);
                   });
                 }}
