@@ -1,4 +1,3 @@
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { GetProfilesQuery, Maybe } from "../generated/graphql";
 import { useCurrentProgram } from "../hooks";
