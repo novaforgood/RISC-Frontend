@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Button, Text } from "../../../../../components/atomic";
 import FormSchemaEditor from "../../../../../components/FormSchemaEditor";
-import { useUpdateProgramMutation } from "../../../../../generated/graphql";
+import TagSchemaEditor from "../../../../../components/tags/TagSchemaEditor";
+import { ProfileTag } from "../../../../../components/tags/types";
+import {
+  refetchGetProfileTagsByProgramQuery,
+  useGetProfileTagsByProgramQuery,
+  useUpdateProfileTagsOfProgramMutation,
+  useUpdateProgramMutation,
+} from "../../../../../generated/graphql";
 import { useCurrentProgram } from "../../../../../hooks";
 import ChooseTabLayout from "../../../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../../../layouts/PageContainer";
@@ -19,10 +26,21 @@ function getQuestionsFromJson(json: string): Question[] {
 const EditMenteeProfilePage: Page = (_) => {
   const { currentProgram, refetchCurrentProgram } = useCurrentProgram();
   const [updateProgram] = useUpdateProgramMutation();
+  const [updateProfileTagsOfProgram] = useUpdateProfileTagsOfProgramMutation({
+    refetchQueries: [
+      refetchGetProfileTagsByProgramQuery({
+        programId: currentProgram?.programId!,
+      }),
+    ],
+  });
+  const { data: profileTagsData } = useGetProfileTagsByProgramQuery({
+    variables: { programId: currentProgram?.programId! },
+  });
   const [profileSchema, setProfileSchema] = useState<Question[]>([]);
+  const [profileTags, setProfileTags] = useState<ProfileTag[]>([]);
   const [modified, setModified] = useState(false);
-  const [isSavingProfileSchema, setIsSavingProfileSchema] = useState(false);
-  isSavingProfileSchema; // TODO: If is saving, set loading state of button to true.
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+  isSavingProfile; // TODO: If is saving, set loading state of button to true.
 
   useEffect(() => {
     if (!currentProgram) return;
@@ -32,17 +50,37 @@ const EditMenteeProfilePage: Page = (_) => {
     return () => {};
   }, [currentProgram]);
 
-  const saveMenteeProfileSchema = () => {
-    console.log(JSON.stringify(profileSchema));
-    setIsSavingProfileSchema(true);
-    updateProgram({
-      variables: {
-        programId: currentProgram?.programId!,
-        data: { menteeProfileSchemaJson: JSON.stringify(profileSchema) },
-      },
-    }).then(() => {
+  useEffect(() => {
+    if (!profileTagsData) return;
+    setProfileTags(profileTagsData.getProfileTagsByProgram);
+    return () => {};
+  }, [profileTagsData]);
+
+  const saveProfile = () => {
+    if (!currentProgram) return;
+
+    setIsSavingProfile(true);
+
+    Promise.all([
+      updateProgram({
+        variables: {
+          programId: currentProgram.programId,
+          data: { menteeProfileSchemaJson: JSON.stringify(profileSchema) },
+        },
+      }),
+      updateProfileTagsOfProgram({
+        variables: {
+          programId: currentProgram.programId,
+          profileTags: profileTags.map((tag) => ({
+            profileTagId: tag.profileTagId,
+            name: tag.name,
+          })),
+        },
+      }),
+    ]).then(() => {
       refetchCurrentProgram();
-      setIsSavingProfileSchema(false);
+
+      setIsSavingProfile(false);
       setModified(false);
     });
   };
@@ -59,7 +97,7 @@ const EditMenteeProfilePage: Page = (_) => {
             size="small"
             disabled={!modified}
             onClick={() => {
-              saveMenteeProfileSchema();
+              saveProfile();
             }}
           >
             Save
@@ -74,13 +112,42 @@ const EditMenteeProfilePage: Page = (_) => {
       </Text>
       <div className="h-8" />
 
-      <FormSchemaEditor
-        questions={profileSchema}
-        onChange={(newQuestions) => {
-          setModified(true);
-          setProfileSchema(newQuestions);
-        }}
-      ></FormSchemaEditor>
+      <div className="w-80 sm:w-120 md:w-160 lg:w-200 flex flex-col">
+        <Text h3 b className="text-secondary">
+          Edit tags
+        </Text>
+        <div className="h-2"></div>
+
+        <Text>What kinds of mentorship are your mentees looking for?</Text>
+        <div className="h-4"></div>
+
+        <TagSchemaEditor
+          tags={profileTags}
+          onChange={(newProfileTags) => {
+            setModified(true);
+            setProfileTags(newProfileTags);
+          }}
+        />
+        <div className="h-16"></div>
+
+        <Text h3 b className="text-secondary">
+          Edit questions
+        </Text>
+        <div className="h-2"></div>
+
+        <Text>
+          What should mentors know about mentees who reach out for a chat?
+        </Text>
+        <div className="h-4"></div>
+
+        <FormSchemaEditor
+          questions={profileSchema}
+          onChange={(newQuestions) => {
+            setModified(true);
+            setProfileSchema(newQuestions);
+          }}
+        ></FormSchemaEditor>
+      </div>
     </div>
   );
 };

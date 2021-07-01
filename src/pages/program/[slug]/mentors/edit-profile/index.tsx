@@ -4,6 +4,7 @@ import FormSchemaEditor from "../../../../../components/FormSchemaEditor";
 import TagSchemaEditor from "../../../../../components/tags/TagSchemaEditor";
 import { ProfileTag } from "../../../../../components/tags/types";
 import {
+  refetchGetProfileTagsByProgramQuery,
   useGetProfileTagsByProgramQuery,
   useUpdateProfileTagsOfProgramMutation,
   useUpdateProgramMutation,
@@ -25,11 +26,16 @@ function getQuestionsFromJson(json: string): Question[] {
 const EditMentorProfilePage: Page = (_) => {
   const { currentProgram, refetchCurrentProgram } = useCurrentProgram();
   const [updateProgram] = useUpdateProgramMutation();
-  const [updateProfileTagsOfProgram] = useUpdateProfileTagsOfProgramMutation();
-  const { data: profileTagsData, refetch: refetchProfileTags } =
-    useGetProfileTagsByProgramQuery({
-      variables: { programId: currentProgram?.programId! },
-    });
+  const [updateProfileTagsOfProgram] = useUpdateProfileTagsOfProgramMutation({
+    refetchQueries: [
+      refetchGetProfileTagsByProgramQuery({
+        programId: currentProgram?.programId!,
+      }),
+    ],
+  });
+  const { data: profileTagsData } = useGetProfileTagsByProgramQuery({
+    variables: { programId: currentProgram?.programId! },
+  });
   const [profileSchema, setProfileSchema] = useState<Question[]>([]);
   const [profileTags, setProfileTags] = useState<ProfileTag[]>([]);
   const [modified, setModified] = useState(false);
@@ -73,7 +79,6 @@ const EditMentorProfilePage: Page = (_) => {
       }),
     ]).then(() => {
       refetchCurrentProgram();
-      refetchProfileTags({ programId: currentProgram.programId });
 
       setIsSavingProfile(false);
       setModified(false);
