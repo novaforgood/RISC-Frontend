@@ -1,6 +1,5 @@
 import firebase from "firebase";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import {
   GetMyUserQuery,
   ProfileType,
@@ -36,6 +35,7 @@ const getAuthorizationLevel = (
       }
     }
   }
+
   return AuthorizationLevel.NotInProgram;
 };
 
@@ -43,20 +43,16 @@ const useAuthorizationLevel = () => {
   const { user } = useAuth();
   const { data } = useGetMyUserQuery();
   const router = useRouter();
-  const [authLevel, setAuthLevel] = useState(
-    AuthorizationLevel.Unauthenticated
-  );
 
   const myUserData = data?.getMyUser;
 
-  useEffect(() => {
-    if (myUserData && router) {
-      const slug = parseParam(router.query.slug);
-      setAuthLevel(getAuthorizationLevel(user, myUserData, slug));
-    }
-    return () => {};
-  }, [myUserData, router, user]);
-  return authLevel;
+  let authLevel;
+  if (myUserData && router) {
+    const slug = parseParam(router.query.slug);
+    authLevel = getAuthorizationLevel(user, myUserData, slug);
+  }
+
+  return authLevel || AuthorizationLevel.Unauthenticated;
 };
 
 export default useAuthorizationLevel;

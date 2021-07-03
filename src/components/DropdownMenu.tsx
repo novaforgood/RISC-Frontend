@@ -68,7 +68,7 @@ export default function Dropdown({ button }: DropdownProps) {
                 {user ? (
                   <Menu.Item>
                     {({ active }) => (
-                      <a href="/profile" className={ItemStyle(active)}>
+                      <a href="/my/profile" className={ItemStyle(active)}>
                         General Profile
                       </a>
                     )}

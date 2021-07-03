@@ -125,7 +125,7 @@ TabLayout.Dropdown = ({ children, label, id }) => {
 
   useEffect(() => {
     const initState = LocalStorage.get(`tablayout-${id}`);
-    if (initState !== null) {
+    if (initState !== null && typeof initState === "boolean") {
       setOpen(initState);
     } else {
       setOpen(true);

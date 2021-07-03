@@ -1,12 +1,12 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
-import { Button, Card, Text } from "../components/atomic";
-import { useGetMyUserQuery } from "../generated/graphql";
+import React, { Fragment } from "react";
+import { Button, Text } from "../components/atomic";
 import { PageGetProgramBySlugComp } from "../generated/page";
 import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";
 import NoProgramTabLayout from "../layouts/TabLayout/NoProgramTabLayout";
 import Page from "../types/Page";
+import { useAuth } from "../utils/firebase/auth";
+import LocalStorage from "../utils/localstorage";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24";
@@ -22,8 +22,13 @@ const BlobCircle = () => {
 const IndexPage: PageGetProgramBySlugComp = (_) => {
   const router = useRouter();
   const authorizationLevel = useAuthorizationLevel();
+  const { user } = useAuth();
 
-  if (authorizationLevel === AuthorizationLevel.Unauthenticated)
+  if (authorizationLevel === AuthorizationLevel.Unauthenticated) {
+    if (user)
+      // Logged in but myUserData has not been retrieved yet
+      return <Fragment />;
+
     return (
       <div className="h-screen w-full p-8">
         <div className="w-full flex items-center justify-between">
@@ -79,70 +84,51 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
         </div>
       </div>
     );
+  }
 
   return <NoMentorshipHome />;
 };
 
 const NoMentorshipHome: Page = () => {
-  const { data } = useGetMyUserQuery();
   const router = useRouter();
-  const [isApplicatonClicked, setIsApplicatonClicked] = useState(false);
-  const [isCreateClicked, setIsCreateClicked] = useState(false);
 
-  if (data?.getMyUser.profiles.length == 0) {
-    return (
-      <NoProgramTabLayout basePath={router.asPath}>
-        <div className="h-screen flex flex-col justify-center items-center">
-          <div>
-            <Text h3>
-              You are currently not a part of any mentorship programs
-            </Text>
-          </div>
-          <Button
-            className="w-96 mt-9"
-            onClick={() => {
-              setIsApplicatonClicked(true);
-            }}
-          >
-            <Link href="/my/applications">
-              <a>
-                <Text h3>
-                  {isApplicatonClicked
-                    ? "Rerouting..."
-                    : "Check Application Statuses"}
-                </Text>
-              </a>
-            </Link>
-          </Button>
-          <Button
-            variant="inverted"
-            className="w-96 mt-9"
-            onClick={() => {
-              setIsCreateClicked(true);
-              console.log(isCreateClicked);
-            }}
-          >
-            <Link href="/create">
-              <a>
-                <Text h3>
-                  {isCreateClicked ? "Rerouting..." : "Create a Mentorship"}
-                </Text>
-              </a>
-            </Link>
-          </Button>
-        </div>
-      </NoProgramTabLayout>
-    );
-  } else {
-    router.push("program/" + data?.getMyUser.profiles[0].program.slug);
-    return (
-      <div className="h-screen w-screen flex justify-center items-center">
-        <Card className="p-9">
-          <Text h3>Rerouting...</Text>
-        </Card>
-      </div>
-    );
+  const cachedProgramSlug = LocalStorage.get("cachedProgramSlug");
+  if (cachedProgramSlug !== null && typeof cachedProgramSlug === "string") {
+    router.push(`/program/${cachedProgramSlug}`);
+    return <Fragment />;
   }
+
+  return (
+    <NoProgramTabLayout basePath={router.asPath}>
+      <div className="h-screen flex flex-col justify-center items-center">
+        <div>
+          <Text h2>Welcome to Mentor Center</Text>
+        </div>
+        <div className="h-4"></div>
+
+        <Button
+          size="small"
+          className="w-72"
+          onClick={() => {
+            router.push("/my/applications");
+          }}
+        >
+          <Text>Check Application Statuses</Text>
+        </Button>
+        <div className="h-2"></div>
+        <Button
+          size="small"
+          variant="inverted"
+          className="w-72"
+          onClick={() => {
+            router.push("/create");
+          }}
+        >
+          <Text>Create a Mentorship</Text>
+        </Button>
+      </div>
+    </NoProgramTabLayout>
+  );
 };
 
 export default IndexPage;
