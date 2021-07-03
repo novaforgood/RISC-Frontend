@@ -57,7 +57,10 @@ const ProfileModal = ({
             <div className="flex">
               <div className="flex flex-col items-center">
                 <div className="h-40 w-40 rounded-full bg-inactive">
-                  <img src={profile.user.profilePictureUrl}></img>
+                  <img
+                    className="h-full w-full rounded-full"
+                    src={profile.user.profilePictureUrl}
+                  ></img>
                 </div>
                 <div className="h-4"></div>
                 <Text b1 b>

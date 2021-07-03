@@ -113,7 +113,11 @@ const EditMentorProfilePage: Page = (_) => {
         </Text>
         <div className="h-2"></div>
 
-        <Text>What kinds of mentorship do your mentors offer?</Text>
+        <Text>
+          Add some tags that can be used to categorize your mentors. Mentors
+          will be able to select the tags that best describe them for mentees to
+          view and filter by.
+        </Text>
         <div className="h-4"></div>
 
         <TagSchemaEditor

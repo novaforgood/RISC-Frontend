@@ -1,12 +1,7 @@
 import { nanoid } from "nanoid";
-import {
-  Fragment,
-  InputHTMLAttributes,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { Card, Tag } from "../atomic";
+import { InputHTMLAttributes, useEffect, useRef, useState } from "react";
+import { Card, Tag, Text } from "../atomic";
+import SelectOptionModal from "../SelectOptionModal";
 import { ProfileTag } from "./types";
 
 function XIcon() {
@@ -80,11 +75,54 @@ function AddTagInput({ onEnter, ...props }: AddTagInputProps) {
   );
 }
 
+interface TagComponentProps {
+  onDelete: () => void;
+  tag: ProfileTag;
+}
+function TagComponent({ tag, onDelete }: TagComponentProps) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div>
+      <SelectOptionModal
+        title={`Delete tag "${tag.name}"`}
+        primaryButtonText="Confirm"
+        secondaryButtonText="Cancel"
+        isOpen={open}
+        onPrimaryButtonClick={() => {
+          onDelete();
+          setOpen(false);
+        }}
+        onSecondaryButtonClick={() => {
+          setOpen(false);
+        }}
+        onClose={() => {
+          setOpen(false);
+        }}
+      >
+        <Text>
+          Are you sure you want to delete this tag? Once you save your changes,
+          all mentors with this tag will have it removed.
+        </Text>
+      </SelectOptionModal>
+      <Tag
+        onClick={() => {
+          setOpen(true);
+        }}
+        className="hover:bg-inactive flex items-center"
+      >
+        <div>{tag.name}</div>
+        <div className="w-1.5"></div>
+        <XIcon />
+      </Tag>
+    </div>
+  );
+}
+
 interface TagSchemaEditorProps {
   tags: ProfileTag[];
   onChange: (newTags: ProfileTag[]) => void;
 }
-
 function TagSchemaEditor({
   tags = [],
   onChange = () => {},
@@ -92,24 +130,22 @@ function TagSchemaEditor({
   return (
     <Card className="w-full p-5">
       <div className="flex items-center flex-wrap gap-2">
-        {tags.map((tag, i) => (
-          <Fragment key={i}>
-            <Tag
-              onClick={() => {
-                onChange(
-                  tags.filter((t) => t.profileTagId !== tag.profileTagId)
-                );
-              }}
-              className="hover:bg-inactive flex items-center"
-            >
-              <div>{tag.name}</div>
-              <div className="w-1.5"></div>
-              <XIcon />
-            </Tag>
-          </Fragment>
+        {tags.map((tag) => (
+          <TagComponent
+            key={tag.profileTagId}
+            tag={tag}
+            onDelete={() => {
+              onChange(tags.filter((t) => t.profileTagId !== tag.profileTagId));
+            }}
+          />
         ))}
         <AddTagInput
           onEnter={(newTagName) => {
+            if (newTagName.length > 20) {
+              alert("Your tag name cannot exceed 20 characters.");
+              return;
+            }
+
             if (tags.find((tag) => tag.name === newTagName)) {
               alert(`Cannot add tag: Tag "${newTagName}" already exists.`);
               return;

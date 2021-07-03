@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Text } from "../../../../../components/atomic";
 import FormSchemaEditor from "../../../../../components/FormSchemaEditor";
-import TagSchemaEditor from "../../../../../components/tags/TagSchemaEditor";
 import { ProfileTag } from "../../../../../components/tags/types";
 import {
   refetchGetProfileTagsByProgramQuery,
@@ -113,23 +112,6 @@ const EditMenteeProfilePage: Page = (_) => {
       <div className="h-8" />
 
       <div className="w-80 sm:w-120 md:w-160 lg:w-200 flex flex-col">
-        <Text h3 b className="text-secondary">
-          Edit tags
-        </Text>
-        <div className="h-2"></div>
-
-        <Text>What kinds of mentorship are your mentees looking for?</Text>
-        <div className="h-4"></div>
-
-        <TagSchemaEditor
-          tags={profileTags}
-          onChange={(newProfileTags) => {
-            setModified(true);
-            setProfileTags(newProfileTags);
-          }}
-        />
-        <div className="h-16"></div>
-
         <Text h3 b className="text-secondary">
           Edit questions
         </Text>
