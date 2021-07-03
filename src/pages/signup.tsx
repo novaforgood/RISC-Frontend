@@ -110,7 +110,7 @@ const SignUpPage = () => {
             <div className="flex-1">
               <img className="h-10 w-10 ml-6" src="/static/GoogleLogo.svg" />
             </div>
-            <Text b className="text-secondary">
+            <Text b className="text-primary">
               Sign up with Google
             </Text>
             <div className="flex-1"></div>
@@ -124,7 +124,7 @@ const SignUpPage = () => {
             <div className="h-0.25 flex-1 bg-inactive"></div>
           </div>
           <div className="h-6" />
-          <form>
+          <form method="post">
             <div className="flex w-full">
               <TitledInput
                 title="First Name"
@@ -152,7 +152,6 @@ const SignUpPage = () => {
             <TitledInput
               title="Email"
               name="Email"
-              // type="email"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
@@ -188,7 +187,9 @@ const SignUpPage = () => {
             <div className="h-6" /> */}
 
             <Button
-              onClick={() => {
+              type="submit"
+              onClick={(e) => {
+                e.preventDefault();
                 signUpWithEmail(email, password)
                   .catch((e) => {
                     setDisplayError(e.message);
@@ -215,46 +216,6 @@ const SignUpPage = () => {
                           router.push("/verify");
                         })
                         .then(() => {})
-                        .catch((e) => {
-                          setDisplayError(e.message);
-                          signOut();
-                        });
-                    }
-                  });
-              }}
-            >
-              Sign Up
-            </Button>
-            <div className="h-6" />
-
-            <Button
-              onClick={() => {
-                signUpWithEmail(email, password)
-                  .catch((e) => {
-                    setDisplayError(e.message);
-                  })
-                  .then((res) => {
-                    // TODO: Valid profilePictureURL and photoURL
-                    if (res) {
-                      const createUserInput: CreateUserInput = {
-                        email: res.user?.email!,
-                        firstName: firstName,
-                        lastName: lastName,
-                        profilePictureUrl: "",
-                        timezone: getTimezone(),
-                      };
-                      Promise.all([
-                        createUser({ variables: { data: createUserInput } }),
-                        res.user?.updateProfile({
-                          displayName: firstName + " " + lastName,
-                          photoURL: "",
-                        }),
-                      ])
-                        .then(() => {
-                          res.user?.sendEmailVerification();
-                          signOut();
-                          setModalOpen(true);
-                        })
                         .catch((e) => {
                           setDisplayError(e.message);
                           signOut();

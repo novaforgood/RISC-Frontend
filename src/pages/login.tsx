@@ -17,7 +17,7 @@ const BlobCircle = () => {
 };
 
 const LoginPage = () => {
-  const { signInWithEmail, signInWithGoogle } = useAuth();
+  const { signInWithEmail, signInWithGoogle, signOut } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayError, setError] = useState("");
@@ -66,7 +66,7 @@ const LoginPage = () => {
                         "An account with this email has not been created yet."
                       );
                     } else {
-                      // redirectAfterLoggingIn();
+                      redirectAfterLoggingIn();
                     }
                   }
                 })
@@ -77,7 +77,7 @@ const LoginPage = () => {
             <div className="flex-1">
               <img className="h-10 w-10 ml-6" src="/static/GoogleLogo.svg" />
             </div>
-            <Text b className="text-secondary">
+            <Text b className="text-primary">
               Login with Google
             </Text>
             <div className="flex-1"></div>
@@ -91,11 +91,10 @@ const LoginPage = () => {
             <div className="h-0.25 flex-1 bg-inactive"></div>
           </div>
           <div className="h-6" />
-          <form>
+          <form method="post">
             <TitledInput
               title="Email"
               name="Email"
-              // type="email"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
@@ -125,7 +124,9 @@ const LoginPage = () => {
             <div className="h-6" />
 
             <Button
-              onClick={() => {
+              type="submit"
+              onClick={(e) => {
+                e.preventDefault();
                 signInWithEmail(email, password)
                   .catch((error) => {
                     setError(error.message);
