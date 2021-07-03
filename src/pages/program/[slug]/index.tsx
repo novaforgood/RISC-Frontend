@@ -21,6 +21,7 @@ import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../layouts/PageContainer";
 import Page from "../../../types/Page";
 import { parseParam } from "../../../utils";
+import LocalStorage from "../../../utils/localstorage";
 
 function getRawContentState(json: string): RawDraftContentState {
   try {
@@ -122,6 +123,17 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
     router.push("/");
     return <div>Program doesn't exist!</div>;
   }
+
+  switch (authorizationLevel) {
+    case AuthorizationLevel.Admin:
+    case AuthorizationLevel.Mentor:
+    case AuthorizationLevel.Mentee:
+      LocalStorage.set('cachedProgramSlug', program.slug)
+      break;
+    default:
+      break;
+  }
+
   const getProgramPage = () => {
     switch (authorizationLevel) {
       case AuthorizationLevel.Admin:

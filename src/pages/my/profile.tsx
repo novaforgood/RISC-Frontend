@@ -1,15 +1,15 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { Button, Card, Text } from "../components/atomic";
-import { BackArrow } from "../components/icons";
-import TitledInput from "../components/TitledInput";
-import UploadIconWithPreview from "../components/UploadIconWithPreview";
+import { Button, Card, Text } from "../../components/atomic";
+import { BackArrow } from "../../components/icons";
+import TitledInput from "../../components/TitledInput";
+import UploadIconWithPreview from "../../components/UploadIconWithPreview";
 import {
   refetchGetMyUserQuery,
   useGetMyUserQuery,
   useUpdateUserMutation,
   useUploadImageAndResizeMutation,
-} from "../generated/graphql";
+} from "../../generated/graphql";
 
 const GeneralProfile = () => {
   const { data } = useGetMyUserQuery();

@@ -91,8 +91,9 @@ module.exports = {
       opacity: ["disabled"],
       pointerEvents: ["disabled"],
       textColor: ["active", "disabled", "checked"],
-      ringWidth: ["active"],
-      ringColor: ["active"],
+      ringWidth: ["hover", "active"],
+      ringColor: ["hover", "active"],
+      fontWeight: ["hover"],
     },
   },
   plugins: [
