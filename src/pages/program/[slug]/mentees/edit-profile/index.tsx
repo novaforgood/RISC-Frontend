@@ -21,8 +21,8 @@ const EditMenteeProfilePage: Page = (_) => {
   const [updateProgram] = useUpdateProgramMutation();
   const [profileSchema, setProfileSchema] = useState<Question[]>([]);
   const [modified, setModified] = useState(false);
-  const [isSavingProfileSchema, setIsSavingProfileSchema] = useState(false);
-  isSavingProfileSchema; // TODO: If is saving, set loading state of button to true.
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+  isSavingProfile; // TODO: If is saving, set loading state of button to true.
 
   useEffect(() => {
     if (!currentProgram) return;
@@ -32,17 +32,22 @@ const EditMenteeProfilePage: Page = (_) => {
     return () => {};
   }, [currentProgram]);
 
-  const saveMenteeProfileSchema = () => {
-    console.log(JSON.stringify(profileSchema));
-    setIsSavingProfileSchema(true);
-    updateProgram({
-      variables: {
-        programId: currentProgram?.programId!,
-        data: { menteeProfileSchemaJson: JSON.stringify(profileSchema) },
-      },
-    }).then(() => {
+  const saveProfile = () => {
+    if (!currentProgram) return;
+
+    setIsSavingProfile(true);
+
+    Promise.all([
+      updateProgram({
+        variables: {
+          programId: currentProgram.programId,
+          data: { menteeProfileSchemaJson: JSON.stringify(profileSchema) },
+        },
+      }),
+    ]).then(() => {
       refetchCurrentProgram();
-      setIsSavingProfileSchema(false);
+
+      setIsSavingProfile(false);
       setModified(false);
     });
   };
@@ -59,7 +64,7 @@ const EditMenteeProfilePage: Page = (_) => {
             size="small"
             disabled={!modified}
             onClick={() => {
-              saveMenteeProfileSchema();
+              saveProfile();
             }}
           >
             Save
@@ -68,19 +73,31 @@ const EditMenteeProfilePage: Page = (_) => {
       </div>
 
       <div className="h-8" />
-      <Text b2>
-        This page is for editing the information that mentees will see when they
-        fill out their profiles for your organization.
-      </Text>
-      <div className="h-8" />
 
-      <FormSchemaEditor
-        questions={profileSchema}
-        onChange={(newQuestions) => {
-          setModified(true);
-          setProfileSchema(newQuestions);
-        }}
-      ></FormSchemaEditor>
+      <div className="w-80 sm:w-120 md:w-160 lg:w-200 flex flex-col">
+        <Text b2>
+          This page is for editing how <b>mentees</b> fill out their profile.
+        </Text>
+        <div className="h-8" />
+
+        <Text h3 b className="text-secondary">
+          Edit questions
+        </Text>
+        <div className="h-2"></div>
+
+        <Text>
+          What should mentors know about mentees who reach out for a chat?
+        </Text>
+        <div className="h-4"></div>
+
+        <FormSchemaEditor
+          questions={profileSchema}
+          onChange={(newQuestions) => {
+            setModified(true);
+            setProfileSchema(newQuestions);
+          }}
+        ></FormSchemaEditor>
+      </div>
     </div>
   );
 };

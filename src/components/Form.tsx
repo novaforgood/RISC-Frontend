@@ -58,7 +58,7 @@ const TextAsker = ({
   return (
     <div>
       <Text b>{title}</Text>
-      <div className="h-1" />
+      <div className="h-2" />
       {showDescriptions && description && (
         <Fragment>
           <Text className="text-secondary">{description}</Text>
@@ -110,7 +110,7 @@ const Form = ({
   };
 
   return readonly ? (
-    <div className="p-9">
+    <Card className="p-6">
       <div className="space-y-6">
         {questions.map((question, i) => {
           switch (question.type) {
@@ -131,9 +131,9 @@ const Form = ({
           }
         })}
       </div>
-    </div>
+    </Card>
   ) : (
-    <Card className={"p-9 border-inactive rounded-xl " + className}>
+    <Card className={"p-6 border-inactive rounded-xl " + className}>
       <div className="space-y-6">
         {questions.map((question, i) => {
           switch (question.type) {

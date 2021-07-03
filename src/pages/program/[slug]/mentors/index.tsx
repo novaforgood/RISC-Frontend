@@ -1,9 +1,8 @@
 import Fuse from "fuse.js";
 import React, { Fragment, useState } from "react";
-import { Button, Card, Input, Text } from "../../../../components/atomic";
-import ProfileModal from "../../../../components/ProfileModal";
+import { Input, Text } from "../../../../components/atomic";
+import ProfileCard from "../../../../components/ProfileCard";
 import {
-  GetProfilesQuery,
   ProfileType,
   useGetProfilesQuery,
 } from "../../../../generated/graphql";
@@ -11,69 +10,6 @@ import { useCurrentProgram } from "../../../../hooks";
 import ChooseTabLayout from "../../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../../layouts/PageContainer";
 import Page from "../../../../types/Page";
-
-type MentorProfile = GetProfilesQuery["getProfiles"][0];
-
-interface MentorCardProps {
-  // TODO: Remove "any" and replace with proper fields
-  mentor: MentorProfile | any;
-}
-const MentorCard = ({ mentor }: MentorCardProps) => {
-  const [profileModalOpen, setProfileModalOpen] = useState(false);
-
-  // const tags = mentor.tags?.slice(0, 3).map((tag: string, index: number) => (
-  //   <div className="rounded-md bg-tertiary m-1 p-1" key={index}>
-  //     {tag}
-  //   </div>
-  // ));
-  // const moreTag = (
-  //   <div className="rounded-md border-primary border m-1 p-1">
-  //     + {mentor.tags?.length - 3} more
-  //   </div>
-  // );
-
-  return (
-    <Card className="flex flex-col p-6 place-items-center border-0">
-      <div className="h-40 w-40 rounded-full bg-tertiary object-cover">
-        <img
-          className="h-40 w-40 rounded-full"
-          src={mentor.user.profilePictureUrl}
-        />
-      </div>
-      <div className="h-4" />
-
-      <Text b className="text-body-1 text-center">
-        {mentor.user.firstName} {mentor.user.lastName}
-      </Text>
-      {/* <div className="h-4"></div>
-      <div className="flex flex-wrap justify-center">
-        {tags}
-        {mentor.tags?.length > 3 ? moreTag : <div></div>}
-      </div> */}
-      <div className="h-4"></div>
-      <div className="h-24 w-full text-center break-words overflow-hidden overflow-ellipsis">
-        {mentor.bio}
-      </div>
-      <div className="h-4"></div>
-
-      <Button
-        onClick={() => {
-          setProfileModalOpen(true);
-        }}
-      >
-        View Profile
-      </Button>
-
-      <ProfileModal
-        isOpen={profileModalOpen}
-        onClose={() => {
-          setProfileModalOpen(false);
-        }}
-        mentor={mentor}
-      />
-    </Card>
-  );
-};
 
 const ViewMentorsPage: Page = () => {
   //const [getMentors, { mentorsData }] = useGetMentorssLazyQuery();
@@ -132,8 +68,8 @@ const ViewMentorsPage: Page = () => {
       ></Input>
       <div className="h-8"></div>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {mentors?.map((mentor: MentorProfile, index: number) => {
-          return <MentorCard mentor={mentor} key={index} />;
+        {mentors?.map((mentor, index: number) => {
+          return <ProfileCard profile={mentor} key={index} />;
         })}
       </div>
     </Fragment>

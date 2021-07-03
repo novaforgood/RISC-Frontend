@@ -11,5 +11,9 @@ query getProfiles($programId: String!, $profileType: String!) {
       lastName
       profilePictureUrl
     }
+    profileTags {
+      profileTagId
+      name
+    }
   }
 }

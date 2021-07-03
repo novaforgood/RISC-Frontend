@@ -70,18 +70,21 @@ const EditMentorApplicationPage: Page = (_) => {
       </div>
 
       <div className="h-8"></div>
-      <Text b2>
-        This page is for editing the questions that prospective mentors will
-        have to answer in order to join the program.
-      </Text>
-      <div className="h-8" />
-      <FormSchemaEditor
-        questions={applicationSchema}
-        onChange={(newQuestions) => {
-          setModified(true);
-          setApplicationSchema(newQuestions);
-        }}
-      ></FormSchemaEditor>
+
+      <div className="w-80 sm:w-120 md:w-160 lg:w-200 flex flex-col">
+        <Text b2>
+          Mentors will have to answer these questions in order to apply to join
+          the program.
+        </Text>
+        <div className="h-4" />
+        <FormSchemaEditor
+          questions={applicationSchema}
+          onChange={(newQuestions) => {
+            setModified(true);
+            setApplicationSchema(newQuestions);
+          }}
+        ></FormSchemaEditor>
+      </div>
     </div>
   );
 };

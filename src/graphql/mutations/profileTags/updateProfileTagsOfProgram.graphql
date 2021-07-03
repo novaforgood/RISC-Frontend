@@ -1,0 +1,8 @@
+mutation updateProfileTagsOfProgram(
+  $programId: String!
+  $profileTags: [UpdateProfileTagInput!]!
+) {
+  updateProfileTagsOfProgram(programId: $programId, profileTags: $profileTags) {
+    profileTagId
+  }
+}

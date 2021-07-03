@@ -1,0 +1,6 @@
+mutation createProfileTag($data: CreateProfileTagInput!) {
+  createProfileTag(data: $data) {
+    name
+    programId
+  }
+}

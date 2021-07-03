@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { GetProfilesQuery, Maybe } from "../generated/graphql";
 import { useCurrentProgram } from "../hooks";
 import { Question } from "../types/Form";
-import { Button, Modal, Text } from "./atomic";
+import { Button, Card, Modal, Tag, Text } from "./atomic";
 import BookAChat from "./BookAChat";
 import Form, { ResponseJson } from "./Form";
 
@@ -24,21 +24,22 @@ function getResponsesFromJson(json: Maybe<string> | undefined): ResponseJson {
   }
 }
 
-type MentorProfile = GetProfilesQuery["getProfiles"][number];
+type Profile = GetProfilesQuery["getProfiles"][number];
 
 enum ProfileModalStage {
   VIEW_PROFILE = "VIEW_PROFILE",
   BOOK_CHAT = "BOOK_CHAT",
 }
+
 interface ProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
-  mentor: MentorProfile;
+  profile: Profile;
 }
 const ProfileModal = ({
   isOpen,
   onClose = () => {},
-  mentor,
+  profile,
 }: ProfileModalProps) => {
   const [stage, setStage] = useState(ProfileModalStage.VIEW_PROFILE);
   const { currentProgram } = useCurrentProgram();
@@ -52,18 +53,18 @@ const ProfileModal = ({
     switch (stage) {
       case ProfileModalStage.VIEW_PROFILE:
         return (
-          <div>
+          <div className="w-full">
             <div className="flex">
               <div className="flex flex-col items-center">
-                <div className="h-40 w-40 rounded-full object-cover bg-inactive">
+                <div className="h-40 w-40 rounded-full bg-inactive">
                   <img
-                    className="h-40 w-40 rounded-full"
-                    src={mentor.user.profilePictureUrl}
+                    className="h-full w-full rounded-full"
+                    src={profile.user.profilePictureUrl}
                   ></img>
                 </div>
                 <div className="h-4"></div>
                 <Text b1 b>
-                  {mentor.user.firstName} {mentor.user.lastName}
+                  {profile.user.firstName} {profile.user.lastName}
                 </Text>
               </div>
               <div className="w-8"></div>
@@ -76,14 +77,7 @@ const ProfileModal = ({
                           <Text b>Email:</Text>
                         </td>
                         <td className="pl-4">
-                          <Text className="text-darkblue hover:underline">
-                            <a
-                              title="Email Mentor"
-                              href={`mailto:${mentor.user.email}`}
-                            >
-                              {mentor.user.email}
-                            </a>
-                          </Text>
+                          <Text>{profile.user.email}</Text>
                         </td>
                       </tr>
                     </table>
@@ -91,7 +85,7 @@ const ProfileModal = ({
                 </div>
                 <div className="h-4"></div>
 
-                <div className="flex justify-center">
+                <div className="flex ">
                   <Button
                     size="small"
                     // disabled={authorizationLevel !== AuthorizationLevel.Mentee}
@@ -101,8 +95,8 @@ const ProfileModal = ({
                   >
                     Book a Chat
                   </Button>
-                  {/* <div className="w-2"></div> */}
-                  {/* <Button
+                  {/* <div className="w-2"></div>
+                  <Button
                     size="small"
                     variant="inverted"
                     // disabled={authorizationLevel !== AuthorizationLevel.Mentee}
@@ -116,21 +110,35 @@ const ProfileModal = ({
             <div className="h-6" />
             <div className="h-0.25 w-full bg-tertiary" />
             <div className="h-6" />
-            <div>
-              <Text b>Personal Bio</Text>
-            </div>
-            <div>
-              <Text>{mentor.bio}</Text>
-            </div>
-            <div className="h-6" />
-            <div>
-              <Text b>Questions</Text>
-            </div>
+
+            <Card className="p-6">
+              <div>
+                <Text b>Bio</Text>
+              </div>
+              <div className="h-1"></div>
+              <div>
+                <Text>{profile.bio}</Text>
+              </div>
+            </Card>
+
+            <div className="h-4"></div>
+
+            <Card className="p-6">
+              <Text b>Types of mentorship offered</Text>
+              <div className="h-2"></div>
+              <div className="flex flex-wrap gap-2">
+                {profile.profileTags.map((tag) => {
+                  return <Tag>{tag.name}</Tag>;
+                })}
+              </div>
+            </Card>
+            <div className="h-4"></div>
+
             <Form
               questions={getQuestionsFromJson(
                 currentProgram?.mentorProfileSchemaJson
               )}
-              responses={getResponsesFromJson(mentor.profileJson)}
+              responses={getResponsesFromJson(profile.profileJson)}
               readonly
               showDescriptions={false}
             />
@@ -147,7 +155,7 @@ const ProfileModal = ({
             >
               Back
             </Button>
-            <BookAChat mentor={mentor} />
+            <BookAChat mentor={profile} />
           </div>
         );
     }
@@ -163,7 +171,9 @@ const ProfileModal = ({
         onClose();
       }}
     >
-      <div className="flex p-4">{renderModalContents()}</div>
+      <div className="flex p-4 md:max-w-3xl lg:max-w-4xl">
+        {renderModalContents()}
+      </div>
     </Modal>
   );
 };

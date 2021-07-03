@@ -57,10 +57,10 @@ const LoginPage = () => {
           <button
             onClick={() =>
               signInWithGoogle()
-                .catch((e) => setError(e.message))
                 .then((_) => {
                   redirectAfterLoggingIn();
                 })
+                .catch((e) => setError(e.message))
             }
             className="h-16 w-full bg-tertiary flex items-center justify-center cursor-pointer"
           >

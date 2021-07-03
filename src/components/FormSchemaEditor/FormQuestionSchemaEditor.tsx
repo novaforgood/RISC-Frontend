@@ -2,6 +2,7 @@ import classNames from "classnames";
 import React, { useEffect, useRef, useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { Question } from "../../types/Form";
+import { Card } from "../atomic";
 import Select from "../atomic/Select";
 import { DeleteIcon, DragHandle } from "./icons";
 import { getUpdateFunction } from "./utils";
@@ -116,83 +117,86 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
               ...provided.draggableProps.style,
             }}
           >
-            <div
-              ref={ref}
-              onMouseDown={() => {
-                setFocused(true);
-              }}
-              onMouseEnter={() => {
-                setHovered(true);
-              }}
-              onMouseLeave={() => {
-                setHovered(false);
-              }}
-              className={wrapperStyles}
-            >
-              <div className="flex items-center justify-between">
-                <DragHandle
-                  className="cursor-grab p-1.5"
-                  {...provided.dragHandleProps}
-                />
-                <div className="w-2"></div>
+            <Card>
+              <div
+                ref={ref}
+                onMouseDown={() => {
+                  setFocused(true);
+                }}
+                onMouseEnter={() => {
+                  setHovered(true);
+                }}
+                onMouseLeave={() => {
+                  setHovered(false);
+                }}
+                className={wrapperStyles}
+              >
+                <div className="flex items-center justify-between">
+                  <DragHandle
+                    className="cursor-grab p-1.5"
+                    {...provided.dragHandleProps}
+                  />
+                  <div className="w-2"></div>
 
-                <div className="w-1"></div>
-                <button
-                  className="rounded hover:bg-tertiary p-1.5 cursor-pointer"
-                  onClick={() => {
-                    onDelete();
-                  }}
-                >
-                  <DeleteIcon className="h-3.5" />
-                </button>
-              </div>
-              <div className="h-4"></div>
+                  <div className="w-1"></div>
+                  <button
+                    className="rounded hover:bg-tertiary p-1.5 cursor-pointer"
+                    onClick={() => {
+                      onDelete();
+                    }}
+                  >
+                    <DeleteIcon className="h-3.5" />
+                  </button>
+                </div>
+                <div className="h-4"></div>
 
-              <div className="flex items-start">
-                <div className="w-2/3">
-                  <input
-                    placeholder="Question"
-                    className={
-                      "w-full px-2 py-1 rounded-md placeholder-secondary border border-inactive \
+                <div className="flex items-start">
+                  <div className="w-2/3">
+                    <input
+                      placeholder="Question"
+                      className={
+                        "w-full px-2 py-1 rounded-md placeholder-secondary border border-inactive \
                       resize-none box-border font-bold  \
                       hover:border-secondary \
                       focus:ring-2 focus:ring-inactive focus:outline-none"
-                    }
-                    value={question.title}
-                    onChange={(e) => {
-                      onChange(updateQuestion({ title: e.target.value }));
-                    }}
-                  />
-                  <div className="h-4"></div>
-                  <input
-                    placeholder="Description"
-                    className={
-                      "w-full px-2 py-1 rounded-md placeholder-secondary border border-inactive \
+                      }
+                      value={question.title}
+                      onChange={(e) => {
+                        onChange(updateQuestion({ title: e.target.value }));
+                      }}
+                    />
+                    <div className="h-4"></div>
+                    <input
+                      placeholder="Description"
+                      className={
+                        "w-full px-2 py-1 rounded-md placeholder-secondary border border-inactive \
                       resize-none box-border text-secondary \
                       hover:border-secondary \
                       focus:ring-2 focus:ring-inactive focus:outline-none"
-                    }
-                    value={question.description}
-                    onChange={(e) => {
-                      onChange(updateQuestion({ description: e.target.value }));
-                    }}
-                  />
-                </div>
-                <div className="w-2 sm:w-4 md:w-8"></div>
-                <div className="w-1/3">
-                  <Select
-                    options={[
-                      { label: "Short Answer", value: "short-answer" },
-                      { label: "Long Answer", value: "long-answer" },
-                    ]}
-                    value={question.type}
-                    onSelect={(selectedValue) => {
-                      onChange(updateQuestion({ type: selectedValue }));
-                    }}
-                  />
-                </div>
+                      }
+                      value={question.description}
+                      onChange={(e) => {
+                        onChange(
+                          updateQuestion({ description: e.target.value })
+                        );
+                      }}
+                    />
+                  </div>
+                  <div className="w-2 sm:w-4 md:w-8"></div>
+                  <div className="w-1/3">
+                    <Select
+                      options={[
+                        { label: "Short Answer", value: "short-answer" },
+                        { label: "Long Answer", value: "long-answer" },
+                      ]}
+                      value={question.type}
+                      onSelect={(selectedValue) => {
+                        onChange(updateQuestion({ type: selectedValue }));
+                      }}
+                    />
+                  </div>
 
-                {/* <input
+                  {/* <input
                   placeholder="Description"
                   className={
                     "flex-1 px-1.5 py-1 rounded-md placeholder-secondary border-2 border-inactive \
@@ -206,7 +210,7 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
                   }}
                 /> */}
 
-                {/* <select
+                  {/* <select
                   name="Question Type"
                   value={question.type}
                   onChange={(e) => {
@@ -224,11 +228,13 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
                   <option value="single-line">Short Answer</option>
                   <option value="multiple-choice">Multiple Choice</option>
                 </select> */}
-              </div>
-              <div className="h-4"></div>
+                </div>
+                <div className="h-4"></div>
 
-              {questionPreview()}
-            </div>
+                {questionPreview()}
+              </div>
+            </Card>
+
             <div className="h-4"></div>
           </div>
         );

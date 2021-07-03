@@ -1,0 +1,11 @@
+mutation updateProfileTagsOfProfile(
+  $profileId: String!
+  $profileTagIds: [String!]!
+) {
+  updateProfileTagsOfProfile(
+    profileId: $profileId
+    profileTagIds: $profileTagIds
+  ) {
+    profileTagId
+  }
+}

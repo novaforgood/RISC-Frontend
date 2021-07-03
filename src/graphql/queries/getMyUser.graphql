@@ -18,6 +18,10 @@ query getMyUser {
         iconUrl
         slug
       }
+      profileTags {
+        profileTagId
+        name
+      }
     }
   }
 }
