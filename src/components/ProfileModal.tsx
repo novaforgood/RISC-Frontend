@@ -5,6 +5,7 @@ import { Question } from "../types/Form";
 import { Button, Card, Modal, Tag, Text } from "./atomic";
 import BookAChat from "./BookAChat";
 import Form, { ResponseJson } from "./Form";
+import ProfilePictureImg from "./ProfilePictureImg";
 
 function getQuestionsFromJson(json: string | undefined): Question[] {
   if (!json) return [];
@@ -56,12 +57,10 @@ const ProfileModal = ({
           <div className="w-full">
             <div className="flex">
               <div className="flex flex-col items-center">
-                <div className="h-40 w-40 rounded-full bg-inactive">
-                  <img
-                    className="h-full w-full rounded-full"
-                    src={profile.user.profilePictureUrl}
-                  ></img>
-                </div>
+                <ProfilePictureImg
+                  src={profile.user.profilePictureUrl}
+                  className="h-40 w-40 rounded-full bg-inactive"
+                />
                 <div className="h-4"></div>
                 <Text b1 b>
                   {profile.user.firstName} {profile.user.lastName}
