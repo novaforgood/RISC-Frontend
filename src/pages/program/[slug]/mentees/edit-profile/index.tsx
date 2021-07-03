@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Text } from "../../../../../components/atomic";
 import FormSchemaEditor from "../../../../../components/FormSchemaEditor";
-import { ProfileTag } from "../../../../../components/tags/types";
-import {
-  refetchGetProfileTagsByProgramQuery,
-  useGetProfileTagsByProgramQuery,
-  useUpdateProfileTagsOfProgramMutation,
-  useUpdateProgramMutation,
-} from "../../../../../generated/graphql";
+import { useUpdateProgramMutation } from "../../../../../generated/graphql";
 import { useCurrentProgram } from "../../../../../hooks";
 import ChooseTabLayout from "../../../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../../../layouts/PageContainer";
@@ -25,18 +19,7 @@ function getQuestionsFromJson(json: string): Question[] {
 const EditMenteeProfilePage: Page = (_) => {
   const { currentProgram, refetchCurrentProgram } = useCurrentProgram();
   const [updateProgram] = useUpdateProgramMutation();
-  const [updateProfileTagsOfProgram] = useUpdateProfileTagsOfProgramMutation({
-    refetchQueries: [
-      refetchGetProfileTagsByProgramQuery({
-        programId: currentProgram?.programId!,
-      }),
-    ],
-  });
-  const { data: profileTagsData } = useGetProfileTagsByProgramQuery({
-    variables: { programId: currentProgram?.programId! },
-  });
   const [profileSchema, setProfileSchema] = useState<Question[]>([]);
-  const [profileTags, setProfileTags] = useState<ProfileTag[]>([]);
   const [modified, setModified] = useState(false);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   isSavingProfile; // TODO: If is saving, set loading state of button to true.
@@ -49,12 +32,6 @@ const EditMenteeProfilePage: Page = (_) => {
     return () => {};
   }, [currentProgram]);
 
-  useEffect(() => {
-    if (!profileTagsData) return;
-    setProfileTags(profileTagsData.getProfileTagsByProgram);
-    return () => {};
-  }, [profileTagsData]);
-
   const saveProfile = () => {
     if (!currentProgram) return;
 
@@ -65,15 +42,6 @@ const EditMenteeProfilePage: Page = (_) => {
         variables: {
           programId: currentProgram.programId,
           data: { menteeProfileSchemaJson: JSON.stringify(profileSchema) },
-        },
-      }),
-      updateProfileTagsOfProgram({
-        variables: {
-          programId: currentProgram.programId,
-          profileTags: profileTags.map((tag) => ({
-            profileTagId: tag.profileTagId,
-            name: tag.name,
-          })),
         },
       }),
     ]).then(() => {
@@ -105,13 +73,13 @@ const EditMenteeProfilePage: Page = (_) => {
       </div>
 
       <div className="h-8" />
-      <Text b2>
-        This page is for editing the information that mentees will see when they
-        fill out their profiles for your organization.
-      </Text>
-      <div className="h-8" />
 
       <div className="w-80 sm:w-120 md:w-160 lg:w-200 flex flex-col">
+        <Text b2>
+          This page is for editing how <b>mentees</b> fill out their profile.
+        </Text>
+        <div className="h-8" />
+
         <Text h3 b className="text-secondary">
           Edit questions
         </Text>

@@ -52,6 +52,10 @@ function AddTagInput({ onEnter, ...props }: AddTagInputProps) {
           if (e.key === "Enter") {
             const target = e.target as HTMLInputElement;
             const val = target.value.trim();
+            if (val.length > 20) {
+              alert("Your tag name cannot exceed 20 characters.");
+              return;
+            }
             if (val.length > 0) {
               setNewTagName("");
               onEnter(val);
@@ -141,11 +145,6 @@ function TagSchemaEditor({
         ))}
         <AddTagInput
           onEnter={(newTagName) => {
-            if (newTagName.length > 20) {
-              alert("Your tag name cannot exceed 20 characters.");
-              return;
-            }
-
             if (tags.find((tag) => tag.name === newTagName)) {
               alert(`Cannot add tag: Tag "${newTagName}" already exists.`);
               return;

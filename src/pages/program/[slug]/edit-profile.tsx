@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Button, Card, Text } from "../../../components/atomic";
 import Form, { ResponseJson } from "../../../components/Form";
 import TagSelector from "../../../components/tags/TagSelector";
@@ -174,23 +174,27 @@ const EditProfilePage: Page = (_) => {
           </Card>
           <div className="h-8"></div>
 
-          <Card className="flex flex-col p-6 items-start border-0">
-            <Text b>
-              {isMentor
-                ? "What kinds of mentorship do you offer?"
-                : "What kinds of mentorship are you looking for?"}
-            </Text>
-            <div className="h-2"></div>
-            <TagSelector
-              selectableTags={programTagsData.getProfileTagsByProgram}
-              selectedTagIds={selectedTagIds}
-              onChange={(newSelectedTagIds) => {
-                setModified(true);
-                setSelectedTagIds(newSelectedTagIds);
-              }}
-            />
-          </Card>
-          <div className="h-8"></div>
+          {authorizationLevel === AuthorizationLevel.Mentor && (
+            <Fragment>
+              <Card className="flex flex-col p-6 items-start border-0">
+                <Text b>
+                  {isMentor
+                    ? "What kinds of mentorship do you offer?"
+                    : "What kinds of mentorship are you looking for?"}
+                </Text>
+                <div className="h-2"></div>
+                <TagSelector
+                  selectableTags={programTagsData.getProfileTagsByProgram}
+                  selectedTagIds={selectedTagIds}
+                  onChange={(newSelectedTagIds) => {
+                    setModified(true);
+                    setSelectedTagIds(newSelectedTagIds);
+                  }}
+                />
+              </Card>
+              <div className="h-8"></div>
+            </Fragment>
+          )}
 
           <Form
             questions={getQuestionsFromJson(
