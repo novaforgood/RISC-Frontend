@@ -173,16 +173,16 @@ const ProgramApplyPage: Page = (_) => {
                 <br />
                 <br />
                 <Text b>
-                  Go to your profile to view your application status.
+                  Go to your homepage to view your application status.
                 </Text>
               </Card>
               <div className="mt-14">
                 <Button
                   onClick={() => {
-                    //TODO
+                    router.push("/");
                   }}
                 >
-                  Go to Profile
+                  Go to Homepage
                 </Button>
               </div>
             </div>

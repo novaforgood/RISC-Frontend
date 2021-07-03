@@ -15,7 +15,7 @@ const Button = ({
   const styles = classNames({
     // Universal button styles
     ["box-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:ring-opacity-50 duration-75 \
-      disabled:cursor-not-allowed"]:
+      disabled:cursor-not-allowed shadow"]:
       true,
 
     // Variant styles
@@ -25,8 +25,8 @@ const Button = ({
       disabled:bg-inactive"]:
       variant === "solid",
 
-    ["bg-transparent text-black border border-black \
-      hover:ring-primary hover:font-bold \
+    ["bg-transparent text-black border border-primary \
+      hover:ring-primary hover:font-bold hover:border-3 \
       active:bg-primary active:text-white \
       disabled:text-inactive disabled:border disabled:border-inactive \
       focus:ring-opacity-100"]:
