@@ -166,8 +166,9 @@ const ProgramApplyPage: Page = (_) => {
                 </Text>
                 <br />
                 <br />
+                {/* TODO: Replace "your mentorship admin" with the admin email */}
                 <Text>
-                  Please contact [Mentorship Admin - TODO] if you need to make
+                  Please contact the mentorship admin if you need to make
                   changes to your application.
                 </Text>
                 <br />
@@ -179,7 +180,7 @@ const ProgramApplyPage: Page = (_) => {
               <div className="mt-14">
                 <Button
                   onClick={() => {
-                    //TODO
+                    router.push("/");
                   }}
                 >
                   Go to Profile
