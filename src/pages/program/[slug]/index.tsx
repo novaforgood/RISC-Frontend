@@ -44,12 +44,18 @@ const AdminHome = ({
   iconUrl,
   homepage,
 }: DisplayProgramHomepageProps) => (
-  <div className="pt-24">
+  <div>
     <EditorProvider currentHomepage={getRawContentState(homepage)}>
-      <PublishButton
-        className="transform -translate-y-24 z-10 float-right"
-        programId={programId}
-      />
+      <div className="flex items-center">
+        <div className="flex w-full items-center justify-between">
+          <Text h2 b>
+            Edit Homepage
+          </Text>
+          <PublishButton className="" programId={programId} />
+        </div>
+      </div>
+      <div className="h-24"></div>
+
       <Card className="box-border w-full px-16 p-8 z-0">
         <img
           className="w-28 h-28 relative rounded-md -top-24"
@@ -128,7 +134,7 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
     case AuthorizationLevel.Admin:
     case AuthorizationLevel.Mentor:
     case AuthorizationLevel.Mentee:
-      LocalStorage.set('cachedProgramSlug', program.slug)
+      LocalStorage.set("cachedProgramSlug", program.slug);
       break;
     default:
       break;

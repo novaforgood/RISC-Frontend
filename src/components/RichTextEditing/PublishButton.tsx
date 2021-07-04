@@ -1,7 +1,7 @@
+import { HTMLAttributes, useState } from "react";
+import { useUpdateProgramMutation } from "../../generated/graphql";
 import { Button } from "../atomic";
 import { useEditor } from "./EditorContext";
-import { useUpdateProgramMutation } from "../../generated/graphql";
-import { HTMLAttributes, useState } from "react";
 
 type PublishButtonProps = HTMLAttributes<HTMLButtonElement> & {
   programId: string;
@@ -31,7 +31,12 @@ const PublishButton = ({ programId, ...props }: PublishButtonProps) => {
   };
 
   return (
-    <Button disabled={!publishable || loading} onClick={save} {...props}>
+    <Button
+      size="small"
+      disabled={!publishable || loading}
+      onClick={save}
+      {...props}
+    >
       Publish
     </Button>
   );

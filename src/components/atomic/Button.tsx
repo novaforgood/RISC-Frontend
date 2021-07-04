@@ -15,7 +15,7 @@ const Button = ({
   const styles = classNames({
     // Universal button styles
     ["box-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:ring-opacity-50 duration-75 \
-      disabled:cursor-not-allowed"]:
+      disabled:cursor-not-allowed shadow-md active:shadow-none"]:
       true,
 
     // Variant styles
@@ -25,10 +25,10 @@ const Button = ({
       disabled:bg-inactive"]:
       variant === "solid",
 
-    ["bg-transparent text-black border border-black \
-      hover:ring-primary hover:font-bold \
+    ["bg-white text-black border border-black \
+      hover:ring-primary hover:bg-tertiary \
       active:bg-primary active:text-white \
-      disabled:text-inactive disabled:border disabled:border-inactive \
+      disabled:text-inactive disabled:border disabled:border-inactive disabled:bg-white \
       focus:ring-opacity-100"]:
       variant === "inverted",
 
