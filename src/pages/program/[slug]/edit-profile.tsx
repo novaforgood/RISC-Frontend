@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Button, Card, Text } from "../../../components/atomic";
+import CatchUnsavedChangesModal from "../../../components/CatchUnsavedChangesModal";
 import Form, { ResponseJson } from "../../../components/Form";
 import TagSelector from "../../../components/tags/TagSelector";
 import {
@@ -98,6 +99,8 @@ const EditProfilePage: Page = (_) => {
       const isMentor = authorizationLevel === AuthorizationLevel.Mentor;
       return (
         <div className="flex flex-col items-center">
+          <CatchUnsavedChangesModal unsavedChangesExist={modified === true} />
+
           <div className="flex justify-between items-center w-full">
             <Text h2 b>
               Edit My {isMentor ? "Mentor" : "Mentee"} Profile

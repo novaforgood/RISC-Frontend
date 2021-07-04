@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Text } from "../../../../../components/atomic";
+import CatchUnsavedChangesModal from "../../../../../components/CatchUnsavedChangesModal";
 import FormSchemaEditor from "../../../../../components/FormSchemaEditor";
 import { useUpdateProgramMutation } from "../../../../../generated/graphql";
 import { useCurrentProgram } from "../../../../../hooks";
@@ -54,6 +55,8 @@ const EditMenteeProfilePage: Page = (_) => {
 
   return (
     <div className="flex flex-col items-center">
+      <CatchUnsavedChangesModal unsavedChangesExist={modified === true} />
+
       <div className="flex justify-between items-center w-full">
         <Text h2 b>
           Edit Mentee Profile

@@ -6,6 +6,7 @@ import {
   Text,
   TextArea,
 } from "../../../components/atomic";
+import CatchUnsavedChangesModal from "../../../components/CatchUnsavedChangesModal";
 import UploadIconWithPreview from "../../../components/UploadIconWithPreview";
 import {
   ProfileType,
@@ -90,6 +91,7 @@ const SettingsPage: Page = () => {
 
   return (
     <Fragment>
+      <CatchUnsavedChangesModal unsavedChangesExist={modified === true} />
       <Text h2 b>
         Settings
       </Text>

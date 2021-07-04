@@ -1,19 +1,15 @@
-import React, { useEffect, useRef } from "react";
-import { blockRenderMap } from "./TextStyles";
-import { useEditor } from "./EditorContext";
 import Editor from "@draft-js-plugins/editor";
-import {
-  RichUtils,
-  DraftHandleValue,
-  EditorState,
-  // KeyBindingUtil,
-  // getDefaultKeyBinding,
-} from "draft-js";
-import { BlockTypes } from ".";
+import { DraftHandleValue, EditorState, RichUtils } from "draft-js";
 import "draft-js/dist/Draft.css";
+import React, { useEffect, useRef } from "react";
+import { BlockTypes } from ".";
+import CatchUnsavedChangesModal from "../CatchUnsavedChangesModal";
+import { useEditor } from "./EditorContext";
+import { blockRenderMap } from "./TextStyles";
 
 const TextEditor = () => {
-  const { editorState, setEditorState, setPublishable, plugins } = useEditor();
+  const { editorState, setEditorState, setPublishable, plugins, publishable } =
+    useEditor();
 
   let forwardRef = useRef<any>(null);
 
@@ -86,6 +82,8 @@ const TextEditor = () => {
 
   return (
     <div onClick={focus} className="max-h-3/4 box-border flex-grow m-1.5">
+      <CatchUnsavedChangesModal unsavedChangesExist={publishable === true} />
+
       <Editor
         editorKey="temp-key" //Necessary to prevent server from rendering a separate editor
         plugins={plugins!}

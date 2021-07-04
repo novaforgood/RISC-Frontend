@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Text } from "../../../../../components/atomic";
+import CatchUnsavedChangesModal from "../../../../../components/CatchUnsavedChangesModal";
 import FormSchemaEditor from "../../../../../components/FormSchemaEditor";
 import TagSchemaEditor from "../../../../../components/tags/TagSchemaEditor";
 import { ProfileTag } from "../../../../../components/tags/types";
@@ -87,6 +88,8 @@ const EditMentorProfilePage: Page = (_) => {
 
   return (
     <div className="flex flex-col items-center">
+      <CatchUnsavedChangesModal unsavedChangesExist={modified === true} />
+
       <div className="flex justify-between items-center w-full">
         <Text h2 b>
           Edit Mentor Profile
