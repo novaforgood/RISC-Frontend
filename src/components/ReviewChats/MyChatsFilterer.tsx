@@ -9,6 +9,7 @@ import useTimezoneConverters from "../../hooks/useTimezoneConverters";
 import { Button, Modal, Text } from "../atomic";
 import InlineProfileAvatar from "../InlineProfileAvatar";
 import ListFilterer from "../ListFilterer";
+import ChatMutators from "./ChatMutators";
 
 type ChatRequestPartial = Omit<
   GetChatRequestsQuery["getChatRequests"][number],
@@ -22,6 +23,7 @@ const chatRequestStatusToTextMap = {
   [ChatRequestStatus.PendingReview]: "Pending",
   [ChatRequestStatus.Accepted]: "Accepted",
   [ChatRequestStatus.Rejected]: "Rejected",
+  [ChatRequestStatus.Canceled]: "Canceled",
 };
 
 type DetailsModalButtonProps = {
@@ -78,8 +80,13 @@ const DetailsModalButton = ({ chatRequest }: DetailsModalButtonProps) => {
             </>
           )}
           <div className="h-2" />
-          <div className="flex w-full">
-            <div className="flex-1" />
+          <div className="flex justify-between w-full">
+            <ChatMutators
+              chatRequestId={chatRequest.chatRequestId}
+              chatCanceled={
+                chatRequest.chatRequestStatus === ChatRequestStatus.Canceled
+              }
+            />
             <Button size={"small"} onClick={() => setIsOpen(false)}>
               Ok
             </Button>
