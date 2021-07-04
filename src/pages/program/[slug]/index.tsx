@@ -122,13 +122,8 @@ const ReadOnlyHome = ({
 //TODO: Change type of this to not any
 const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
   const authorizationLevel = useAuthorizationLevel();
-  const router = useRouter();
 
   const program = props.data?.getProgramBySlug;
-  if (!program) {
-    router.push("/");
-    return <div>Program doesn't exist!</div>;
-  }
 
   switch (authorizationLevel) {
     case AuthorizationLevel.Admin:
@@ -138,6 +133,23 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
       break;
     default:
       break;
+  }
+
+  if (!program) {
+    return (
+      <div className="h-screen w-screen flex flex-col justify-center items-center">
+        <img src="/static/DarkTextLogo.svg" />
+        <div className="h-8"></div>
+        <div>
+          <Text>Page not found. </Text>
+          <Link href="/">
+            <Text u className="cursor-pointer">
+              Go back to home.
+            </Text>
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   const getProgramPage = () => {
@@ -151,15 +163,13 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
         return <ReadOnlyHome {...program} />;
     }
   };
-  return getProgramPage();
+  return <PageContainer>{getProgramPage()}</PageContainer>;
 };
 
 export default ProgramPage;
 
 ProgramPage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps}>
-    <PageContainer>{page}</PageContainer>
-  </ChooseTabLayout>
+  <ChooseTabLayout {...pageProps}>{page}</ChooseTabLayout>
 );
 
 // TODO: Extract this function because it'll probably be reused

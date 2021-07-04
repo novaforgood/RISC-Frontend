@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { Button, Checkbox, Text } from "../components/atomic";
+import { Button, Text } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
 import { CreateUserInput, useCreateUserMutation } from "../generated/graphql";
 import { useAuth } from "../utils/firebase/auth";
@@ -28,7 +28,7 @@ const SignUpPage = () => {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [tocChecked, setTocChecked] = useState(false);
+  // const [tocChecked, setTocChecked] = useState(false);
   const router = useRouter();
   const [createUser] = useCreateUserMutation();
 
@@ -150,7 +150,7 @@ const SignUpPage = () => {
             />
             <div className="h-6" />
 
-            <div className="flex items-center">
+            {/* <div className="flex items-center">
               <Checkbox
                 checked={tocChecked}
                 onCheck={() => {
@@ -164,7 +164,7 @@ const SignUpPage = () => {
                 </Text>
               </Text>
             </div>
-            <div className="h-6" />
+            <div className="h-6" /> */}
 
             <Button
               onClick={(e) => {
