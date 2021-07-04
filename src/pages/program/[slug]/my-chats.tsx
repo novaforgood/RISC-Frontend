@@ -1,12 +1,12 @@
 import React from "react";
 import { Text } from "../../../components/atomic";
 import { MyChatsFilterer } from "../../../components/ReviewChats/MyChatsFilterer";
-import { useCurrentProfile } from "../../../hooks";
+import { AuthorizationLevel, useCurrentProfile } from "../../../hooks";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../layouts/PageContainer";
 import Page from "../../../types/Page";
 
-const MentorApplicationsPage: Page = () => {
+const MyChatsPage: Page = () => {
   const { currentProfile } = useCurrentProfile();
 
   if (!currentProfile) {
@@ -29,10 +29,10 @@ const MentorApplicationsPage: Page = () => {
   );
 };
 
-MentorApplicationsPage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps}>
+MyChatsPage.getLayout = (page, pageProps) => (
+  <ChooseTabLayout {...pageProps} canView={[AuthorizationLevel.Mentee]}>
     <PageContainer>{page}</PageContainer>
   </ChooseTabLayout>
 );
 
-export default MentorApplicationsPage;
+export default MyChatsPage;

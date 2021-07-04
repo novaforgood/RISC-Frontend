@@ -3,7 +3,7 @@ import { Button, Text } from "../../../../../components/atomic";
 import CatchUnsavedChangesModal from "../../../../../components/CatchUnsavedChangesModal";
 import FormSchemaEditor from "../../../../../components/FormSchemaEditor";
 import { useUpdateProgramMutation } from "../../../../../generated/graphql";
-import { useCurrentProgram } from "../../../../../hooks";
+import { AuthorizationLevel, useCurrentProgram } from "../../../../../hooks";
 import ChooseTabLayout from "../../../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../../../layouts/PageContainer";
 import { Question } from "../../../../../types/Form";
@@ -93,7 +93,7 @@ const EditMentorApplicationPage: Page = (_) => {
 };
 
 EditMentorApplicationPage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps}>
+  <ChooseTabLayout {...pageProps} canView={[AuthorizationLevel.Admin]}>
     <PageContainer>{page}</PageContainer>
   </ChooseTabLayout>
 );

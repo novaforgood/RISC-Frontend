@@ -221,7 +221,10 @@ const EditProfilePage: Page = (_) => {
 };
 
 EditProfilePage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps}>
+  <ChooseTabLayout
+    {...pageProps}
+    canView={[AuthorizationLevel.Mentor, AuthorizationLevel.Mentee]}
+  >
     <PageContainer>{page}</PageContainer>
   </ChooseTabLayout>
 );

@@ -10,7 +10,7 @@ import {
   useUpdateProfileTagsOfProgramMutation,
   useUpdateProgramMutation,
 } from "../../../../../generated/graphql";
-import { useCurrentProgram } from "../../../../../hooks";
+import { AuthorizationLevel, useCurrentProgram } from "../../../../../hooks";
 import ChooseTabLayout from "../../../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../../../layouts/PageContainer";
 import { Question } from "../../../../../types/Form";
@@ -160,7 +160,7 @@ const EditMentorProfilePage: Page = (_) => {
 };
 
 EditMentorProfilePage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps}>
+  <ChooseTabLayout {...pageProps} canView={[AuthorizationLevel.Admin]}>
     <PageContainer>{page}</PageContainer>
   </ChooseTabLayout>
 );
