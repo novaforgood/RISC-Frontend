@@ -49,12 +49,16 @@ function CatchUnsavedChangesModal({
       }
     };
 
-    const navigateAwayStart = () => {
+    /**
+     * Returning a string in this function causes there to be a popup when
+     * the user tries to unload the page. We only want the popup to show
+     * when there are unsaved changes.
+     */
+    window.onbeforeunload = () => {
       if (unsavedChangesExist === true) return "Some string";
     };
 
     router.events.on("routeChangeStart", routeChangeStart);
-    window.onbeforeunload = navigateAwayStart;
 
     return () => {
       router.events.off("routeChangeStart", routeChangeStart);
