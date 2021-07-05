@@ -1,7 +1,7 @@
 import React from "react";
 import { Text } from "../../../components/atomic";
 import { ChatRequestFilterer } from "../../../components/ReviewChats/ChatRequestFilterer";
-import { useCurrentProfile } from "../../../hooks";
+import { AuthorizationLevel, useCurrentProfile } from "../../../hooks";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../layouts/PageContainer";
 import Page from "../../../types/Page";
@@ -29,7 +29,7 @@ const MentorApplicationsPage: Page = () => {
 };
 
 MentorApplicationsPage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps}>
+  <ChooseTabLayout {...pageProps} canView={[AuthorizationLevel.Mentor]}>
     <PageContainer>{page}</PageContainer>
   </ChooseTabLayout>
 );

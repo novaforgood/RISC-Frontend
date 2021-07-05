@@ -6,6 +6,7 @@ import {
   Text,
   TextArea,
 } from "../../../components/atomic";
+import CatchUnsavedChangesModal from "../../../components/CatchUnsavedChangesModal";
 import UploadIconWithPreview from "../../../components/UploadIconWithPreview";
 import {
   ProfileType,
@@ -14,7 +15,7 @@ import {
   useUpdateProgramMutation,
   useUploadImageAndResizeMutation,
 } from "../../../generated/graphql";
-import { useCurrentProgram } from "../../../hooks";
+import { AuthorizationLevel, useCurrentProgram } from "../../../hooks";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../layouts/PageContainer";
 import Page from "../../../types/Page";
@@ -90,6 +91,7 @@ const SettingsPage: Page = () => {
 
   return (
     <Fragment>
+      <CatchUnsavedChangesModal unsavedChangesExist={modified === true} />
       <Text h2 b>
         Settings
       </Text>
@@ -243,7 +245,7 @@ const SettingsPage: Page = () => {
 };
 
 SettingsPage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps}>
+  <ChooseTabLayout {...pageProps} canView={[AuthorizationLevel.Admin]}>
     <PageContainer>{page}</PageContainer>
   </ChooseTabLayout>
 );

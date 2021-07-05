@@ -44,12 +44,18 @@ const AdminHome = ({
   iconUrl,
   homepage,
 }: DisplayProgramHomepageProps) => (
-  <div className="pt-24">
+  <div>
     <EditorProvider currentHomepage={getRawContentState(homepage)}>
-      <PublishButton
-        className="transform -translate-y-24 z-10 float-right"
-        programId={programId}
-      />
+      <div className="flex items-center">
+        <div className="flex w-full items-center justify-between">
+          <Text h2 b>
+            Edit Homepage
+          </Text>
+          <PublishButton className="" programId={programId} />
+        </div>
+      </div>
+      <div className="h-24"></div>
+
       <Card className="box-border w-full px-16 p-8 z-0">
         <img
           className="w-28 h-28 relative rounded-md -top-24"
@@ -116,22 +122,34 @@ const ReadOnlyHome = ({
 //TODO: Change type of this to not any
 const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
   const authorizationLevel = useAuthorizationLevel();
-  const router = useRouter();
 
   const program = props.data?.getProgramBySlug;
-  if (!program) {
-    router.push("/");
-    return <div>Program doesn't exist!</div>;
-  }
 
   switch (authorizationLevel) {
     case AuthorizationLevel.Admin:
     case AuthorizationLevel.Mentor:
     case AuthorizationLevel.Mentee:
-      LocalStorage.set('cachedProgramSlug', program.slug)
+      LocalStorage.set("cachedProgramSlug", program.slug);
       break;
     default:
       break;
+  }
+
+  if (!program) {
+    return (
+      <div className="h-screen w-screen flex flex-col justify-center items-center">
+        <img src="/static/DarkTextLogo.svg" />
+        <div className="h-8"></div>
+        <div>
+          <Text>Page not found. </Text>
+          <Link href="/">
+            <Text u className="cursor-pointer">
+              Go back to home.
+            </Text>
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   const getProgramPage = () => {
@@ -145,15 +163,13 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
         return <ReadOnlyHome {...program} />;
     }
   };
-  return getProgramPage();
+  return <PageContainer>{getProgramPage()}</PageContainer>;
 };
 
 export default ProgramPage;
 
 ProgramPage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps}>
-    <PageContainer>{page}</PageContainer>
-  </ChooseTabLayout>
+  <ChooseTabLayout {...pageProps}>{page}</ChooseTabLayout>
 );
 
 // TODO: Extract this function because it'll probably be reused
