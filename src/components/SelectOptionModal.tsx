@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Button, Modal, Text } from "./atomic";
 
-interface SelectOptionModalProps {
+export interface SelectOptionModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;

@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { Button, Card, Text } from "../../components/atomic";
+import CatchUnsavedChangesModal from "../../components/CatchUnsavedChangesModal";
 import { BackArrow } from "../../components/icons";
 import TitledInput from "../../components/TitledInput";
 import UploadIconWithPreview from "../../components/UploadIconWithPreview";
@@ -43,6 +44,8 @@ const GeneralProfile = () => {
 
   return (
     <div className="h-screen bg-tertiary flex flex-col items-center py-10 overflow-y-auto">
+      <CatchUnsavedChangesModal unsavedChangesExist={modified === true} />
+
       <div className="w-3/4">
         <button
           className="cursor-pointer h-max w-max"

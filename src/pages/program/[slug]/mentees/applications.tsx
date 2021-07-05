@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { Text } from "../../../../components/atomic";
 import { ApplicationFilterer } from "../../../../components/ReviewApplications/ApplicationFilterer";
 import { ApplicationType } from "../../../../generated/graphql";
-import { useCurrentProgram } from "../../../../hooks";
+import { AuthorizationLevel, useCurrentProgram } from "../../../../hooks";
 import ChooseTabLayout from "../../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../../layouts/PageContainer";
 import Page from "../../../../types/Page";
@@ -29,7 +29,7 @@ const MentorApplicationsPage: Page = () => {
 };
 
 MentorApplicationsPage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps}>
+  <ChooseTabLayout {...pageProps} canView={[AuthorizationLevel.Admin]}>
     <PageContainer>{page}</PageContainer>
   </ChooseTabLayout>
 );
