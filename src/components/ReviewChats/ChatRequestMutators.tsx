@@ -1,6 +1,8 @@
 import { Fragment, useState } from "react";
 import { useCancelChatRequestMutation } from "../../generated/graphql";
 import { Button, Input, Modal, Text } from "../atomic";
+import CatchUnsavedChangesModal from "../CatchUnsavedChangesModal";
+import SelectOptionModal from "../SelectOptionModal";
 
 type ChatMutatorsProps = {
   chatRequestId: string;
@@ -11,14 +13,15 @@ const ChatMutators = ({ chatRequestId, chatCanceled }: ChatMutatorsProps) => {
   const [clicked, setClicked] = useState(false);
   const [action, setAction] = useState("");
   const [cancelReason, setCancelReason] = useState("");
+  const [modified, setModified] = useState(false);
   const [cancelChatRequestMutation] = useCancelChatRequestMutation();
 
   console.log(chatCanceled);
   return (
     <Fragment>
-      {chatCanceled ? (
-        <div />
-      ) : (
+      {/* This catch is super incomplete bc it doesn't prevent users from closing the modal mid-editting */}
+      <CatchUnsavedChangesModal unsavedChangesExist={modified === true} />
+      {!chatCanceled && (
         <button
           onClick={() => {
             setClicked(true);
@@ -30,7 +33,41 @@ const ChatMutators = ({ chatRequestId, chatCanceled }: ChatMutatorsProps) => {
           </Text>
         </button>
       )}
-      <Modal
+      <SelectOptionModal
+        isOpen={clicked}
+        onClose={() => {
+          setClicked(false);
+          setAction("");
+        }}
+        title={`What is your reason for ${action}ing?`}
+        onPrimaryButtonClick={() => {
+          if (action === "cancel")
+            cancelChatRequestMutation({
+              variables: {
+                chatRequestId: chatRequestId,
+                chatCancelMessage: cancelReason,
+              },
+            }); //Cancel query
+          if (action === "reschedule") console.log("Reschedule not ready yet"); //Reschedule query
+          setClicked(false);
+        }}
+        onSecondaryButtonClick={() => {
+          setClicked(false);
+        }}
+        primaryButtonText="Submit"
+        secondaryButtonText="Close"
+      >
+        <Input
+          placeholder={"Reason for " + action + "ing (optional)"}
+          onChange={(e) => {
+            setModified(true);
+            setCancelReason(e.target.value);
+          }}
+          className="w-full"
+        />
+      </SelectOptionModal>
+      {/* This is the vanilla Modal that I made before I knew of the SelectOptionModal */}
+      {/* <Modal
         isOpen={clicked}
         onClose={() => {
           setClicked(false);
@@ -42,6 +79,7 @@ const ChatMutators = ({ chatRequestId, chatCanceled }: ChatMutatorsProps) => {
           <Input
             placeholder={"Reason for " + action + "ing (optional)"}
             onChange={(e) => {
+              setModified(true);
               setCancelReason(e.target.value);
             }}
             className=""
@@ -76,7 +114,7 @@ const ChatMutators = ({ chatRequestId, chatCanceled }: ChatMutatorsProps) => {
             </Button>
           </div>
         </div>
-      </Modal>
+      </Modal> */}
     </Fragment>
   );
 };

@@ -31,7 +31,7 @@ function SelectOptionModal({
           </Text>
         </div>
         <div className="h-2"></div>
-        <div>{children}</div>
+        {children}
         <div className="h-8"></div>
         <div className="flex">
           <Button
