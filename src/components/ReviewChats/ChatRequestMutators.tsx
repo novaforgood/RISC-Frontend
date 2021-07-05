@@ -1,6 +1,6 @@
 import { Fragment, useState } from "react";
 import { useCancelChatRequestMutation } from "../../generated/graphql";
-import { Button, Input, Modal, Text } from "../atomic";
+import { Input, Text } from "../atomic";
 import CatchUnsavedChangesModal from "../CatchUnsavedChangesModal";
 import SelectOptionModal from "../SelectOptionModal";
 
