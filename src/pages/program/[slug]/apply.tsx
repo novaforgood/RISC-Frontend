@@ -66,7 +66,7 @@ const ProgramApplyPage: Page = (_) => {
   if (applicationType == null)
     return (
       <div className="h-screen w-screen flex flex-col justify-center items-center">
-        <Text h1>The application you are looking for does not exist</Text>
+        <Text h3>The application you are looking for does not exist</Text>
       </div>
     );
 
@@ -75,7 +75,7 @@ const ProgramApplyPage: Page = (_) => {
   if (currentProgram?.name == null) {
     return (
       <div className="h-screen w-screen flex flex-col justify-center items-center">
-        <Text h1>The program you are looking for does not exist</Text>
+        <Text h3>The program you are looking for does not exist</Text>
       </div>
     );
   }
