@@ -9,7 +9,7 @@ import {
   useRejectChatRequestMutation,
 } from "../../generated/graphql";
 import useTimezoneConverters from "../../hooks/useTimezoneConverters";
-import { Button, Modal, Text } from "../atomic";
+import { Button, Modal, Text, TextArea } from "../atomic";
 import { CircledCheck, CircledCross } from "../icons";
 import InlineProfileAvatar from "../InlineProfileAvatar";
 import ListFilterer from "../ListFilterer";
@@ -174,14 +174,15 @@ const ChatRequestListItem = ({ chatRequest }: ChatRequestListItemProps) => {
           </div>
           <div className="h-6"></div>
 
-          <textarea
+          <TextArea
             value={rejectMessage}
-            onChange={(e) => {
-              setRejectMessage(e.target.value);
+            onChange={(e: any) => {
+              const target = e.target as HTMLTextAreaElement;
+              setRejectMessage(target.value);
             }}
-            className="p-2 w-96 shadow-sm focus:ring-secondary focus:border-primary mt-1 block sm:text-sm border border-secondary rounded-md"
+            className="w-96"
             placeholder="Reason for rejection"
-          ></textarea>
+          ></TextArea>
           <div className="h-8"></div>
 
           <div className="flex">

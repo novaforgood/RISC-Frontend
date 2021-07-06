@@ -29,6 +29,8 @@ function getTabLayout(
       return UnauthenticatedTabLayout;
     case AuthorizationLevel.NotInProgram:
       return NotInProgramTabLayout;
+    case AuthorizationLevel.WaitingForUserData:
+      return Fragment;
   }
 }
 
@@ -42,13 +44,16 @@ const ChooseTabLayout = ({ children, canView }: ChooseTabLayoutProps) => {
 
   const authorizationLevel = useAuthorizationLevel();
 
+  if (authorizationLevel === AuthorizationLevel.WaitingForUserData)
+    return <Fragment />;
+
   if (canView && !canView.includes(authorizationLevel)) {
     return (
       <div className="h-screen w-screen flex flex-col justify-center items-center">
         <img src="/static/DarkTextLogo.svg" />
         <div className="h-8"></div>
         <div>
-          <Text>You are not authorized to view this page. </Text>
+          <Text>Page not found. </Text>
           <Link href="/">
             <Text u className="cursor-pointer">
               Go back to home.

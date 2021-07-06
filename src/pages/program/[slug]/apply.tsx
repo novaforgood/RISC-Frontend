@@ -60,13 +60,35 @@ const ProgramApplyPage: Page = (_) => {
   const applicationType: ApplicationType | null = getApplicationType();
 
   if ([Admin, Mentor, Mentee].includes(authorizationLevel))
-    return <div>You're already in this program.</div>;
+    return (
+      <div className="h-screen w-screen flex flex-col justify-center items-center">
+        <img src="/static/DarkTextLogo.svg" />
+        <div className="h-8"></div>
+        <div>
+          <Text>You're already in this program. </Text>
+          <Link href={`/program/${currentProgram?.slug}`}>
+            <Text u className="cursor-pointer">
+              Go to program homepage.
+            </Text>
+          </Link>
+        </div>
+      </div>
+    );
 
   // TODO: Make these into modals with back button
   if (applicationType == null)
     return (
       <div className="h-screen w-screen flex flex-col justify-center items-center">
-        <Text h1>The application you are looking for does not exist</Text>
+        <img src="/static/DarkTextLogo.svg" />
+        <div className="h-8"></div>
+        <div>
+          <Text>Page not found. </Text>
+          <Link href="/">
+            <Text u className="cursor-pointer">
+              Go back to home.
+            </Text>
+          </Link>
+        </div>
       </div>
     );
 
@@ -75,7 +97,16 @@ const ProgramApplyPage: Page = (_) => {
   if (currentProgram?.name == null) {
     return (
       <div className="h-screen w-screen flex flex-col justify-center items-center">
-        <Text h1>The program you are looking for does not exist</Text>
+        <img src="/static/DarkTextLogo.svg" />
+        <div className="h-8"></div>
+        <div>
+          <Text>Page not found. </Text>
+          <Link href="/">
+            <Text u className="cursor-pointer">
+              Go back to home.
+            </Text>
+          </Link>
+        </div>
       </div>
     );
   }
@@ -167,22 +198,22 @@ const ProgramApplyPage: Page = (_) => {
                 <br />
                 <br />
                 <Text>
-                  Please contact [Mentorship Admin - TODO] if you need to make
+                  Please contact the mentorship admin if you need to make
                   changes to your application.
                 </Text>
                 <br />
                 <br />
                 <Text b>
-                  Go to your profile to view your application status.
+                  Go to your homepage to view your application status.
                 </Text>
               </Card>
               <div className="mt-14">
                 <Button
                   onClick={() => {
-                    //TODO
+                    router.push("/");
                   }}
                 >
-                  Go to Profile
+                  Go to Home
                 </Button>
               </div>
             </div>

@@ -88,31 +88,39 @@ const ReadOnlyHome = ({
   const JSONHomepage: RawDraftContentState = getRawContentState(homepage);
   return (
     //TODO: Figure out whether the buttons at the top should be sticky
-    <div className="box-border bg-tertiary min-h-screen px-18 py-16 lg:py-32 lg:px-36 overflow-hidden">
+    <div className="box-border bg-tertiary min-h-full pt-16 lg:pt-32 overflow-hidden">
       {inProgram ? (
         <></>
       ) : (
         <div className="flex transform -translate-y-14 lg:-translate-y-20 float-right z-10">
-          <Button variant="inverted" size="small">
-            <Link href={router.asPath + "/apply?as=mentor"}>
-              Apply to Mentor
-            </Link>
-          </Button>
+          <Link href={router.asPath + "/apply?as=mentor"}>
+            <Button variant="inverted" size="small">
+              Apply as Mentor
+            </Button>
+          </Link>
+
           <div className="w-4" />
-          <Button variant="solid" size="small">
-            <Link href={router.asPath + "/apply?as=mentee"}>Join</Link>
-          </Button>
+
+          <Link href={router.asPath + "/apply?as=mentee"}>
+            <Button variant="solid" size="small">
+              Apply as Mentee
+            </Button>
+          </Link>
         </div>
       )}
-      <Card className="box-border w-full px-16 py-10">
-        <div className="relative -top-24">
-          <img className="w-28 h-28 rounded-md" src={iconUrl} />
-          <div className="h-2" />
-          <Text h1 b>
-            {name}
-          </Text>
-          <div className="h-2" />
-          <ReadOnlyTextEditor {...JSONHomepage} />
+      <Card className="box-border w-full px-16 py-10 ">
+        <div className="relative -top-24 pointer-events-none">
+          <div>
+            <img className="w-28 h-28 rounded-md" src={iconUrl} />
+            <div className="h-2" />
+            <Text h1 b>
+              {name}
+            </Text>
+            <div className="h-2" />
+          </div>
+          <div className="pointer-events-auto">
+            <ReadOnlyTextEditor {...JSONHomepage} />
+          </div>
         </div>
       </Card>
     </div>

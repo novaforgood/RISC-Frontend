@@ -1,7 +1,8 @@
+import classNames from "classnames";
 import _ from "lodash";
 import { Fragment, useState } from "react";
 import type { Question, TextQuestion } from "../types/Form";
-import { Card, Input, Text } from "./atomic";
+import { Card, Input, Text, TextArea } from "./atomic";
 
 type TextAskerProps = TextQuestion & {
   initResponse: string;
@@ -40,10 +41,9 @@ export var dummyForm: Question[] = [
 ];
 
 /**
- * @summary Short text and Long Text Asker.
- * Right now, there is no difference except placeholder. Do we want long answer to have multiline input functionality?
+ * @summary Short text asker.
  */
-const TextAsker = ({
+const ShortTextAsker = ({
   id,
   title,
   description,
@@ -58,11 +58,11 @@ const TextAsker = ({
   return (
     <div>
       <Text b>{title}</Text>
-      <div className="h-2" />
+      <div className="h-1" />
       {showDescriptions && description && (
         <Fragment>
           <Text className="text-secondary">{description}</Text>
-          <div className="h-1" />
+          <div className="h-2" />
         </Fragment>
       )}
       <Input
@@ -76,6 +76,52 @@ const TextAsker = ({
           onChange(id, e.target.value);
         }}
       ></Input>
+    </div>
+  );
+};
+
+/**
+ * @summary Long text asker.
+ */
+const LongTextAsker = ({
+  id,
+  title,
+  description,
+  type,
+  initResponse,
+  readonly,
+  showDescriptions,
+  onChange,
+}: TextAskerProps) => {
+  const [answer, setAnswer] = useState(initResponse); // Replace with responses
+
+  const styles = classNames({
+    "w-full": true,
+    "bg-white resize-none": readonly,
+  });
+  return (
+    <div>
+      <Text b>{title}</Text>
+      <div className="h-1" />
+      {showDescriptions && description && (
+        <Fragment>
+          <Text className="text-secondary">{description}</Text>
+          <div className="h-2" />
+        </Fragment>
+      )}
+      <TextArea
+        className={styles}
+        placeholder={type === "short-answer" ? "Short text" : "Long text"}
+        readOnly={readonly}
+        disabled={readonly}
+        maxRows={readonly ? 2 : undefined}
+        value={answer}
+        onChange={(e: any) => {
+          const target = e.target as HTMLTextAreaElement;
+          setAnswer(target.value);
+          onChange(id, target.value);
+        }}
+      ></TextArea>
     </div>
   );
 };
@@ -115,16 +161,26 @@ const Form = ({
         {questions.map((question, i) => {
           switch (question.type) {
             case "short-answer":
-            case "long-answer":
               return (
-                <TextAsker
+                <ShortTextAsker
                   {...question}
                   initResponse={responses[`${question.id}`] || ""}
                   readonly={readonly}
                   showDescriptions={showDescriptions}
                   onChange={handleChange}
                   key={i}
-                ></TextAsker>
+                ></ShortTextAsker>
+              );
+            case "long-answer":
+              return (
+                <LongTextAsker
+                  {...question}
+                  initResponse={responses[`${question.id}`] || ""}
+                  readonly={readonly}
+                  showDescriptions={showDescriptions}
+                  onChange={handleChange}
+                  key={i}
+                ></LongTextAsker>
               );
             case "multiple-choice":
               return;
@@ -138,16 +194,26 @@ const Form = ({
         {questions.map((question, i) => {
           switch (question.type) {
             case "short-answer":
-            case "long-answer":
               return (
-                <TextAsker
+                <ShortTextAsker
                   {...question}
                   initResponse={responses[`${question.id}`] || ""}
                   readonly={readonly}
                   showDescriptions={showDescriptions}
                   onChange={handleChange}
                   key={i}
-                ></TextAsker>
+                ></ShortTextAsker>
+              );
+            case "long-answer":
+              return (
+                <LongTextAsker
+                  {...question}
+                  initResponse={responses[`${question.id}`] || ""}
+                  readonly={readonly}
+                  showDescriptions={showDescriptions}
+                  onChange={handleChange}
+                  key={i}
+                ></LongTextAsker>
               );
             case "multiple-choice":
               return;

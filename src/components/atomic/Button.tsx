@@ -15,7 +15,7 @@ const Button = ({
   const styles = classNames({
     // Universal button styles
     ["box-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:ring-opacity-50 duration-75 \
-      disabled:cursor-not-allowed shadow-md active:shadow-none"]:
+      disabled:cursor-not-allowed shadow-md active:shadow-none whitespace-nowrap"]:
       true,
 
     // Variant styles
