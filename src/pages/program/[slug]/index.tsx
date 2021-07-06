@@ -88,7 +88,7 @@ const ReadOnlyHome = ({
   const JSONHomepage: RawDraftContentState = getRawContentState(homepage);
   return (
     //TODO: Figure out whether the buttons at the top should be sticky
-    <div className="box-border bg-tertiary min-h-screen px-18 py-16 lg:py-32 lg:px-36 overflow-hidden">
+    <div className="box-border bg-tertiary min-h-full pt-16 lg:pt-32 overflow-hidden">
       {inProgram ? (
         <></>
       ) : (
