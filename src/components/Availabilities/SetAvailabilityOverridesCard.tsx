@@ -4,7 +4,7 @@ import {
   format,
   getDay,
   isEqual,
-  startOfDay
+  startOfDay,
 } from "date-fns";
 import React, { Fragment, useState } from "react";
 import {
@@ -13,7 +13,7 @@ import {
   useCreateAvailOverrideDateMutation,
   useDeleteAvailOverrideDateMutation,
   useGetAvailOverrideDatesQuery,
-  useUpdateAvailOverrideDateMutation
+  useUpdateAvailOverrideDateMutation,
 } from "../../generated/graphql";
 import useTimezoneConverters from "../../hooks/useTimezoneConverters";
 import { Button, Modal, Text } from "../atomic";
@@ -152,7 +152,6 @@ const EditAvailOverrideDayModalContents = ({
         endTime: toUTC(newAvailability.endTime),
       })
       .sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
-    console.log(newTimeslots);
     setTimeslots(newTimeslots);
   };
 

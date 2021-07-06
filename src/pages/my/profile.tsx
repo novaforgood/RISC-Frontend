@@ -48,63 +48,52 @@ const GeneralProfile: Page = () => {
     <div className="h-screen bg-tertiary flex flex-col items-center py-10 overflow-y-auto">
       <CatchUnsavedChangesModal unsavedChangesExist={modified === true} />
 
-      <div className="w-3/4">
+      <div className="w-3/4 grid grid-cols-8 gap-4">
         <button
-          className="cursor-pointer h-max w-max"
+          className="cursor-pointer h-max w-max col-span-1"
           onClick={() => router.back()}
         >
           <BackArrow />
         </button>
-        <div className="flex justify-between items-center">
-          <Text h1 b>
+        <div className="flex justify-between items-center col-span-7">
+          <Text h2 b>
             General Profile
           </Text>
-          <div className="flex">
-            <Button
-              disabled={!modified}
-              size="small"
-              variant="inverted"
-              onClick={reset}
-            >
-              Reset
-            </Button>
-            <div className="w-4" />
-            <Button
-              disabled={!modified}
-              size="small"
-              onClick={async () => {
-                let url = data?.getMyUser.profilePictureUrl;
-                if (profilePicture) {
-                  let imageUrl = await uploadImageAndResizeMutation({
-                    variables: {
-                      file: profilePicture,
-                      resizeWidth: 256,
-                      resizeHeight: 256,
-                    },
-                  });
-                  if (imageUrl.data) {
-                    url = imageUrl.data.uploadImage;
-                  }
-                }
-                updateUser({
+          <Button
+            disabled={!modified}
+            size="small"
+            onClick={async () => {
+              let url = data?.getMyUser.profilePictureUrl;
+              if (profilePicture) {
+                let imageUrl = await uploadImageAndResizeMutation({
                   variables: {
-                    data: {
-                      firstName: firstName,
-                      lastName: lastName,
-                      profilePictureUrl: url,
-                    },
+                    file: profilePicture,
+                    resizeWidth: 256,
+                    resizeHeight: 256,
                   },
                 });
-                setModified(false);
-              }}
-            >
-              Save
-            </Button>
-          </div>
+                if (imageUrl.data) {
+                  url = imageUrl.data.uploadImage;
+                }
+              }
+              updateUser({
+                variables: {
+                  data: {
+                    firstName: firstName,
+                    lastName: lastName,
+                    profilePictureUrl: url,
+                  },
+                },
+              });
+              setModified(false);
+            }}
+          >
+            Save
+          </Button>
         </div>
         <div className="h-4" />
         {data?.getMyUser ? (
-          <Card className="p-10 space-y-4">
+          <Card className="p-10 space-y-4 col-span-7">
             <Text h3 b>
               Profile Picture
             </Text>

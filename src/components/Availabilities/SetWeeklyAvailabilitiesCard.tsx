@@ -108,7 +108,6 @@ export const SetWeeklyAvailabilitiesCard = ({
         endTime: toUTC(newAvailability.endTime),
       })
       .sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
-    console.log(newWeeklyAvailabilities);
     setWeeklyAvailabilitiesMutation({
       variables: {
         profileId: profileId,

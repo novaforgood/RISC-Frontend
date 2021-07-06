@@ -167,6 +167,11 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
           {mentor.user.firstName} {mentor.user.lastName}
         </b>
       </Text>
+      <div className="h-2"></div>
+      <Text className="text-secondary">
+        If no times are open, the mentor is either completely booked or has not
+        set availabilities yet.
+      </Text>
       <div className="h-8"></div>
 
       <div className="flex">
@@ -228,7 +233,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
           </div>
 
           <div className="h-4"></div>
-          <div className="h-80 box-border flex flex-col gap-2 overflow-y-scroll">
+          <div className="h-80 box-border flex flex-col gap-2 overflow-y-auto">
             {timeslots.map((timeslot) => {
               return (
                 <button
