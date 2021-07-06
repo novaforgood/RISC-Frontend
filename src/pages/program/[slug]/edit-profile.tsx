@@ -159,7 +159,7 @@ const EditProfilePage: Page = (_) => {
 
         <TextArea
           value={bio}
-          onChange={(e) => {
+          onChange={(e: any) => {
             const target = e.target as HTMLTextAreaElement;
             setModified(true);
             setBio(target.value);

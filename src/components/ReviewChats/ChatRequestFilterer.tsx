@@ -176,7 +176,7 @@ const ChatRequestListItem = ({ chatRequest }: ChatRequestListItemProps) => {
 
           <TextArea
             value={rejectMessage}
-            onChange={(e) => {
+            onChange={(e: any) => {
               const target = e.target as HTMLTextAreaElement;
               setRejectMessage(target.value);
             }}

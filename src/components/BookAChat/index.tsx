@@ -280,7 +280,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
 
           <TextArea
             value={chatRequestMessage}
-            onChange={(e) => {
+            onChange={(e: any) => {
               const target = e.target as HTMLTextAreaElement;
               setChatRequestMessage(target.value);
             }}

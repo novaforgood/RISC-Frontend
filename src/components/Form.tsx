@@ -116,7 +116,7 @@ const LongTextAsker = ({
         disabled={readonly}
         maxRows={readonly ? 2 : undefined}
         value={answer}
-        onChange={(e) => {
+        onChange={(e: any) => {
           const target = e.target as HTMLTextAreaElement;
           setAnswer(target.value);
           onChange(id, target.value);
