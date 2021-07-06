@@ -1,5 +1,4 @@
 import classNames from "classnames";
-import { addDays } from "date-fns";
 import React, { useMemo, useState } from "react";
 import { Text } from "../../components/atomic";
 import { monthNames, weekdayNamesAbbreviated } from "./data";
@@ -101,7 +100,7 @@ const Calendar = ({
           const selected =
             selectedDate && selectedDate.getTime() === day.getTime();
           const selectable =
-            day > addDays(new Date(), -1) &&
+            day > new Date() &&
             inMonth &&
             (selectAnyDate || selectableDatesSet.has(day.getDate()));
 
