@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { Button, Card, Text } from "../../../components/atomic";
 import CatchUnsavedChangesModal from "../../../components/CatchUnsavedChangesModal";
 import Form, { ResponseJson } from "../../../components/Form";
+import ProfilePictureImg from "../../../components/ProfilePictureImg";
 import TagSelector from "../../../components/tags/TagSelector";
 import {
   Maybe,
@@ -141,12 +142,11 @@ const EditProfilePage: Page = (_) => {
           </div>
           <div className="h-8"></div>
           <Card className="flex flex-col w-80 p-6 items-center border-0">
-            <div className="h-40 w-40 rounded-full object-cover bg-tertiary border border-inactive">
-              <img
-                className="h-full w-full rounded-full"
-                src={profilePictureUrl}
-              ></img>
-            </div>
+            <ProfilePictureImg
+              className="h-40 w-40 rounded-full object-cover bg-tertiary border border-inactive"
+              src={profilePictureUrl}
+            />
+
             <div className="h-4"></div>
 
             <Text b className="text-body-1 text-center">

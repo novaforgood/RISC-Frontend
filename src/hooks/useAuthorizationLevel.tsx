@@ -9,19 +9,21 @@ import { parseParam } from "../utils";
 import { useAuth } from "../utils/firebase/auth";
 
 export enum AuthorizationLevel {
+  Unauthenticated = "UNAUTHENTICATED", // Not logged in to Firebase
+  WaitingForUserData = "WAITING_FOR_USER_DATA", // Logged in but fetching user data
+  NotInProgram = "NOT_IN_PROGRAM", // User has no profile for current program
   Mentee = "MENTEE",
   Mentor = "MENTOR",
   Admin = "ADMIN",
-  Unauthenticated = "UNAUTHENTICATED",
-  NotInProgram = "NOTINPROGRAM",
 }
 
 const getAuthorizationLevel = (
   user: firebase.User | null,
-  myUserData: GetMyUserQuery["getMyUser"],
+  myUserData: GetMyUserQuery["getMyUser"] | undefined,
   programSlug: string
 ): AuthorizationLevel => {
-  if (!user || !myUserData) return AuthorizationLevel.Unauthenticated;
+  if (!user) return AuthorizationLevel.Unauthenticated;
+  if (!myUserData) return AuthorizationLevel.WaitingForUserData;
 
   for (let profile of myUserData.profiles) {
     if (profile.program.slug === programSlug) {
@@ -47,7 +49,7 @@ const useAuthorizationLevel = () => {
   const myUserData = data?.getMyUser;
 
   let authLevel;
-  if (myUserData && router) {
+  if (router) {
     const slug = parseParam(router.query.slug);
     authLevel = getAuthorizationLevel(user, myUserData, slug);
   }
