@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { Button, Card, Text } from "../../../components/atomic";
+import { Button, Card, Text, TextArea } from "../../../components/atomic";
 import CatchUnsavedChangesModal from "../../../components/CatchUnsavedChangesModal";
 import Form, { ResponseJson } from "../../../components/Form";
 import ProfilePictureImg from "../../../components/ProfilePictureImg";
@@ -157,15 +157,15 @@ const EditProfilePage: Page = (_) => {
         </div>
         <div className="h-4"></div>
 
-        <textarea
+        <TextArea
           value={bio}
           onChange={(e) => {
+            const target = e.target as HTMLTextAreaElement;
             setModified(true);
-            setBio(e.target.value);
+            setBio(target.value);
           }}
-          className="resize-none p-2 shadow-sm focus:ring-secondary focus:border-primary mt-1 block sm:text-sm border border-secondary rounded-md"
           placeholder="Bio"
-        ></textarea>
+        ></TextArea>
         <div className="h-4"></div>
 
         <Button disabled onClick={() => {}}>

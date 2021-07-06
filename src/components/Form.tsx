@@ -155,16 +155,26 @@ const Form = ({
         {questions.map((question, i) => {
           switch (question.type) {
             case "short-answer":
-            case "long-answer":
               return (
-                <TextAsker
+                <ShortTextAsker
                   {...question}
                   initResponse={responses[`${question.id}`] || ""}
                   readonly={readonly}
                   showDescriptions={showDescriptions}
                   onChange={handleChange}
                   key={i}
-                ></TextAsker>
+                ></ShortTextAsker>
+              );
+            case "long-answer":
+              return (
+                <LongTextAsker
+                  {...question}
+                  initResponse={responses[`${question.id}`] || ""}
+                  readonly={readonly}
+                  showDescriptions={showDescriptions}
+                  onChange={handleChange}
+                  key={i}
+                ></LongTextAsker>
               );
             case "multiple-choice":
               return;

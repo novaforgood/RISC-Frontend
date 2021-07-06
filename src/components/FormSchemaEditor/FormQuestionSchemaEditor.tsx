@@ -2,7 +2,7 @@ import classNames from "classnames";
 import React, { useEffect, useRef, useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { Question } from "../../types/Form";
-import { Card, Text } from "../atomic";
+import { Card, Text, TextArea } from "../atomic";
 import Select from "../atomic/Select";
 import SelectOptionModal from "../SelectOptionModal";
 import { DeleteIcon, DragHandle } from "./icons";
@@ -67,7 +67,7 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
         );
       case "long-answer":
         return (
-          <textarea
+          <TextArea
             disabled
             readOnly
             value="Long Answer"

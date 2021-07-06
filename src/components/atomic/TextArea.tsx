@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import React, { HTMLProps } from "react";
-
-type TextAreaProps = HTMLProps<HTMLTextAreaElement>;
+import TextareaAutosize from "react-textarea-autosize";
+type TextAreaProps = Omit<HTMLProps<HTMLTextAreaElement>, "style" | "ref">;
 
 //TODO: Implement color depending on theme
 const TextArea = ({ className = "", ...props }: TextAreaProps) => {
@@ -10,7 +10,7 @@ const TextArea = ({ className = "", ...props }: TextAreaProps) => {
       true,
     [`${className}`]: true,
   });
-  return <textarea {...props} className={styles} />;
+  return <TextareaAutosize minRows={2} {...props} className={styles} />;
 };
 
 export default TextArea;
