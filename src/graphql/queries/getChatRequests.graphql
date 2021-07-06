@@ -19,6 +19,7 @@ query getChatRequests($profileId: String!) {
     menteeProfile {
       user {
         userId
+        email
         firstName
         lastName
         profilePictureUrl

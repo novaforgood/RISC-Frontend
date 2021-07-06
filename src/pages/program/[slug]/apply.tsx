@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { Button, Card, Text } from "../../../components/atomic";
+import ErrorScreen, { ErrorScreenType } from "../../../components/ErrorScreen";
 import Form from "../../../components/Form";
 import {
   ApplicationType,
@@ -14,6 +15,7 @@ import {
   useAuthorizationLevel,
   useCurrentProgram,
 } from "../../../hooks";
+import AuthorizationWrapper from "../../../layouts/AuthorizationWrapper";
 import RedirectIfNotLoggedIn from "../../../layouts/RedirectIfNotLoggedIn";
 import { Question } from "../../../types/Form";
 import Page from "../../../types/Page";
@@ -60,6 +62,7 @@ const ProgramApplyPage: Page = (_) => {
   const applicationType: ApplicationType | null = getApplicationType();
 
   if ([Admin, Mentor, Mentee].includes(authorizationLevel))
+    // TODO: Integrate with ErrorScreen component
     return (
       <div className="h-screen w-screen flex flex-col justify-center items-center">
         <img src="/static/DarkTextLogo.svg" />
@@ -77,38 +80,12 @@ const ProgramApplyPage: Page = (_) => {
 
   // TODO: Make these into modals with back button
   if (applicationType == null)
-    return (
-      <div className="h-screen w-screen flex flex-col justify-center items-center">
-        <img src="/static/DarkTextLogo.svg" />
-        <div className="h-8"></div>
-        <div>
-          <Text>Page not found. </Text>
-          <Link href="/">
-            <Text u className="cursor-pointer">
-              Go back to home.
-            </Text>
-          </Link>
-        </div>
-      </div>
-    );
+    return <ErrorScreen type={ErrorScreenType.PageNotFound} />;
 
   // This creates a flash before applying when the program exists
   // There must be a better/more direct way of checking whether the program exists or not.
   if (currentProgram?.name == null) {
-    return (
-      <div className="h-screen w-screen flex flex-col justify-center items-center">
-        <img src="/static/DarkTextLogo.svg" />
-        <div className="h-8"></div>
-        <div>
-          <Text>Page not found. </Text>
-          <Link href="/">
-            <Text u className="cursor-pointer">
-              Go back to home.
-            </Text>
-          </Link>
-        </div>
-      </div>
-    );
+    return <ErrorScreen type={ErrorScreenType.PageNotFound} />;
   }
 
   return (
@@ -228,5 +205,9 @@ const ProgramApplyPage: Page = (_) => {
     </>
   );
 };
+
+ProgramApplyPage.getLayout = (page) => (
+  <AuthorizationWrapper>{page}</AuthorizationWrapper>
+);
 
 export default ProgramApplyPage;

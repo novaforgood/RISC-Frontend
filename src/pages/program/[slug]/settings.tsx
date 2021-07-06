@@ -16,6 +16,7 @@ import {
   useUploadImageAndResizeMutation,
 } from "../../../generated/graphql";
 import { AuthorizationLevel, useCurrentProgram } from "../../../hooks";
+import AuthorizationWrapper from "../../../layouts/AuthorizationWrapper";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../layouts/PageContainer";
 import Page from "../../../types/Page";
@@ -213,11 +214,6 @@ const SettingsPage: Page = () => {
               })
                 .then(() => {
                   refetchCurrentProgram();
-                  SettingsPage.getLayout = (page, pageProps) => (
-                    <ChooseTabLayout {...pageProps}>
-                      <PageContainer>{page}</PageContainer>
-                    </ChooseTabLayout>
-                  );
                   setModified(false);
                 })
                 .catch((err) => setError(err));
@@ -245,9 +241,11 @@ const SettingsPage: Page = () => {
 };
 
 SettingsPage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps} canView={[AuthorizationLevel.Admin]}>
-    <PageContainer>{page}</PageContainer>
-  </ChooseTabLayout>
+  <AuthorizationWrapper canView={[AuthorizationLevel.Admin]}>
+    <ChooseTabLayout {...pageProps}>
+      <PageContainer>{page}</PageContainer>
+    </ChooseTabLayout>
+  </AuthorizationWrapper>
 );
 
 export default SettingsPage;

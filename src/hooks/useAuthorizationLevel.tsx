@@ -15,6 +15,7 @@ export enum AuthorizationLevel {
   Mentee = "MENTEE",
   Mentor = "MENTOR",
   Admin = "ADMIN",
+  Unverified = "UNVERIFIED",
 }
 
 const getAuthorizationLevel = (
@@ -24,6 +25,7 @@ const getAuthorizationLevel = (
 ): AuthorizationLevel => {
   if (!user) return AuthorizationLevel.Unauthenticated;
   if (!myUserData) return AuthorizationLevel.WaitingForUserData;
+  if (!user.emailVerified) return AuthorizationLevel.Unverified;
 
   for (let profile of myUserData.profiles) {
     if (profile.program.slug === programSlug) {

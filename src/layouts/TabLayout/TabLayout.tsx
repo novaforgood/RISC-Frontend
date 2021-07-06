@@ -45,6 +45,7 @@ const Arrow: React.FC<ArrowProps> = ({ down }) => {
 };
 
 export interface BaseTabLayoutProps {
+  children: React.ReactNode;
   basePath: string;
 }
 

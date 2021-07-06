@@ -11,6 +11,7 @@ import {
   useGetMyUserQuery,
   useUploadImageAndResizeMutation,
 } from "../generated/graphql";
+import AuthorizationWrapper from "../layouts/AuthorizationWrapper";
 import RedirectIfNotLoggedIn from "../layouts/RedirectIfNotLoggedIn";
 import Page from "../types/Page";
 
@@ -292,9 +293,11 @@ const CreateProgramPage: Page = () => {
 };
 
 CreateProgramPage.getLayout = (page, _) => (
-  <RedirectIfNotLoggedIn pathAfterLoggingIn="/create">
-    {page}
-  </RedirectIfNotLoggedIn>
+  <AuthorizationWrapper>
+    <RedirectIfNotLoggedIn pathAfterLoggingIn="/create">
+      {page}
+    </RedirectIfNotLoggedIn>
+  </AuthorizationWrapper>
 );
 
 export default CreateProgramPage;

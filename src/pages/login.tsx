@@ -63,8 +63,17 @@ const LoginPage = () => {
           <button
             onClick={() =>
               signInWithGoogle()
-                .then((_) => {
-                  redirectAfterLoggingIn(router);
+                .then(async (res) => {
+                  if (res) {
+                    if (res.additionalUserInfo?.isNewUser) {
+                      res.user?.delete();
+                      setError(
+                        "An account with this email has not been created yet."
+                      );
+                    } else {
+                      redirectAfterLoggingIn(router);
+                    }
+                  }
                 })
                 .catch((e) => setError(e.message))
             }
@@ -73,7 +82,7 @@ const LoginPage = () => {
             <div className="flex-1">
               <img className="h-10 w-10 ml-6" src="/static/GoogleLogo.svg" />
             </div>
-            <Text b className="text-secondary">
+            <Text b className="text-primary">
               Login with Google
             </Text>
             <div className="flex-1"></div>
@@ -87,11 +96,10 @@ const LoginPage = () => {
             <div className="h-0.25 flex-1 bg-inactive"></div>
           </div>
           <div className="h-6" />
-          <form>
+          <form method="post">
             <TitledInput
               title="Email"
               name="Email"
-              // type="email"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);

@@ -1,5 +1,6 @@
 import React, { ReactElement, useState } from "react";
 import { Card, Text } from "./atomic";
+import classNames from "classnames";
 
 type ListFiltererOptions<T> = {
   listToFilter: T[];
@@ -19,15 +20,24 @@ const ListFilterer = <T,>({
   if (!(defaultFilterOption in filterOptions)) {
     throw new TypeError("Default filter option is not in filterOptions!");
   }
-
   const [filterOption, setFilterOption] = useState(defaultFilterOption);
 
   const getFilterTab = (title: string) => {
+    const [hover, setHover] = useState(false);
     const selected = filterOption === title;
+    const underlineStyle = classNames({
+      "h-1 w-full": true,
+      "bg-primary rounded-full": selected,
+      "bg-secondary rounded-full": !selected && hover,
+    });
     return (
-      <div key={title}>
+      <div
+        key={title}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+      >
         <button
-          className="rounded-md focus:outline-none focus:ring-primary focus:ring-2"
+          className="rounded-md focus:outline-none"
           disabled={selected}
           onClick={() => setFilterOption(title)}
         >
@@ -35,12 +45,7 @@ const ListFilterer = <T,>({
             {title}
           </Text>
         </button>
-        <div
-          className={
-            "h-1 w-full" +
-            (selected ? "h-1 w-full bg-primary rounded-full" : "")
-          }
-        />
+        <div className={underlineStyle} />
       </div>
     );
   };
