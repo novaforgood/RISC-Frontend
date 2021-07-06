@@ -14,7 +14,7 @@ function ProfilePictureImg({ src, className, alt }: ProfilePictureImgProps) {
   return (
     <div
       className={classNames(
-        "h-10 w-10 rounded-full object-cover bg-tertiary border border-inactive",
+        "h-10 w-10 flex-shrink-0 rounded-full object-cover bg-tertiary border border-inactive",
         className
       )}
     >

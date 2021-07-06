@@ -19,7 +19,7 @@ const InlineProfileAvatar = <T extends UserPartial>({
         className="h-10 w-10 rounded-full object-cover bg-tertiary border border-inactive"
       />
       <div className="w-4"></div>
-      <Text>
+      <Text className="whitespace-nowrap">
         {user.firstName} {user.lastName}
       </Text>
     </div>

@@ -58,11 +58,11 @@ const TextAsker = ({
   return (
     <div>
       <Text b>{title}</Text>
-      <div className="h-2" />
+      <div className="h-1" />
       {showDescriptions && description && (
         <Fragment>
           <Text className="text-secondary">{description}</Text>
-          <div className="h-1" />
+          <div className="h-2" />
         </Fragment>
       )}
       <Input
