@@ -5,9 +5,11 @@ import {
   CreateChatRequestInput,
   DateInterval,
   GetProfilesQuery,
+  refetchGetChatRequestsQuery,
   useCreateChatRequestMutation,
   useGetAvailOverrideDatesQuery,
   useGetAvailWeeklysQuery,
+  useGetChatRequestsQuery,
 } from "../../generated/graphql";
 import useTimezoneConverters from "../../hooks/useTimezoneConverters";
 import { Button, Card, Modal, Text, TextArea } from "../atomic";
@@ -91,8 +93,18 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
     useGetAvailOverrideDatesQuery({
       variables: { profileId: mentor.profileId },
     });
+  const { data: mentorChatRequestData, error: mentorChatRequestError } =
+    useGetChatRequestsQuery({
+      variables: { profileId: mentor.profileId },
+    });
 
-  const [createChatRequest] = useCreateChatRequestMutation();
+  const [createChatRequest] = useCreateChatRequestMutation({
+    refetchQueries: [
+      refetchGetChatRequestsQuery({
+        profileId: mentor.profileId,
+      }),
+    ],
+  });
   const [loadingCreateChatRequest, setLoadingCreateChatRequest] =
     useState(false);
   const [chatRequestMessage, setChatRequestMessage] = useState("");
@@ -116,6 +128,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
   let weeklyAvailabilities: DateInterval[] = [];
   let availOverrideDates: DateInterval[] = [];
   let availOverrideTimeslots: DateInterval[] = [];
+  let mentorChatTimeslots: DateInterval[] = [];
 
   if (!availWeeklyError && availWeeklyData) {
     weeklyAvailabilities = extractDates(availWeeklyData.getAvailWeeklys);
@@ -131,24 +144,54 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
     });
   }
 
-  const timeslots = useMemo(() => {
-    let ret = generateWeeklyTimeslotsOnDate(
-      selectedDate,
-      30,
-      weeklyAvailabilities
+  if (!mentorChatRequestError && mentorChatRequestData) {
+    mentorChatTimeslots = mentorChatRequestData.getChatRequests.map(
+      (chatRequest) => {
+        return {
+          startTime: fromUTC(new Date(chatRequest.chatStartTime)),
+          endTime: fromUTC(new Date(chatRequest.chatEndTime)),
+        };
+      }
     );
-    ret = mergeIntervalLists(
-      ret,
+  }
+
+  /**
+   *
+   * @param allIntervals Initial set of intervals to be filtered
+   *
+   * @returns Given a set of intervals, returns a set of intervals with
+   * override times added in but unavailable times filtered out.
+   */
+  const modifyAvailableIntervals = (allIntervals: DateInterval[]) => {
+    // Subtract days that are overridden
+    let ret = mergeIntervalLists(
+      allIntervals,
       availOverrideDates,
       (inA, inB) => inA && !inB
     );
+
+    // Add back special override timeslots
     ret = mergeIntervalLists(
       ret,
       availOverrideTimeslots,
       (inA, inB) => inA || inB
     );
+
+    // Subtract times where mentor has already accepted a chat
+    ret = mergeIntervalLists(
+      ret,
+      mentorChatTimeslots,
+      (inA, inB) => inA && !inB
+    );
+    return ret;
+  };
+
+  const timeslots = useMemo(() => {
+    const availableIntervals = modifyAvailableIntervals(
+      generateWeeklyTimeslotsOnDate(selectedDate, 30, weeklyAvailabilities)
+    );
     const currTime = new Date();
-    return intervalsToTimeslots(30, ret)
+    return intervalsToTimeslots(30, availableIntervals)
       .filter((slot) => slot.startTime.getDate() === selectedDate?.getDate())
       .filter((slot) => slot.startTime > currTime);
   }, [
@@ -192,19 +235,9 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
                 );
                 allTimeslots = allTimeslots.concat(t);
               }
-              const minusOverrideDates = mergeIntervalLists(
-                allTimeslots,
-                availOverrideDates,
-                (inA, inB) => inA && !inB
-              );
-              const withOverrideTimeslots = mergeIntervalLists(
-                minusOverrideDates,
-                availOverrideTimeslots,
-                (inA, inB) => inA || inB
-              );
               const selectableDates = intervalsToTimeslots(
                 30,
-                withOverrideTimeslots
+                modifyAvailableIntervals(allTimeslots)
               )
                 .map((slot) => slot.startTime)
                 .filter(
