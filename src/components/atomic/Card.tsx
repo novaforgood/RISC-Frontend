@@ -1,7 +1,7 @@
 import classNames from "classnames";
-import React, { HTMLAttributes } from "react";
+import React, { HTMLProps } from "react";
 
-type CardProps = HTMLAttributes<HTMLDivElement>;
+type CardProps = HTMLProps<HTMLDivElement>;
 
 //TODO: Implement color for background depending on themes?
 const Card = ({ className, ...props }: CardProps) => {

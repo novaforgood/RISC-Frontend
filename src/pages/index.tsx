@@ -1,12 +1,20 @@
 import { useRouter } from "next/router";
 import React, { Fragment } from "react";
-import { Button, Text } from "../components/atomic";
+import { Button, Card, Text } from "../components/atomic";
+import {
+  ApplicationStatus,
+  useGetMyUserApplicationsQuery,
+  useGetMyUserQuery,
+} from "../generated/graphql";
 import { PageGetProgramBySlugComp } from "../generated/page";
 import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";
 import NoProgramTabLayout from "../layouts/TabLayout/NoProgramTabLayout";
 import Page from "../types/Page";
 import { useAuth } from "../utils/firebase/auth";
 import LocalStorage from "../utils/localstorage";
+import dateFormat from "dateformat";
+import { CircledCheckSolid } from "../components/icons";
+import Link from "next/link";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24";
@@ -91,7 +99,29 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
   }
 };
 
+type ProgramCardProps = {
+  iconUrl: string;
+  name: string;
+  description: string;
+};
+
+const ProgramCard = ({ iconUrl, name, description }: ProgramCardProps) => {
+  return (
+    <Card className="hover:bg-tertiary hover:cursor-pointer bg-white m-auto p-4 grid grid-cols-8 gap-4 items-center">
+      <img src={iconUrl} alt={`Program ${name} icon`} className="col-span-1" />
+      <Text b className="col-span-2">
+        {name}
+      </Text>
+      <div className="col-span-4 overflow-ellipsis">
+        <Text>{description}</Text>
+      </div>
+    </Card>
+  );
+};
+
 const NoMentorshipHome: Page = () => {
+  const { data } = useGetMyUserApplicationsQuery();
+  const user = useGetMyUserQuery();
   const router = useRouter();
 
   const cachedProgramSlug = LocalStorage.get("cachedProgramSlug");
@@ -102,32 +132,91 @@ const NoMentorshipHome: Page = () => {
 
   return (
     <NoProgramTabLayout basePath={router.asPath}>
-      <div className="h-screen flex flex-col justify-center items-center">
-        <div>
-          <Text h2>Welcome to Mentor Center</Text>
-        </div>
-        <div className="h-4"></div>
+      <div className="p-10 space-y-8 bg-white">
+        <Text h2 b>
+          Welcome to the Mentor Center!
+        </Text>
+        <div className="h-0.25 bg-primary w-full" />
+        <div className="h-2" />
+        {data && data.getMyUser.applications.length > 0 ? (
+          <div className="space-y-4">
+            <Text h3 b>
+              Your Applications
+            </Text>
+            <Card className="p-4">
+              {data.getMyUser.applications.map((app, i) => {
+                const status = () => {
+                  switch (app.applicationStatus) {
+                    case ApplicationStatus.Accepted:
+                      return <CircledCheckSolid />;
+                    case ApplicationStatus.Rejected:
+                      return "Rejected";
+                    case ApplicationStatus.PendingReview:
+                      return "Submitted";
+                  }
+                };
 
-        <Button
-          size="small"
-          className="w-72"
-          onClick={() => {
-            router.push("/my/applications");
-          }}
-        >
-          <Text>Check Application Statuses</Text>
-        </Button>
+                return (
+                  <div className="flex grid grid-cols-3" key={i}>
+                    {/* TODO: Need to fetch profile */}
+                    <div className="flex-1 col-span-1">{app.program.name}</div>
+                    <div className="flex-1 text-center col-span-1">
+                      {dateFormat(app.createdAt, "mmm d, yyyy | h:MMtt")}
+                    </div>
+                    <div className="flex-1 flex justify-center col-span-1">
+                      {status()}
+                    </div>
+                  </div>
+                );
+              })}
+            </Card>
+          </div>
+        ) : (
+          <Text h3 b>
+            No Applications
+          </Text>
+        )}
+        {user.data && user.data.getMyUser.profiles.length > 0 ? (
+          <div className="flex flex-col space-y-4">
+            <Text h3 b>
+              Your Programs
+            </Text>
+            {user.data.getMyUser.profiles.map((profile, i) => {
+              const { program } = profile;
+
+              return (
+                <Link key={i} href={`/program/${program.slug}`}>
+                  <a>
+                    <ProgramCard
+                      iconUrl={program.iconUrl}
+                      name={program.name}
+                      description={program.description}
+                    />
+                  </a>
+                </Link>
+              );
+            })}
+          </div>
+        ) : (
+          <>
+            <div className="h-2" />
+            <Text h3 b>
+              No Programs
+            </Text>
+          </>
+        )}
         <div className="h-2"></div>
-        <Button
-          size="small"
-          variant="inverted"
-          className="w-72"
-          onClick={() => {
-            router.push("/create");
-          }}
-        >
-          <Text>Create a Mentorship</Text>
-        </Button>
+        <div className="w-full flex">
+          <Button
+            size="small"
+            className="w-72 mx-auto"
+            onClick={() => {
+              router.push("/create");
+            }}
+          >
+            <Text>Create a Mentorship</Text>
+          </Button>
+        </div>
       </div>
     </NoProgramTabLayout>
   );
