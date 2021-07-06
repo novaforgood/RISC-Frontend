@@ -58,6 +58,8 @@ const EditProfilePage: Page = (_) => {
     variables: { programId: currentProgram?.programId! },
   });
 
+  console.log(programTagsData);
+
   useEffect(() => {
     if (!currentProfile) return;
 
@@ -168,29 +170,30 @@ const EditProfilePage: Page = (_) => {
         ></TextArea>
         <div className="h-4"></div>
 
-        <Button disabled onClick={() => {}}>
+        {/* <Button disabled onClick={() => {}}>
           View Profile
-        </Button>
+        </Button> */}
       </Card>
       <div className="h-8"></div>
 
-      {authorizationLevel === AuthorizationLevel.Mentor && (
-        <Fragment>
-          <Card className="flex flex-col p-6 items-start border-0">
-            <Text b>Select the tags that best describe you.</Text>
-            <div className="h-4"></div>
-            <TagSelector
-              selectableTags={programTagsData.getProfileTagsByProgram}
-              selectedTagIds={selectedTagIds}
-              onChange={(newSelectedTagIds) => {
-                setModified(true);
-                setSelectedTagIds(newSelectedTagIds);
-              }}
-            />
-          </Card>
-          <div className="h-8"></div>
-        </Fragment>
-      )}
+      {authorizationLevel === AuthorizationLevel.Mentor &&
+        programTagsData.getProfileTagsByProgram.length != 0 && (
+          <Fragment>
+            <Card className="flex flex-col p-6 items-start border-0">
+              <Text b>Select the tags that best describe you.</Text>
+              <div className="h-4"></div>
+              <TagSelector
+                selectableTags={programTagsData.getProfileTagsByProgram}
+                selectedTagIds={selectedTagIds}
+                onChange={(newSelectedTagIds) => {
+                  setModified(true);
+                  setSelectedTagIds(newSelectedTagIds);
+                }}
+              />
+            </Card>
+            <div className="h-8"></div>
+          </Fragment>
+        )}
 
       <Form
         questions={getQuestionsFromJson(
