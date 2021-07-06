@@ -9,6 +9,7 @@ type TextProps = HTMLAttributes<HTMLDivElement> & {
   b2?: boolean;
   caption?: boolean;
   secondary?: boolean;
+  error?: boolean;
   b?: boolean;
   i?: boolean;
   u?: boolean;
@@ -24,6 +25,7 @@ const Text = ({
   caption = false,
   /* Style */
   secondary = false,
+  error = false,
   b = false,
   i = false,
   u = false,
@@ -41,6 +43,7 @@ const Text = ({
     { "text-body-2": b2 },
     { "text-caption": caption },
     { "text-secondary": secondary },
+    { "text-error": error },
     { "font-bold": b },
     { italic: i }, // Styling needs to be polished
     { underline: u },

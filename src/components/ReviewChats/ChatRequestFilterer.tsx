@@ -13,6 +13,7 @@ import { Button, Modal, Text, TextArea } from "../atomic";
 import { CircledCheck, CircledCross } from "../icons";
 import InlineProfileAvatar from "../InlineProfileAvatar";
 import ListFilterer from "../ListFilterer";
+import ChatRequestMutators from "./ChatRequestMutators";
 
 type ChatRequestPartial = Omit<
   GetChatRequestsQuery["getChatRequests"][number],
@@ -65,6 +66,15 @@ const DetailsModalButton = ({ chatRequest }: DetailsModalButtonProps) => {
                 <Text>{chatRequest.chatRequestMessage}</Text>
               </div>
             </>
+          )}
+          {chatRequest.chatRequestStatus == ChatRequestStatus.Accepted && (
+            <div className="flex w-full">
+              <ChatRequestMutators
+                chatRequestId={chatRequest.chatRequestId}
+                chatCanceled={false}
+              />
+              <div className="flex-1" />
+            </div>
           )}
         </div>
       </Modal>

@@ -1,0 +1,11 @@
+mutation cancelChatRequest(
+  $chatRequestId: String!
+  $chatCancelMessage: String!
+) {
+  cancelChatRequest(
+    chatRequestId: $chatRequestId
+    chatCancelMessage: $chatCancelMessage
+  ) {
+    chatRequestId
+  }
+}
