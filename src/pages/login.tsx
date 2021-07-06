@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { NextRouter, useRouter } from "next/router";
 import { useState } from "react";
 import { Button, Input, Text } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
@@ -16,20 +16,20 @@ const BlobCircle = () => {
   );
 };
 
+export const redirectAfterLoggingIn = (router: NextRouter) => {
+  if (router.query.to && typeof router.query.to === "string") {
+    router.push(router.query.to);
+  } else {
+    router.push("/");
+  }
+};
+
 const LoginPage = () => {
   const { signInWithEmail, signInWithGoogle } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayError, setError] = useState("");
   const router = useRouter();
-
-  const redirectAfterLoggingIn = () => {
-    if (router.query.to && typeof router.query.to === "string") {
-      router.push(router.query.to);
-    } else {
-      router.push("/");
-    }
-  };
 
   return (
     <div className="flex w-screen min-h-screen relative">
@@ -50,7 +50,13 @@ const LoginPage = () => {
           <Text b2>
             Don't have an account?{" "}
             <Text u className="cursor-pointer">
-              <Link href="/signup">Sign up now</Link>
+              <Link
+                href={
+                  "/signup" + (router.query.to ? "?to=" + router.query.to : "")
+                }
+              >
+                Sign up now
+              </Link>
             </Text>
           </Text>
           <div className="h-6" />
@@ -58,7 +64,7 @@ const LoginPage = () => {
             onClick={() =>
               signInWithGoogle()
                 .then((_) => {
-                  redirectAfterLoggingIn();
+                  redirectAfterLoggingIn(router);
                 })
                 .catch((e) => setError(e.message))
             }
@@ -120,7 +126,7 @@ const LoginPage = () => {
                 e.preventDefault();
                 signInWithEmail(email, password)
                   .then((_) => {
-                    redirectAfterLoggingIn();
+                    redirectAfterLoggingIn(router);
                   })
                   .catch((error) => {
                     setError(error.message);

@@ -5,6 +5,7 @@ import { Button, Text } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
 import { CreateUserInput, useCreateUserMutation } from "../generated/graphql";
 import { useAuth } from "../utils/firebase/auth";
+import { redirectAfterLoggingIn } from "./login";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24 md:h-64 md:w-64 lg:h-80 lg:w-80";
@@ -51,7 +52,13 @@ const SignUpPage = () => {
           <Text b2>
             Already have an account?{" "}
             <Text u className="cursor-pointer">
-              <Link href="/login">Login</Link>
+              <Link
+                href={
+                  "/login" + (router.query.to ? "?to=" + router.query.to : "")
+                }
+              >
+                Login
+              </Link>
             </Text>
           </Text>
           <div className="h-6" />
@@ -74,7 +81,7 @@ const SignUpPage = () => {
                     };
                     createUser({ variables: { data: createUserInput } }).then(
                       () => {
-                        router.push("/");
+                        redirectAfterLoggingIn(router);
                       }
                     );
                   }
@@ -192,7 +199,7 @@ const SignUpPage = () => {
                         }),
                       ])
                         .then(() => {
-                          router.push("/");
+                          redirectAfterLoggingIn(router);
                         })
                         .catch((e) => {
                           setDisplayError(e.message);
