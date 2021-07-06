@@ -24,6 +24,11 @@ type FormProps = {
   className?: string;
 };
 
+export enum QuestionTypes {
+  shortText = "short-answer",
+  longText = "long-answer",
+}
+
 // Dummy data
 export var dummyForm: Question[] = [
   {
