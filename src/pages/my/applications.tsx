@@ -6,9 +6,11 @@ import {
   ApplicationStatus,
   useGetMyUserApplicationsQuery,
 } from "../../generated/graphql";
+import { AccessLevel, useRedirectFromAuthorization } from "../../hooks";
 import Page from "../../types/Page";
 
 const ApplicationsViewer: Page = () => {
+  useRedirectFromAuthorization(AccessLevel.VERIFIED);
   const applications =
     useGetMyUserApplicationsQuery().data?.getMyUser.applications;
 

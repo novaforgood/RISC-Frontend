@@ -11,8 +11,11 @@ import {
   useUpdateUserMutation,
   useUploadImageAndResizeMutation,
 } from "../../generated/graphql";
+import { AccessLevel, useRedirectFromAuthorization } from "../../hooks";
 
 const GeneralProfile = () => {
+  useRedirectFromAuthorization(AccessLevel.VERIFIED);
+
   const { data } = useGetMyUserQuery();
   const [updateUser] = useUpdateUserMutation({
     refetchQueries: [refetchGetMyUserQuery()],

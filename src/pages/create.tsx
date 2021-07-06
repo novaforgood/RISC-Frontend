@@ -9,6 +9,7 @@ import {
   useGetMyUserQuery,
   useUploadImageAndResizeMutation,
 } from "../generated/graphql";
+import { AccessLevel, useRedirectFromAuthorization } from "../hooks";
 import RedirectIfNotLoggedIn from "../layouts/RedirectIfNotLoggedIn";
 import Page from "../types/Page";
 
@@ -29,6 +30,8 @@ const BlobCircle = () => {
 };
 
 const CreateProgramPage: Page = () => {
+  useRedirectFromAuthorization(AccessLevel.VERIFIED);
+
   const [stage, setStage] = useState(0);
   const [programName, setProgramName] = useState("");
   const [programLogo, setProgramLogo] = useState<File | null>(null);

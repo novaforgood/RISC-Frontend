@@ -10,9 +10,11 @@ import {
   useCreateApplicationMutation,
 } from "../../../generated/graphql";
 import {
+  AccessLevel,
   AuthorizationLevel,
   useAuthorizationLevel,
   useCurrentProgram,
+  useRedirectFromAuthorization,
 } from "../../../hooks";
 import RedirectIfNotLoggedIn from "../../../layouts/RedirectIfNotLoggedIn";
 import { Question } from "../../../types/Form";
@@ -31,6 +33,8 @@ function getApplicationSchemaFromJson(json: string): Question[] {
 }
 
 const ProgramApplyPage: Page = (_) => {
+  useRedirectFromAuthorization(AccessLevel.VERIFIED);
+
   const { user } = useAuth();
   const authorizationLevel = useAuthorizationLevel();
   const { currentProgram } = useCurrentProgram();

@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import React, { ReactNode, useEffect, useState } from "react";
 import { Text } from "../../components/atomic";
 import TabFooterMenu from "../../components/TabFooterMenu";
-import { AuthorizationLevel, useAuthorizationLevel } from "../../hooks";
 import LocalStorage from "../../utils/localstorage";
 import ProgramDropdown from "./ProgramDropdown";
 
@@ -46,6 +45,7 @@ const Arrow: React.FC<ArrowProps> = ({ down }) => {
 };
 
 export interface BaseTabLayoutProps {
+  children: React.ReactNode;
   basePath: string;
 }
 
@@ -76,11 +76,6 @@ const TabLayout: React.FC<TabLayoutProps> & {
     Icon: React.FC<React.SVGProps<SVGSVGElement>>;
   }>;
 } = ({ children, currentPageChildren }) => {
-  const authorizationLevel = useAuthorizationLevel();
-  const router = useRouter();
-
-  console.log(router);
-  if (router.pathname) console.log(router.pathname);
   return (
     <div className="flex h-screen w-screen">
       <div className="h-full w-72 flex-shrink-0 bg-white shadow-lg relative">

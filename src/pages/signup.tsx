@@ -5,6 +5,7 @@ import { Button, Checkbox, Text, Modal } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
 import { CreateUserInput, useCreateUserMutation } from "../generated/graphql";
 import { useAuth } from "../utils/firebase/auth";
+import { AccessLevel, useRedirectFromAuthorization } from "../hooks";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24 md:h-64 md:w-64 lg:h-80 lg:w-80";
@@ -22,6 +23,8 @@ const getTimezone = (): string => {
 };
 
 const SignUpPage = () => {
+  useRedirectFromAuthorization(AccessLevel.VERIFIED);
+
   const { signUpWithEmail, signInWithGoogle, signOut } = useAuth();
   const [createUser] = useCreateUserMutation();
   const [modalOpen, setModalOpen] = useState(false);

@@ -28,7 +28,6 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
     if (user)
       // Logged in but myUserData has not been retrieved yet
       return <Fragment />;
-
     return (
       <div className="h-screen w-full p-8">
         <div className="w-full flex items-center justify-between">
@@ -84,9 +83,12 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
         </div>
       </div>
     );
+  } else if (authorizationLevel === AuthorizationLevel.Unverified) {
+    router.push("/verify");
+    return <Fragment />;
+  } else {
+    return <NoMentorshipHome />;
   }
-
-  return <NoMentorshipHome />;
 };
 
 const NoMentorshipHome: Page = () => {
