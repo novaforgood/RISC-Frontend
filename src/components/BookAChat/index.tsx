@@ -284,7 +284,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
               const target = e.target as HTMLTextAreaElement;
               setChatRequestMessage(target.value);
             }}
-            className="w-96"
+            className="p-2 w-96"
             placeholder="Optional message"
           ></TextArea>
           <div className="h-8"></div>

@@ -72,7 +72,7 @@ export const SetDateInterval = ({
   const getAvailableEndTimes = () => {
     // End time options are from start time until EOD or start of next interval
     let allOptions = eachHalfHourOfDate(date).map((x) => ({
-      label: toTimeString(x, -1),
+      label: toTimeString(x),
       value: x,
     }));
     allOptions = allOptions.filter(

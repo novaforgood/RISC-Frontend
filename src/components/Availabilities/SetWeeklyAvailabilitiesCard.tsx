@@ -53,10 +53,10 @@ export const SetWeeklyAvailabilitiesCard = ({
     const availabilitiesForDate = weeklyAvailabilities.filter((interval) =>
       isSameDay(interval.startTime, date)
     );
-    // If there are no availabilities for the day, add one starting at 12:00 AM
+    // If there are no availabilities for the day, add one starting at 8:00 AM
     let newAvailability: DateInterval | null = {
-      startTime: date,
-      endTime: addMinutes(date, 30),
+      startTime: addMinutes(date, 60 * 8),
+      endTime: addMinutes(date, 60 * 8 + 30),
     };
     const len = availabilitiesForDate.length;
     if (len > 0) {
