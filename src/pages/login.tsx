@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { Button, Input, Text } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
-import AuthorizationWrapper from "../layouts/AuthorizationWrapper";
 import Page from "../types/Page";
 import { useAuth } from "../utils/firebase/auth";
 
@@ -149,9 +148,5 @@ const LoginPage: Page = () => {
     </div>
   );
 };
-
-LoginPage.getLayout = (page) => (
-  <AuthorizationWrapper>{page}</AuthorizationWrapper>
-);
 
 export default LoginPage;

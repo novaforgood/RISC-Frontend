@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { Button, Modal, Text } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
 import { CreateUserInput, useCreateUserMutation } from "../generated/graphql";
-import AuthorizationWrapper from "../layouts/AuthorizationWrapper";
 import Page from "../types/Page";
 import { useAuth } from "../utils/firebase/auth";
 
@@ -244,9 +243,5 @@ const SignUpPage: Page = () => {
     </div>
   );
 };
-
-SignUpPage.getLayout = (page) => (
-  <AuthorizationWrapper>{page}</AuthorizationWrapper>
-);
 
 export default SignUpPage;
