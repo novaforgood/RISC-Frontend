@@ -6,7 +6,7 @@ type TextAreaProps = HTMLProps<HTMLTextAreaElement>;
 //TODO: Implement color depending on theme
 const TextArea = ({ className = "", ...props }: TextAreaProps) => {
   const styles = classNames({
-    "rounded-xl p-2 placeholder-secondary border-1.5 border-inactive focus:border-primary focus:outline-none focus:shadow-border":
+    "rounded-xl p-2 placeholder-secondary border-1.5 border-inactive focus:border-primary focus:outline-none":
       true,
     [`${className}`]: true,
   });
