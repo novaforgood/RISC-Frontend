@@ -62,7 +62,7 @@ const EditMentorApplicationPage: Page = (_) => {
         <div className="flex">
           <Button
             size="small"
-            disabled={!modified}
+            disabled={!modified || applicationSchema.length == 0}
             onClick={() => {
               saveMentorApplicationSchema();
             }}
