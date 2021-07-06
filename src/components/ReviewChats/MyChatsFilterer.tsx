@@ -9,6 +9,7 @@ import useTimezoneConverters from "../../hooks/useTimezoneConverters";
 import { Button, Modal, Text } from "../atomic";
 import InlineProfileAvatar from "../InlineProfileAvatar";
 import ListFilterer from "../ListFilterer";
+import ChatRequestMutators from "./ChatRequestMutators";
 
 type ChatRequestPartial = Omit<
   GetChatRequestsQuery["getChatRequests"][number],
@@ -22,6 +23,7 @@ const chatRequestStatusToTextMap = {
   [ChatRequestStatus.PendingReview]: "Pending",
   [ChatRequestStatus.Accepted]: "Accepted",
   [ChatRequestStatus.Rejected]: "Rejected",
+  [ChatRequestStatus.Canceled]: "Canceled",
 };
 
 type DetailsModalButtonProps = {
@@ -78,8 +80,13 @@ const DetailsModalButton = ({ chatRequest }: DetailsModalButtonProps) => {
             </>
           )}
           <div className="h-2" />
-          <div className="flex w-full">
-            <div className="flex-1" />
+          <div className="flex justify-between w-full">
+            <ChatRequestMutators
+              chatRequestId={chatRequest.chatRequestId}
+              chatCanceled={
+                chatRequest.chatRequestStatus === ChatRequestStatus.Canceled
+              }
+            />
             <Button size={"small"} onClick={() => setIsOpen(false)}>
               Ok
             </Button>
@@ -128,9 +135,13 @@ const MyChatsList = ({ title, chatRequests }: MyChatsListProps) => {
     <div className="flex flex-col px-8 py-6">
       <Text h3>{title}</Text>
       <div className="h-4"></div>
-      {chatRequests.map((cr) => (
-        <MyChatsListItem key={cr.chatRequestId} chatRequest={cr} />
-      ))}
+      {chatRequests.length > 0 ? (
+        chatRequests.map((cr) => (
+          <MyChatsListItem key={cr.chatRequestId} chatRequest={cr} />
+        ))
+      ) : (
+        <Text>None</Text>
+      )}
     </div>
   );
 };

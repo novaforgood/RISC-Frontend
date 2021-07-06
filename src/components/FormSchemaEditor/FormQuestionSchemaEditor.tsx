@@ -2,8 +2,9 @@ import classNames from "classnames";
 import React, { useEffect, useRef, useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { Question } from "../../types/Form";
-import { Card } from "../atomic";
+import { Card, Text, TextArea } from "../atomic";
 import Select from "../atomic/Select";
+import SelectOptionModal from "../SelectOptionModal";
 import { DeleteIcon, DragHandle } from "./icons";
 import { getUpdateFunction } from "./utils";
 
@@ -21,6 +22,7 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
 }) => {
   const [hovered, setHovered] = useState(false);
   const [focused, setFocused] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const handleMouseDownOutside = (event: Event) => {
     if (ref.current && !ref.current!.contains(event.target as Node)) {
@@ -65,7 +67,7 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
         );
       case "long-answer":
         return (
-          <textarea
+          <TextArea
             disabled
             readOnly
             value="Long Answer"
@@ -118,6 +120,27 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
             }}
           >
             <Card>
+              <SelectOptionModal
+                isOpen={deleteModalOpen}
+                onClose={() => {
+                  setDeleteModalOpen(false);
+                }}
+                onPrimaryButtonClick={() => {
+                  onDelete();
+                }}
+                primaryButtonText="Delete"
+                onSecondaryButtonClick={() => {
+                  setDeleteModalOpen(false);
+                }}
+                secondaryButtonText="Cancel"
+                title="Delete Question"
+              >
+                <Text>
+                  Are you sure you want to delete this question? Once you save
+                  your changes, all answers to the question will also be lost,
+                  and you will not be able to undo this action.
+                </Text>
+              </SelectOptionModal>
               <div
                 ref={ref}
                 onMouseDown={() => {
@@ -142,7 +165,7 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
                   <button
                     className="rounded hover:bg-tertiary p-1.5 cursor-pointer"
                     onClick={() => {
-                      onDelete();
+                      setDeleteModalOpen(true);
                     }}
                   >
                     <DeleteIcon className="h-3.5" />

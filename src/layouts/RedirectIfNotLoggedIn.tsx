@@ -22,16 +22,34 @@ const RedirectIfNotLoggedIn: React.FC<RedirectIfNotLoggedInProps> = ({
             <Text h2>You're not logged in.</Text>
           </div>
           <div className="h-8" />
-          <Button
-            size="small"
-            onClick={() => {
-              router.push(
-                `/login${pathAfterLoggingIn ? "?to=" + pathAfterLoggingIn : ""}`
-              );
-            }}
-          >
-            Log In
-          </Button>
+          <div className="flex">
+            <Button
+              size="small"
+              onClick={() => {
+                router.push(
+                  `/login${
+                    pathAfterLoggingIn ? "?to=" + pathAfterLoggingIn : ""
+                  }`
+                );
+              }}
+            >
+              Log In
+            </Button>
+            <div className="w-2" />
+            <Button
+              size="small"
+              variant="inverted"
+              onClick={() => {
+                router.push(
+                  `/signup${
+                    pathAfterLoggingIn ? "?to=" + pathAfterLoggingIn : ""
+                  }`
+                );
+              }}
+            >
+              Sign Up
+            </Button>
+          </div>
         </div>
       </Modal>
     </Fragment>

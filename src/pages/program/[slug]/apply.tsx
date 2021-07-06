@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { Button, Card, Text } from "../../../components/atomic";
+import ErrorScreen, { ErrorScreenType } from "../../../components/ErrorScreen";
 import Form from "../../../components/Form";
 import {
   ApplicationType,
@@ -14,6 +15,7 @@ import {
   useAuthorizationLevel,
   useCurrentProgram,
 } from "../../../hooks";
+import AuthorizationWrapper from "../../../layouts/AuthorizationWrapper";
 import RedirectIfNotLoggedIn from "../../../layouts/RedirectIfNotLoggedIn";
 import { Question } from "../../../types/Form";
 import Page from "../../../types/Page";
@@ -60,24 +62,30 @@ const ProgramApplyPage: Page = (_) => {
   const applicationType: ApplicationType | null = getApplicationType();
 
   if ([Admin, Mentor, Mentee].includes(authorizationLevel))
-    return <div>You're already in this program.</div>;
+    // TODO: Integrate with ErrorScreen component
+    return (
+      <div className="h-screen w-screen flex flex-col justify-center items-center">
+        <img src="/static/DarkTextLogo.svg" />
+        <div className="h-8"></div>
+        <div>
+          <Text>You're already in this program. </Text>
+          <Link href={`/program/${currentProgram?.slug}`}>
+            <Text u className="cursor-pointer">
+              Go to program homepage.
+            </Text>
+          </Link>
+        </div>
+      </div>
+    );
 
   // TODO: Make these into modals with back button
   if (applicationType == null)
-    return (
-      <div className="h-screen w-screen flex flex-col justify-center items-center">
-        <Text h1>The application you are looking for does not exist</Text>
-      </div>
-    );
+    return <ErrorScreen type={ErrorScreenType.PageNotFound} />;
 
   // This creates a flash before applying when the program exists
   // There must be a better/more direct way of checking whether the program exists or not.
   if (currentProgram?.name == null) {
-    return (
-      <div className="h-screen w-screen flex flex-col justify-center items-center">
-        <Text h1>The program you are looking for does not exist</Text>
-      </div>
-    );
+    return <ErrorScreen type={ErrorScreenType.PageNotFound} />;
   }
 
   return (
@@ -167,7 +175,7 @@ const ProgramApplyPage: Page = (_) => {
                 <br />
                 <br />
                 <Text>
-                  Please contact [Mentorship Admin - TODO] if you need to make
+                  Please contact the mentorship admin if you need to make
                   changes to your application.
                 </Text>
                 <br />
@@ -182,7 +190,7 @@ const ProgramApplyPage: Page = (_) => {
                     router.push("/");
                   }}
                 >
-                  Go to Homepage
+                  Go to Home
                 </Button>
               </div>
             </div>
@@ -197,5 +205,9 @@ const ProgramApplyPage: Page = (_) => {
     </>
   );
 };
+
+ProgramApplyPage.getLayout = (page) => (
+  <AuthorizationWrapper>{page}</AuthorizationWrapper>
+);
 
 export default ProgramApplyPage;

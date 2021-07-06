@@ -59,6 +59,7 @@ module.exports = {
         41: "10.25rem",
         86: "21.5rem",
         120: "30rem",
+        152: "38rem",
         160: "40rem",
         200: "50rem",
         300: "75rem",
@@ -66,7 +67,6 @@ module.exports = {
       },
       transitionProperty: {
         background: "background-color",
-        152: "38rem",
       },
       width: {
         "9/10": "90%",
@@ -94,6 +94,7 @@ module.exports = {
       ringWidth: ["hover", "active"],
       ringColor: ["hover", "active"],
       fontWeight: ["hover"],
+      boxShadow: ["active"],
     },
   },
   plugins: [

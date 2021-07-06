@@ -43,8 +43,9 @@ const EditAvailOverrideDayModalContents = ({
   onClose = () => {},
 }: EditAvailOverrideDayModalContentsProps) => {
   const { toUTC } = useTimezoneConverters();
-  const [overrideDate, setOverrideDay] =
-    useState<AvailOverrideDate | null>(initOverrideDate);
+  const [overrideDate, setOverrideDay] = useState<AvailOverrideDate | null>(
+    initOverrideDate
+  );
   const [timeslots, setTimeslots] = useState(
     overrideDate?.availOverrideTimeslots || []
   );
@@ -103,8 +104,8 @@ const EditAvailOverrideDayModalContents = ({
     // If there are no availabilities for the day, add one starting at 12:00 AM
     const dateStart = startOfDay(new Date(overrideDate.startTime));
     let newAvailability: DateInterval | null = {
-      startTime: dateStart,
-      endTime: addMinutes(dateStart, 30),
+      startTime: addMinutes(dateStart, 8 * 60),
+      endTime: addMinutes(dateStart, 8 * 60 + 30),
     };
     const len = timeslots.length;
     if (len > 0) {
@@ -151,7 +152,6 @@ const EditAvailOverrideDayModalContents = ({
         endTime: toUTC(newAvailability.endTime),
       })
       .sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
-    console.log(newTimeslots);
     setTimeslots(newTimeslots);
   };
 
@@ -181,7 +181,7 @@ const EditAvailOverrideDayModalContents = ({
     <div className="p-8">
       <div>
         <Text h3 b>
-          Set the date of exception
+          Set the date to override
         </Text>
       </div>
       <div className="h-8"></div>
@@ -240,6 +240,14 @@ const EditAvailOverrideDayModalContents = ({
                 </div>
               );
             })}
+            {timeslots.length === 0 && (
+              <Fragment>
+                <Text className="text-secondary">
+                  Leave empty to mark yourself unavailable.
+                </Text>
+              </Fragment>
+            )}
+
             <div className="h-2"></div>
             <div>
               <Button
@@ -255,7 +263,12 @@ const EditAvailOverrideDayModalContents = ({
           </div>
         </div>
       ) : (
-        <div>Select a date</div>
+        <div className="w-96">
+          <Text>
+            Select a date to override. <br />
+            Weekly availabilities on that day will be overridden.
+          </Text>
+        </div>
       )}
       <div className="h-8"></div>
 
@@ -305,7 +318,8 @@ const AvailOverrideDateSection = ({
 
   return (
     <Fragment>
-      <div className="flex items-center justify-between w-full px-12 py-2">
+      <div className="h-4"></div>
+      <div className="flex items-center justify-between w-full px-12">
         <div>
           <Text b>{format(overrideDate.startTime, "MMMM d, yyyy")}</Text>
         </div>
@@ -332,6 +346,11 @@ const AvailOverrideDateSection = ({
           </button>
         </div>
       </div>
+      {overrideDate.availOverrideTimeslots.length === 0 && (
+        <div className="px-12 py-1">
+          <Text className="text-secondary">Unavailable</Text>
+        </div>
+      )}
       {overrideDate.availOverrideTimeslots.map((timeslot) => {
         return (
           <div className="px-12 py-1">
@@ -340,7 +359,6 @@ const AvailOverrideDateSection = ({
           </div>
         );
       })}
-      <div className="h-2"></div>
       <Modal
         isOpen={modalOpen}
         onClose={() => {
@@ -355,6 +373,7 @@ const AvailOverrideDateSection = ({
           }}
         />
       </Modal>
+      <div className="h-4"></div>
     </Fragment>
   );
 };
@@ -408,7 +427,7 @@ export const SetAvailabilityOverridesCard = ({
     <div className="flex flex-col">
       <div className="w-5/6 mx-auto">
         <Text h3 b>
-          Add exceptions
+          Add date overrides
         </Text>
       </div>
       <div className="h-4" />
@@ -432,7 +451,7 @@ export const SetAvailabilityOverridesCard = ({
             setEditAvailOverrideDayModalOpen(true);
           }}
         >
-          add exception
+          add date override
         </Button>
       </div>
       <Modal

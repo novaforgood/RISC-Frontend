@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Text } from "../../../../../components/atomic";
+import CatchUnsavedChangesModal from "../../../../../components/CatchUnsavedChangesModal";
 import FormSchemaEditor from "../../../../../components/FormSchemaEditor";
 import TagSchemaEditor from "../../../../../components/tags/TagSchemaEditor";
 import { ProfileTag } from "../../../../../components/tags/types";
@@ -9,7 +10,8 @@ import {
   useUpdateProfileTagsOfProgramMutation,
   useUpdateProgramMutation,
 } from "../../../../../generated/graphql";
-import { useCurrentProgram } from "../../../../../hooks";
+import { AuthorizationLevel, useCurrentProgram } from "../../../../../hooks";
+import AuthorizationWrapper from "../../../../../layouts/AuthorizationWrapper";
 import ChooseTabLayout from "../../../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../../../layouts/PageContainer";
 import { Question } from "../../../../../types/Form";
@@ -87,6 +89,8 @@ const EditMentorProfilePage: Page = (_) => {
 
   return (
     <div className="flex flex-col items-center">
+      <CatchUnsavedChangesModal unsavedChangesExist={modified === true} />
+
       <div className="flex justify-between items-center w-full">
         <Text h2 b>
           Edit Mentor Profile
@@ -95,7 +99,7 @@ const EditMentorProfilePage: Page = (_) => {
         <div className="flex">
           <Button
             size="small"
-            disabled={!modified}
+            disabled={!modified || profileSchema.length == 0}
             onClick={() => {
               saveProfile();
             }}
@@ -157,9 +161,11 @@ const EditMentorProfilePage: Page = (_) => {
 };
 
 EditMentorProfilePage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps}>
-    <PageContainer>{page}</PageContainer>
-  </ChooseTabLayout>
+  <AuthorizationWrapper canView={[AuthorizationLevel.Admin]}>
+    <ChooseTabLayout {...pageProps} canView={[AuthorizationLevel.Admin]}>
+      <PageContainer>{page}</PageContainer>
+    </ChooseTabLayout>
+  </AuthorizationWrapper>
 );
 
 export default EditMentorProfilePage;

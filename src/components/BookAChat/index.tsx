@@ -12,7 +12,7 @@ import {
   useGetChatRequestsQuery,
 } from "../../generated/graphql";
 import useTimezoneConverters from "../../hooks/useTimezoneConverters";
-import { Button, Card, Modal, Text } from "../atomic";
+import { Button, Card, Modal, Text, TextArea } from "../atomic";
 import Calendar from "../Calendar";
 import { getDatesInThisMonth } from "../Calendar/utils";
 import { mergeIntervalLists } from "./utils";
@@ -207,6 +207,11 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
           {mentor.user.firstName} {mentor.user.lastName}
         </b>
       </Text>
+      <div className="h-2"></div>
+      <Text className="text-secondary">
+        If no times are open, the mentor is either completely booked or has not
+        set availabilities yet.
+      </Text>
       <div className="h-8"></div>
 
       <div className="flex">
@@ -258,7 +263,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
           </div>
 
           <div className="h-4"></div>
-          <div className="h-80 box-border flex flex-col gap-2 overflow-y-scroll">
+          <div className="h-80 box-border flex flex-col gap-2 overflow-y-auto">
             {timeslots.map((timeslot) => {
               return (
                 <button
@@ -308,14 +313,15 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
           </div>
           <div className="h-6"></div>
 
-          <textarea
+          <TextArea
             value={chatRequestMessage}
-            onChange={(e) => {
-              setChatRequestMessage(e.target.value);
+            onChange={(e: any) => {
+              const target = e.target as HTMLTextAreaElement;
+              setChatRequestMessage(target.value);
             }}
-            className="p-2 w-96 shadow-sm focus:ring-secondary focus:border-primary mt-1 block sm:text-sm border border-secondary rounded-md"
+            className="p-2 w-96"
             placeholder="Optional message"
-          ></textarea>
+          ></TextArea>
           <div className="h-8"></div>
 
           <div className="flex">

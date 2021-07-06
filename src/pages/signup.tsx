@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { Button, Checkbox, Text } from "../components/atomic";
+import { Button, Modal, Text } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
 import { CreateUserInput, useCreateUserMutation } from "../generated/graphql";
+import Page from "../types/Page";
 import { useAuth } from "../utils/firebase/auth";
+import { redirectAfterLoggingIn } from "./login";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24 md:h-64 md:w-64 lg:h-80 lg:w-80";
@@ -21,19 +23,33 @@ const getTimezone = (): string => {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
 };
 
-const SignUpPage = () => {
-  const { signUpWithEmail, signInWithGoogle } = useAuth();
+const SignUpPage: Page = () => {
+  const { signUpWithEmail, signInWithGoogle, signOut } = useAuth();
+  const [createUser] = useCreateUserMutation();
+  const [modalOpen, setModalOpen] = useState(false);
   const [displayError, setDisplayError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [tocChecked, setTocChecked] = useState(false);
+  // const [tocChecked, setTocChecked] = useState(false);
   const router = useRouter();
-  const [createUser] = useCreateUserMutation();
+
+
 
   return (
     <div className="flex w-screen min-h-screen">
+      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+        <div className="flex flex-col space-y-2 justify-items-center items-center">
+          <Text>
+            A verification email has been sent to your inbox. Please verify
+            before logging in.
+          </Text>
+          <Button size="small" onClick={() => setModalOpen(false)}>
+            Go to Email
+          </Button>
+        </div>
+      </Modal>
       <div className="hidden md:grid md:w-1/3 bg-primary min-h-screen relative">
         <img
           src="/static/TextLogo.svg"
@@ -51,7 +67,13 @@ const SignUpPage = () => {
           <Text b2>
             Already have an account?{" "}
             <Text u className="cursor-pointer">
-              <Link href="/login">Login</Link>
+              <Link
+                href={
+                  "/login" + (router.query.to ? "?to=" + router.query.to : "")
+                }
+              >
+                Login
+              </Link>
             </Text>
           </Text>
           <div className="h-6" />
@@ -59,7 +81,8 @@ const SignUpPage = () => {
             onClick={() =>
               signInWithGoogle()
                 .then((res) => {
-                  if (res) {
+                  if (res.additionalUserInfo?.isNewUser) {
+                    //no need for verification
                     const arr = res.user?.displayName?.split(" ") || [];
                     const highResPhotoURL = res.user?.photoURL?.replace(
                       "s96-c",
@@ -74,8 +97,12 @@ const SignUpPage = () => {
                     };
                     createUser({ variables: { data: createUserInput } }).then(
                       () => {
-                        router.push("/");
+                        redirectAfterLoggingIn(router);
                       }
+                    );
+                  } else {
+                    setDisplayError(
+                      "An account with this email already exists. Please log in."
                     );
                   }
                 })
@@ -88,7 +115,7 @@ const SignUpPage = () => {
             <div className="flex-1">
               <img className="h-10 w-10 ml-6" src="/static/GoogleLogo.svg" />
             </div>
-            <Text b className="text-secondary">
+            <Text b className="text-primary">
               Sign up with Google
             </Text>
             <div className="flex-1"></div>
@@ -102,8 +129,7 @@ const SignUpPage = () => {
             <div className="h-0.25 flex-1 bg-inactive"></div>
           </div>
           <div className="h-6" />
-
-          <form>
+          <form method="post">
             <div className="flex w-full">
               <TitledInput
                 title="First Name"
@@ -131,7 +157,6 @@ const SignUpPage = () => {
             <TitledInput
               title="Email"
               name="Email"
-              // type="email"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
@@ -150,7 +175,7 @@ const SignUpPage = () => {
             />
             <div className="h-6" />
 
-            <div className="flex items-center">
+            {/* <div className="flex items-center">
               <Checkbox
                 checked={tocChecked}
                 onCheck={() => {
@@ -164,9 +189,10 @@ const SignUpPage = () => {
                 </Text>
               </Text>
             </div>
-            <div className="h-6" />
+            <div className="h-6" /> */}
 
             <Button
+              type="submit"
               onClick={(e) => {
                 e.preventDefault();
                 signUpWithEmail(email, password)
@@ -183,7 +209,7 @@ const SignUpPage = () => {
                         profilePictureUrl: "",
                         timezone: getTimezone(),
                       };
-
+                      res.user?.sendEmailVerification();
                       Promise.all([
                         createUser({ variables: { data: createUserInput } }),
                         res.user?.updateProfile({
@@ -192,10 +218,12 @@ const SignUpPage = () => {
                         }),
                       ])
                         .then(() => {
-                          router.push("/");
+                          router.push("/verify");
                         })
+                        .then(() => {})
                         .catch((e) => {
                           setDisplayError(e.message);
+                          signOut();
                         });
                     }
                   });
@@ -203,11 +231,12 @@ const SignUpPage = () => {
             >
               Sign Up
             </Button>
+            <div className="h-6" />
+
+            <Text className="text-error">
+              {displayError ? displayError : ""}
+            </Text>
           </form>
-          <div className="h-6" />
-
-          <Text className="text-error">{displayError ? displayError : ""}</Text>
-
           {/* {auth ? (
             <button onClick={() => signOut()}>Sign Out</button>
           ) : (

@@ -1,6 +1,7 @@
 import React from "react";
 import { User } from "../generated/graphql";
 import { Text } from "./atomic";
+import ProfilePictureImg from "./ProfilePictureImg";
 
 type UserPartial = Pick<User, "firstName" | "lastName" | "profilePictureUrl">;
 
@@ -13,14 +14,12 @@ const InlineProfileAvatar = <T extends UserPartial>({
 }: InlineProfileAvatarProps<T>) => {
   return (
     <div className="flex items-center">
-      <div className="h-10 w-10 rounded-full object-cover bg-tertiary border border-inactive">
-        <img
-          className="h-full w-full rounded-full"
-          src={user.profilePictureUrl}
-        ></img>
-      </div>
+      <ProfilePictureImg
+        src={user.profilePictureUrl}
+        className="h-10 w-10 rounded-full object-cover bg-tertiary border border-inactive"
+      />
       <div className="w-4"></div>
-      <Text>
+      <Text className="whitespace-nowrap">
         {user.firstName} {user.lastName}
       </Text>
     </div>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { NextRouter, useRouter } from "next/router";
 import { useState } from "react";
 import { Button, Input, Text } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
@@ -16,20 +16,20 @@ const BlobCircle = () => {
   );
 };
 
+export const redirectAfterLoggingIn = (router: NextRouter) => {
+  if (router.query.to && typeof router.query.to === "string") {
+    router.push(router.query.to);
+  } else {
+    router.push("/");
+  }
+};
+
 const LoginPage = () => {
   const { signInWithEmail, signInWithGoogle } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayError, setError] = useState("");
   const router = useRouter();
-
-  const redirectAfterLoggingIn = () => {
-    if (router.query.to && typeof router.query.to === "string") {
-      router.push(router.query.to);
-    } else {
-      router.push("/");
-    }
-  };
 
   return (
     <div className="flex w-screen min-h-screen relative">
@@ -50,15 +50,30 @@ const LoginPage = () => {
           <Text b2>
             Don't have an account?{" "}
             <Text u className="cursor-pointer">
-              <Link href="/signup">Sign up now</Link>
+              <Link
+                href={
+                  "/signup" + (router.query.to ? "?to=" + router.query.to : "")
+                }
+              >
+                Sign up now
+              </Link>
             </Text>
           </Text>
           <div className="h-6" />
           <button
             onClick={() =>
               signInWithGoogle()
-                .then((_) => {
-                  redirectAfterLoggingIn();
+                .then(async (res) => {
+                  if (res) {
+                    if (res.additionalUserInfo?.isNewUser) {
+                      res.user?.delete();
+                      setError(
+                        "An account with this email has not been created yet."
+                      );
+                    } else {
+                      redirectAfterLoggingIn(router);
+                    }
+                  }
                 })
                 .catch((e) => setError(e.message))
             }
@@ -67,7 +82,7 @@ const LoginPage = () => {
             <div className="flex-1">
               <img className="h-10 w-10 ml-6" src="/static/GoogleLogo.svg" />
             </div>
-            <Text b className="text-secondary">
+            <Text b className="text-primary">
               Login with Google
             </Text>
             <div className="flex-1"></div>
@@ -81,11 +96,10 @@ const LoginPage = () => {
             <div className="h-0.25 flex-1 bg-inactive"></div>
           </div>
           <div className="h-6" />
-          <form>
+          <form method="post">
             <TitledInput
               title="Email"
               name="Email"
-              // type="email"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
@@ -120,7 +134,7 @@ const LoginPage = () => {
                 e.preventDefault();
                 signInWithEmail(email, password)
                   .then((_) => {
-                    redirectAfterLoggingIn();
+                    redirectAfterLoggingIn(router);
                   })
                   .catch((error) => {
                     setError(error.message);

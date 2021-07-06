@@ -5,7 +5,8 @@ import {
   ProfileType,
   useGetProfilesQuery,
 } from "../../../../generated/graphql";
-import { useCurrentProgram } from "../../../../hooks";
+import { AuthorizationLevel, useCurrentProgram } from "../../../../hooks";
+import AuthorizationWrapper from "../../../../layouts/AuthorizationWrapper";
 import ChooseTabLayout from "../../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../../layouts/PageContainer";
 import Page from "../../../../types/Page";
@@ -63,9 +64,17 @@ const ViewMentorsPage: Page = () => {
 };
 
 ViewMentorsPage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps}>
-    <PageContainer>{page}</PageContainer>
-  </ChooseTabLayout>
+  <AuthorizationWrapper
+    canView={[
+      AuthorizationLevel.Admin,
+      AuthorizationLevel.Mentor,
+      AuthorizationLevel.Mentee,
+    ]}
+  >
+    <ChooseTabLayout {...pageProps}>
+      <PageContainer>{page}</PageContainer>
+    </ChooseTabLayout>
+  </AuthorizationWrapper>
 );
 
 export default ViewMentorsPage;

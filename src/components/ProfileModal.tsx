@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { GetProfilesQuery, Maybe } from "../generated/graphql";
-import { useCurrentProgram } from "../hooks";
+import {
+  AuthorizationLevel,
+  useAuthorizationLevel,
+  useCurrentProgram,
+} from "../hooks";
 import { Question } from "../types/Form";
 import { Button, Card, Modal, Tag, Text } from "./atomic";
 import BookAChat from "./BookAChat";
 import Form, { ResponseJson } from "./Form";
+import ProfilePictureImg from "./ProfilePictureImg";
 
 function getQuestionsFromJson(json: string | undefined): Question[] {
   if (!json) return [];
@@ -44,6 +49,8 @@ const ProfileModal = ({
   const [stage, setStage] = useState(ProfileModalStage.VIEW_PROFILE);
   const { currentProgram } = useCurrentProgram();
 
+  const authorizationLevel = useAuthorizationLevel();
+
   useEffect(() => {
     if (isOpen === true) setStage(ProfileModalStage.VIEW_PROFILE);
     return () => {};
@@ -56,12 +63,10 @@ const ProfileModal = ({
           <div className="w-full">
             <div className="flex">
               <div className="flex flex-col items-center">
-                <div className="h-40 w-40 rounded-full bg-inactive">
-                  <img
-                    className="h-full w-full rounded-full"
-                    src={profile.user.profilePictureUrl}
-                  ></img>
-                </div>
+                <ProfilePictureImg
+                  src={profile.user.profilePictureUrl}
+                  className="h-40 w-40 rounded-full bg-inactive"
+                />
                 <div className="h-4"></div>
                 <Text b1 b>
                   {profile.user.firstName} {profile.user.lastName}
@@ -88,7 +93,7 @@ const ProfileModal = ({
                 <div className="flex ">
                   <Button
                     size="small"
-                    // disabled={authorizationLevel !== AuthorizationLevel.Mentee}
+                    disabled={authorizationLevel !== AuthorizationLevel.Mentee}
                     onClick={() => {
                       setStage(ProfileModalStage.BOOK_CHAT);
                     }}
@@ -115,22 +120,34 @@ const ProfileModal = ({
               <div>
                 <Text b>Bio</Text>
               </div>
-              <div className="h-1"></div>
+              <div className={profile.bio ? "h-1" : "h-2"}></div>
               <div>
-                <Text>{profile.bio}</Text>
+                {profile.bio ? (
+                  <Text>{profile.bio}</Text>
+                ) : (
+                  <Text secondary i>
+                    None
+                  </Text>
+                )}
               </div>
             </Card>
 
             <div className="h-4"></div>
 
             <Card className="p-6">
-              <Text b>Types of mentorship offered</Text>
+              <Text b>Tags</Text>
               <div className="h-2"></div>
-              <div className="flex flex-wrap gap-2">
-                {profile.profileTags.map((tag) => {
-                  return <Tag>{tag.name}</Tag>;
-                })}
-              </div>
+              {profile.profileTags.length === 0 ? (
+                <Text secondary i>
+                  None
+                </Text>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  {profile.profileTags.map((tag) => {
+                    return <Tag>{tag.name}</Tag>;
+                  })}
+                </div>
+              )}
             </Card>
             <div className="h-4"></div>
 

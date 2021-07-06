@@ -1,7 +1,6 @@
 import { Menu, Transition } from "@headlessui/react";
 import Link from "next/link";
 import { Fragment, ReactNode } from "react";
-import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";
 import { useAuth } from "../utils/firebase/auth";
 
 type DropdownProps = {
@@ -22,7 +21,6 @@ const ItemStyle = (active: Boolean) =>
 
 export default function Dropdown({ button }: DropdownProps) {
   const { user, signOut } = useAuth();
-  const authorizationLevel = useAuthorizationLevel();
 
   return (
     <Menu as="div" className="relative inline-block text-left">
@@ -56,7 +54,7 @@ export default function Dropdown({ button }: DropdownProps) {
                     </a>
                   )}
                 </Menu.Item> */}
-                {authorizationLevel != AuthorizationLevel.Admin && (
+                {user && (
                   <Menu.Item>
                     {({ active }) => (
                       <Link href="/my/applications">
@@ -65,7 +63,7 @@ export default function Dropdown({ button }: DropdownProps) {
                     )}
                   </Menu.Item>
                 )}
-                {user ? (
+                {user && (
                   <Menu.Item>
                     {({ active }) => (
                       <a href="/my/profile" className={ItemStyle(active)}>
@@ -73,8 +71,8 @@ export default function Dropdown({ button }: DropdownProps) {
                       </a>
                     )}
                   </Menu.Item>
-                ) : null}
-                {user ? (
+                )}
+                {user && (
                   <Menu.Item>
                     {({ active }) => (
                       <a
@@ -88,7 +86,7 @@ export default function Dropdown({ button }: DropdownProps) {
                       </a>
                     )}
                   </Menu.Item>
-                ) : null}
+                )}
               </div>
             </Menu.Items>
           </Transition>

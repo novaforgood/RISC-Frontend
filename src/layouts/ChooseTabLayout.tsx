@@ -5,11 +5,11 @@ import { parseParam } from "../utils";
 import { AdminTabLayout, MenteeTabLayout, MentorTabLayout } from "./TabLayout";
 import { BaseTabLayoutProps } from "./TabLayout/TabLayout";
 
-const UnauthenticatedTabLayout: React.FC = ({ children }) => {
-  return <Fragment>{children}</Fragment>;
-};
-
-const NotInProgramTabLayout: React.FC = ({ children }) => {
+const NotInProgramTabLayout: React.FC<BaseTabLayoutProps> = ({
+  children,
+  basePath,
+}) => {
+  basePath;
   return <Fragment>{children}</Fragment>;
 };
 
@@ -24,8 +24,9 @@ function getTabLayout(
     case AuthorizationLevel.Admin:
       return AdminTabLayout;
     case AuthorizationLevel.Unauthenticated:
-      return UnauthenticatedTabLayout;
     case AuthorizationLevel.NotInProgram:
+    case AuthorizationLevel.WaitingForUserData:
+    case AuthorizationLevel.Unverified:
       return NotInProgramTabLayout;
   }
 }
@@ -40,7 +41,6 @@ const ChooseTabLayout = ({ children }: ChooseTabLayoutProps) => {
   const authorizationLevel = useAuthorizationLevel();
 
   const TabLayout = getTabLayout(authorizationLevel);
-
   return <TabLayout basePath={`/program/${slug}`}>{children}</TabLayout>;
 };
 export default ChooseTabLayout;

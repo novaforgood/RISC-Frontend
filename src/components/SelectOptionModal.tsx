@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Button, Modal, Text } from "./atomic";
 
-interface SelectOptionModalProps {
+export interface SelectOptionModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
@@ -31,7 +31,7 @@ function SelectOptionModal({
           </Text>
         </div>
         <div className="h-2"></div>
-        <div>{children}</div>
+        {children}
         <div className="h-8"></div>
         <div className="flex">
           <Button

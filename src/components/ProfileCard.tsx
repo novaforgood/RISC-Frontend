@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { GetProfilesQuery } from "../generated/graphql";
 import { Button, Card, Tag, Text } from "./atomic";
 import ProfileModal from "./ProfileModal";
+import ProfilePictureImg from "./ProfilePictureImg";
 
 type Profile = GetProfilesQuery["getProfiles"][number];
 
@@ -21,12 +22,10 @@ const ProfileCard = ({ profile }: ProfileCardProps) => {
 
   return (
     <Card className="flex flex-col p-6 place-items-center border-0">
-      <div className="h-40 w-40 rounded-full object-cover bg-tertiary border border-inactive">
-        <img
-          className="h-full w-full rounded-full"
-          src={profile.user.profilePictureUrl}
-        ></img>
-      </div>
+      <ProfilePictureImg
+        src={profile.user.profilePictureUrl}
+        className="h-40 w-40 rounded-full object-cover bg-tertiary border border-inactive"
+      />
       <div className="h-4"></div>
 
       <Text b className="text-body-1 text-center">

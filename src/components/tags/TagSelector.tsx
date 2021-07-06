@@ -24,7 +24,6 @@ function TagSelector({
             key={i}
             variant={tagIsSelected ? "dark" : "outline"}
             onClick={() => {
-              console.log("lol");
               if (tagIsSelected) {
                 onChange(
                   selectedTagIds.filter((id) => id !== tag.profileTagId)

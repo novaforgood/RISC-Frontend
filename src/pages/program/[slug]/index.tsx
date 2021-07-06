@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import { Button, Card, Text } from "../../../components/atomic";
+import ErrorScreen, { ErrorScreenType } from "../../../components/ErrorScreen";
 import {
   defaultContentState,
   EditorProvider,
@@ -17,6 +18,7 @@ import {
   ssrGetProgramBySlug,
 } from "../../../generated/page";
 import { AuthorizationLevel, useAuthorizationLevel } from "../../../hooks";
+import AuthorizationWrapper from "../../../layouts/AuthorizationWrapper";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../layouts/PageContainer";
 import Page from "../../../types/Page";
@@ -44,12 +46,18 @@ const AdminHome = ({
   iconUrl,
   homepage,
 }: DisplayProgramHomepageProps) => (
-  <div className="pt-24">
+  <div>
     <EditorProvider currentHomepage={getRawContentState(homepage)}>
-      <PublishButton
-        className="transform -translate-y-24 z-10 float-right"
-        programId={programId}
-      />
+      <div className="flex items-center">
+        <div className="flex w-full items-center justify-between">
+          <Text h2 b>
+            Edit Homepage
+          </Text>
+          <PublishButton className="" programId={programId} />
+        </div>
+      </div>
+      <div className="h-24"></div>
+
       <Card className="box-border w-full px-16 p-8 z-0">
         <img
           className="w-28 h-28 relative rounded-md -top-24"
@@ -82,31 +90,39 @@ const ReadOnlyHome = ({
   const JSONHomepage: RawDraftContentState = getRawContentState(homepage);
   return (
     //TODO: Figure out whether the buttons at the top should be sticky
-    <div className="box-border bg-tertiary min-h-screen px-18 py-16 lg:py-32 lg:px-36 overflow-hidden">
+    <div className="box-border bg-tertiary min-h-full pt-16 lg:pt-32 overflow-hidden">
       {inProgram ? (
         <></>
       ) : (
         <div className="flex transform -translate-y-14 lg:-translate-y-20 float-right z-10">
-          <Button variant="inverted" size="small">
-            <Link href={router.asPath + "/apply?as=mentor"}>
-              Apply to Mentor
-            </Link>
-          </Button>
+          <Link href={router.asPath + "/apply?as=mentor"}>
+            <Button variant="inverted" size="small">
+              Apply as Mentor
+            </Button>
+          </Link>
+
           <div className="w-4" />
-          <Button variant="solid" size="small">
-            <Link href={router.asPath + "/apply?as=mentee"}>Join</Link>
-          </Button>
+
+          <Link href={router.asPath + "/apply?as=mentee"}>
+            <Button variant="solid" size="small">
+              Apply as Mentee
+            </Button>
+          </Link>
         </div>
       )}
-      <Card className="box-border w-full px-16 py-10">
-        <div className="relative -top-24">
-          <img className="w-28 h-28 rounded-md" src={iconUrl} />
-          <div className="h-2" />
-          <Text h1 b>
-            {name}
-          </Text>
-          <div className="h-2" />
-          <ReadOnlyTextEditor {...JSONHomepage} />
+      <Card className="box-border w-full px-16 py-10 ">
+        <div className="relative -top-24 pointer-events-none">
+          <div>
+            <img className="w-28 h-28 rounded-md" src={iconUrl} />
+            <div className="h-2" />
+            <Text h1 b>
+              {name}
+            </Text>
+            <div className="h-2" />
+          </div>
+          <div className="pointer-events-auto">
+            <ReadOnlyTextEditor {...JSONHomepage} />
+          </div>
         </div>
       </Card>
     </div>
@@ -116,22 +132,21 @@ const ReadOnlyHome = ({
 //TODO: Change type of this to not any
 const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
   const authorizationLevel = useAuthorizationLevel();
-  const router = useRouter();
 
   const program = props.data?.getProgramBySlug;
-  if (!program) {
-    router.push("/");
-    return <div>Program doesn't exist!</div>;
-  }
 
   switch (authorizationLevel) {
     case AuthorizationLevel.Admin:
     case AuthorizationLevel.Mentor:
     case AuthorizationLevel.Mentee:
-      LocalStorage.set('cachedProgramSlug', program.slug)
+      LocalStorage.set("cachedProgramSlug", program.slug);
       break;
     default:
       break;
+  }
+
+  if (!program) {
+    return <ErrorScreen type={ErrorScreenType.PageNotFound} />;
   }
 
   const getProgramPage = () => {
@@ -145,15 +160,15 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
         return <ReadOnlyHome {...program} />;
     }
   };
-  return getProgramPage();
+  return <PageContainer>{getProgramPage()}</PageContainer>;
 };
 
 export default ProgramPage;
 
 ProgramPage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps}>
-    <PageContainer>{page}</PageContainer>
-  </ChooseTabLayout>
+  <AuthorizationWrapper>
+    <ChooseTabLayout {...pageProps}>{page}</ChooseTabLayout>
+  </AuthorizationWrapper>
 );
 
 // TODO: Extract this function because it'll probably be reused
