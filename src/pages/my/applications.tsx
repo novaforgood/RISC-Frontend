@@ -13,30 +13,30 @@ const ApplicationsViewer: Page = () => {
     useGetMyUserApplicationsQuery().data?.getMyUser.applications;
 
   return (
-    <div className=" min-w-screen h-screen bg-tertiary">
-      <div></div>
-      <div className="max-w-4xl mx-auto p-10">
+    <div className="h-screen bg-tertiary flex flex-col items-center py-10 overflow-y-auto">
+      <div className="w-3/4 grid grid-cols-8 gap-4 items-center">
         {/* TODO: My Applications text should be aligned with the Card below it */}
         <button
-          className="focus:border-0"
+          className="focus:border-0 col-span-1"
           onClick={() => {
             router.back();
           }}
         >
-          <BackArrow className="h-10 w-10 inline hover:cursor-pointer" />
+          <BackArrow className="hover:cursor-pointer" />
         </button>
-        <Text h2 b className="inline">
+        <Text h2 b className="col-span-7">
           My Applications
         </Text>
-        <Card className="flex-shrink mt-10 p-8">
+        <div className="col-span-1" />
+        <Card className="p-8 col-span-7">
           <Text h3>My Applications</Text>
-          {applications == null ? (
+          {applications === undefined || applications!.length < 1 ? (
             <>
-              <br />
+              <div className="h-4" />
               <Text>No active applications</Text>
             </>
           ) : (
-            applications.map((app, i) => {
+            applications!.map((app, i) => {
               const status = () => {
                 switch (app.applicationStatus) {
                   case ApplicationStatus.Accepted:

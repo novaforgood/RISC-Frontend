@@ -135,9 +135,13 @@ const MyChatsList = ({ title, chatRequests }: MyChatsListProps) => {
     <div className="flex flex-col px-8 py-6">
       <Text h3>{title}</Text>
       <div className="h-4"></div>
-      {chatRequests.map((cr) => (
-        <MyChatsListItem key={cr.chatRequestId} chatRequest={cr} />
-      ))}
+      {chatRequests.length > 0 ? (
+        chatRequests.map((cr) => (
+          <MyChatsListItem key={cr.chatRequestId} chatRequest={cr} />
+        ))
+      ) : (
+        <Text>None</Text>
+      )}
     </div>
   );
 };

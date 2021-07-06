@@ -54,7 +54,7 @@ const DetailsModalButton = ({ application }: DetailsModalButtonProps) => {
   return (
     <>
       <button onClick={() => setIsOpen(true)}>
-        <Text u>Details</Text>
+        <Text u>View Application</Text>
       </button>
       <Modal
         isOpen={isOpen}
@@ -199,9 +199,13 @@ const ApplicationReviewList = ({
     <div className="flex flex-col px-8 py-6">
       <Text h3>{title}</Text>
       <div className="h-4"></div>
-      {applications.map((app) => (
-        <ApplicationReviewListItem key={app.user.userId} application={app} />
-      ))}
+      {applications.length > 0 ? (
+        applications.map((app) => (
+          <ApplicationReviewListItem key={app.user.userId} application={app} />
+        ))
+      ) : (
+        <Text>None</Text>
+      )}
     </div>
   );
 };

@@ -22,7 +22,6 @@ const ModifyChatRequestModal = ({
     refetchQueries: ["getChatRequests"],
   });
 
-  console.log(chatCanceled);
   return (
     <Fragment>
       {/* This catch is super incomplete bc it doesn't prevent users from closing the modal mid-editting */}

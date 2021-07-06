@@ -51,13 +51,18 @@ const DetailsModalButton = ({ chatRequest }: DetailsModalButtonProps) => {
               </Text>
             </Text>
             <div className="flex-1" />
-            <Button size={"small"}>View Profile</Button>
+            {/*TODO: View Profile should go here, not Close */}
+            <Button size="small" onClick={() => setIsOpen(false)}>
+              Close
+            </Button>
           </div>
           <Text>
             {format(chatRequest.chatStartTime, "MMM d, yyyy | h:mma") +
               " - " +
               format(chatRequest.chatEndTime, "MMM d, yyyy | h:mma")}
           </Text>
+          <div className="h-2" />
+          <div>Mentee Email: {chatRequest.menteeProfile.user.email}</div>
           <div className="h-2" />
           {chatRequest.chatRequestMessage && (
             <>
@@ -227,9 +232,13 @@ const ChatRequestsList = ({ title, chatRequests }: ChatRequestsListProps) => {
     <div className="flex flex-col px-8 py-6">
       <Text h3>{title}</Text>
       <div className="h-4"></div>
-      {chatRequests.map((cr) => (
-        <ChatRequestListItem key={cr.chatRequestId} chatRequest={cr} />
-      ))}
+      {chatRequests.length > 0 ? (
+        chatRequests.map((cr) => (
+          <ChatRequestListItem key={cr.chatRequestId} chatRequest={cr} />
+        ))
+      ) : (
+        <Text>None</Text>
+      )}
     </div>
   );
 };

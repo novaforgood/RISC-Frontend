@@ -155,70 +155,79 @@ const Form = ({
     debouncedAutosave();
   };
 
-  return readonly ? (
+  return questions.length > 0 ? (
+    readonly ? (
+      <Card className="p-6">
+        <div className="space-y-6">
+          {questions.map((question, i) => {
+            switch (question.type) {
+              case "short-answer":
+                return (
+                  <ShortTextAsker
+                    {...question}
+                    initResponse={responses[`${question.id}`] || ""}
+                    readonly={readonly}
+                    showDescriptions={showDescriptions}
+                    onChange={handleChange}
+                    key={i}
+                  ></ShortTextAsker>
+                );
+              case "long-answer":
+                return (
+                  <LongTextAsker
+                    {...question}
+                    initResponse={responses[`${question.id}`] || ""}
+                    readonly={readonly}
+                    showDescriptions={showDescriptions}
+                    onChange={handleChange}
+                    key={i}
+                  ></LongTextAsker>
+                );
+              case "multiple-choice":
+                return;
+            }
+          })}
+        </div>
+      </Card>
+    ) : (
+      <Card className={"p-6 border-inactive rounded-xl " + className}>
+        <div className="space-y-6">
+          {questions.map((question, i) => {
+            switch (question.type) {
+              case "short-answer":
+                return (
+                  <ShortTextAsker
+                    {...question}
+                    initResponse={responses[`${question.id}`] || ""}
+                    readonly={readonly}
+                    showDescriptions={showDescriptions}
+                    onChange={handleChange}
+                    key={i}
+                  ></ShortTextAsker>
+                );
+              case "long-answer":
+                return (
+                  <LongTextAsker
+                    {...question}
+                    initResponse={responses[`${question.id}`] || ""}
+                    readonly={readonly}
+                    showDescriptions={showDescriptions}
+                    onChange={handleChange}
+                    key={i}
+                  ></LongTextAsker>
+                );
+              case "multiple-choice":
+                return;
+            }
+          })}
+        </div>
+      </Card>
+    )
+  ) : (
     <Card className="p-6">
       <div className="space-y-6">
-        {questions.map((question, i) => {
-          switch (question.type) {
-            case "short-answer":
-              return (
-                <ShortTextAsker
-                  {...question}
-                  initResponse={responses[`${question.id}`] || ""}
-                  readonly={readonly}
-                  showDescriptions={showDescriptions}
-                  onChange={handleChange}
-                  key={i}
-                ></ShortTextAsker>
-              );
-            case "long-answer":
-              return (
-                <LongTextAsker
-                  {...question}
-                  initResponse={responses[`${question.id}`] || ""}
-                  readonly={readonly}
-                  showDescriptions={showDescriptions}
-                  onChange={handleChange}
-                  key={i}
-                ></LongTextAsker>
-              );
-            case "multiple-choice":
-              return;
-          }
-        })}
-      </div>
-    </Card>
-  ) : (
-    <Card className={"p-6 border-inactive rounded-xl " + className}>
-      <div className="space-y-6">
-        {questions.map((question, i) => {
-          switch (question.type) {
-            case "short-answer":
-              return (
-                <ShortTextAsker
-                  {...question}
-                  initResponse={responses[`${question.id}`] || ""}
-                  readonly={readonly}
-                  showDescriptions={showDescriptions}
-                  onChange={handleChange}
-                  key={i}
-                ></ShortTextAsker>
-              );
-            case "long-answer":
-              return (
-                <LongTextAsker
-                  {...question}
-                  initResponse={responses[`${question.id}`] || ""}
-                  readonly={readonly}
-                  showDescriptions={showDescriptions}
-                  onChange={handleChange}
-                  key={i}
-                ></LongTextAsker>
-              );
-            case "multiple-choice":
-              return;
-          }
-        })}
+        This program does not currently have their application set up. If you
+        know the administrator personally, contact them to let them know!
       </div>
     </Card>
   );
