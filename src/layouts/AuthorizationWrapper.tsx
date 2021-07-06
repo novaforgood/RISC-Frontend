@@ -17,7 +17,11 @@ const AuthorizationWrapper: React.FC<AuthorizationWrapperProps> = ({
   if (authorizationLevel === AuthorizationLevel.WaitingForUserData)
     return <Fragment />;
 
-  if (authorizationLevel === AuthorizationLevel.Unverified) {
+  if (
+    authorizationLevel === AuthorizationLevel.Unverified &&
+    canView &&
+    !canView.includes(authorizationLevel)
+  ) {
     router.push("/verify");
     return <Fragment />;
   }

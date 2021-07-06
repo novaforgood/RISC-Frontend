@@ -19,7 +19,7 @@ const BlobCircle = () => {
 };
 
 const LoginPage: Page = () => {
-  const { signInWithEmail, signInWithGoogle, signOut } = useAuth();
+  const { signInWithEmail, signInWithGoogle } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayError, setError] = useState("");
@@ -59,7 +59,6 @@ const LoginPage: Page = () => {
           <button
             onClick={() =>
               signInWithGoogle()
-                .catch((e) => setError(e.message))
                 .then(async (res) => {
                   if (res) {
                     if (res.additionalUserInfo?.isNewUser) {
@@ -135,14 +134,7 @@ const LoginPage: Page = () => {
                   })
                   .then((res) => {
                     if (res) {
-                      if (!res.user?.emailVerified) {
-                        signOut();
-                        setError(
-                          "Please verify your email address before logging in."
-                        );
-                      } else {
-                        redirectAfterLoggingIn();
-                      }
+                      redirectAfterLoggingIn();
                     }
                   });
               }}
