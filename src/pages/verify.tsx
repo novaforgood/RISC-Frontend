@@ -18,7 +18,7 @@ const Verify = () => {
       <div className="w-3/4">
         <Card className="p-10 flex flex-col space-y-6">
           <Text h1 b>
-            Verify Password
+            Verify Account E-mail
           </Text>
           <Text>
             Hi {user?.displayName}, your account needs to be activated! Check
