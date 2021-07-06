@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { Button, Input, Text } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
+import Page from "../types/Page";
 import { useAuth } from "../utils/firebase/auth";
 
 const BlobCircle = () => {
@@ -16,7 +17,7 @@ const BlobCircle = () => {
   );
 };
 
-const LoginPage = () => {
+const LoginPage: Page = () => {
   const { signInWithEmail, signInWithGoogle } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -57,8 +58,17 @@ const LoginPage = () => {
           <button
             onClick={() =>
               signInWithGoogle()
-                .then((_) => {
-                  redirectAfterLoggingIn();
+                .then(async (res) => {
+                  if (res) {
+                    if (res.additionalUserInfo?.isNewUser) {
+                      res.user?.delete();
+                      setError(
+                        "An account with this email has not been created yet."
+                      );
+                    } else {
+                      redirectAfterLoggingIn();
+                    }
+                  }
                 })
                 .catch((e) => setError(e.message))
             }
@@ -67,7 +77,7 @@ const LoginPage = () => {
             <div className="flex-1">
               <img className="h-10 w-10 ml-6" src="/static/GoogleLogo.svg" />
             </div>
-            <Text b className="text-secondary">
+            <Text b className="text-primary">
               Login with Google
             </Text>
             <div className="flex-1"></div>
@@ -81,11 +91,10 @@ const LoginPage = () => {
             <div className="h-0.25 flex-1 bg-inactive"></div>
           </div>
           <div className="h-6" />
-          <form>
+          <form method="post">
             <TitledInput
               title="Email"
               name="Email"
-              // type="email"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
@@ -119,11 +128,13 @@ const LoginPage = () => {
               onClick={(e) => {
                 e.preventDefault();
                 signInWithEmail(email, password)
-                  .then((_) => {
-                    redirectAfterLoggingIn();
-                  })
                   .catch((error) => {
                     setError(error.message);
+                  })
+                  .then((res) => {
+                    if (res) {
+                      redirectAfterLoggingIn();
+                    }
                   });
               }}
             >

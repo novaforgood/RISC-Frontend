@@ -4,6 +4,7 @@ import { SetAvailabilityOverridesCard } from "../../../components/Availabilities
 import { SetWeeklyAvailabilitiesCard } from "../../../components/Availabilities/SetWeeklyAvailabilitiesCard";
 import { useGetMyUserQuery } from "../../../generated/graphql";
 import { AuthorizationLevel, useCurrentProfile } from "../../../hooks";
+import AuthorizationWrapper from "../../../layouts/AuthorizationWrapper";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../layouts/PageContainer";
 import Page from "../../../types/Page";
@@ -86,9 +87,11 @@ const SetAvailabilitiesPage: Page = () => {
 };
 
 SetAvailabilitiesPage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps} canView={[AuthorizationLevel.Mentor]}>
-    <PageContainer>{page}</PageContainer>
-  </ChooseTabLayout>
+  <AuthorizationWrapper canView={[AuthorizationLevel.Mentor]}>
+    <ChooseTabLayout {...pageProps}>
+      <PageContainer>{page}</PageContainer>
+    </ChooseTabLayout>
+  </AuthorizationWrapper>
 );
 
 export default SetAvailabilitiesPage;

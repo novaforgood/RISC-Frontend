@@ -11,8 +11,10 @@ import {
   useUpdateUserMutation,
   useUploadImageAndResizeMutation,
 } from "../../generated/graphql";
+import AuthorizationWrapper from "../../layouts/AuthorizationWrapper";
+import Page from "../../types/Page";
 
-const GeneralProfile = () => {
+const GeneralProfile: Page = () => {
   const { data } = useGetMyUserQuery();
   const [updateUser] = useUpdateUserMutation({
     refetchQueries: [refetchGetMyUserQuery()],
@@ -147,5 +149,9 @@ const GeneralProfile = () => {
     </div>
   );
 };
+
+GeneralProfile.getLayout = (page) => (
+  <AuthorizationWrapper>{page}</AuthorizationWrapper>
+);
 
 export default GeneralProfile;

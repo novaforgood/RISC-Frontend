@@ -18,6 +18,7 @@ import {
   useCurrentProgram,
 } from "../../../hooks";
 import useCurrentProfile from "../../../hooks/useCurrentProfile";
+import AuthorizationWrapper from "../../../layouts/AuthorizationWrapper";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../layouts/PageContainer";
 import { Question } from "../../../types/Form";
@@ -210,12 +211,13 @@ const EditProfilePage: Page = (_) => {
 };
 
 EditProfilePage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout
-    {...pageProps}
+  <AuthorizationWrapper
     canView={[AuthorizationLevel.Mentor, AuthorizationLevel.Mentee]}
   >
-    <PageContainer>{page}</PageContainer>
-  </ChooseTabLayout>
+    <ChooseTabLayout {...pageProps}>
+      <PageContainer>{page}</PageContainer>
+    </ChooseTabLayout>
+  </AuthorizationWrapper>
 );
 
 export default EditProfilePage;

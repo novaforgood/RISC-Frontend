@@ -2,6 +2,7 @@ import React from "react";
 import { Text } from "../../../components/atomic";
 import { MyChatsFilterer } from "../../../components/ReviewChats/MyChatsFilterer";
 import { AuthorizationLevel, useCurrentProfile } from "../../../hooks";
+import AuthorizationWrapper from "../../../layouts/AuthorizationWrapper";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../layouts/PageContainer";
 import Page from "../../../types/Page";
@@ -30,9 +31,11 @@ const MyChatsPage: Page = () => {
 };
 
 MyChatsPage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps} canView={[AuthorizationLevel.Mentee]}>
-    <PageContainer>{page}</PageContainer>
-  </ChooseTabLayout>
+  <AuthorizationWrapper canView={[AuthorizationLevel.Mentee]}>
+    <ChooseTabLayout {...pageProps}>
+      <PageContainer>{page}</PageContainer>
+    </ChooseTabLayout>
+  </AuthorizationWrapper>
 );
 
 export default MyChatsPage;

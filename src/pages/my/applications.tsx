@@ -6,6 +6,7 @@ import {
   ApplicationStatus,
   useGetMyUserApplicationsQuery,
 } from "../../generated/graphql";
+import AuthorizationWrapper from "../../layouts/AuthorizationWrapper";
 import Page from "../../types/Page";
 
 const ApplicationsViewer: Page = () => {
@@ -65,5 +66,9 @@ const ApplicationsViewer: Page = () => {
     </div>
   );
 };
+
+ApplicationsViewer.getLayout = (page) => (
+  <AuthorizationWrapper>{page}</AuthorizationWrapper>
+);
 
 export default ApplicationsViewer;

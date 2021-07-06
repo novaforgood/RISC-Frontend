@@ -11,6 +11,7 @@ import {
   useUpdateProgramMutation,
 } from "../../../../../generated/graphql";
 import { AuthorizationLevel, useCurrentProgram } from "../../../../../hooks";
+import AuthorizationWrapper from "../../../../../layouts/AuthorizationWrapper";
 import ChooseTabLayout from "../../../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../../../layouts/PageContainer";
 import { Question } from "../../../../../types/Form";
@@ -160,9 +161,11 @@ const EditMentorProfilePage: Page = (_) => {
 };
 
 EditMentorProfilePage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps} canView={[AuthorizationLevel.Admin]}>
-    <PageContainer>{page}</PageContainer>
-  </ChooseTabLayout>
+  <AuthorizationWrapper canView={[AuthorizationLevel.Admin]}>
+    <ChooseTabLayout {...pageProps} canView={[AuthorizationLevel.Admin]}>
+      <PageContainer>{page}</PageContainer>
+    </ChooseTabLayout>
+  </AuthorizationWrapper>
 );
 
 export default EditMentorProfilePage;

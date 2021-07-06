@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import { Button, Card, Text } from "../../../components/atomic";
+import ErrorScreen, { ErrorScreenType } from "../../../components/ErrorScreen";
 import {
   defaultContentState,
   EditorProvider,
@@ -17,6 +18,7 @@ import {
   ssrGetProgramBySlug,
 } from "../../../generated/page";
 import { AuthorizationLevel, useAuthorizationLevel } from "../../../hooks";
+import AuthorizationWrapper from "../../../layouts/AuthorizationWrapper";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../layouts/PageContainer";
 import Page from "../../../types/Page";
@@ -144,20 +146,7 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
   }
 
   if (!program) {
-    return (
-      <div className="h-screen w-screen flex flex-col justify-center items-center">
-        <img src="/static/DarkTextLogo.svg" />
-        <div className="h-8"></div>
-        <div>
-          <Text>Page not found. </Text>
-          <Link href="/">
-            <Text u className="cursor-pointer">
-              Go back to home.
-            </Text>
-          </Link>
-        </div>
-      </div>
-    );
+    return <ErrorScreen type={ErrorScreenType.PageNotFound} />;
   }
 
   const getProgramPage = () => {
@@ -177,7 +166,9 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
 export default ProgramPage;
 
 ProgramPage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps}>{page}</ChooseTabLayout>
+  <AuthorizationWrapper>
+    <ChooseTabLayout {...pageProps}>{page}</ChooseTabLayout>
+  </AuthorizationWrapper>
 );
 
 // TODO: Extract this function because it'll probably be reused
