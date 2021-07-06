@@ -2,10 +2,10 @@ import { addMinutes } from "date-fns";
 import dateFormat from "dateformat";
 import React, { Fragment, useMemo, useState } from "react";
 import {
-  ChatRequestStatus,
   CreateChatRequestInput,
   DateInterval,
   GetProfilesQuery,
+  refetchGetChatRequestsQuery,
   useCreateChatRequestMutation,
   useGetAvailOverrideDatesQuery,
   useGetAvailWeeklysQuery,
@@ -98,7 +98,13 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
       variables: { profileId: mentor.profileId },
     });
 
-  const [createChatRequest] = useCreateChatRequestMutation();
+  const [createChatRequest] = useCreateChatRequestMutation({
+    refetchQueries: [
+      refetchGetChatRequestsQuery({
+        profileId: mentor.profileId,
+      }),
+    ],
+  });
   const [loadingCreateChatRequest, setLoadingCreateChatRequest] =
     useState(false);
   const [chatRequestMessage, setChatRequestMessage] = useState("");
@@ -122,7 +128,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
   let weeklyAvailabilities: DateInterval[] = [];
   let availOverrideDates: DateInterval[] = [];
   let availOverrideTimeslots: DateInterval[] = [];
-  let mentorAcceptedChatTimeslots: DateInterval[] = [];
+  let mentorChatTimeslots: DateInterval[] = [];
 
   if (!availWeeklyError && availWeeklyData) {
     weeklyAvailabilities = extractDates(availWeeklyData.getAvailWeeklys);
@@ -139,17 +145,14 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
   }
 
   if (!mentorChatRequestError && mentorChatRequestData) {
-    mentorAcceptedChatTimeslots = mentorChatRequestData.getChatRequests
-      .filter(
-        (chatRequest) =>
-          chatRequest.chatRequestStatus === ChatRequestStatus.Accepted
-      )
-      .map((chatRequest) => {
+    mentorChatTimeslots = mentorChatRequestData.getChatRequests.map(
+      (chatRequest) => {
         return {
           startTime: fromUTC(new Date(chatRequest.chatStartTime)),
           endTime: fromUTC(new Date(chatRequest.chatEndTime)),
         };
-      });
+      }
+    );
   }
 
   /**
@@ -177,7 +180,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
     // Subtract times where mentor has already accepted a chat
     ret = mergeIntervalLists(
       ret,
-      mentorAcceptedChatTimeslots,
+      mentorChatTimeslots,
       (inA, inB) => inA && !inB
     );
     return ret;

@@ -215,8 +215,13 @@ const EditAvailOverrideDayModalContents = ({
         <div>
           <div>
             <Text>
-              Selected date: {format(overrideDate.startTime, "MMMM d, yyyy")}
+              Selected date:{" "}
+              <Text b>{format(overrideDate.startTime, "MMMM d, yyyy")}</Text>
+              <br />
+              What times are you free on this day?
             </Text>
+            <br />
+
             <div className="h-2"></div>
             {timeslots.map((timeslot, timeslotIndex) => {
               const date = startOfDay(overrideDate?.startTime);
@@ -240,6 +245,7 @@ const EditAvailOverrideDayModalContents = ({
                 </div>
               );
             })}
+
             {timeslots.length === 0 && (
               <Fragment>
                 <Text className="text-secondary">
@@ -428,6 +434,12 @@ export const SetAvailabilityOverridesCard = ({
       <div className="w-5/6 mx-auto">
         <Text h3 b>
           Add date overrides
+        </Text>
+      </div>
+      <div className="h-2"></div>
+      <div className="w-5/6 mx-auto">
+        <Text className="text-secondary">
+          Add dates when your availability changes from your weekly hours.
         </Text>
       </div>
       <div className="h-4" />
