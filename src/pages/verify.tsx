@@ -1,11 +1,11 @@
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { Text, Button, Card } from "../components/atomic";
+import { Button, Card, Text } from "../components/atomic";
 import { useAuth } from "../utils/firebase/auth";
 
 const Verify = () => {
   const [loading, setLoading] = useState(false);
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const router = useRouter();
 
   if (user?.emailVerified || !user) {
@@ -21,18 +21,20 @@ const Verify = () => {
             Verify Password
           </Text>
           <Text>
-            Hi {user?.displayName}! Your account needs to be activated! Check
-            your email or resend the verification email to access the Mentor
-            Center. Once you've verified your email,{" "}
+            Hi {user?.displayName}, your account needs to be activated! Check
+            your e-mail for a verification link.{" "}
+          </Text>
+          <Text>
+            Once you've verified your email,{" "}
             <button
               onClick={() => {
                 location.reload();
               }}
               className="text-darkblue hover:underline font-bold"
             >
-              hard refresh
+              refresh
             </button>{" "}
-            this page.
+            this page to access your homepage.
           </Text>
           <div className="space-x-6">
             <Button
@@ -41,6 +43,15 @@ const Verify = () => {
               size="small"
             >
               Back
+            </Button>
+            <Button
+              size="small"
+              variant="inverted"
+              onClick={() => {
+                signOut();
+              }}
+            >
+              Sign out
             </Button>
             <Button
               size="small"

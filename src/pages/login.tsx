@@ -3,8 +3,9 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { Button, Input, Text } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
+import AuthorizationWrapper from "../layouts/AuthorizationWrapper";
+import Page from "../types/Page";
 import { useAuth } from "../utils/firebase/auth";
-import { AccessLevel, useRedirectFromAuthorization } from "../hooks";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24 md:h-64 md:w-64 lg:h-80 lg:w-80";
@@ -17,9 +18,7 @@ const BlobCircle = () => {
   );
 };
 
-const LoginPage = () => {
-  useRedirectFromAuthorization(AccessLevel.VERIFIED);
-
+const LoginPage: Page = () => {
   const { signInWithEmail, signInWithGoogle, signOut } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -158,5 +157,9 @@ const LoginPage = () => {
     </div>
   );
 };
+
+LoginPage.getLayout = (page) => (
+  <AuthorizationWrapper>{page}</AuthorizationWrapper>
+);
 
 export default LoginPage;

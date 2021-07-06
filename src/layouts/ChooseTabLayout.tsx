@@ -1,7 +1,5 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { Fragment } from "react";
-import { Text } from "../components/atomic";
 import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";
 import { parseParam } from "../utils";
 import { AdminTabLayout, MenteeTabLayout, MentorTabLayout } from "./TabLayout";
@@ -35,33 +33,12 @@ function getTabLayout(
 
 interface ChooseTabLayoutProps {
   children: React.ReactNode;
-  canView?: AuthorizationLevel[];
 }
-const ChooseTabLayout = ({ children, canView }: ChooseTabLayoutProps) => {
+const ChooseTabLayout = ({ children }: ChooseTabLayoutProps) => {
   const router = useRouter();
   const slug = parseParam(router.query?.slug);
 
   const authorizationLevel = useAuthorizationLevel();
-
-  if (authorizationLevel === AuthorizationLevel.WaitingForUserData)
-    return <Fragment />;
-
-  if (canView && !canView.includes(authorizationLevel)) {
-    return (
-      <div className="h-screen w-screen flex flex-col justify-center items-center">
-        <img src="/static/DarkTextLogo.svg" />
-        <div className="h-8"></div>
-        <div>
-          <Text>Page not found. </Text>
-          <Link href="/">
-            <Text u className="cursor-pointer">
-              Go back to home.
-            </Text>
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   const TabLayout = getTabLayout(authorizationLevel);
   return <TabLayout basePath={`/program/${slug}`}>{children}</TabLayout>;

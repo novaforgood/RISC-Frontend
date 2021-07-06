@@ -33,7 +33,7 @@ const AccessLevelToAuthorizationLevels = {
   ],
 };
 
-const RedirectFromAuthorization = (accessLevel: AccessLevel) => {
+const useRedirectFromAuthorization = (accessLevel: AccessLevel) => {
   const authorizationLevel = useAuthorizationLevel();
   const router = useRouter();
 
@@ -55,4 +55,4 @@ const RedirectFromAuthorization = (accessLevel: AccessLevel) => {
   }
 };
 
-export default RedirectFromAuthorization;
+export default useRedirectFromAuthorization;

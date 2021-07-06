@@ -4,6 +4,7 @@ import CatchUnsavedChangesModal from "../../../../../components/CatchUnsavedChan
 import FormSchemaEditor from "../../../../../components/FormSchemaEditor";
 import { useUpdateProgramMutation } from "../../../../../generated/graphql";
 import { AuthorizationLevel, useCurrentProgram } from "../../../../../hooks";
+import AuthorizationWrapper from "../../../../../layouts/AuthorizationWrapper";
 import ChooseTabLayout from "../../../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../../../layouts/PageContainer";
 import { Question } from "../../../../../types/Form";
@@ -93,9 +94,11 @@ const EditMentorApplicationPage: Page = (_) => {
 };
 
 EditMentorApplicationPage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps} canView={[AuthorizationLevel.Admin]}>
-    <PageContainer>{page}</PageContainer>
-  </ChooseTabLayout>
+  <AuthorizationWrapper canView={[AuthorizationLevel.Admin]}>
+    <ChooseTabLayout {...pageProps}>
+      <PageContainer>{page}</PageContainer>
+    </ChooseTabLayout>
+  </AuthorizationWrapper>
 );
 
 export default EditMentorApplicationPage;

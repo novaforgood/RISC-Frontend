@@ -11,11 +11,10 @@ import {
   useUpdateUserMutation,
   useUploadImageAndResizeMutation,
 } from "../../generated/graphql";
-import { AccessLevel, useRedirectFromAuthorization } from "../../hooks";
+import AuthorizationWrapper from "../../layouts/AuthorizationWrapper";
+import Page from "../../types/Page";
 
-const GeneralProfile = () => {
-  useRedirectFromAuthorization(AccessLevel.VERIFIED);
-
+const GeneralProfile: Page = () => {
   const { data } = useGetMyUserQuery();
   const [updateUser] = useUpdateUserMutation({
     refetchQueries: [refetchGetMyUserQuery()],
@@ -150,5 +149,9 @@ const GeneralProfile = () => {
     </div>
   );
 };
+
+GeneralProfile.getLayout = (page) => (
+  <AuthorizationWrapper>{page}</AuthorizationWrapper>
+);
 
 export default GeneralProfile;

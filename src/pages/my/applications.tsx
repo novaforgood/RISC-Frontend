@@ -6,11 +6,10 @@ import {
   ApplicationStatus,
   useGetMyUserApplicationsQuery,
 } from "../../generated/graphql";
-import { AccessLevel, useRedirectFromAuthorization } from "../../hooks";
+import AuthorizationWrapper from "../../layouts/AuthorizationWrapper";
 import Page from "../../types/Page";
 
 const ApplicationsViewer: Page = () => {
-  useRedirectFromAuthorization(AccessLevel.VERIFIED);
   const applications =
     useGetMyUserApplicationsQuery().data?.getMyUser.applications;
 
@@ -67,5 +66,9 @@ const ApplicationsViewer: Page = () => {
     </div>
   );
 };
+
+ApplicationsViewer.getLayout = (page) => (
+  <AuthorizationWrapper>{page}</AuthorizationWrapper>
+);
 
 export default ApplicationsViewer;

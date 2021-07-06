@@ -1,11 +1,12 @@
-import { useRouter } from "next/router";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { Button, Text, Modal } from "../components/atomic";
+import { Button, Modal, Text } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
 import { CreateUserInput, useCreateUserMutation } from "../generated/graphql";
+import AuthorizationWrapper from "../layouts/AuthorizationWrapper";
+import Page from "../types/Page";
 import { useAuth } from "../utils/firebase/auth";
-import { AccessLevel, useRedirectFromAuthorization } from "../hooks";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24 md:h-64 md:w-64 lg:h-80 lg:w-80";
@@ -22,9 +23,7 @@ const getTimezone = (): string => {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
 };
 
-const SignUpPage = () => {
-  useRedirectFromAuthorization(AccessLevel.VERIFIED);
-
+const SignUpPage: Page = () => {
   const { signUpWithEmail, signInWithGoogle, signOut } = useAuth();
   const [createUser] = useCreateUserMutation();
   const [modalOpen, setModalOpen] = useState(false);
@@ -245,5 +244,9 @@ const SignUpPage = () => {
     </div>
   );
 };
+
+SignUpPage.getLayout = (page) => (
+  <AuthorizationWrapper>{page}</AuthorizationWrapper>
+);
 
 export default SignUpPage;

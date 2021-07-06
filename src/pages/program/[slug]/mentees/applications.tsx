@@ -3,6 +3,7 @@ import { Text } from "../../../../components/atomic";
 import { ApplicationFilterer } from "../../../../components/ReviewApplications/ApplicationFilterer";
 import { ApplicationType } from "../../../../generated/graphql";
 import { AuthorizationLevel, useCurrentProgram } from "../../../../hooks";
+import AuthorizationWrapper from "../../../../layouts/AuthorizationWrapper";
 import ChooseTabLayout from "../../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../../layouts/PageContainer";
 import Page from "../../../../types/Page";
@@ -29,9 +30,11 @@ const MentorApplicationsPage: Page = () => {
 };
 
 MentorApplicationsPage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps} canView={[AuthorizationLevel.Admin]}>
-    <PageContainer>{page}</PageContainer>
-  </ChooseTabLayout>
+  <AuthorizationWrapper canView={[AuthorizationLevel.Admin]}>
+    <ChooseTabLayout {...pageProps}>
+      <PageContainer>{page}</PageContainer>
+    </ChooseTabLayout>
+  </AuthorizationWrapper>
 );
 
 export default MentorApplicationsPage;

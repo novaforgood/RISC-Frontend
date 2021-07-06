@@ -17,6 +17,7 @@ import {
   ssrGetProgramBySlug,
 } from "../../../generated/page";
 import { AuthorizationLevel, useAuthorizationLevel } from "../../../hooks";
+import AuthorizationWrapper from "../../../layouts/AuthorizationWrapper";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../layouts/PageContainer";
 import Page from "../../../types/Page";
@@ -177,7 +178,9 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
 export default ProgramPage;
 
 ProgramPage.getLayout = (page, pageProps) => (
-  <ChooseTabLayout {...pageProps}>{page}</ChooseTabLayout>
+  <AuthorizationWrapper>
+    <ChooseTabLayout {...pageProps}>{page}</ChooseTabLayout>
+  </AuthorizationWrapper>
 );
 
 // TODO: Extract this function because it'll probably be reused
