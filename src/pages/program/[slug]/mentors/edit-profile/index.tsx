@@ -99,7 +99,7 @@ const EditMentorProfilePage: Page = (_) => {
         <div className="flex">
           <Button
             size="small"
-            disabled={!modified}
+            disabled={!modified || profileSchema.length == 0}
             onClick={() => {
               saveProfile();
             }}

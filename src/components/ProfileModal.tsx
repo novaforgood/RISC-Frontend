@@ -120,22 +120,34 @@ const ProfileModal = ({
               <div>
                 <Text b>Bio</Text>
               </div>
-              <div className="h-1"></div>
+              <div className={profile.bio ? "h-1" : "h-2"}></div>
               <div>
-                <Text>{profile.bio}</Text>
+                {profile.bio ? (
+                  <Text>{profile.bio}</Text>
+                ) : (
+                  <Text secondary i>
+                    None
+                  </Text>
+                )}
               </div>
             </Card>
 
             <div className="h-4"></div>
 
             <Card className="p-6">
-              <Text b>Types of mentorship offered</Text>
+              <Text b>Tags</Text>
               <div className="h-2"></div>
-              <div className="flex flex-wrap gap-2">
-                {profile.profileTags.map((tag) => {
-                  return <Tag>{tag.name}</Tag>;
-                })}
-              </div>
+              {profile.profileTags.length === 0 ? (
+                <Text secondary i>
+                  None
+                </Text>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  {profile.profileTags.map((tag) => {
+                    return <Tag>{tag.name}</Tag>;
+                  })}
+                </div>
+              )}
             </Card>
             <div className="h-4"></div>
 

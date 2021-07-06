@@ -6,6 +6,7 @@ import TitledInput from "../components/TitledInput";
 import { CreateUserInput, useCreateUserMutation } from "../generated/graphql";
 import Page from "../types/Page";
 import { useAuth } from "../utils/firebase/auth";
+import { redirectAfterLoggingIn } from "./login";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24 md:h-64 md:w-64 lg:h-80 lg:w-80";
@@ -34,13 +35,7 @@ const SignUpPage: Page = () => {
   // const [tocChecked, setTocChecked] = useState(false);
   const router = useRouter();
 
-  const redirectAfterLoggingIn = () => {
-    if (router.query.to && typeof router.query.to === "string") {
-      router.push(router.query.to);
-    } else {
-      router.push("/");
-    }
-  };
+
 
   return (
     <div className="flex w-screen min-h-screen">
@@ -72,7 +67,13 @@ const SignUpPage: Page = () => {
           <Text b2>
             Already have an account?{" "}
             <Text u className="cursor-pointer">
-              <Link href="/login">Login</Link>
+              <Link
+                href={
+                  "/login" + (router.query.to ? "?to=" + router.query.to : "")
+                }
+              >
+                Login
+              </Link>
             </Text>
           </Text>
           <div className="h-6" />
@@ -94,8 +95,11 @@ const SignUpPage: Page = () => {
                       profilePictureUrl: highResPhotoURL || "",
                       timezone: getTimezone(),
                     };
-                    createUser({ variables: { data: createUserInput } });
-                    redirectAfterLoggingIn();
+                    createUser({ variables: { data: createUserInput } }).then(
+                      () => {
+                        redirectAfterLoggingIn(router);
+                      }
+                    );
                   } else {
                     setDisplayError(
                       "An account with this email already exists. Please log in."
