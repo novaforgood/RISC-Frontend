@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import _ from "lodash";
 import { Fragment, useState } from "react";
 import type { Question, TextQuestion } from "../types/Form";
@@ -94,6 +95,10 @@ const LongTextAsker = ({
 }: TextAskerProps) => {
   const [answer, setAnswer] = useState(initResponse); // Replace with responses
 
+  const styles = classNames({
+    "w-full": true,
+    "bg-white resize-none": readonly,
+  });
   return (
     <div>
       <Text b>{title}</Text>
@@ -105,10 +110,11 @@ const LongTextAsker = ({
         </Fragment>
       )}
       <TextArea
-        className="w-full"
+        className={styles}
         placeholder={type === "short-answer" ? "Short text" : "Long text"}
         readOnly={readonly}
         disabled={readonly}
+        maxRows={readonly ? 2 : undefined}
         value={answer}
         onChange={(e) => {
           const target = e.target as HTMLTextAreaElement;

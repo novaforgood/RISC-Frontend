@@ -1,7 +1,11 @@
 import classNames from "classnames";
 import React, { HTMLProps } from "react";
-import TextareaAutosize from "react-textarea-autosize";
-type TextAreaProps = Omit<HTMLProps<HTMLTextAreaElement>, "style" | "ref">;
+import TextareaAutosize, {
+  TextareaAutosizeProps,
+} from "react-textarea-autosize";
+
+type TextAreaProps = TextareaAutosizeProps &
+  Omit<HTMLProps<HTMLTextAreaElement>, "style" | "ref">;
 
 //TODO: Implement color depending on theme
 const TextArea = ({ className = "", ...props }: TextAreaProps) => {
