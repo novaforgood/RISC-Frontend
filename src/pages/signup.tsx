@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
 import React, { useState } from "react";
-import { Button, Checkbox, Text, Modal } from "../components/atomic";
+import { Button, Text, Modal } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
 import { CreateUserInput, useCreateUserMutation } from "../generated/graphql";
 import { useAuth } from "../utils/firebase/auth";
