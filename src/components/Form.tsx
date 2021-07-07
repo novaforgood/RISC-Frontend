@@ -1,6 +1,5 @@
 import classNames from "classnames";
-import _ from "lodash";
-import { Fragment, useState } from "react";
+import { Fragment, useCallback } from "react";
 import type { Question, TextQuestion } from "../types/Form";
 import { Card, Input, Text, TextArea } from "./atomic";
 
@@ -58,8 +57,6 @@ const ShortTextAsker = ({
   showDescriptions,
   onChange,
 }: TextAskerProps) => {
-  const [answer, setAnswer] = useState(initResponse); // Replace with responses
-
   return (
     <div>
       <Text b>{title}</Text>
@@ -75,9 +72,8 @@ const ShortTextAsker = ({
         placeholder={type === "short-answer" ? "Short text" : "Long text"}
         readOnly={readonly}
         disabled={readonly}
-        value={answer}
+        value={initResponse}
         onChange={(e) => {
-          setAnswer(e.target.value);
           onChange(id, e.target.value);
         }}
       ></Input>
@@ -98,8 +94,6 @@ const LongTextAsker = ({
   showDescriptions,
   onChange,
 }: TextAskerProps) => {
-  const [answer, setAnswer] = useState(initResponse); // Replace with responses
-
   const styles = classNames({
     "w-full": true,
     "bg-white resize-none": readonly,
@@ -120,10 +114,9 @@ const LongTextAsker = ({
         readOnly={readonly}
         disabled={readonly}
         maxRows={readonly ? 2 : undefined}
-        value={answer}
+        value={initResponse}
         onChange={(e: any) => {
           const target = e.target as HTMLTextAreaElement;
-          setAnswer(target.value);
           onChange(id, target.value);
         }}
       ></TextArea>
@@ -143,22 +136,27 @@ const Form = ({
   questions,
   responses = {},
   onChange = () => {},
-  onAutosave = () => {},
-  autosaveInterval = 3000,
+  // onAutosave = () => {},
+  // autosaveInterval = 3000,
   readonly = false,
   showDescriptions = true,
   className,
 }: FormProps) => {
-  const debouncedAutosave = _.debounce(() => {
-    onAutosave(responses);
-  }, autosaveInterval);
+  // const debouncedAutosave = _.debounce(() => {
+  //   onAutosave(responses);
+  // }, autosaveInterval);
 
   //TODO
-  const handleChange = (id: string, answer: string): void => {
-    responses[`${id}`] = answer;
-    onChange(responses);
-    debouncedAutosave();
-  };
+  const handleChange = useCallback(
+    (id: string, answer: string): void => {
+      onChange({
+        ...responses,
+        [id]: answer,
+      });
+      // debouncedAutosave();
+    },
+    [responses, onChange]
+  );
 
   return questions.length > 0 ? (
     readonly ? (

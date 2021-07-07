@@ -43,10 +43,12 @@ function getResponsesFromJson(json: Maybe<string> | undefined): ResponseJson {
 
 const EditProfilePage: Page = (_) => {
   const { currentProgram } = useCurrentProgram();
-  const { currentProfile, refetchCurrentProfile } = useCurrentProfile();
+  const { currentProfile } = useCurrentProfile();
   const authorizationLevel = useAuthorizationLevel();
   const { data: myUserData } = useGetMyUserQuery();
-  const [updateProfile] = useUpdateProfileMutation();
+  const [updateProfile] = useUpdateProfileMutation({
+    refetchQueries: ["getMyUser"],
+  });
 
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
   const [profileJson, setProfileJson] = useState<ResponseJson>({});
@@ -54,12 +56,12 @@ const EditProfilePage: Page = (_) => {
 
   const [bio, setBio] = useState("");
 
-  const [updateProfileTagsOfProfile] = useUpdateProfileTagsOfProfileMutation();
+  const [updateProfileTagsOfProfile] = useUpdateProfileTagsOfProfileMutation({
+    refetchQueries: ["getMyUser"],
+  });
   const { data: programTagsData } = useGetProfileTagsByProgramQuery({
     variables: { programId: currentProgram?.programId! },
   });
-
-  console.log(programTagsData);
 
   useEffect(() => {
     if (!currentProfile) return;
@@ -131,7 +133,6 @@ const EditProfilePage: Page = (_) => {
                   },
                 }),
               ]).then(() => {
-                if (refetchCurrentProfile) refetchCurrentProfile();
                 setModified(false);
               });
             }}

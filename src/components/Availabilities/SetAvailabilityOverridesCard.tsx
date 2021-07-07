@@ -13,6 +13,7 @@ import {
   useCreateAvailOverrideDateMutation,
   useDeleteAvailOverrideDateMutation,
   useGetAvailOverrideDatesQuery,
+  useGetAvailWeeklysQuery,
   useUpdateAvailOverrideDateMutation,
 } from "../../generated/graphql";
 import useTimezoneConverters from "../../hooks/useTimezoneConverters";
@@ -35,11 +36,13 @@ type AvailOverrideDate = {
 type EditAvailOverrideDayModalContentsProps = {
   initOverrideDate?: any | null;
   profileId: string;
+  availWeeklys: DateInterval[];
   onClose: () => void;
 };
 const EditAvailOverrideDayModalContents = ({
   initOverrideDate = null,
   profileId,
+  availWeeklys,
   onClose = () => {},
 }: EditAvailOverrideDayModalContentsProps) => {
   const { toUTC } = useTimezoneConverters();
@@ -188,7 +191,9 @@ const EditAvailOverrideDayModalContents = ({
       <Calendar
         selectAnyDate
         onSelect={(newSelectedDate) => {
-          if (newSelectedDate)
+          if (newSelectedDate) {
+            const weekday = newSelectedDate.getDay();
+
             setOverrideDay((prev) => {
               const newDay = {
                 startTime: newSelectedDate,
@@ -207,6 +212,13 @@ const EditAvailOverrideDayModalContents = ({
               }
               return prev;
             });
+
+            setTimeslots(
+              availWeeklys.filter(
+                (avail) => avail.startTime.getDay() === weekday
+              )
+            );
+          }
         }}
         selectedDate={overrideDate ? new Date(overrideDate.startTime) : null}
       />
@@ -216,9 +228,14 @@ const EditAvailOverrideDayModalContents = ({
           <div>
             <Text>
               Selected date:{" "}
-              <Text b>{format(overrideDate.startTime, "MMMM d, yyyy")}</Text>
+              <Text b>
+                {format(overrideDate.startTime, "EEEE, MMMM d, yyyy")}
+              </Text>
               <br />
-              What times are you free on this day?
+              <br />
+              <Text b i>
+                What times are you free on this day?
+              </Text>
             </Text>
             <br />
 
@@ -248,9 +265,13 @@ const EditAvailOverrideDayModalContents = ({
 
             {timeslots.length === 0 && (
               <Fragment>
-                <Text className="text-secondary">
-                  Leave empty to mark yourself unavailable.
-                </Text>
+                <div className="p-2 bg-tertiary rounded-sm">
+                  <Text i className="text-secondary">
+                    Leave empty to mark yourself unavailable.
+                  </Text>
+                </div>
+
+                <div className="h-2"></div>
               </Fragment>
             )}
 
@@ -311,9 +332,11 @@ const EditAvailOverrideDayModalContents = ({
 
 type AvailOverrideDateSectionProps = {
   overrideDate: AvailOverrideDate;
+  availWeeklys: DateInterval[];
 };
 const AvailOverrideDateSection = ({
   overrideDate,
+  availWeeklys,
 }: AvailOverrideDateSectionProps) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteAvailOverrideDateMutation] = useDeleteAvailOverrideDateMutation({
@@ -374,6 +397,7 @@ const AvailOverrideDateSection = ({
         <EditAvailOverrideDayModalContents
           initOverrideDate={overrideDate}
           profileId={overrideDate.profileId}
+          availWeeklys={availWeeklys}
           onClose={() => {
             setModalOpen(false);
           }}
@@ -398,12 +422,23 @@ export const SetAvailabilityOverridesCard = ({
     variables: { profileId },
   });
 
+  const {
+    data: availWeeklysData,
+    loading: availWeeklysLoading,
+    error: availWeeklysError,
+  } = useGetAvailWeeklysQuery({
+    variables: {
+      profileId,
+    },
+  });
+
   const [editAvailOverrideDayModalOpen, setEditAvailOverrideDayModalOpen] =
     useState(false);
   const { fromUTC } = useTimezoneConverters();
   if (!fromUTC) return <Fragment />;
 
   let availOverrideDates: AvailOverrideDate[] = [];
+  let availWeeklys: DateInterval[] = [];
   if (
     !availOverrideDatesLoading &&
     !availOverrideDatesError &&
@@ -425,6 +460,16 @@ export const SetAvailabilityOverridesCard = ({
       }
     );
   }
+
+  if (!availWeeklysLoading && !availWeeklysError && availWeeklysData) {
+    availWeeklys = availWeeklysData.getAvailWeeklys.map((avail) => {
+      return {
+        startTime: fromUTC(new Date(avail.startTime)),
+        endTime: fromUTC(new Date(avail.endTime)),
+      };
+    });
+  }
+
   console.log(
     Intl.DateTimeFormat.supportedLocalesOf(["ban", "id-u-co-pinyin", "de-ID"])
   );
@@ -448,7 +493,7 @@ export const SetAvailabilityOverridesCard = ({
           return (
             <React.Fragment key={idx}>
               <div className="w-full h-px bg-inactive" />
-              <AvailOverrideDateSection overrideDate={overrideDate} />
+              <AvailOverrideDateSection overrideDate={overrideDate} availWeeklys={availWeeklys} />
             </React.Fragment>
           );
         })}
@@ -474,6 +519,7 @@ export const SetAvailabilityOverridesCard = ({
       >
         <EditAvailOverrideDayModalContents
           profileId={profileId}
+          availWeeklys={availWeeklys}
           onClose={() => {
             setEditAvailOverrideDayModalOpen(false);
           }}

@@ -220,7 +220,7 @@ const CreateProgramPage: Page = () => {
             <Input
               title="Identifier"
               name="Program Identifier"
-              placeholder="nova-mentorship"
+              placeholder="mentorship-identifier"
               value={programIdentifier}
               className="flex-1"
               onChange={(e) => {
@@ -241,7 +241,7 @@ const CreateProgramPage: Page = () => {
           </Button>
           <div className="w-4"></div>
           <Button
-            disabled={programIdentifier.length == 0}
+            disabled={loading || programIdentifier.length == 0}
             onClick={() => {
               if (!validateProgramIdentifier(programIdentifier))
                 setError(
