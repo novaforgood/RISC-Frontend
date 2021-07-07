@@ -4,6 +4,9 @@ import {
   format,
   getDay,
   isEqual,
+  setDate,
+  setMonth,
+  setYear,
   startOfDay,
 } from "date-fns";
 import React, { Fragment, useState } from "react";
@@ -214,9 +217,23 @@ const EditAvailOverrideDayModalContents = ({
             });
 
             setTimeslots(
-              availWeeklys.filter(
-                (avail) => avail.startTime.getDay() === weekday
-              )
+              availWeeklys
+                .filter((avail) => avail.startTime.getDay() === weekday)
+                .map((slot) => {
+                  const year = newSelectedDate.getFullYear();
+                  const month = newSelectedDate.getMonth();
+                  const date = newSelectedDate.getDate();
+                  return {
+                    startTime: setDate(
+                      setMonth(setYear(slot.startTime, year), month),
+                      date
+                    ),
+                    endTime: setDate(
+                      setMonth(setYear(slot.endTime, year), month),
+                      date
+                    ),
+                  };
+                })
             );
           }
         }}
@@ -493,7 +510,10 @@ export const SetAvailabilityOverridesCard = ({
           return (
             <React.Fragment key={idx}>
               <div className="w-full h-px bg-inactive" />
-              <AvailOverrideDateSection overrideDate={overrideDate} availWeeklys={availWeeklys} />
+              <AvailOverrideDateSection
+                overrideDate={overrideDate}
+                availWeeklys={availWeeklys}
+              />
             </React.Fragment>
           );
         })}

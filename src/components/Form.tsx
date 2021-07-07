@@ -113,7 +113,7 @@ const LongTextAsker = ({
         placeholder={type === "short-answer" ? "Short text" : "Long text"}
         readOnly={readonly}
         disabled={readonly}
-        maxRows={readonly ? 2 : undefined}
+        maxRows={undefined}
         value={initResponse}
         onChange={(e: any) => {
           const target = e.target as HTMLTextAreaElement;
