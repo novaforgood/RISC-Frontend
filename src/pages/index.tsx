@@ -122,7 +122,7 @@ const ProgramCard = ({ iconUrl, name, route }: ProgramCardProps) => {
       <Link href={`/program/${route}`}>
         <a>
           <Text u className="text-secondary">
-            homepage
+            Homepage
           </Text>
         </a>
       </Link>
@@ -217,7 +217,7 @@ const ApplicationRow = ({ application }: ApplicationRowProps) => {
 
 const NoMentorshipHome: Page = () => {
   const { data } = useGetMyUserApplicationsQuery();
-  const user = useGetMyUserQuery();
+  const { data: myUserData } = useGetMyUserQuery();
   const router = useRouter();
 
   const cachedProgramSlug = LocalStorage.get("cachedProgramSlug");
@@ -228,21 +228,24 @@ const NoMentorshipHome: Page = () => {
 
   return (
     <NoProgramTabLayout basePath={router.asPath}>
-      <div className="p-10 space-y-8 bg-white">
+      <div className="p-12 bg-white">
         <Text h2 b>
           Welcome to the Mentor Center!
         </Text>
+        <div className="h-2"></div>
         <div className="h-0.25 bg-secondary w-full" />
-        <div className="h-2" />
+        <div className="h-12"></div>
 
         {data && (
-          <div className="space-y-4">
+          <div>
             <Text h3 b>
               Your Applications
             </Text>
-            <Card className="p-4">
+            <div className="h-4"></div>
+
+            <Card className="p-4 flex flex-col gap-4">
               {data.getMyUser.applications.length === 0 && (
-                <Text h3 b>
+                <Text b1 b>
                   No Applications
                 </Text>
               )}
@@ -252,14 +255,21 @@ const NoMentorshipHome: Page = () => {
             </Card>
           </div>
         )}
-        {user.data && user.data.getMyUser.profiles.length > 0 ? (
-          <div className="">
+        <div className="h-8"></div>
+
+        {myUserData && (
+          <div>
             <Text h3 b>
-              Your Programs
+              Your Mentorship Programs
             </Text>
-            <div className="h-2"></div>
+            <div className="h-4"></div>
             <div className="flex gap-4 flex-wrap">
-              {user.data.getMyUser.profiles.map((profile, i) => {
+              {myUserData.getMyUser.profiles.length === 0 && (
+                <Text b1 b>
+                  No Applications
+                </Text>
+              )}
+              {myUserData.getMyUser.profiles.map((profile, i) => {
                 const { program } = profile;
 
                 return (
@@ -274,15 +284,8 @@ const NoMentorshipHome: Page = () => {
               })}
             </div>
           </div>
-        ) : (
-          <>
-            <div className="h-2" />
-            <Text h3 b>
-              No Programs
-            </Text>
-          </>
         )}
-        <div className="h-2"></div>
+        <div className="h-8"></div>
         <div className="w-full flex">
           <Button
             size="small"
@@ -291,7 +294,7 @@ const NoMentorshipHome: Page = () => {
               router.push("/create");
             }}
           >
-            <Text>Create a Mentorship</Text>
+            <Text>Create a Mentorship Program</Text>
           </Button>
         </div>
       </div>
