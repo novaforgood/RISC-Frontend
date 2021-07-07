@@ -5,6 +5,7 @@ import { Fragment } from "react";
 import { Text } from "../../components/atomic";
 import { useGetMyUserQuery } from "../../generated/graphql";
 import { useCurrentProgram } from "../../hooks";
+import LocalStorage from "../../utils/localstorage";
 
 const ProgramDropdown = () => {
   const { currentProgram } = useCurrentProgram();
@@ -68,6 +69,19 @@ const ProgramDropdown = () => {
                 </div>
               </Link>
             </Menu.Item> */}
+            <Menu.Item>
+              <a
+                href="/"
+                className="w-full"
+                onClick={() => {
+                  LocalStorage.delete("cachedProgramSlug");
+                }}
+              >
+                <div className="p-2 w-full cursor-pointer hover:bg-tertiary">
+                  <Text>Go to my homepage</Text>
+                </div>
+              </a>
+            </Menu.Item>
             <Menu.Item>
               <Link href="/create">
                 <div className="p-2 w-full cursor-pointer hover:bg-tertiary">

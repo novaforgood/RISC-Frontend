@@ -1,6 +1,16 @@
+import dateFormat from "dateformat";
+import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { Fragment } from "react";
-import { Button, Text } from "../components/atomic";
+import React, { Fragment, useState } from "react";
+import { Button, Card, Modal, Text } from "../components/atomic";
+import Form from "../components/Form";
+import {
+  ApplicationStatus,
+  ApplicationType,
+  GetMyUserApplicationsQuery,
+  useGetMyUserApplicationsQuery,
+  useGetMyUserQuery,
+} from "../generated/graphql";
 import { PageGetProgramBySlugComp } from "../generated/page";
 import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";
 import NoProgramTabLayout from "../layouts/TabLayout/NoProgramTabLayout";
@@ -91,7 +101,123 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
   }
 };
 
+type ProgramCardProps = {
+  iconUrl: string;
+  name: string;
+  route: string;
+};
+
+const ProgramCard = ({ iconUrl, name, route }: ProgramCardProps) => {
+  return (
+    <Card className=" duration-75 bg-white p-4 flex gap-4 items-center justify-between">
+      <div className="flex gap-4 items-center">
+        <img
+          src={iconUrl}
+          alt={`Program ${name} icon`}
+          className="h-10 w-10 col-span-1"
+        />
+        <Text>{name}</Text>
+      </div>
+
+      <Link href={`/program/${route}`}>
+        <a>
+          <Text u className="text-secondary">
+            Homepage
+          </Text>
+        </a>
+      </Link>
+    </Card>
+  );
+};
+
+interface ApplicationRowProps {
+  application: GetMyUserApplicationsQuery["getMyUser"]["applications"][number];
+}
+const ApplicationRow = ({ application }: ApplicationRowProps) => {
+  const [appModalOpen, setAppModalOpen] = useState(false);
+  const status = () => {
+    switch (application.applicationStatus) {
+      case ApplicationStatus.Accepted:
+        return "Accepted";
+      case ApplicationStatus.Rejected:
+        return "Rejected";
+      case ApplicationStatus.PendingReview:
+        return "Submitted";
+    }
+  };
+
+  const { program } = application;
+
+  return (
+    <div className="flex items-center">
+      {/* TODO: Need to fetch profile */}
+      <div className="flex items-center gap-4">
+        <img
+          src={program.iconUrl}
+          alt={`Program ${program.name} icon`}
+          className="h-10 w-10 col-span-1"
+        />
+        <div className="flex-1 col-span-1">{program.name}</div>
+      </div>
+
+      <div className="flex-1 text-center col-span-1">
+        {dateFormat(application.createdAt, "mmm d, yyyy | h:MMtt")}
+      </div>
+
+      <div className="flex items-center gap-8">
+        <div className="">{status()}</div>
+        <button
+          onClick={() => {
+            setAppModalOpen(true);
+          }}
+        >
+          <Text u className="text-secondary">
+            View Application
+          </Text>
+        </button>
+      </div>
+
+      <Modal
+        isOpen={appModalOpen}
+        onClose={() => {
+          setAppModalOpen(false);
+        }}
+      >
+        <div className="w-120">
+          <Text h3>Application to {program.name}</Text>
+          <div className="h-4"></div>
+          <Form
+            questions={
+              JSON.parse(
+                application.applicationType === ApplicationType.Mentee
+                  ? program.menteeApplicationSchemaJson
+                  : program.mentorApplicationSchemaJson
+              ) || []
+            }
+            responses={JSON.parse(application.applicationJson) || {}}
+            readonly
+            showDescriptions={false}
+          />
+          <div className="h-8"></div>
+          <div className="flex justify-end">
+            <Button
+              size="small"
+              onClick={() => {
+                setAppModalOpen(false);
+              }}
+            >
+              Close
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    </div>
+  );
+};
+
 const NoMentorshipHome: Page = () => {
+  const { data } = useGetMyUserApplicationsQuery();
+  const { data: myUserData } = useGetMyUserQuery();
   const router = useRouter();
 
   const cachedProgramSlug = LocalStorage.get("cachedProgramSlug");
@@ -102,32 +228,75 @@ const NoMentorshipHome: Page = () => {
 
   return (
     <NoProgramTabLayout basePath={router.asPath}>
-      <div className="h-screen flex flex-col justify-center items-center">
-        <div>
-          <Text h2>Welcome to Mentor Center</Text>
-        </div>
-        <div className="h-4"></div>
-
-        <Button
-          size="small"
-          className="w-72"
-          onClick={() => {
-            router.push("/my/applications");
-          }}
-        >
-          <Text>Check Application Statuses</Text>
-        </Button>
+      <div className="p-12 bg-white">
+        <Text h2 b>
+          Welcome to the Mentor Center!
+        </Text>
         <div className="h-2"></div>
-        <Button
-          size="small"
-          variant="inverted"
-          className="w-72"
-          onClick={() => {
-            router.push("/create");
-          }}
-        >
-          <Text>Create a Mentorship</Text>
-        </Button>
+        <div className="h-0.25 bg-secondary w-full" />
+        <div className="h-12"></div>
+
+        {data && (
+          <div>
+            <Text h3 b>
+              Your Applications
+            </Text>
+            <div className="h-4"></div>
+
+            <Card className="p-4 flex flex-col gap-4">
+              {data.getMyUser.applications.length === 0 && (
+                <Text b1 b>
+                  No Applications
+                </Text>
+              )}
+              {data.getMyUser.applications.map((app, i) => {
+                return <ApplicationRow application={app} key={i} />;
+              })}
+            </Card>
+          </div>
+        )}
+        <div className="h-8"></div>
+
+        {myUserData && (
+          <div>
+            <Text h3 b>
+              Your Mentorship Programs
+            </Text>
+            <div className="h-4"></div>
+            <div className="flex gap-4 flex-wrap">
+              {myUserData.getMyUser.profiles.length === 0 && (
+                <Text b1 b>
+                  No Applications
+                </Text>
+              )}
+              {myUserData.getMyUser.profiles.map((profile, i) => {
+                const { program } = profile;
+
+                return (
+                  <div className="w-80" key={i}>
+                    <ProgramCard
+                      iconUrl={program.iconUrl}
+                      name={program.name}
+                      route={program.slug}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+        <div className="h-8"></div>
+        <div className="w-full flex">
+          <Button
+            size="small"
+            className="w-72 mx-auto"
+            onClick={() => {
+              router.push("/create");
+            }}
+          >
+            <Text>Create a Mentorship Program</Text>
+          </Button>
+        </div>
       </div>
     </NoProgramTabLayout>
   );
