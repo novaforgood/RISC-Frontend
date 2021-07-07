@@ -5,8 +5,11 @@ query getMyUserApplications {
         name
         slug
         iconUrl
+        mentorApplicationSchemaJson
+        menteeApplicationSchemaJson
       }
       applicationStatus
+      applicationJson
       applicationType
       createdAt
     }

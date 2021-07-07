@@ -1,8 +1,13 @@
+import dateFormat from "dateformat";
+import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { Fragment } from "react";
-import { Button, Card, Text } from "../components/atomic";
+import React, { Fragment, useState } from "react";
+import { Button, Card, Modal, Text } from "../components/atomic";
+import Form from "../components/Form";
 import {
   ApplicationStatus,
+  ApplicationType,
+  GetMyUserApplicationsQuery,
   useGetMyUserApplicationsQuery,
   useGetMyUserQuery,
 } from "../generated/graphql";
@@ -12,9 +17,6 @@ import NoProgramTabLayout from "../layouts/TabLayout/NoProgramTabLayout";
 import Page from "../types/Page";
 import { useAuth } from "../utils/firebase/auth";
 import LocalStorage from "../utils/localstorage";
-import dateFormat from "dateformat";
-import { CircledCheckSolid } from "../components/icons";
-import Link from "next/link";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24";
@@ -102,20 +104,114 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
 type ProgramCardProps = {
   iconUrl: string;
   name: string;
-  description: string;
+  route: string;
 };
 
-const ProgramCard = ({ iconUrl, name, description }: ProgramCardProps) => {
+const ProgramCard = ({ iconUrl, name, route }: ProgramCardProps) => {
   return (
-    <Card className="hover:bg-tertiary hover:cursor-pointer bg-white m-auto p-4 grid grid-cols-8 gap-4 items-center">
-      <img src={iconUrl} alt={`Program ${name} icon`} className="col-span-1" />
-      <Text b className="col-span-2">
-        {name}
-      </Text>
-      <div className="col-span-4 overflow-ellipsis">
-        <Text>{description}</Text>
+    <Card className=" duration-75 bg-white p-4 flex gap-4 items-center justify-between">
+      <div className="flex gap-4 items-center">
+        <img
+          src={iconUrl}
+          alt={`Program ${name} icon`}
+          className="h-10 w-10 col-span-1"
+        />
+        <Text>{name}</Text>
       </div>
+
+      <Link href={`/program/${route}`}>
+        <a>
+          <Text u className="text-secondary">
+            homepage
+          </Text>
+        </a>
+      </Link>
     </Card>
+  );
+};
+
+interface ApplicationRowProps {
+  application: GetMyUserApplicationsQuery["getMyUser"]["applications"][number];
+}
+const ApplicationRow = ({ application }: ApplicationRowProps) => {
+  const [appModalOpen, setAppModalOpen] = useState(false);
+  const status = () => {
+    switch (application.applicationStatus) {
+      case ApplicationStatus.Accepted:
+        return "Accepted";
+      case ApplicationStatus.Rejected:
+        return "Rejected";
+      case ApplicationStatus.PendingReview:
+        return "Submitted";
+    }
+  };
+
+  const { program } = application;
+
+  return (
+    <div className="flex items-center">
+      {/* TODO: Need to fetch profile */}
+      <div className="flex items-center gap-4">
+        <img
+          src={program.iconUrl}
+          alt={`Program ${program.name} icon`}
+          className="h-10 w-10 col-span-1"
+        />
+        <div className="flex-1 col-span-1">{program.name}</div>
+      </div>
+
+      <div className="flex-1 text-center col-span-1">
+        {dateFormat(application.createdAt, "mmm d, yyyy | h:MMtt")}
+      </div>
+
+      <div className="flex items-center gap-8">
+        <div className="">{status()}</div>
+        <button
+          onClick={() => {
+            setAppModalOpen(true);
+          }}
+        >
+          <Text u className="text-secondary">
+            View Application
+          </Text>
+        </button>
+      </div>
+
+      <Modal
+        isOpen={appModalOpen}
+        onClose={() => {
+          setAppModalOpen(false);
+        }}
+      >
+        <div className="w-120">
+          <Text h3>Application to {program.name}</Text>
+          <div className="h-4"></div>
+          <Form
+            questions={
+              JSON.parse(
+                application.applicationType === ApplicationType.Mentee
+                  ? program.menteeApplicationSchemaJson
+                  : program.mentorApplicationSchemaJson
+              ) || []
+            }
+            responses={JSON.parse(application.applicationJson) || {}}
+            readonly
+            showDescriptions={false}
+          />
+          <div className="h-8"></div>
+          <div className="flex justify-end">
+            <Button
+              size="small"
+              onClick={() => {
+                setAppModalOpen(false);
+              }}
+            >
+              Close
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    </div>
   );
 };
 
@@ -136,66 +232,47 @@ const NoMentorshipHome: Page = () => {
         <Text h2 b>
           Welcome to the Mentor Center!
         </Text>
-        <div className="h-0.25 bg-primary w-full" />
+        <div className="h-0.25 bg-secondary w-full" />
         <div className="h-2" />
-        {data && data.getMyUser.applications.length > 0 ? (
+
+        {data && (
           <div className="space-y-4">
             <Text h3 b>
               Your Applications
             </Text>
             <Card className="p-4">
+              {data.getMyUser.applications.length === 0 && (
+                <Text h3 b>
+                  No Applications
+                </Text>
+              )}
               {data.getMyUser.applications.map((app, i) => {
-                const status = () => {
-                  switch (app.applicationStatus) {
-                    case ApplicationStatus.Accepted:
-                      return <CircledCheckSolid />;
-                    case ApplicationStatus.Rejected:
-                      return "Rejected";
-                    case ApplicationStatus.PendingReview:
-                      return "Submitted";
-                  }
-                };
-
-                return (
-                  <div className="flex grid grid-cols-3" key={i}>
-                    {/* TODO: Need to fetch profile */}
-                    <div className="flex-1 col-span-1">{app.program.name}</div>
-                    <div className="flex-1 text-center col-span-1">
-                      {dateFormat(app.createdAt, "mmm d, yyyy | h:MMtt")}
-                    </div>
-                    <div className="flex-1 flex justify-center col-span-1">
-                      {status()}
-                    </div>
-                  </div>
-                );
+                return <ApplicationRow application={app} key={i} />;
               })}
             </Card>
           </div>
-        ) : (
-          <Text h3 b>
-            No Applications
-          </Text>
         )}
         {user.data && user.data.getMyUser.profiles.length > 0 ? (
-          <div className="flex flex-col space-y-4">
+          <div className="">
             <Text h3 b>
               Your Programs
             </Text>
-            {user.data.getMyUser.profiles.map((profile, i) => {
-              const { program } = profile;
+            <div className="h-2"></div>
+            <div className="flex gap-4 flex-wrap">
+              {user.data.getMyUser.profiles.map((profile, i) => {
+                const { program } = profile;
 
-              return (
-                <Link key={i} href={`/program/${program.slug}`}>
-                  <a>
+                return (
+                  <div className="w-80" key={i}>
                     <ProgramCard
                       iconUrl={program.iconUrl}
                       name={program.name}
-                      description={program.description}
+                      route={program.slug}
                     />
-                  </a>
-                </Link>
-              );
-            })}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         ) : (
           <>
