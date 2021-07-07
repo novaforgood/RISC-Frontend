@@ -493,7 +493,7 @@ export const SetAvailabilityOverridesCard = ({
           return (
             <React.Fragment key={idx}>
               <div className="w-full h-px bg-inactive" />
-              <AvailOverrideDateSection overrideDate={overrideDate} />
+              <AvailOverrideDateSection overrideDate={overrideDate} availWeeklys={availWeeklys} />
             </React.Fragment>
           );
         })}
