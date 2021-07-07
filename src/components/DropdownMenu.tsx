@@ -1,7 +1,7 @@
 import { Menu, Transition } from "@headlessui/react";
-import Link from "next/link";
 import { Fragment, ReactNode } from "react";
 import { useAuth } from "../utils/firebase/auth";
+import LocalStorage from "../utils/localstorage";
 
 type DropdownProps = {
   button: ReactNode;
@@ -54,7 +54,7 @@ export default function Dropdown({ button }: DropdownProps) {
                     </a>
                   )}
                 </Menu.Item> */}
-                {user && (
+                {/* {user && (
                   <Menu.Item>
                     {({ active }) => (
                       <Link href="/my/applications">
@@ -62,16 +62,32 @@ export default function Dropdown({ button }: DropdownProps) {
                       </Link>
                     )}
                   </Menu.Item>
+                )} */}
+                {user && (
+                  <Menu.Item>
+                    {({ active }) => (
+                      <a
+                        href="/"
+                        className={ItemStyle(active)}
+                        onClick={() => {
+                          LocalStorage.delete("cachedProgramSlug");
+                        }}
+                      >
+                        My Homepage
+                      </a>
+                    )}
+                  </Menu.Item>
                 )}
                 {user && (
                   <Menu.Item>
                     {({ active }) => (
                       <a href="/my/profile" className={ItemStyle(active)}>
-                        General Profile
+                        My General Profile
                       </a>
                     )}
                   </Menu.Item>
                 )}
+
                 {user && (
                   <Menu.Item>
                     {({ active }) => (
