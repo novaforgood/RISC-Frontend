@@ -39,7 +39,7 @@ const ProgramApplyPage: Page = (_) => {
   const [createApplication] = useCreateApplicationMutation();
   const router = useRouter();
 
-  const [responses] = useState({}); // Should fetch previously saved answers
+  const [responses, setResponses] = useState({}); // Should fetch previously saved answers
   const [formChanged, setFormChanged] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
 
@@ -127,8 +127,9 @@ const ProgramApplyPage: Page = (_) => {
                     : currentProgram.mentorApplicationSchemaJson
                 )} // Should actually fetch form schema
                 responses={responses}
-                onChange={() => {
+                onChange={(newResponses) => {
                   setFormChanged(true);
+                  setResponses(newResponses);
                 }}
                 showDescriptions={false}
                 // onAutosave={(response) => {
