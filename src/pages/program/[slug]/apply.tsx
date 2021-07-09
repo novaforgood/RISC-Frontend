@@ -137,9 +137,8 @@ const ProgramApplyPage: Page = (_) => {
                 // }}
               ></Form>
               <div className="flex justify-between mt-10">
-                <Button variant="inverted">
-                  {/* Might be unstable */}
-                  <Link href={"/program/" + router.query.slug}>Back</Link>
+                <Button variant="inverted" onClick={() => router.back()}>
+                  Back
                 </Button>
                 <Button
                   disabled={!formChanged}
