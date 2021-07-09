@@ -79,7 +79,7 @@ const SettingsPage: Page = () => {
   const { data, error } = useGetProfilesQuery({
     variables: {
       programId: programId,
-      profileType: ProfileType.Mentor,
+      profileType: ProfileType.Admin,
     },
   });
 
