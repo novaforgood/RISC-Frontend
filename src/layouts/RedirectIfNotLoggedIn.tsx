@@ -25,6 +25,7 @@ const RedirectIfNotLoggedIn: React.FC<RedirectIfNotLoggedInProps> = ({
           <div className="flex">
             <Button
               size="small"
+              variant="inverted"
               onClick={() => {
                 router.push(
                   `/login${
@@ -38,7 +39,6 @@ const RedirectIfNotLoggedIn: React.FC<RedirectIfNotLoggedInProps> = ({
             <div className="w-2" />
             <Button
               size="small"
-              variant="inverted"
               onClick={() => {
                 router.push(
                   `/signup${
