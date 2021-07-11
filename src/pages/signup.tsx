@@ -35,8 +35,6 @@ const SignUpPage: Page = () => {
   // const [tocChecked, setTocChecked] = useState(false);
   const router = useRouter();
 
-
-
   return (
     <div className="flex w-screen min-h-screen">
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
@@ -206,7 +204,7 @@ const SignUpPage: Page = () => {
                         email: res.user?.email!,
                         firstName: firstName,
                         lastName: lastName,
-                        profilePictureUrl: "",
+                        profilePictureUrl: "/static/HappyBlobs.svg",
                         timezone: getTimezone(),
                       };
                       res.user?.sendEmailVerification();

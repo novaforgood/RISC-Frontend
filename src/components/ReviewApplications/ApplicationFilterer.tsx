@@ -170,18 +170,17 @@ const ApplicationReviewListItem = ({
   };
 
   return (
-    <div className="flex items-center space-x-4 p-3 hover:bg-tertiary duration-150 rounded">
-      <div className="w-24">{getStatusIcon(application)}</div>
-      <div className="flex-1">
+    <div className="grid grid-cols-5 items-center gap-4 p-2 hover:bg-tertiary duration-150 rounded">
+      <div className="w-24 col-span-1">{getStatusIcon(application)}</div>
+      <div className="flex-1 col-span-2">
         <InlineProfileAvatar user={application.user} />
       </div>
-      <div className="md:flex-1" />
-      <Text className="hidden xl:inline">
+      <Text className="hidden xl:inline col-span-1">
         {format(new Date(application.createdAt), "MMM d, yyyy | h:mma")}
       </Text>
-      <div className="flex-1" />
-      <DetailsModalButton application={application} />
-      <div className="md:w-8 lg:w-12" />
+      <div className="col-span-1">
+        <DetailsModalButton application={application} />
+      </div>
     </div>
   );
 };
