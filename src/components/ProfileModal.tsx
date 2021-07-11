@@ -144,7 +144,7 @@ const ProfileModal = ({
               ) : (
                 <div className="flex flex-wrap gap-2">
                   {profile.profileTags.map((tag) => {
-                    return <Tag>{tag.name}</Tag>;
+                    return <Tag key={tag.profileTagId}>{tag.name}</Tag>;
                   })}
                 </div>
               )}

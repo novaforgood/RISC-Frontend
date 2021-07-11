@@ -1,10 +1,16 @@
 import Fuse from "fuse.js";
-import React, { Fragment, useState } from "react";
-import { Button, Input, Modal, Text } from "../../../../components/atomic";
-import CheckboxWithText from "../../../../components/CheckboxWithText";
+import React, { Fragment, useEffect, useState } from "react";
+import {
+  Button,
+  Checkbox,
+  Input,
+  Modal,
+  Text,
+} from "../../../../components/atomic";
 import { Filter } from "../../../../components/icons";
 import ProfileCard from "../../../../components/ProfileCard";
 import {
+  Profile,
   ProfileType,
   useGetProfilesQuery,
   useGetProfileTagsByProgramQuery,
@@ -20,6 +26,8 @@ const ViewMentorsPage: Page = () => {
   //const [sortBy, setSortBy] = useState("");
   const [searchText, setSearchText] = useState("");
   const [filterModalOpen, setFilterModalOpen] = useState(false);
+  const [filteredTags, setFilteredTags] =
+    useState<{ [key: string]: boolean }>();
 
   const { currentProgram } = useCurrentProgram();
   const { data } = useGetProfilesQuery({
@@ -32,13 +40,33 @@ const ViewMentorsPage: Page = () => {
     variables: { programId: currentProgram?.programId! },
   });
   let unfiltered = data?.getProfiles || [];
+  const [mentors, setMentors] = useState(unfiltered);
 
-  const fuse = new Fuse(unfiltered, {
+  useEffect(() => {
+    if (unfiltered) {
+      setMentors(unfiltered);
+    }
+  }, [unfiltered]);
+
+  useEffect(() => {
+    if (profileTagsData) {
+      let checkedTags: { [key: string]: boolean } = {};
+      for (const tag of profileTagsData?.getProfileTagsByProgram) {
+        checkedTags[tag.profileTagId] = false;
+      }
+      setFilteredTags(checkedTags);
+    }
+  }, [profileTagsData]);
+
+  const fuse = new Fuse(mentors, {
     keys: ["user.firstName", "user.lastName", "profileJson"],
   });
-  const mentors = searchText
-    ? fuse.search(searchText).map((x) => x.item)
-    : unfiltered;
+
+  useEffect(() => {
+    setMentors(
+      searchText ? fuse.search(searchText).map((x) => x.item) : unfiltered
+    );
+  }, [searchText]);
 
   // const sortDropdown = () => {
   //   return (
@@ -58,23 +86,35 @@ const ViewMentorsPage: Page = () => {
   //     </div>
   //   );
   // };
-
   return (
     <Fragment>
-      <Modal isOpen={filterModalOpen} onClose={() => setFilterModalOpen(false)}>
-        <div className="flex flex-col">
+      <Modal isOpen={filterModalOpen} onClose={() => false}>
+        <div className="flex flex-col space-y-4">
           <Text h3 b>
             Filter Tags
           </Text>
           {profileTagsData &&
           profileTagsData.getProfileTagsByProgram.length > 0 ? (
-            <div>
+            <div className="grid grid-cols-4 gap-2">
               {profileTagsData.getProfileTagsByProgram.map((tag) => {
                 return (
-                  <CheckboxWithText
-                    text={tag.name}
-                    onCheck={() => {}}
-                    checked={false}
+                  <Checkbox
+                    key={tag.profileTagId}
+                    label={tag.name}
+                    onCheck={(checked) => {
+                      let newFilteredTags: { [key: string]: boolean } = {};
+                      newFilteredTags![tag.profileTagId] = checked;
+                      setFilteredTags({
+                        ...filteredTags,
+                        ...newFilteredTags,
+                      });
+                    }}
+                    checked={
+                      filteredTags &&
+                      filteredTags[tag.profileTagId] !== undefined
+                        ? filteredTags[tag.profileTagId]
+                        : false
+                    }
                   />
                 );
               })}
@@ -89,7 +129,24 @@ const ViewMentorsPage: Page = () => {
           <Button
             className="self-center"
             size="small"
-            onClick={() => setFilterModalOpen(false)}
+            onClick={() => {
+              let newMentors = mentors;
+              let checked: string[] = [];
+              for (const key in filteredTags) {
+                if (filteredTags[key]) {
+                  checked.push(key);
+                }
+              }
+              newMentors = newMentors.filter((profile) => {
+                return checked.filter((profileTagId) =>
+                  profile.profileTags.find(
+                    (tag) => tag.profileTagId === profileTagId
+                  )
+                );
+              });
+              console.log(newMentors);
+              setFilterModalOpen(false);
+            }}
           >
             Finish
           </Button>
