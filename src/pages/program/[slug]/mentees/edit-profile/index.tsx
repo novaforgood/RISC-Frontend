@@ -31,7 +31,7 @@ const EditMenteeProfilePage: Page = (_) => {
     setProfileSchema(
       getQuestionsFromJson(currentProgram?.menteeProfileSchemaJson)
     );
-    return () => {};
+    // return () => {};
   }, [currentProgram]);
 
   const saveProfile = () => {

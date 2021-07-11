@@ -136,7 +136,7 @@ const SettingsPage: Page = () => {
           <Input
             id="mentorship-link"
             type="text"
-            className="col-span-2 overflow-ellipsis"
+            className="col-span-2"
             disabled
             readOnly
             value={`${window.location.host}/program/${slug}`}

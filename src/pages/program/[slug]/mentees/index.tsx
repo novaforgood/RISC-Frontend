@@ -11,7 +11,7 @@ import ChooseTabLayout from "../../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../../layouts/PageContainer";
 import Page from "../../../../types/Page";
 
-const ViewMentorsPage: Page = () => {
+const ViewMenteesPage: Page = () => {
   //const [getMentors, { mentorsData }] = useGetMentorssLazyQuery();
   //const [sortBy, setSortBy] = useState("");
 
@@ -22,7 +22,7 @@ const ViewMentorsPage: Page = () => {
       profileType: ProfileType.Mentee,
     },
   });
-  const mentors = data?.getProfiles;
+  const mentees = data?.getProfiles;
 
   const sortDropdown = () => {
     return (
@@ -55,15 +55,16 @@ const ViewMentorsPage: Page = () => {
       <Input className="w-full" placeholder="Search..."></Input>
       <div className="h-8"></div>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {mentors?.map((mentor, index: number) => {
-          return <ProfileCard profile={mentor} key={index} />;
+        {mentees?.map((mentee, index: number) => {
+          console.log(mentee);
+          return <ProfileCard profile={mentee} key={index} />;
         })}
       </div>
     </Fragment>
   );
 };
 
-ViewMentorsPage.getLayout = (page, pageProps) => (
+ViewMenteesPage.getLayout = (page, pageProps) => (
   <AuthorizationWrapper
     canView={[
       AuthorizationLevel.Admin,
@@ -77,4 +78,4 @@ ViewMentorsPage.getLayout = (page, pageProps) => (
   </AuthorizationWrapper>
 );
 
-export default ViewMentorsPage;
+export default ViewMenteesPage;
