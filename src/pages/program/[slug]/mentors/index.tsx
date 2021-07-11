@@ -1,10 +1,13 @@
 import Fuse from "fuse.js";
 import React, { Fragment, useState } from "react";
-import { Input, Text } from "../../../../components/atomic";
+import { Button, Input, Modal, Text } from "../../../../components/atomic";
+import CheckboxWithText from "../../../../components/CheckboxWithText";
+import { Filter } from "../../../../components/icons";
 import ProfileCard from "../../../../components/ProfileCard";
 import {
   ProfileType,
   useGetProfilesQuery,
+  useGetProfileTagsByProgramQuery,
 } from "../../../../generated/graphql";
 import { AuthorizationLevel, useCurrentProgram } from "../../../../hooks";
 import AuthorizationWrapper from "../../../../layouts/AuthorizationWrapper";
@@ -16,6 +19,7 @@ const ViewMentorsPage: Page = () => {
   //const [getMentors, { mentorsData }] = useGetMentorssLazyQuery();
   //const [sortBy, setSortBy] = useState("");
   const [searchText, setSearchText] = useState("");
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
 
   const { currentProgram } = useCurrentProgram();
   const { data } = useGetProfilesQuery({
@@ -23,6 +27,9 @@ const ViewMentorsPage: Page = () => {
       programId: currentProgram?.programId!,
       profileType: ProfileType.Mentor,
     },
+  });
+  const { data: profileTagsData } = useGetProfileTagsByProgramQuery({
+    variables: { programId: currentProgram?.programId! },
   });
   let unfiltered = data?.getProfiles || [];
 
@@ -37,7 +44,7 @@ const ViewMentorsPage: Page = () => {
   //   return (
   //     <div className="flex items-center">
   //       <Text b>Sort By</Text>
-  //       <div className="w-2"></div>
+  //       <div className="w-2" />
   //       <select
   //         className="h-8 rounded-md"
   //         name="sort"
@@ -54,20 +61,59 @@ const ViewMentorsPage: Page = () => {
 
   return (
     <Fragment>
-      <div className="h-1"></div>
+      <Modal isOpen={filterModalOpen} onClose={() => setFilterModalOpen(false)}>
+        <div className="flex flex-col">
+          <Text h3 b>
+            Filter Tags
+          </Text>
+          {profileTagsData &&
+          profileTagsData.getProfileTagsByProgram.length > 0 ? (
+            <div>
+              {profileTagsData.getProfileTagsByProgram.map((tag) => {
+                return (
+                  <CheckboxWithText
+                    text={tag.name}
+                    onCheck={() => {}}
+                    checked={false}
+                  />
+                );
+              })}
+            </div>
+          ) : (
+            <div className="py-6">
+              <Text i className="text-secondary">
+                This program hasn't set up their tags yet.
+              </Text>
+            </div>
+          )}
+          <Button
+            className="self-center"
+            size="small"
+            onClick={() => setFilterModalOpen(false)}
+          >
+            Finish
+          </Button>
+        </div>
+      </Modal>
       <div className="flex justify-between">
         <Text b h2>
           All Mentors
         </Text>
         {/* {sortDropdown()} */}
       </div>
-      <Input
-        className="w-full"
-        placeholder="Search..."
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-      ></Input>
-      <div className="h-8"></div>
+      <div className="flex items-center space-x-2">
+        <Input
+          className="w-full"
+          placeholder="Search..."
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+        <Filter
+          className="hover:cursor-pointer"
+          onClick={() => setFilterModalOpen(true)}
+        />
+      </div>
+      <div className="h-8" />
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {mentors?.map((mentor, index: number) => {
           return <ProfileCard profile={mentor} key={index} />;

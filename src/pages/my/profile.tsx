@@ -44,6 +44,7 @@ const GeneralProfile: Page = () => {
     }
   };
 
+  console.log(data?.getMyUser.profilePictureUrl);
   return (
     <div className="h-screen bg-tertiary flex flex-col items-center py-10 overflow-y-auto">
       <CatchUnsavedChangesModal unsavedChangesExist={modified === true} />
@@ -102,7 +103,11 @@ const GeneralProfile: Page = () => {
                 setProfilePicture(file);
                 setModified(true);
               }}
-              src={src || data.getMyUser.profilePictureUrl}
+              src={
+                src ||
+                data.getMyUser.profilePictureUrl ||
+                "/static/HappyBlobs.svg"
+              }
               onSrcChange={setSrc}
             />
             <div className="h-4" />

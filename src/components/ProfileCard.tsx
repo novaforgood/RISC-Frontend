@@ -21,28 +21,32 @@ const ProfileCard = ({ profile }: ProfileCardProps) => {
   );
 
   return (
-    <Card className="flex flex-col p-6 place-items-center border-0">
+    <Card className="grid grid-rows-11 gap-4 p-6 place-items-center border-0">
       <ProfilePictureImg
         src={profile.user.profilePictureUrl}
-        className="h-40 w-40 rounded-full object-cover bg-tertiary border border-inactive"
+        className="rows-span-3 h-40 w-40 rounded-full object-cover bg-tertiary border border-inactive"
       />
-      <div className="h-4"></div>
-
-      <Text b className="text-body-1 text-center">
+      <Text b className="rows-span-1 text-body-1 text-center">
         {profile.user.firstName} {profile.user.lastName}
       </Text>
-      <div className="h-4"></div>
-      <div className="flex flex-wrap gap-2 justify-center">
-        {tags}
-        {profile.profileTags.length > 3 ? moreTag : <div></div>}
-      </div>
-      <div className="h-4"></div>
-      <div className="h-24 w-full text-center break-words overflow-hidden overflow-ellipsis">
+      {tags.length > 0 ? (
+        <div className="rows-span-2 flex flex-wrap gap-2 justify-center">
+          {tags}
+          {profile.profileTags.length > 3 ? moreTag : <div></div>}
+        </div>
+      ) : (
+        <div className="rows-span-2">
+          <Text i className="text-secondary">
+            No tags set
+          </Text>
+        </div>
+      )}
+      <div className="grid-rows-3 h-24 w-full text-center break-words overflow-hidden overflow-ellipsis">
         {profile.bio}
       </div>
-      <div className="h-4"></div>
 
       <Button
+        className="grid-rows-2"
         onClick={() => {
           setProfileModalOpen(true);
         }}
