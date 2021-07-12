@@ -5,12 +5,12 @@ import {
   Checkbox,
   Input,
   Modal,
+  Tag,
   Text,
 } from "../../../../components/atomic";
 import { Filter } from "../../../../components/icons";
 import ProfileCard from "../../../../components/ProfileCard";
 import {
-  Profile,
   ProfileType,
   useGetProfilesQuery,
   useGetProfileTagsByProgramQuery,
@@ -26,8 +26,9 @@ const ViewMentorsPage: Page = () => {
   //const [sortBy, setSortBy] = useState("");
   const [searchText, setSearchText] = useState("");
   const [filterModalOpen, setFilterModalOpen] = useState(false);
-  const [filteredTags, setFilteredTags] =
-    useState<{ [key: string]: boolean }>();
+  const [filteredTags, setFilteredTags] = useState<{ [key: string]: string }>(
+    {}
+  );
 
   const { currentProgram } = useCurrentProgram();
   const { data } = useGetProfilesQuery({
@@ -48,23 +49,29 @@ const ViewMentorsPage: Page = () => {
     }
   }, [unfiltered]);
 
-  useEffect(() => {
-    if (profileTagsData) {
-      let checkedTags: { [key: string]: boolean } = {};
-      for (const tag of profileTagsData?.getProfileTagsByProgram) {
-        checkedTags[tag.profileTagId] = false;
-      }
-      setFilteredTags(checkedTags);
-    }
-  }, [profileTagsData]);
-
   const fuse = new Fuse(mentors, {
     keys: ["user.firstName", "user.lastName", "profileJson"],
   });
 
+  const filterByTags = () => {
+    let checked = Object.keys(filteredTags);
+    if (!checked.length) return unfiltered;
+    let newMentors = unfiltered;
+    newMentors = newMentors.filter(
+      (profile) =>
+        checked.filter(
+          (profileTagId) =>
+            profile.profileTags.findIndex(
+              (el) => el.profileTagId === profileTagId
+            ) > -1
+        ).length
+    );
+    return newMentors;
+  };
+
   useEffect(() => {
     setMentors(
-      searchText ? fuse.search(searchText).map((x) => x.item) : unfiltered
+      searchText ? fuse.search(searchText).map((x) => x.item) : filterByTags()
     );
   }, [searchText]);
 
@@ -86,6 +93,7 @@ const ViewMentorsPage: Page = () => {
   //     </div>
   //   );
   // };
+  console.log(filteredTags);
   return (
     <Fragment>
       <Modal isOpen={filterModalOpen} onClose={() => false}>
@@ -102,19 +110,16 @@ const ViewMentorsPage: Page = () => {
                     key={tag.profileTagId}
                     label={tag.name}
                     onCheck={(checked) => {
-                      let newFilteredTags: { [key: string]: boolean } = {};
-                      newFilteredTags![tag.profileTagId] = checked;
-                      setFilteredTags({
-                        ...filteredTags,
-                        ...newFilteredTags,
-                      });
+                      let newFilteredTags: { [key: string]: string } =
+                        filteredTags;
+                      if (checked) {
+                        newFilteredTags![tag.profileTagId] = tag.name;
+                      } else {
+                        delete newFilteredTags![tag.profileTagId];
+                      }
+
+                      setFilteredTags(newFilteredTags);
                     }}
-                    checked={
-                      filteredTags &&
-                      filteredTags[tag.profileTagId] !== undefined
-                        ? filteredTags[tag.profileTagId]
-                        : false
-                    }
                   />
                 );
               })}
@@ -130,21 +135,7 @@ const ViewMentorsPage: Page = () => {
             className="self-center"
             size="small"
             onClick={() => {
-              let newMentors = mentors;
-              let checked: string[] = [];
-              for (const key in filteredTags) {
-                if (filteredTags[key]) {
-                  checked.push(key);
-                }
-              }
-              newMentors = newMentors.filter((profile) => {
-                return checked.filter((profileTagId) =>
-                  profile.profileTags.find(
-                    (tag) => tag.profileTagId === profileTagId
-                  )
-                );
-              });
-              console.log(newMentors);
+              setMentors(filterByTags());
               setFilterModalOpen(false);
             }}
           >
@@ -170,7 +161,23 @@ const ViewMentorsPage: Page = () => {
           onClick={() => setFilterModalOpen(true)}
         />
       </div>
-      <div className="h-8" />
+      <div className="h-4" />
+      <div className="flex items-center">
+        <Text>Current Filters:</Text>
+        <div className="w-2" />
+        {filteredTags && Object.keys(filteredTags).length > 0 ? (
+          <div className="flex items-center space-x-2">
+            {Object.values(filteredTags).map((tagName) => (
+              <Tag variant="outline" key={tagName}>
+                {tagName}
+              </Tag>
+            ))}
+          </div>
+        ) : (
+          <Text i>None</Text>
+        )}
+      </div>
+      <div className="h-4" />
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {mentors?.map((mentor, index: number) => {
           return <ProfileCard profile={mentor} key={index} />;

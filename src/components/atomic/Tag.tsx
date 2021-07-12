@@ -11,7 +11,7 @@ const Tag = ({ variant = "solid", className, onClick, ...props }: TagProps) => {
     "hover:cursor-pointer": onClick,
     "hover:cursor-default": !onClick,
     "bg-tertiary border-tertiary": variant === "solid",
-    "inline-block bg-white border-primary": variant === "outline",
+    "inline-block border-primary": variant === "outline",
     "inline-block text-white bg-primary border-primary": variant === "dark",
     [`${className}`]: true,
   });
