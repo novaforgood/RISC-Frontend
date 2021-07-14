@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { GetProfilesQuery, Maybe, ProfileType } from "../generated/graphql";
-import { useCurrentProgram } from "../hooks";
+import {
+  AuthorizationLevel,
+  useAuthorizationLevel,
+  useCurrentProgram,
+} from "../hooks";
 import { Question } from "../types/Form";
 import { Button, Card, Modal, Tag, Text } from "./atomic";
 import BookAChat from "./BookAChat";
@@ -44,12 +48,14 @@ const ProfileModal = ({
 }: ProfileModalProps) => {
   const [stage, setStage] = useState(ProfileModalStage.VIEW_PROFILE);
   const { currentProgram } = useCurrentProgram();
+  const authorizationLevel = useAuthorizationLevel();
 
   useEffect(() => {
     if (isOpen === true) setStage(ProfileModalStage.VIEW_PROFILE);
     return () => {};
   }, [isOpen]);
 
+  console.log(profile);
   const renderModalContents = () => {
     switch (stage) {
       case ProfileModalStage.VIEW_PROFILE:
@@ -84,25 +90,28 @@ const ProfileModal = ({
                 </div>
                 <div className="h-4"></div>
 
-                {/* <div className="flex ">
-                  <Button
-                    size="small"
-                    disabled={authorizationLevel !== AuthorizationLevel.Mentee}
-                    onClick={() => {
-                      setStage(ProfileModalStage.BOOK_CHAT);
-                    }}
-                  >
-                    Book a Chat
-                  </Button>
-                  <div className="w-2"></div>
+                {/* <div className="flex "> */}
+                <Button
+                  size="small"
+                  onClick={
+                    authorizationLevel === AuthorizationLevel.Mentee
+                      ? () => {
+                          setStage(ProfileModalStage.BOOK_CHAT);
+                        }
+                      : () => {}
+                  }
+                >
+                  Book a Chat
+                </Button>
+                {/* <div className="w-2"></div>
                   <Button
                     size="small"
                     variant="inverted"
                     // disabled={authorizationLevel !== AuthorizationLevel.Mentee}
                   >
-                    Request mentee
+                    Request mentor
                   </Button> 
-                  </div>*/}
+                  </div> */}
               </div>
             </div>
             <div className="h-6" />
@@ -146,7 +155,9 @@ const ProfileModal = ({
 
             <Form
               questions={getQuestionsFromJson(
-                currentProgram?.menteeProfileSchemaJson
+                profile.profileType === ProfileType.Mentee
+                  ? currentProgram?.menteeProfileSchemaJson
+                  : currentProgram?.mentorProfileSchemaJson
               )}
               responses={getResponsesFromJson(profile.profileJson)}
               readonly
@@ -165,11 +176,7 @@ const ProfileModal = ({
             >
               Back
             </Button>
-            {profile.profileType === ProfileType.Mentee ? (
-              <BookAChat mentor={profile} />
-            ) : (
-              <></>
-            )}
+            <BookAChat mentor={profile} />
           </div>
         );
     }
