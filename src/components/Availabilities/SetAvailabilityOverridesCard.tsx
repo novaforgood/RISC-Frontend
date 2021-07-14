@@ -52,6 +52,7 @@ const EditAvailOverrideDayModalContents = ({
   const [overrideDate, setOverrideDay] = useState<AvailOverrideDate | null>(
     initOverrideDate
   );
+  const [overrideDates, setOverrideDates] = useState<AvailOverrideDate[]>()
   const [timeslots, setTimeslots] = useState(
     overrideDate?.availOverrideTimeslots || []
   );
@@ -528,7 +529,7 @@ export const SetAvailabilityOverridesCard = ({
             setEditAvailOverrideDayModalOpen(true);
           }}
         >
-          add date override
+          Add date override
         </Button>
       </div>
       <Modal

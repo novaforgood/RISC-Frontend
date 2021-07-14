@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { GetProfilesQuery, Maybe } from "../generated/graphql";
+import { GetProfilesQuery, Maybe, ProfileType } from "../generated/graphql";
 import { useCurrentProgram } from "../hooks";
 import { Question } from "../types/Form";
 import { Button, Card, Modal, Tag, Text } from "./atomic";
+import BookAChat from "./BookAChat";
 import Form, { ResponseJson } from "./Form";
 import ProfilePictureImg from "./ProfilePictureImg";
 
@@ -164,6 +165,11 @@ const ProfileModal = ({
             >
               Back
             </Button>
+            {profile.profileType === ProfileType.Mentee ? (
+              <BookAChat mentor={profile} />
+            ) : (
+              <></>
+            )}
           </div>
         );
     }
