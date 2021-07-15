@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { NextRouter, useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { Button, Input, Text } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
 import { useAuth } from "../utils/firebase/auth";
+import { redirectAfterAuthentication } from "../utils";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24 md:h-64 md:w-64 lg:h-80 lg:w-80";
@@ -14,14 +15,6 @@ const BlobCircle = () => {
       <img src="/static/HappyBlobs.svg" className="w-11/12 select-none" />
     </div>
   );
-};
-
-export const redirectAfterLoggingIn = (router: NextRouter) => {
-  if (router.query.to && typeof router.query.to === "string") {
-    router.push(router.query.to);
-  } else {
-    router.push("/");
-  }
 };
 
 const LoginPage = () => {
@@ -71,7 +64,7 @@ const LoginPage = () => {
                         "An account with this email has not been created yet."
                       );
                     } else {
-                      redirectAfterLoggingIn(router);
+                      redirectAfterAuthentication(router);
                     }
                   }
                 })
@@ -134,7 +127,7 @@ const LoginPage = () => {
                 e.preventDefault();
                 signInWithEmail(email, password)
                   .then((_) => {
-                    redirectAfterLoggingIn(router);
+                    redirectAfterAuthentication(router);
                   })
                   .catch((error) => {
                     setError(error.message);

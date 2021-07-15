@@ -528,7 +528,7 @@ export const SetAvailabilityOverridesCard = ({
             setEditAvailOverrideDayModalOpen(true);
           }}
         >
-          add date override
+          Add date override
         </Button>
       </div>
       <Modal

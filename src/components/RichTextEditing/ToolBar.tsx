@@ -22,7 +22,8 @@ const ToggleStyleButton = ({
 }: ButtonProps) => {
   const { editorState, setEditorState } = useEditor();
   const styles = classNames({
-    "hover:bg-inactive rounded-md cursor-pointer px-1 py-0.5 w-6 flex justify-center": true,
+    "hover:bg-inactive rounded-md cursor-pointer px-1 py-0.5 w-6 flex justify-center":
+      true,
     "bg-inactive font-bold": editorState?.getCurrentInlineStyle().has(type),
     [`${className}`]: true,
   });
@@ -145,6 +146,7 @@ const UploadImageButton = (props: HTMLAttributes<HTMLButtonElement>) => {
           }}
           className="hidden"
           type="file"
+          accept="image/*"
         />
         <img
           className="hover:bg-inactive rounded-md cursor-pointer px-1 py-0.5"

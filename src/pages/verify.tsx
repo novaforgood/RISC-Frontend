@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { Button, Card, Text } from "../components/atomic";
 import { useAuth } from "../utils/firebase/auth";
+import { redirectAfterAuthentication } from "../utils";
 
 const Verify = () => {
   const [loading, setLoading] = useState(false);
@@ -9,8 +10,8 @@ const Verify = () => {
   const router = useRouter();
 
   if (user?.emailVerified || !user) {
-    router.push("/");
-    return <div>Rerouting to Home...</div>;
+    redirectAfterAuthentication(router);
+    return <div>Rerouting...</div>;
   }
 
   return (
@@ -37,13 +38,6 @@ const Verify = () => {
             this page to access your homepage.
           </Text>
           <div className="space-x-6">
-            <Button
-              onClick={() => router.push("/login")}
-              variant="inverted"
-              size="small"
-            >
-              Back
-            </Button>
             <Button
               size="small"
               variant="inverted"

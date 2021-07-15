@@ -120,11 +120,9 @@ const ProgramCard = ({ iconUrl, name, route }: ProgramCardProps) => {
       </div>
 
       <Link href={`/program/${route}`}>
-        <a>
-          <Text u className="text-secondary">
-            Homepage
-          </Text>
-        </a>
+        <Text u className="text-secondary hover:cursor-pointer">
+          Homepage
+        </Text>
       </Link>
     </Card>
   );

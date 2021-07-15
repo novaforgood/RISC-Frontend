@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { utcToZonedTime, zonedTimeToUtc } from "date-fns-tz";
+import { NextRouter } from "next/router";
 import timezoneRawData from "./data/timezones.json";
 
 export function parseParam(slug: string | string[] | undefined) {
@@ -30,3 +31,11 @@ const emailForm = new RegExp(
 export function validateEmail(email: string) {
   return email && emailForm.test(email);
 }
+
+export const redirectAfterAuthentication = (router: NextRouter) => {
+  if (router.query.to && typeof router.query.to === "string") {
+    router.push(router.query.to);
+  } else {
+    router.push("/");
+  }
+};

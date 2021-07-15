@@ -98,6 +98,7 @@ const TextEditor = () => {
           }
           setEditorState(es);
         }}
+        spellCheck
         placeholder="Edit here..."
         ref={(el: any) => {
           forwardRef = el;

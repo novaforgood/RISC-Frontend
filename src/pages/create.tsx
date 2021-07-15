@@ -215,8 +215,8 @@ const CreateProgramPage: Page = () => {
         <div>
           <Text b>Identifier</Text>
           <div className="h-2" />
-          <div className="inline">
-            <Text b2>www.mentorcenter.us/</Text>
+          <div className="inline space-x-2">
+            <Text b2>www.mentorcenter.us/ </Text>
             <Input
               title="Identifier"
               name="Program Identifier"

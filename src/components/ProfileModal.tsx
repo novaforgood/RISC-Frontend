@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { GetProfilesQuery, Maybe } from "../generated/graphql";
+import { GetProfilesQuery, Maybe, ProfileType } from "../generated/graphql";
 import {
   AuthorizationLevel,
   useAuthorizationLevel,
@@ -48,7 +48,6 @@ const ProfileModal = ({
 }: ProfileModalProps) => {
   const [stage, setStage] = useState(ProfileModalStage.VIEW_PROFILE);
   const { currentProgram } = useCurrentProgram();
-
   const authorizationLevel = useAuthorizationLevel();
 
   useEffect(() => {
@@ -90,75 +89,78 @@ const ProfileModal = ({
                 </div>
                 <div className="h-4"></div>
 
-                <div className="flex ">
-                  <Button
-                    size="small"
-                    disabled={authorizationLevel !== AuthorizationLevel.Mentee}
-                    onClick={() => {
-                      setStage(ProfileModalStage.BOOK_CHAT);
-                    }}
-                  >
-                    Book a Chat
-                  </Button>
-                  {/* <div className="w-2"></div>
+                {/* <div className="flex "> */}
+                <Button
+                  size="small"
+                  disabled={authorizationLevel !== AuthorizationLevel.Mentee}
+                  onClick={() => setStage(ProfileModalStage.BOOK_CHAT)}
+                >
+                  Book a Chat
+                </Button>
+                {/* <div className="w-2"></div>
                   <Button
                     size="small"
                     variant="inverted"
                     // disabled={authorizationLevel !== AuthorizationLevel.Mentee}
                   >
-                    Request Mentor
-                  </Button> */}
-                  <button />
-                </div>
+                    Request mentor
+                  </Button> 
+                  </div> */}
               </div>
             </div>
             <div className="h-6" />
             <div className="h-0.25 w-full bg-tertiary" />
             <div className="h-6" />
 
-            <Card className="p-6">
-              <div>
-                <Text b>Bio</Text>
-              </div>
-              <div className={profile.bio ? "h-1" : "h-2"}></div>
-              <div>
-                {profile.bio ? (
-                  <Text>{profile.bio}</Text>
-                ) : (
+            <div className="flex flex-col justify-items-center items-center space-y-4">
+              <Card className="p-6 w-full">
+                <div>
+                  <Text b>Bio</Text>
+                </div>
+                <div className={profile.bio ? "h-1" : "h-2"}></div>
+                <div>
+                  {profile.bio ? (
+                    <Text>{profile.bio}</Text>
+                  ) : (
+                    <Text secondary i>
+                      None
+                    </Text>
+                  )}
+                </div>
+              </Card>
+
+              <Card className="p-6 w-full">
+                <Text b>Tags</Text>
+                <div className="h-2"></div>
+                {profile.profileTags.length === 0 ? (
                   <Text secondary i>
                     None
                   </Text>
+                ) : (
+                  <div className="flex flex-wrap gap-2">
+                    {profile.profileTags.map((tag) => {
+                      return <Tag>{tag.name}</Tag>;
+                    })}
+                  </div>
                 )}
+              </Card>
+
+              <div className="w-full">
+                <Form
+                  questions={getQuestionsFromJson(
+                    profile.profileType === ProfileType.Mentee
+                      ? currentProgram?.menteeProfileSchemaJson
+                      : currentProgram?.mentorProfileSchemaJson
+                  )}
+                  responses={getResponsesFromJson(profile.profileJson)}
+                  readonly
+                  showDescriptions={false}
+                />
               </div>
-            </Card>
-
-            <div className="h-4"></div>
-
-            <Card className="p-6">
-              <Text b>Tags</Text>
-              <div className="h-2"></div>
-              {profile.profileTags.length === 0 ? (
-                <Text secondary i>
-                  None
-                </Text>
-              ) : (
-                <div className="flex flex-wrap gap-2">
-                  {profile.profileTags.map((tag) => {
-                    return <Tag>{tag.name}</Tag>;
-                  })}
-                </div>
-              )}
-            </Card>
-            <div className="h-4"></div>
-
-            <Form
-              questions={getQuestionsFromJson(
-                currentProgram?.mentorProfileSchemaJson
-              )}
-              responses={getResponsesFromJson(profile.profileJson)}
-              readonly
-              showDescriptions={false}
-            />
+              <Button size="small" onClick={onClose}>
+                Close Profile
+              </Button>
+            </div>
           </div>
         );
       case ProfileModalStage.BOOK_CHAT:

@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { Button, Modal, Text } from "../components/atomic";
+import { Button, Text } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
 import { CreateUserInput, useCreateUserMutation } from "../generated/graphql";
 import Page from "../types/Page";
 import { useAuth } from "../utils/firebase/auth";
-import { redirectAfterLoggingIn } from "./login";
+import { redirectAfterAuthentication } from "../utils";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24 md:h-64 md:w-64 lg:h-80 lg:w-80";
@@ -26,7 +26,6 @@ const getTimezone = (): string => {
 const SignUpPage: Page = () => {
   const { signUpWithEmail, signInWithGoogle, signOut } = useAuth();
   const [createUser] = useCreateUserMutation();
-  const [modalOpen, setModalOpen] = useState(false);
   const [displayError, setDisplayError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,21 +34,8 @@ const SignUpPage: Page = () => {
   // const [tocChecked, setTocChecked] = useState(false);
   const router = useRouter();
 
-
-
   return (
     <div className="flex w-screen min-h-screen">
-      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-        <div className="flex flex-col space-y-2 justify-items-center items-center">
-          <Text>
-            A verification email has been sent to your inbox. Please verify
-            before logging in.
-          </Text>
-          <Button size="small" onClick={() => setModalOpen(false)}>
-            Go to Email
-          </Button>
-        </div>
-      </Modal>
       <div className="hidden md:grid md:w-1/3 bg-primary min-h-screen relative">
         <img
           src="/static/TextLogo.svg"
@@ -97,7 +83,7 @@ const SignUpPage: Page = () => {
                     };
                     createUser({ variables: { data: createUserInput } }).then(
                       () => {
-                        redirectAfterLoggingIn(router);
+                        redirectAfterAuthentication(router);
                       }
                     );
                   } else {
@@ -218,7 +204,10 @@ const SignUpPage: Page = () => {
                         }),
                       ])
                         .then(() => {
-                          router.push("/verify");
+                          router.push({
+                            pathname: "/verify",
+                            query: { to: router.query.to },
+                          });
                         })
                         .then(() => {})
                         .catch((e) => {
