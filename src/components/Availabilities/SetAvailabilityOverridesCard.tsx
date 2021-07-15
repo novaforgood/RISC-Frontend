@@ -52,7 +52,6 @@ const EditAvailOverrideDayModalContents = ({
   const [overrideDate, setOverrideDay] = useState<AvailOverrideDate | null>(
     initOverrideDate
   );
-  const [overrideDates, setOverrideDates] = useState<AvailOverrideDate[]>()
   const [timeslots, setTimeslots] = useState(
     overrideDate?.availOverrideTimeslots || []
   );

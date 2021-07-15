@@ -204,10 +204,10 @@ const SignUpPage: Page = () => {
                         }),
                       ])
                         .then(() => {
-                          router.push(
-                            "/verify" +
-                              (router.query.to ? "?to=" + router.query.to : "")
-                          );
+                          router.push({
+                            pathname: "/verify",
+                            query: { to: router.query.to },
+                          });
                         })
                         .then(() => {})
                         .catch((e) => {
