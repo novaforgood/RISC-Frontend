@@ -1,15 +1,8 @@
 import Fuse from "fuse.js";
 import React, { Fragment, useEffect, useState } from "react";
-import {
-  Button,
-  Checkbox,
-  Input,
-  Modal,
-  Tag,
-  Text,
-} from "../../../../components/atomic";
-import { Filter } from "../../../../components/icons";
+import { Input, Text } from "../../../../components/atomic";
 import ProfileCard from "../../../../components/ProfileCard";
+import TagSelector from "../../../../components/tags/TagSelector";
 import {
   ProfileType,
   useGetProfilesQuery,
@@ -25,10 +18,7 @@ const ViewMentorsPage: Page = () => {
   //const [getMentors, { mentorsData }] = useGetMentorssLazyQuery();
   //const [sortBy, setSortBy] = useState("");
   const [searchText, setSearchText] = useState("");
-  const [filterModalOpen, setFilterModalOpen] = useState(false);
-  const [filteredTags, setFilteredTags] = useState<{ [key: string]: string }>(
-    {}
-  );
+  const [filteredTags, setFilteredTags] = useState<string[]>([]);
 
   const { currentProgram } = useCurrentProgram();
   const { data } = useGetProfilesQuery({
@@ -49,30 +39,34 @@ const ViewMentorsPage: Page = () => {
     }
   }, [unfiltered]);
 
-  const fuse = new Fuse(mentors, {
+  const fuse = new Fuse(unfiltered, {
     keys: ["user.firstName", "user.lastName", "profileJson"],
   });
 
-  const filterByTags = () => {
-    let checked = Object.keys(filteredTags);
-    if (!checked.length) return unfiltered;
-    let newMentors = unfiltered;
-    newMentors = newMentors.filter(
-      (profile) =>
-        checked.filter(
-          (profileTagId) =>
-            profile.profileTags.findIndex(
-              (el) => el.profileTagId === profileTagId
-            ) > -1
-        ).length
-    );
-    return newMentors;
+  const filterMentors = (tags: string[]) => {
+    let newMentors = searchText
+      ? fuse.search(searchText).map((x) => x.item)
+      : unfiltered;
+    if (!tags.length) {
+      setMentors(newMentors);
+      return;
+    }
+    newMentors = newMentors.filter((profile) => {
+      const profileTagIds = profile.profileTags.map(
+        (profileTag) => profileTag.profileTagId
+      );
+      for (const tag of tags) {
+        if (!profileTagIds.includes(tag)) {
+          return false;
+        }
+      }
+      return true;
+    });
+    setMentors(newMentors);
   };
 
   useEffect(() => {
-    setMentors(
-      searchText ? fuse.search(searchText).map((x) => x.item) : filterByTags()
-    );
+    filterMentors(filteredTags);
   }, [searchText]);
 
   // const sortDropdown = () => {
@@ -93,89 +87,32 @@ const ViewMentorsPage: Page = () => {
   //     </div>
   //   );
   // };
-  console.log(filteredTags);
   return (
     <Fragment>
-      <Modal isOpen={filterModalOpen} onClose={() => false}>
-        <div className="flex flex-col space-y-4">
-          <Text h3 b>
-            Filter Tags
-          </Text>
-          {profileTagsData &&
-          profileTagsData.getProfileTagsByProgram.length > 0 ? (
-            <div className="grid grid-cols-4 gap-2">
-              {profileTagsData.getProfileTagsByProgram.map((tag) => {
-                return (
-                  <Checkbox
-                    key={tag.profileTagId}
-                    label={tag.name}
-                    onCheck={(checked) => {
-                      let newFilteredTags: { [key: string]: string } =
-                        filteredTags;
-                      if (checked) {
-                        newFilteredTags![tag.profileTagId] = tag.name;
-                      } else {
-                        delete newFilteredTags![tag.profileTagId];
-                      }
-
-                      setFilteredTags(newFilteredTags);
-                    }}
-                  />
-                );
-              })}
-            </div>
-          ) : (
-            <div className="py-6">
-              <Text i className="text-secondary">
-                This program hasn't set up their tags yet.
-              </Text>
-            </div>
-          )}
-          <Button
-            className="self-center"
-            size="small"
-            onClick={() => {
-              setMentors(filterByTags());
-              setFilterModalOpen(false);
-            }}
-          >
-            Finish
-          </Button>
-        </div>
-      </Modal>
       <div className="flex justify-between">
         <Text b h2>
           All Mentors
         </Text>
         {/* {sortDropdown()} */}
       </div>
-      <div className="flex items-center space-x-2">
-        <Input
-          className="w-full"
-          placeholder="Search..."
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-        />
-        <Filter
-          className="hover:cursor-pointer"
-          onClick={() => setFilterModalOpen(true)}
-        />
-      </div>
+      <Input
+        className="w-full"
+        placeholder="Search..."
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
+      />
       <div className="h-4" />
-      <div className="flex items-center">
-        <Text>Current Filters:</Text>
+      <div className="flex">
+        <Text className="w-full">Tag Filters:</Text>
         <div className="w-2" />
-        {filteredTags && Object.keys(filteredTags).length > 0 ? (
-          <div className="flex items-center space-x-2">
-            {Object.values(filteredTags).map((tagName) => (
-              <Tag variant="outline" key={tagName}>
-                {tagName}
-              </Tag>
-            ))}
-          </div>
-        ) : (
-          <Text i>None</Text>
-        )}
+        <TagSelector
+          selectableTags={profileTagsData?.getProfileTagsByProgram || []}
+          selectedTagIds={filteredTags}
+          onChange={(newSelectedTagIds: string[]) => {
+            setFilteredTags(newSelectedTagIds);
+            filterMentors(newSelectedTagIds);
+          }}
+        />
       </div>
       <div className="h-4" />
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">

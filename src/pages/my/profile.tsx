@@ -44,7 +44,6 @@ const GeneralProfile: Page = () => {
     }
   };
 
-  console.log(data?.getMyUser.profilePictureUrl);
   return (
     <div className="h-screen bg-tertiary flex flex-col items-center py-10 overflow-y-auto">
       <CatchUnsavedChangesModal unsavedChangesExist={modified === true} />
