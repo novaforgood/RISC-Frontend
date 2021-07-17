@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { Fragment, useState } from "react";
 import { Button, Card, Modal, Text } from "../components/atomic";
+import AuthModal from "../components/AuthModal";
 import Form from "../components/Form";
 import {
   ApplicationStatus,
