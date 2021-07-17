@@ -6,41 +6,45 @@ import TitledInput from "./TitledInput";
 type AuthModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  isLogin: boolean;
   programName: string;
 };
 
-const AuthModal = ({
-  isOpen,
-  onClose,
-  isLogin,
-  programName,
-}: AuthModalProps) => {
+const AuthModal = ({ isOpen, onClose, programName }: AuthModalProps) => {
+  const [isLogin, setIsLogin] = useState(false);
   const [termsChecked, setTermsChecked] = useState(false);
   //const { signUpWithEmail, signInWithGoogle, signOut } = useAuth();
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <img src="/static/Close.svg" />
-      <div className="flex flex-col space-y-6">
+      <div className="flex flex-col space-y-6 w-39rem">
+        <button
+          onClick={onClose}
+          className="cursor-pointer focus:outline-none self-end"
+        >
+          <img src="/static/Close.svg" className="h-4 w-4" />
+        </button>
         {isLogin ? (
-          <div className="flex flex-col space-y-2">
+          <div className="flex flex-col space-y-1">
             <Text h3 b>
               Login to join {programName}
             </Text>
             <Text>
               Don't have a <Text>Mentor Center </Text>account?{" "}
-              <Text u>Sign up</Text>
+              <button onClick={() => setIsLogin(false)}>
+                <Text u>Sign up</Text>
+              </button>
             </Text>
           </div>
         ) : (
-          <div className="flex flex-col space-y-2">
+          <div className="flex flex-col space-y-1">
             <Text h3 b>
               Create an account to join {programName}
             </Text>
             <Text>
               Already have a <Text>Mentor Center </Text>account?{" "}
-              <Text u>Login</Text>
+              <button onClick={() => setIsLogin(true)}>
+                <Text u>Login</Text>
+              </button>
             </Text>
           </div>
         )}
