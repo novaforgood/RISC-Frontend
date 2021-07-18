@@ -13,6 +13,7 @@ module.exports = {
       black: { DEFAULT: "#000000" },
       skyblue: { DEFAULT: "#7AC5F8" },
       darkblue: { DEFAULT: "#2B4B7B" },
+      beige: { DEFAULT: "#F9F4EB" },
     },
 
     fontFamily: {

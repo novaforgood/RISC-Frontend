@@ -36,9 +36,9 @@ const Text = ({
 }: TextProps) => {
   let styles = classNames(
     "font-sans",
-    { "text-h1": h1 },
-    { "text-h2": h2 },
-    { "text-h3": h3 },
+    { "text-h1 leading-tight": h1 },
+    { "text-h2 leading-tight": h2 },
+    { "text-h3 leading-tight": h3 },
     { "text-body-1": b1 },
     { "text-body-2": b2 },
     { "text-caption": caption },
