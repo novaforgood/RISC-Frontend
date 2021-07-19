@@ -2,8 +2,9 @@ import { RawDraftContentState } from "draft-js";
 import type { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
 import { Button, Card, Text } from "../../../components/atomic";
+import AuthModal from "../../../components/Authentication/AuthModal";
 import ErrorScreen, { ErrorScreenType } from "../../../components/ErrorScreen";
 import {
   defaultContentState,
@@ -85,29 +86,51 @@ const ReadOnlyHome = ({
   homepage,
   inProgram = false,
 }: DisplayProgramHomepageProps & { inProgram?: boolean }) => {
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const authorizationLevel = useAuthorizationLevel();
   const router = useRouter();
 
   const JSONHomepage: RawDraftContentState = getRawContentState(homepage);
   return (
     //TODO: Figure out whether the buttons at the top should be sticky
     <div className="box-border bg-tertiary min-h-full pt-16 lg:pt-32 overflow-hidden">
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        programName={name}
+      />
       {inProgram ? (
         <></>
       ) : (
         <div className="flex transform -translate-y-14 lg:-translate-y-20 float-right z-10">
-          <Link href={router.asPath + "/apply?as=mentor"}>
-            <Button variant="inverted" size="small">
-              Apply as Mentor
-            </Button>
-          </Link>
+          <Button
+            variant="inverted"
+            size="small"
+            onClick={() => {
+              if (authorizationLevel === AuthorizationLevel.Unauthenticated) {
+                setAuthModalOpen(true);
+              } else {
+                router.push(router.asPath + "/apply?as=mentor");
+              }
+            }}
+          >
+            Apply as Mentor
+          </Button>
 
           <div className="w-4" />
 
-          <Link href={router.asPath + "/apply?as=mentee"}>
-            <Button variant="solid" size="small">
-              Apply as Mentee
-            </Button>
-          </Link>
+          <Button
+            size="small"
+            onClick={() => {
+              if (authorizationLevel === AuthorizationLevel.Unauthenticated) {
+                setAuthModalOpen(true);
+              } else {
+                router.push(router.asPath + "/apply?as=mentee");
+              }
+            }}
+          >
+            Apply as Mentee
+          </Button>
         </div>
       )}
       <Card className="box-border w-full px-16 py-10 ">

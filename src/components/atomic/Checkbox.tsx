@@ -22,7 +22,7 @@ const Checkbox = ({
   });
 
   return (
-    <div className="relative flex items-center p-4">
+    <div className="relative flex items-center">
       <svg className="h-5 w-5 fill-none stroke-white stroke-2 strokeLinecap-round absolute z-10 pointer-events-none">
         <path xmlns="http://www.w3.org/2000/svg" d="M 4,11 8,14.5 16,5" />
       </svg>
