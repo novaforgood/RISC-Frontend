@@ -160,30 +160,33 @@ const CreateProgramPage: Page = () => {
         <Text className="text-secondary">
           What is the name of your mentorship program?
         </Text>
+        <form className="space-y-6">
+          <div className="w-full">
+            <Input
+              name="Program Name"
+              placeholder="e.g. Nova Mentorship"
+              value={programName}
+              className="w-full"
+              onChange={(e) => {
+                setProgramName(e.target.value);
+              }}
+            />
+          </div>
 
-        <div className="w-full">
-          <Input
-            name="Program Name"
-            placeholder="e.g. Nova Mentorship"
-            value={programName}
-            className="w-full"
-            onChange={(e) => {
-              setProgramName(e.target.value);
+          <Button
+            type="submit"
+            disabled={programName.length == 0}
+            onClick={(e) => {
+              e.preventDefault();
+              if (validateProgramName(programName)) {
+                setStage((prev) => prev + 1);
+                setError("");
+              } else setError("Please enter a program name.");
             }}
-          />
-        </div>
-
-        <Button
-          disabled={programName.length == 0}
-          onClick={() => {
-            if (validateProgramName(programName)) {
-              setStage((prev) => prev + 1);
-              setError("");
-            } else setError("Please enter a program name.");
-          }}
-        >
-          Next
-        </Button>
+          >
+            Next
+          </Button>
+        </form>
 
         <Text className="text-error">{displayError}</Text>
       </div>
@@ -211,54 +214,58 @@ const CreateProgramPage: Page = () => {
             onSrcChange={setProgramLogoURL}
           />
         </div>
-
-        <div>
-          <Text b>Identifier</Text>
-          <div className="h-2" />
-          <div className="inline space-x-2">
-            <Text b2>www.mentorcenter.us/ </Text>
-            <Input
-              title="Identifier"
-              name="Program Identifier"
-              placeholder="mentorship-identifier"
-              value={programIdentifier}
-              className="flex-1"
-              onChange={(e) => {
-                setProgramIdentifier(e.target.value);
-              }}
-            />
+        <form className="space-y-10">
+          <div>
+            <Text b>Identifier</Text>
+            <div className="h-2" />
+            <div className="inline space-x-2">
+              <Text b2>www.mentorcenter.us/ </Text>
+              <Input
+                title="Identifier"
+                name="Program Identifier"
+                placeholder="mentorship-identifier"
+                value={programIdentifier}
+                className="flex-1"
+                onChange={(e) => {
+                  setProgramIdentifier(e.target.value);
+                }}
+              />
+            </div>
           </div>
-        </div>
 
-        <div className="flex">
-          <Button
-            variant="inverted"
-            onClick={() => {
-              setStage((prev) => prev - 1);
-            }}
-          >
-            Back
-          </Button>
-          <div className="w-4"></div>
-          <Button
-            disabled={loading || programIdentifier.length == 0}
-            onClick={() => {
-              if (!validateProgramIdentifier(programIdentifier))
-                setError(
-                  "Your program identifier must be alphanumeric and have at least 4 characters."
-                );
-              else if (
-                !loading &&
-                validateProgramIdentifier(programIdentifier)
-              ) {
-                setError("");
-                callCreateProgram();
-              }
-            }}
-          >
-            Create!
-          </Button>
-        </div>
+          <div className="flex">
+            <Button
+              type="reset"
+              variant="inverted"
+              onClick={() => {
+                setStage((prev) => prev - 1);
+              }}
+            >
+              Back
+            </Button>
+            <div className="w-4"></div>
+            <Button
+              type="submit"
+              disabled={loading || programIdentifier.length == 0}
+              onClick={(e) => {
+                e.preventDefault();
+                if (!validateProgramIdentifier(programIdentifier))
+                  setError(
+                    "Your program identifier must be alphanumeric and have at least 4 characters."
+                  );
+                else if (
+                  !loading &&
+                  validateProgramIdentifier(programIdentifier)
+                ) {
+                  setError("");
+                  callCreateProgram();
+                }
+              }}
+            >
+              Create!
+            </Button>
+          </div>
+        </form>
 
         <Text className="text-error">{displayError}</Text>
       </div>

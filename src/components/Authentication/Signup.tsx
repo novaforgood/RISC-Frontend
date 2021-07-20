@@ -102,6 +102,7 @@ const Signup = ({
           />
           <TitledInput
             title="Password"
+            type="password"
             name="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -114,14 +115,16 @@ const Signup = ({
               setTermsChecked(checked);
             }}
           />
-          <Text className="text-secondary cursor-pointer">
+          <Text className="text-secondary">
             I read and agree to the{" "}
-            <Text b u className="hover:text-primary">
+            <Text b u className="hover:text-primary cursor-pointer">
               Terms & Conditions
             </Text>
           </Text>
         </div>
-        {error}
+        <div>
+          <Text className="text-error">{error}</Text>
+        </div>
         <Button
           type="submit"
           onClick={(e) => {

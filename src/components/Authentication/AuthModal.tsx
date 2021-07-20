@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { Text, Modal } from "../atomic";
 import Login from "./Login";
@@ -9,13 +10,11 @@ type AuthModalProps = {
   programName: string;
 };
 
-const reload = () => {
-  location.reload();
-};
-
 const AuthModal = ({ isOpen, onClose, programName }: AuthModalProps) => {
   const [isLogin, setIsLogin] = useState(false);
+  const router = useRouter();
 
+  console.log(router);
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="flex flex-col w-36rem">
@@ -34,15 +33,16 @@ const AuthModal = ({ isOpen, onClose, programName }: AuthModalProps) => {
               <Text>
                 Don't have a <Text>Mentor Center </Text>account?{" "}
                 <button onClick={() => setIsLogin(false)}>
-                  <Text u>Sign up</Text>
+                  <Text u>Sign up now</Text>
                 </button>
               </Text>
             </div>
+            <div className="h-6" />
             <Login />
           </div>
         ) : (
           <div>
-            <div className="flex flex-col space-y-1">
+            <div className="flex flex-col">
               <Text h3 b>
                 Create an account to join {programName}
               </Text>
@@ -53,9 +53,17 @@ const AuthModal = ({ isOpen, onClose, programName }: AuthModalProps) => {
                 </button>
               </Text>
             </div>
+            <div className="h-6" />
             <Signup
-              onSuccessfulGoogleSignup={reload}
-              onSuccessfulEmailSignup={reload}
+              onSuccessfulGoogleSignup={() => {
+                location.reload();
+              }}
+              onSuccessfulEmailSignup={() => {
+                router.push({
+                  path: "/verify",
+                  query: { to: router.pathname },
+                });
+              }}
             />
           </div>
         )}

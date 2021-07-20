@@ -31,7 +31,7 @@ const Checkbox = ({
         {...props}
         className={checkboxStyles}
         checked={checked}
-        onClick={() => {
+        onChange={() => {
           onCheck(!checked);
         }}
       />

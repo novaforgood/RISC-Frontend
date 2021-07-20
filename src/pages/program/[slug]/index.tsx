@@ -107,7 +107,10 @@ const ReadOnlyHome = ({
             variant="inverted"
             size="small"
             onClick={() => {
-              if (authorizationLevel === AuthorizationLevel.Unauthenticated) {
+              if (
+                authorizationLevel === AuthorizationLevel.Unauthenticated ||
+                authorizationLevel === AuthorizationLevel.Unverified
+              ) {
                 setAuthModalOpen(true);
               } else {
                 router.push(router.asPath + "/apply?as=mentor");
@@ -122,7 +125,10 @@ const ReadOnlyHome = ({
           <Button
             size="small"
             onClick={() => {
-              if (authorizationLevel === AuthorizationLevel.Unauthenticated) {
+              if (
+                authorizationLevel === AuthorizationLevel.Unauthenticated ||
+                authorizationLevel === AuthorizationLevel.Unverified
+              ) {
                 setAuthModalOpen(true);
               } else {
                 router.push(router.asPath + "/apply?as=mentee");
