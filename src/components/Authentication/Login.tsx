@@ -1,6 +1,5 @@
 import Link from "next/link";
 import React, { useState } from "react";
-import { AuthorizationLevel, useAuthorizationLevel } from "../../hooks";
 import { useAuth } from "../../utils/firebase/auth";
 import { Text, Button } from "../atomic";
 import TitledInput from "../TitledInput";

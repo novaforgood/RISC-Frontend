@@ -1,6 +1,5 @@
 import { RawDraftContentState } from "draft-js";
 import type { GetServerSideProps } from "next";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { Button, Card, Text } from "../../../components/atomic";
@@ -20,6 +19,7 @@ import {
 } from "../../../generated/page";
 import { AuthorizationLevel, useAuthorizationLevel } from "../../../hooks";
 import AuthorizationWrapper from "../../../layouts/AuthorizationWrapper";
+import SignedInAsWrapper from "../../../layouts/SignedInAsWrapper";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../layouts/PageContainer";
 import Page from "../../../types/Page";
@@ -186,7 +186,11 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
       case AuthorizationLevel.Mentor:
         return <ReadOnlyHome {...program} inProgram={true} />;
       default:
-        return <ReadOnlyHome {...program} />;
+        return (
+          <SignedInAsWrapper>
+            <ReadOnlyHome {...program} />
+          </SignedInAsWrapper>
+        );
     }
   };
   return <PageContainer>{getProgramPage()}</PageContainer>;
