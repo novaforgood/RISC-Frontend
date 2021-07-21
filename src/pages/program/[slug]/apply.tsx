@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { Button, Card, Text } from "../../../components/atomic";
+import AuthModal from "../../../components/Authentication/AuthModal";
 import ErrorScreen, { ErrorScreenType } from "../../../components/ErrorScreen";
 import Form from "../../../components/Form";
 import {
@@ -16,7 +17,6 @@ import {
   useCurrentProgram,
 } from "../../../hooks";
 import AuthorizationWrapper from "../../../layouts/AuthorizationWrapper";
-import RedirectIfNotLoggedIn from "../../../layouts/RedirectIfNotLoggedIn";
 import SignedInAsWrapper from "../../../layouts/SignedInAsWrapper";
 import { Question } from "../../../types/Form";
 import Page from "../../../types/Page";
@@ -200,11 +200,11 @@ const ProgramApplyPage: Page = (_) => {
           </SignedInAsWrapper>
         </div>
       </div>
-      {user == null ? (
-        <RedirectIfNotLoggedIn
-          pathAfterLoggingIn={`${router.asPath}`}
-        ></RedirectIfNotLoggedIn>
-      ) : null}
+      <AuthModal
+        isOpen={user == null}
+        onClose={() => {}}
+        programName={currentProgram.name}
+      />
     </>
   );
 };
