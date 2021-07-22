@@ -103,16 +103,18 @@ const ViewMentorsPage: Page = () => {
       />
       <div className="h-4" />
       <div className="flex">
-        <Text className="w-full">Tag Filters:</Text>
+        <Text>Tag Filters:</Text>
         <div className="w-2" />
-        <TagSelector
-          selectableTags={profileTagsData?.getProfileTagsByProgram || []}
-          selectedTagIds={filteredTags}
-          onChange={(newSelectedTagIds: string[]) => {
-            setFilteredTags(newSelectedTagIds);
-            filterMentors(newSelectedTagIds);
-          }}
-        />
+        <div className="w-9/10">
+          <TagSelector
+            selectableTags={profileTagsData?.getProfileTagsByProgram || []}
+            selectedTagIds={filteredTags}
+            onChange={(newSelectedTagIds: string[]) => {
+              setFilteredTags(newSelectedTagIds);
+              filterMentors(newSelectedTagIds);
+            }}
+          />
+        </div>
       </div>
       <div className="h-4" />
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
