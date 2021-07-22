@@ -24,8 +24,8 @@ const getAuthorizationLevel = (
   programSlug: string
 ): AuthorizationLevel => {
   if (!user) return AuthorizationLevel.Unauthenticated;
-  if (!myUserData) return AuthorizationLevel.WaitingForUserData;
   if (!user.emailVerified) return AuthorizationLevel.Unverified;
+  if (!myUserData) return AuthorizationLevel.WaitingForUserData;
 
   for (let profile of myUserData.profiles) {
     if (profile.program.slug === programSlug) {

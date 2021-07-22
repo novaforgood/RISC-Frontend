@@ -14,6 +14,7 @@ const Login = ({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const { signInWithEmail, signInWithGoogle } = useAuth();
 
   return (
@@ -81,9 +82,10 @@ const Login = ({
         </div>
         <Button
           type="submit"
+          disabled={loading}
           onClick={(e) => {
             e.preventDefault();
-
+            setLoading(true);
             signInWithEmail(email, password)
               .then((res) => {
                 if (res) {
@@ -94,8 +96,10 @@ const Login = ({
                   }
                 }
               })
+              .finally(() => setLoading(false))
               .catch((error) => {
                 setError(error.message);
+                setLoading(false);
               });
           }}
         >

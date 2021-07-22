@@ -12,7 +12,6 @@ import {
   useUploadImageAndResizeMutation,
 } from "../generated/graphql";
 import AuthorizationWrapper from "../layouts/AuthorizationWrapper";
-import RedirectIfNotLoggedIn from "../layouts/RedirectIfNotLoggedIn";
 import Page from "../types/Page";
 
 const defaultMentorApplication = [
@@ -143,9 +142,6 @@ const CreateProgramPage: Page = () => {
         if (err.message.includes("duplicate key value violates unique"))
           setError(`Error: Slug "${programIdentifier}" already exists`);
         else setError("Error: " + err.message);
-      })
-      .finally(() => {
-        setLoading(false);
       });
   };
 
@@ -172,20 +168,30 @@ const CreateProgramPage: Page = () => {
               }}
             />
           </div>
-
-          <Button
-            type="submit"
-            disabled={programName.length == 0}
-            onClick={(e) => {
-              e.preventDefault();
-              if (validateProgramName(programName)) {
-                setStage((prev) => prev + 1);
-                setError("");
-              } else setError("Please enter a program name.");
-            }}
-          >
-            Next
-          </Button>
+          <div className="flex justify-between">
+            <Button
+              type="reset"
+              variant="inverted"
+              onClick={() => {
+                router.back();
+              }}
+            >
+              Back
+            </Button>
+            <Button
+              type="submit"
+              disabled={programName.length == 0}
+              onClick={(e) => {
+                e.preventDefault();
+                if (validateProgramName(programName)) {
+                  setStage((prev) => prev + 1);
+                  setError("");
+                } else setError("Please enter a program name.");
+              }}
+            >
+              Next
+            </Button>
+          </div>
         </form>
 
         <Text className="text-error">{displayError}</Text>
@@ -300,11 +306,7 @@ const CreateProgramPage: Page = () => {
 };
 
 CreateProgramPage.getLayout = (page, _) => (
-  <AuthorizationWrapper>
-    <RedirectIfNotLoggedIn pathAfterLoggingIn="/create">
-      {page}
-    </RedirectIfNotLoggedIn>
-  </AuthorizationWrapper>
+  <AuthorizationWrapper>{page}</AuthorizationWrapper>
 );
 
 export default CreateProgramPage;

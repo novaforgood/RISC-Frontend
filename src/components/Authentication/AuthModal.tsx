@@ -7,14 +7,13 @@ import Signup from "./Signup";
 type AuthModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  programName: string;
+  programName?: string;
 };
 
-const AuthModal = ({ isOpen, onClose, programName }: AuthModalProps) => {
+const AuthModal = ({ isOpen, onClose, programName = "" }: AuthModalProps) => {
   const [isLogin, setIsLogin] = useState(false);
   const router = useRouter();
 
-  console.log(router);
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="flex flex-col w-36rem">
@@ -27,9 +26,15 @@ const AuthModal = ({ isOpen, onClose, programName }: AuthModalProps) => {
         {isLogin ? (
           <div>
             <div className="flex flex-col space-y-1">
-              <Text h3 b>
-                Login to join {programName}
-              </Text>
+              {programName ? (
+                <Text h3 b>
+                  Login to join {programName}
+                </Text>
+              ) : (
+                <Text h3 b>
+                  Login to Access the Mentor Center
+                </Text>
+              )}
               <Text>
                 Don't have a <Text>Mentor Center </Text>account?{" "}
                 <button onClick={() => setIsLogin(false)}>
@@ -43,9 +48,15 @@ const AuthModal = ({ isOpen, onClose, programName }: AuthModalProps) => {
         ) : (
           <div>
             <div className="flex flex-col">
-              <Text h3 b>
-                Create an account to join {programName}
-              </Text>
+              {programName ? (
+                <Text h3 b>
+                  Create an account to join {programName}
+                </Text>
+              ) : (
+                <Text h3 b>
+                  Create an account to access the Mentor Center
+                </Text>
+              )}
               <Text>
                 Already have a <Text>Mentor Center </Text>account?{" "}
                 <button onClick={() => setIsLogin(true)}>
@@ -60,8 +71,8 @@ const AuthModal = ({ isOpen, onClose, programName }: AuthModalProps) => {
               }}
               onSuccessfulEmailSignup={() => {
                 router.push({
-                  path: "/verify",
-                  query: { to: router.pathname },
+                  pathname: "/verify",
+                  query: { to: router.asPath },
                 });
               }}
             />

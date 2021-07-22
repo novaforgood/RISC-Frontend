@@ -5,6 +5,7 @@ import { Text } from "../components/atomic";
 import Page from "../types/Page";
 import { redirectAfterAuthentication } from "../utils";
 import Signup from "../components/Authentication/Signup";
+import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24 md:h-64 md:w-64 lg:h-80 lg:w-80";
@@ -18,7 +19,16 @@ const BlobCircle = () => {
 };
 
 const SignUpPage: Page = () => {
+  const authorizationLevel = useAuthorizationLevel();
   const router = useRouter();
+
+  if (
+    authorizationLevel !== AuthorizationLevel.Unverified &&
+    authorizationLevel !== AuthorizationLevel.Unauthenticated
+  ) {
+    router.push("/");
+    return <div>Logged in. Redirecting...</div>;
+  }
 
   return (
     <div className="flex w-screen min-h-screen">

@@ -1,6 +1,7 @@
 import { Menu, Transition } from "@headlessui/react";
 import classNames from "classnames";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { Text } from "../../components/atomic";
 import { useGetMyUserQuery } from "../../generated/graphql";
@@ -10,8 +11,20 @@ import LocalStorage from "../../utils/localstorage";
 const ProgramDropdown = () => {
   const { currentProgram } = useCurrentProgram();
   const { data } = useGetMyUserQuery();
+  const router = useRouter();
 
-  return (
+  return router.pathname === "/" ? (
+    <div className="flex p-2 items-center ">
+      <img
+        className="h-10 w-10 object-contain border border-inactive rounded"
+        src={currentProgram?.iconUrl || "/static/DefaultLogo.svg"}
+      />
+      <div className="w-3 flex-shrink-0" />
+      <Text className="whitespace-nowrap truncate" b>
+        Mentor Center
+      </Text>
+    </div>
+  ) : (
     <div>
       <Menu as="div" className="relative text-left">
         <Menu.Button className="w-full outline-none focus:outline-none">

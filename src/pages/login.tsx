@@ -5,6 +5,7 @@ import { Button, Input, Text } from "../components/atomic";
 import TitledInput from "../components/TitledInput";
 import { useAuth } from "../utils/firebase/auth";
 import { redirectAfterAuthentication } from "../utils";
+import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24 md:h-64 md:w-64 lg:h-80 lg:w-80";
@@ -22,7 +23,16 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayError, setError] = useState("");
+  const authorizationLevel = useAuthorizationLevel();
   const router = useRouter();
+
+  if (
+    authorizationLevel !== AuthorizationLevel.Unverified &&
+    authorizationLevel !== AuthorizationLevel.Unauthenticated
+  ) {
+    router.push("/");
+    return <div>Logged in. Redirecting...</div>;
+  }
 
   return (
     <div className="flex w-screen min-h-screen relative">

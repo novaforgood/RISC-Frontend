@@ -9,6 +9,7 @@ const Verify = () => {
   const { user, signOut } = useAuth();
   const router = useRouter();
 
+  //If user is already logged in and verified
   if (user?.emailVerified || !user) {
     redirectAfterAuthentication(router);
     return <div>Rerouting...</div>;

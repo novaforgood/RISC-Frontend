@@ -16,7 +16,6 @@ import {
   useAuthorizationLevel,
   useCurrentProgram,
 } from "../../../hooks";
-import AuthorizationWrapper from "../../../layouts/AuthorizationWrapper";
 import SignedInAsWrapper from "../../../layouts/SignedInAsWrapper";
 import { Question } from "../../../types/Form";
 import Page from "../../../types/Page";
@@ -201,7 +200,9 @@ const ProgramApplyPage: Page = (_) => {
         </div>
       </div>
       <AuthModal
-        isOpen={user == null}
+        isOpen={
+          user == null || authorizationLevel === AuthorizationLevel.Unverified
+        }
         onClose={() => {}}
         programName={currentProgram.name}
       />
@@ -209,8 +210,6 @@ const ProgramApplyPage: Page = (_) => {
   );
 };
 
-ProgramApplyPage.getLayout = (page) => (
-  <AuthorizationWrapper>{page}</AuthorizationWrapper>
-);
+ProgramApplyPage.getLayout = (page) => <>{page}</>;
 
 export default ProgramApplyPage;

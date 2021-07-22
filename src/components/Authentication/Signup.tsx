@@ -3,6 +3,8 @@ import {
   CreateUserInput,
   useCreateUserMutation,
 } from "../../generated/graphql";
+import { AuthorizationLevel, useAuthorizationLevel } from "../../hooks";
+import { validateEmail } from "../../utils";
 import { useAuth } from "../../utils/firebase/auth";
 import { Text, Button, Checkbox } from "../atomic";
 import TitledInput from "../TitledInput";
@@ -24,8 +26,10 @@ const Signup = ({
   const [password, setPassword] = useState("");
   const [termsChecked, setTermsChecked] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [createUser] = useCreateUserMutation();
   const { signUpWithEmail, signInWithGoogle, signOut } = useAuth();
+  const authorizationLevel = useAuthorizationLevel();
 
   return (
     <div className="flex flex-col space-y-6">
@@ -49,12 +53,15 @@ const Signup = ({
                   timezone: getTimezone(),
                 };
                 createUser({ variables: { data: createUserInput } }).then(
-                  onSuccessfulGoogleSignup
+                  () => {
+                    onSuccessfulGoogleSignup();
+                  }
                 );
               } else {
                 setError(
                   "An account with this email already exists. Please log in."
                 );
+                signOut();
               }
             })
             .catch((e) => {
@@ -127,11 +134,27 @@ const Signup = ({
         </div>
         <Button
           type="submit"
+          disabled={loading}
           onClick={(e) => {
             e.preventDefault();
+            if (!firstName || !lastName || !password) {
+              setError("Please fill out all of the fields.");
+              return;
+            } else if (!validateEmail(email)) {
+              setError("Please use a proper email format.");
+              return;
+            }
+            setLoading(true);
             signUpWithEmail(email, password)
               .catch((e) => {
-                setError(e.message);
+                if (authorizationLevel === AuthorizationLevel.Unverified) {
+                  setError(
+                    "This email address has already been used to sign up. Email verification is required in order to log in."
+                  );
+                } else {
+                  setError(e.message);
+                }
+                setLoading(false);
               })
               .then((res) => {
                 // TODO: Valid profilePictureURL and photoURL
@@ -151,14 +174,16 @@ const Signup = ({
                       photoURL: "",
                     }),
                   ])
-                    .then(onSuccessfulEmailSignup)
-                    .then(() => {})
+                    .then(() => {
+                      onSuccessfulEmailSignup();
+                    })
                     .catch((e) => {
                       setError(e.message);
                       signOut();
                     });
                 }
-              });
+              })
+              .finally(() => setLoading(false));
           }}
         >
           Sign Up
