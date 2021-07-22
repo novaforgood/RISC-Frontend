@@ -39,59 +39,124 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
       // Logged in but myUserData has not been retrieved yet
       return <Fragment />;
     return (
-      <div className="h-screen w-full p-8">
-        <div className="w-full flex items-center justify-between">
-          <img src="/static/DarkTextLogo.svg" />
-          <div className="flex">
-            <Button
-              variant="inverted"
-              size="small"
-              onClick={() => {
-                router.push("/login");
-              }}
-            >
-              Login
-            </Button>
-            <div className="w-4"></div>
-            <Button
-              size="small"
-              onClick={() => {
-                router.push("/signup");
-              }}
-            >
-              Sign up
-            </Button>
+      <Fragment>
+        <div className="h-screen w-full p-8">
+          <div className="w-full flex items-center justify-between">
+            <img src="/static/DarkTextLogo.svg" />
+            <div className="flex">
+              <Button
+                variant="inverted"
+                size="small"
+                onClick={() => {
+                  router.push("/login");
+                }}
+              >
+                Login
+              </Button>
+              <div className="w-4"></div>
+              <Button
+                size="small"
+                onClick={() => {
+                  router.push("/signup");
+                }}
+              >
+                Sign up
+              </Button>
+            </div>
+          </div>
+          <div className="flex justify-between px-36 pt-36 gap-8">
+            <div className="w-160 flex-shrink-0">
+              <BlobCircle />
+              <div className="h-4"></div>
+
+              <div>
+                <Text h1 b>
+                  Your mentorship program starts here
+                </Text>
+              </div>
+              <div className="h-4"></div>
+
+              <div>
+                <Text>
+                  Mentor Center works to make peer mentorship accessible and
+                  manageable for any organization.
+                </Text>
+              </div>
+              <div className="h-10"></div>
+              <Button
+                size="auto"
+                className="h-14 w-80"
+                onClick={() => {
+                  router.push("/signup");
+                }}
+              >
+                Get started for free
+              </Button>
+            </div>
+            <img src="/static/Laptop.svg"></img>
           </div>
         </div>
-        <div className="w-160 pt-36 pl-36">
-          <BlobCircle />
-          <div className="h-4"></div>
 
-          <div>
-            <Text h1 b>
-              Your mentorship program starts here
-            </Text>
-          </div>
+        <div className="w-300 mx-auto h-0.25 bg-inactive my-20"></div>
+        <div className="flex flex-col items-center justify-center">
+          <Text h2 b className="w-120 text-center">
+            Seamlessly connect mentors and mentees.
+          </Text>
           <div className="h-4"></div>
+          <Text b2 className="w-200 text-center">
+            Our platform facilitates mentor-mentee matching, empowers mentees to
+            start conversations, and streamlines the scheduling process.
+          </Text>
+          <img src="/static/GuyOnVideoCall.svg" />
+        </div>
+        <div className="w-300 mx-auto h-0.25 bg-inactive my-20"></div>
 
-          <div>
-            <Text>
-              Mentor Center works to make peer mentorship accessible and
-              manageable for any organization.
-            </Text>
+        <div className="flex flex-col items-start w-200 mx-auto">
+          <Text h2 b className="w-96">
+            Personalize your platform
+          </Text>
+          <div className="h-4"></div>
+          <Text b2 className="w-1/2">
+            Organization leaders and administrators can manage mentorship
+            programs directly on our platform.
+          </Text>
+          <div className="h-10"></div>
+          <div className="flex gap-4">
+            <div className="w-1/2 p-4 bg-beige rounded-lg flex flex-col">
+              <Text h3 b>
+                Tailored to Your Needs
+              </Text>
+              <div className="h-2"></div>
+              <Text b2>
+                Customize your program on our site to best fit your program’s
+                needs.
+              </Text>
+            </div>
+            <div className="w-1/2 p-4 bg-beige rounded-lg flex flex-col">
+              <Text h3 b>
+                A Centralized Platform
+              </Text>
+              <div className="h-2"></div>
+              <Text b2>
+                Keep track of your members on one centralized site and onboard
+                new mentors and mentees in an intuitive flow.
+              </Text>
+            </div>
           </div>
           <div className="h-10"></div>
           <Button
             size="auto"
             className="h-14 w-80"
             onClick={() => {
-              router.push("/signup");
+              router.push("/create");
             }}
           >
-            Get started for free
+            Create your program today
           </Button>
         </div>
-      </div>
+
+        <div className="w-300 mx-auto h-0.25 bg-inactive my-20"></div>
+      </Fragment>
     );
   } else if (authorizationLevel === AuthorizationLevel.Unverified) {
     router.push("/verify");
