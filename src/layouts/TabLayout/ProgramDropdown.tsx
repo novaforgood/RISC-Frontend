@@ -17,12 +17,12 @@ const ProgramDropdown = () => {
         <Menu.Button className="w-full outline-none focus:outline-none">
           <div className="flex p-2 items-center ">
             <img
-              className="h-10 w-10 object-contain border border-inactive rounded"
-              src={currentProgram?.iconUrl || "/static/DefaultLogo.svg"}
+              className="h-10 w-10 object-contain rounded"
+              src={currentProgram?.iconUrl || "/static/DarkDefaultLogo.svg"}
             />
             <div className="w-3 flex-shrink-0" />
-            <Text className="whitespace-nowrap truncate">
-              {currentProgram?.name}
+            <Text className="whitespace-nowrap truncate" b>
+              {currentProgram?.name || "Mentor Center"}
             </Text>
           </div>
         </Menu.Button>
