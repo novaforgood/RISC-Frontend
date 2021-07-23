@@ -101,15 +101,17 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
   }
 };
 
-type ProgramCardProps = {
+// ====================== LOGGED IN HOMEPAGE ======================
+
+type ProgramRowProps = {
   iconUrl: string;
   name: string;
   route: string;
 };
 
-const ProgramCard = ({ iconUrl, name, route }: ProgramCardProps) => {
+const ProgramRow = ({ iconUrl, name, route }: ProgramRowProps) => {
   return (
-    <Card className=" duration-75 bg-white p-4 flex gap-4 items-center justify-between">
+    <div className="flex items-center">
       <div className="flex gap-4 items-center">
         <img
           src={iconUrl}
@@ -118,13 +120,15 @@ const ProgramCard = ({ iconUrl, name, route }: ProgramCardProps) => {
         />
         <Text>{name}</Text>
       </div>
-
-      <Link href={`/program/${route}`}>
-        <Text u className="text-secondary hover:cursor-pointer">
-          Homepage
-        </Text>
-      </Link>
-    </Card>
+      <div className="flex-grow" />
+      <Text
+        u
+        b
+        className="text-secondary hover:cursor-pointer hover:text-primary"
+      >
+        <Link href={`/program/${route}`}>Go to Mentorship</Link>
+      </Text>
+    </div>
   );
 };
 
@@ -169,7 +173,7 @@ const ApplicationRow = ({ application }: ApplicationRowProps) => {
             setAppModalOpen(true);
           }}
         >
-          <Text u className="text-secondary">
+          <Text u b className="text-secondary hover:text-primary">
             View Application
           </Text>
         </button>
@@ -213,10 +217,36 @@ const ApplicationRow = ({ application }: ApplicationRowProps) => {
   );
 };
 
+type TitledCardProps = {
+  title: string;
+  children: JSX.Element[] | undefined;
+};
+const TitledCard = ({ title, children }: TitledCardProps) => {
+  return (
+    <Card className="w-2/3 mx-auto p-6 space-y-4">
+      <span>
+        <Text h3 b>
+          {title}
+        </Text>
+      </span>
+      <div className="grid grid-auto-rows gap-4">
+        {children?.length ? (
+          children
+        ) : (
+          <Text className="text-secondary" i>
+            None
+          </Text>
+        )}
+      </div>
+    </Card>
+  );
+};
+
 const NoMentorshipHome: Page = () => {
   const { data } = useGetMyUserApplicationsQuery();
   const { data: myUserData } = useGetMyUserQuery();
   const router = useRouter();
+  const [showApplications, setShowApplications] = useState(false);
 
   const cachedProgramSlug = LocalStorage.get("cachedProgramSlug");
   if (cachedProgramSlug !== null && typeof cachedProgramSlug === "string") {
@@ -226,53 +256,71 @@ const NoMentorshipHome: Page = () => {
 
   return (
     <NoProgramTabLayout basePath={router.asPath}>
-      <div className="p-12 bg-white">
-        <Text h2 b>
-          Welcome to the Mentor Center!
-        </Text>
-        <div className="h-2"></div>
-        <div className="h-0.25 bg-secondary w-full" />
-        <div className="h-12"></div>
-
-        {data && (
+      <div className="h-screen bg-tertiary">
+        <div className="bg-white flex flex-col pt-12 pb-2 px-20 space-y-4">
+          <div className="w-full flex justify-end">
+            <Button
+              size="small"
+              className="w-72"
+              onClick={() => {
+                router.push("/create");
+              }}
+            >
+              <Text>Create a Mentorship Program</Text>
+            </Button>
+          </div>
+          <img src="/static/HappyBlobs2.svg" className="w-40 h-40" />
           <div>
-            <Text h3 b>
-              Your Applications
+            <Text h1>
+              Welcome to the <Text b>Mentor Center</Text>!
             </Text>
-            <div className="h-4"></div>
-
-            <Card className="p-4 flex flex-col gap-4">
-              {data.getMyUser.applications.length === 0 && (
-                <Text b1 b>
-                  No Applications
+          </div>
+          <div>
+            <div className="flex space-x-8">
+              <button onClick={() => setShowApplications(false)}>
+                <Text
+                  b
+                  className={`cursor-pointer ${
+                    showApplications && "text-secondary"
+                  }`}
+                >
+                  My Mentorships
                 </Text>
-              )}
-              {data.getMyUser.applications.map((app, i) => {
+              </button>
+              <button onClick={() => setShowApplications(true)}>
+                <Text
+                  b
+                  className={`cursor-pointer ${
+                    !showApplications && "text-secondary"
+                  }`}
+                >
+                  My Applications
+                </Text>
+              </button>
+            </div>
+            <div className="h-1" />
+            <div
+              className={`w-32 h-1 bg-primary transform transition-transform ${
+                showApplications && "translate-x-40"
+              }`}
+            />
+          </div>
+        </div>
+        <div className="p-6">
+          {showApplications ? (
+            <TitledCard title="My Applications">
+              {data?.getMyUser.applications.map((app, i) => {
                 return <ApplicationRow application={app} key={i} />;
               })}
-            </Card>
-          </div>
-        )}
-        <div className="h-8"></div>
-
-        {myUserData && (
-          <div>
-            <Text h3 b>
-              Your Mentorship Programs
-            </Text>
-            <div className="h-4"></div>
-            <div className="flex gap-4 flex-wrap">
-              {myUserData.getMyUser.profiles.length === 0 && (
-                <Text b1 b>
-                  No Applications
-                </Text>
-              )}
-              {myUserData.getMyUser.profiles.map((profile, i) => {
+            </TitledCard>
+          ) : (
+            <TitledCard title="My Mentorships">
+              {myUserData?.getMyUser.profiles.map((profile, i) => {
                 const { program } = profile;
 
                 return (
-                  <div className="w-80" key={i}>
-                    <ProgramCard
+                  <div key={i}>
+                    <ProgramRow
                       iconUrl={program.iconUrl}
                       name={program.name}
                       route={program.slug}
@@ -280,20 +328,8 @@ const NoMentorshipHome: Page = () => {
                   </div>
                 );
               })}
-            </div>
-          </div>
-        )}
-        <div className="h-8"></div>
-        <div className="w-full flex">
-          <Button
-            size="small"
-            className="w-72 mx-auto"
-            onClick={() => {
-              router.push("/create");
-            }}
-          >
-            <Text>Create a Mentorship Program</Text>
-          </Button>
+            </TitledCard>
+          )}
         </div>
       </div>
     </NoProgramTabLayout>
