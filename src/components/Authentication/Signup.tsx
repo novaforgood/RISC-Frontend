@@ -65,6 +65,7 @@ const Signup = ({
               }
             })
             .catch((e) => {
+              setLoading(false);
               setError(e.message);
             })
         }
@@ -183,7 +184,10 @@ const Signup = ({
                     });
                 }
               })
-              .finally(() => setLoading(false));
+              .catch((e) => {
+                setLoading(false);
+                setError(e.message);
+              });
           }}
         >
           Sign Up

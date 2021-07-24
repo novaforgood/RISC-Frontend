@@ -3,7 +3,7 @@ import type { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { Button, Card, Text } from "../../../components/atomic";
-import AuthModal from "../../../components/Authentication/AuthModal";
+import AuthenticationModal from "../../../components/Authentication/AuthenticationModal";
 import ErrorScreen, { ErrorScreenType } from "../../../components/ErrorScreen";
 import {
   defaultContentState,
@@ -18,7 +18,7 @@ import {
   ssrGetProgramBySlug,
 } from "../../../generated/page";
 import { AuthorizationLevel, useAuthorizationLevel } from "../../../hooks";
-import SignedInAsWrapper from "../../../layouts/SignedInAsWrapper";
+import SignedInAsIndicator from "../../../layouts/SignedInAsIndicator";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../layouts/PageContainer";
 import Page from "../../../types/Page";
@@ -85,7 +85,7 @@ const ReadOnlyHome = ({
   homepage,
   inProgram = false,
 }: DisplayProgramHomepageProps & { inProgram?: boolean }) => {
-  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authenticationModalOpen, setAuthenticationModalOpen] = useState(false);
   const authorizationLevel = useAuthorizationLevel();
   const router = useRouter();
 
@@ -93,9 +93,9 @@ const ReadOnlyHome = ({
   return (
     //TODO: Figure out whether the buttons at the top should be sticky
     <div className="box-border bg-tertiary min-h-full pt-16 lg:pt-32 overflow-hidden">
-      <AuthModal
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
+      <AuthenticationModal
+        isOpen={authenticationModalOpen}
+        onClose={() => setAuthenticationModalOpen(false)}
         programName={name}
       />
       {inProgram ? (
@@ -110,7 +110,7 @@ const ReadOnlyHome = ({
                 authorizationLevel === AuthorizationLevel.Unauthenticated ||
                 authorizationLevel === AuthorizationLevel.Unverified
               ) {
-                setAuthModalOpen(true);
+                setAuthenticationModalOpen(true);
               } else {
                 router.push(router.asPath + "/apply?as=mentor");
               }
@@ -128,7 +128,7 @@ const ReadOnlyHome = ({
                 authorizationLevel === AuthorizationLevel.Unauthenticated ||
                 authorizationLevel === AuthorizationLevel.Unverified
               ) {
-                setAuthModalOpen(true);
+                setAuthenticationModalOpen(true);
               } else {
                 router.push(router.asPath + "/apply?as=mentee");
               }
@@ -186,9 +186,10 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
         return <ReadOnlyHome {...program} inProgram={true} />;
       default:
         return (
-          <SignedInAsWrapper>
+          <>
+            <SignedInAsIndicator />
             <ReadOnlyHome {...program} />
-          </SignedInAsWrapper>
+          </>
         );
     }
   };

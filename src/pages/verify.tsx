@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import { Button, Card, Text } from "../components/atomic";
 import { useAuth } from "../utils/firebase/auth";
 import { redirectAfterAuthentication } from "../utils";
@@ -12,7 +12,7 @@ const Verify = () => {
   //If user is already logged in and verified
   if (user?.emailVerified || !user) {
     redirectAfterAuthentication(router);
-    return <div>Rerouting...</div>;
+    return <Fragment />;
   }
 
   return (

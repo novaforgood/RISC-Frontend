@@ -4,19 +4,23 @@ import { Text, Modal } from "../atomic";
 import Login from "./Login";
 import Signup from "./Signup";
 
-type AuthModalProps = {
+type AuthenticationModalProps = {
   isOpen: boolean;
   onClose: () => void;
   programName?: string;
 };
 
-const AuthModal = ({ isOpen, onClose, programName = "" }: AuthModalProps) => {
+const AuthenticationModal = ({
+  isOpen,
+  onClose,
+  programName = "",
+}: AuthenticationModalProps) => {
   const [isLogin, setIsLogin] = useState(false);
   const router = useRouter();
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="flex flex-col w-36rem">
+      <div className="flex flex-col w-144">
         <button
           onClick={onClose}
           className="cursor-pointer focus:outline-none self-end"
@@ -28,11 +32,11 @@ const AuthModal = ({ isOpen, onClose, programName = "" }: AuthModalProps) => {
             <div className="flex flex-col space-y-1">
               {programName ? (
                 <Text h3 b>
-                  Login to join {programName}
+                  Login to join <Text i>{programName}</Text>
                 </Text>
               ) : (
                 <Text h3 b>
-                  Login to Access the Mentor Center
+                  Login to access the Mentor Center
                 </Text>
               )}
               <Text>
@@ -50,7 +54,7 @@ const AuthModal = ({ isOpen, onClose, programName = "" }: AuthModalProps) => {
             <div className="flex flex-col">
               {programName ? (
                 <Text h3 b>
-                  Create an account to join {programName}
+                  Create an account to join <Text i>{programName}</Text>
                 </Text>
               ) : (
                 <Text h3 b>
@@ -83,4 +87,4 @@ const AuthModal = ({ isOpen, onClose, programName = "" }: AuthModalProps) => {
   );
 };
 
-export default AuthModal;
+export default AuthenticationModal;

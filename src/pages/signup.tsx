@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
@@ -27,7 +28,7 @@ const SignUpPage: Page = () => {
     authorizationLevel !== AuthorizationLevel.Unauthenticated
   ) {
     router.push("/");
-    return <div>Logged in. Redirecting...</div>;
+    return <Fragment />;
   }
 
   return (

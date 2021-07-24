@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { Button, Card, Text } from "../../../components/atomic";
-import AuthModal from "../../../components/Authentication/AuthModal";
+import AuthenticationModal from "../../../components/Authentication/AuthenticationModal";
 import ErrorScreen, { ErrorScreenType } from "../../../components/ErrorScreen";
 import Form from "../../../components/Form";
 import {
@@ -16,7 +16,7 @@ import {
   useAuthorizationLevel,
   useCurrentProgram,
 } from "../../../hooks";
-import SignedInAsWrapper from "../../../layouts/SignedInAsWrapper";
+import SignedInAsIndicator from "../../../layouts/SignedInAsIndicator";
 import { Question } from "../../../types/Form";
 import Page from "../../../types/Page";
 import { useAuth } from "../../../utils/firebase/auth";
@@ -110,96 +110,95 @@ const ProgramApplyPage: Page = (_) => {
               : "")
           }
         >
-          <SignedInAsWrapper>
-            <div className={formSubmitted ? "hidden" : ""}>
-              <div className="mt-9">
-                <Text h1 b>
-                  {currentProgram?.name}
-                </Text>
-              </div>
-              <div className="mt-4">
-                <Text h3>{capitalize(applicant as string)} Application</Text>
-              </div>
-              <div className="mt-6 mx-10">
-                <Form
-                  questions={getApplicationSchemaFromJson(
-                    applicant == "mentee"
-                      ? currentProgram.menteeApplicationSchemaJson
-                      : currentProgram.mentorApplicationSchemaJson
-                  )} // Should actually fetch form schema
-                  responses={responses}
-                  onChange={(newResponses) => {
-                    setFormChanged(true);
-                    setResponses(newResponses);
+          <SignedInAsIndicator />
+          <div className={formSubmitted ? "hidden" : ""}>
+            <div className="mt-9">
+              <Text h1 b>
+                {currentProgram?.name}
+              </Text>
+            </div>
+            <div className="mt-4">
+              <Text h3>{capitalize(applicant as string)} Application</Text>
+            </div>
+            <div className="mt-6 mx-10">
+              <Form
+                questions={getApplicationSchemaFromJson(
+                  applicant == "mentee"
+                    ? currentProgram.menteeApplicationSchemaJson
+                    : currentProgram.mentorApplicationSchemaJson
+                )} // Should actually fetch form schema
+                responses={responses}
+                onChange={(newResponses) => {
+                  setFormChanged(true);
+                  setResponses(newResponses);
+                }}
+                showDescriptions={false}
+                // onAutosave={(response) => {
+                //   setResponses(response);
+                // }}
+              ></Form>
+              <div className="flex justify-between mt-10">
+                <Button variant="inverted" onClick={() => router.back()}>
+                  Back
+                </Button>
+                <Button
+                  disabled={!formChanged}
+                  onClick={() => {
+                    if (!currentProgram || !user) return; // Should show an error message
+                    const createApplicationInput: CreateApplicationInput = {
+                      programId: currentProgram.programId!,
+                      applicationJson: JSON.stringify(responses),
+                      applicationType: applicationType,
+                    };
+                    createApplication({
+                      variables: { data: createApplicationInput },
+                    });
+                    setFormSubmitted(true);
                   }}
-                  showDescriptions={false}
-                  // onAutosave={(response) => {
-                  //   setResponses(response);
-                  // }}
-                ></Form>
-                <div className="flex justify-between mt-10">
-                  <Button variant="inverted" onClick={() => router.back()}>
-                    Back
-                  </Button>
-                  <Button
-                    disabled={!formChanged}
-                    onClick={() => {
-                      if (!currentProgram || !user) return; // Should show an error message
-                      const createApplicationInput: CreateApplicationInput = {
-                        programId: currentProgram.programId!,
-                        applicationJson: JSON.stringify(responses),
-                        applicationType: applicationType,
-                      };
-                      createApplication({
-                        variables: { data: createApplicationInput },
-                      });
-                      setFormSubmitted(true);
-                    }}
-                  >
-                    Submit
-                  </Button>
-                </div>
+                >
+                  Submit
+                </Button>
               </div>
             </div>
-            <div className={"mx-10" + (formSubmitted ? "" : " hidden")}>
-              <div>
-                <Text h1 b>
-                  Thank You
+          </div>
+          <div className={"mx-10" + (formSubmitted ? "" : " hidden")}>
+            <div>
+              <Text h1 b>
+                Thank You
+              </Text>
+            </div>
+            <div className="mt-6">
+              <Card className="p-9 border-inactive rounded-xl">
+                <Text b>
+                  Your application has been submitted. You will receive an email
+                  once there are updates to your application.
                 </Text>
-              </div>
-              <div className="mt-6">
-                <Card className="p-9 border-inactive rounded-xl">
-                  <Text b>
-                    Your application has been submitted. You will receive an
-                    email once there are updates to your application.
-                  </Text>
-                  <br />
-                  <br />
-                  <Text>
-                    Please contact the mentorship admin if you need to make
-                    changes to your application.
-                  </Text>
-                  <br />
-                  <br />
-                  <Text b>
-                    Go to your homepage to view your application status.
-                  </Text>
-                </Card>
-                <div className="mt-14">
-                  <Button
-                    onClick={() => {
-                      router.push("/");
-                    }}
-                  >
-                    Go to Home
-                  </Button>
-                </div>
+                <br />
+                <br />
+                <Text>
+                  Please contact the mentorship admin if you need to make
+                  changes to your application.
+                </Text>
+                <br />
+                <br />
+                <Text b>
+                  Go to your homepage to view your application status.
+                </Text>
+              </Card>
+              <div className="mt-14">
+                <Button
+                  onClick={() => {
+                    router.push("/");
+                  }}
+                >
+                  Go to Home
+                </Button>
               </div>
             </div>
-          </SignedInAsWrapper>
+          </div>
         </div>
       </div>
-      <AuthModal
+      <AuthenticationModal
         isOpen={
           user == null || authorizationLevel === AuthorizationLevel.Unverified
         }

@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import React, { Fragment } from "react";
 import ErrorScreen, { ErrorScreenType } from "../components/ErrorScreen";
 import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";
-import AuthModal from "../components/Authentication/AuthModal";
+import AuthenticationModal from "../components/Authentication/AuthenticationModal";
 
 interface AuthorizationWrapperProps {
   canView?: AuthorizationLevel[];
@@ -32,7 +32,7 @@ const AuthorizationWrapper: React.FC<AuthorizationWrapperProps> = ({
 
   return (
     <Fragment>
-      <AuthModal
+      <AuthenticationModal
         isOpen={
           authorizationLevel === AuthorizationLevel.Unauthenticated ||
           authorizationLevel === AuthorizationLevel.Unverified

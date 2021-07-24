@@ -78,7 +78,7 @@ const CreateProgramPage: Page = () => {
   const [programIdentifier, setProgramIdentifier] = useState("");
   //const [programIsPublic, setProgramIsPublic] = useState(true); // TODO: add checkbox on form for setting program public or not
   const [createProgram] = useCreateProgramMutation();
-  const [displayError, setError] = useState(""); // TODO: Proper error box
+  const [error, setError] = useState<String | null>(null); // TODO: Proper error box
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { refetch: refetchMyUserData } = useGetMyUserQuery();
@@ -137,6 +137,7 @@ const CreateProgramPage: Page = () => {
         }
       })
       .catch((err) => {
+        setLoading(false);
         console.log({ ...err });
 
         if (err.message.includes("duplicate key value violates unique"))
@@ -185,7 +186,7 @@ const CreateProgramPage: Page = () => {
                 e.preventDefault();
                 if (validateProgramName(programName)) {
                   setStage((prev) => prev + 1);
-                  setError("");
+                  setError(null);
                 } else setError("Please enter a program name.");
               }}
             >
@@ -194,7 +195,7 @@ const CreateProgramPage: Page = () => {
           </div>
         </form>
 
-        <Text className="text-error">{displayError}</Text>
+        <Text className="text-error">{error}</Text>
       </div>
     );
   };
@@ -255,15 +256,13 @@ const CreateProgramPage: Page = () => {
               disabled={loading || programIdentifier.length == 0}
               onClick={(e) => {
                 e.preventDefault();
+                if (loading) return;
                 if (!validateProgramIdentifier(programIdentifier))
                   setError(
                     "Your program identifier must be alphanumeric and have at least 4 characters."
                   );
-                else if (
-                  !loading &&
-                  validateProgramIdentifier(programIdentifier)
-                ) {
-                  setError("");
+                else if (validateProgramIdentifier(programIdentifier)) {
+                  setError(null);
                   callCreateProgram();
                 }
               }}
@@ -273,7 +272,7 @@ const CreateProgramPage: Page = () => {
           </div>
         </form>
 
-        <Text className="text-error">{displayError}</Text>
+        <Text className="text-error">{error}</Text>
       </div>
     );
   };

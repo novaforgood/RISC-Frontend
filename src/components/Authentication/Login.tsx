@@ -35,7 +35,10 @@ const Login = ({
                 }
               }
             })
-            .catch((e) => setError(e.message))
+            .catch((e) => {
+              setLoading(false);
+              setError(e.message);
+            })
         }
       >
         <div className="flex w-max m-auto space-x-4 items-center">
@@ -89,17 +92,19 @@ const Login = ({
             signInWithEmail(email, password)
               .then((res) => {
                 if (res) {
+                  //If user doesn't have email verified show error
                   if (!res.user?.emailVerified) {
                     setError("Please verify this email before logging in.");
+                    //Otherwise call success function
                   } else {
                     onSuccessfulEmailLogin();
                   }
                 }
               })
               .finally(() => setLoading(false))
-              .catch((error) => {
-                setError(error.message);
+              .catch((e) => {
                 setLoading(false);
+                setError(e.message);
               });
           }}
         >

@@ -17,7 +17,7 @@ const ResetPasswordPage: Page = () => {
   const { sendPasswordResetEmail } = useAuth();
   const [email, setEmail] = useState("");
   const [stage, setStage] = useState(ResetPasswordStages.InputEmail);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<String | null>(null);
   const router = useRouter();
 
   return (
@@ -66,7 +66,7 @@ const ResetPasswordPage: Page = () => {
                     sendPasswordResetEmail(email)
                       .then(() => {
                         setStage(ResetPasswordStages.SuccessfulReset);
-                        setError("");
+                        setError(null);
                       })
                       .catch((err) => {
                         setError(err.message);
