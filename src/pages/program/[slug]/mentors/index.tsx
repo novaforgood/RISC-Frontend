@@ -30,39 +30,39 @@ const ViewMentorsPage: Page = () => {
   const { data: profileTagsData } = useGetProfileTagsByProgramQuery({
     variables: { programId: currentProgram?.programId! },
   });
-  let unfiltered = data?.getProfiles || [];
-  const [mentors, setMentors] = useState(unfiltered);
+  let unfilteredProfiles = data?.getProfiles || [];
+  const [mentors, setMentors] = useState(unfilteredProfiles);
 
   useEffect(() => {
-    if (unfiltered) {
-      setMentors(unfiltered);
+    if (unfilteredProfiles) {
+      setMentors(unfilteredProfiles);
     }
-  }, [unfiltered]);
+  }, [unfilteredProfiles]);
 
-  const fuse = new Fuse(unfiltered, {
+  const fuse = new Fuse(unfilteredProfiles, {
     keys: ["user.firstName", "user.lastName", "profileJson"],
   });
 
   const filterMentors = (tags: string[]) => {
     let newMentors = searchText
       ? fuse.search(searchText).map((x) => x.item)
-      : unfiltered;
+      : unfilteredProfiles;
+
     if (!tags.length) {
-      setMentors(newMentors);
-      return;
+      return newMentors;
     }
+
     newMentors = newMentors.filter((profile) => {
-      const profileTagIds = profile.profileTags.map(
-        (profileTag) => profileTag.profileTagId
+      const profileTagIds = new Set(
+        profile.profileTags.map((tag) => tag.profileTagId)
       );
       for (const tag of tags) {
-        if (!profileTagIds.includes(tag)) {
-          return false;
-        }
+        if (!profileTagIds.has(tag)) return false;
       }
       return true;
     });
-    setMentors(newMentors);
+
+    return newMentors;
   };
 
   useEffect(() => {
