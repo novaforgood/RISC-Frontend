@@ -102,7 +102,7 @@ const GeneralProfile: Page = () => {
                 setProfilePicture(file);
                 setModified(true);
               }}
-              src={src || data.getMyUser.profilePictureUrl}
+              src={src || "/static/HappyBlobs.svg"}
               onSrcChange={setSrc}
             />
             <div className="h-4" />

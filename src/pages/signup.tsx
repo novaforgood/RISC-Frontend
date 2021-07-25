@@ -192,7 +192,7 @@ const SignUpPage: Page = () => {
                         email: res.user?.email!,
                         firstName: firstName,
                         lastName: lastName,
-                        profilePictureUrl: "",
+                        profilePictureUrl: "/static/HappyBlobs.svg",
                         timezone: getTimezone(),
                       };
                       res.user?.sendEmailVerification();

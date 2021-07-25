@@ -2,9 +2,11 @@ import Fuse from "fuse.js";
 import React, { Fragment, useState } from "react";
 import { Input, Text } from "../../../../components/atomic";
 import ProfileCard from "../../../../components/ProfileCard";
+import TagSelector from "../../../../components/tags/TagSelector";
 import {
   ProfileType,
   useGetProfilesQuery,
+  useGetProfileTagsByProgramQuery,
 } from "../../../../generated/graphql";
 import { AuthorizationLevel, useCurrentProgram } from "../../../../hooks";
 import AuthorizationWrapper from "../../../../layouts/AuthorizationWrapper";
@@ -16,6 +18,7 @@ const ViewMentorsPage: Page = () => {
   //const [getMentors, { mentorsData }] = useGetMentorssLazyQuery();
   //const [sortBy, setSortBy] = useState("");
   const [searchText, setSearchText] = useState("");
+  const [filteredTags, setFilteredTags] = useState<string[]>([]);
 
   const { currentProgram } = useCurrentProgram();
   const { data } = useGetProfilesQuery({
@@ -24,20 +27,44 @@ const ViewMentorsPage: Page = () => {
       profileType: ProfileType.Mentor,
     },
   });
-  let unfiltered = data?.getProfiles || [];
-
-  const fuse = new Fuse(unfiltered, {
-    keys: ["user.firstName", "user.lastName", "profileJson"],
+  const { data: profileTagsData } = useGetProfileTagsByProgramQuery({
+    variables: { programId: currentProgram?.programId! },
   });
-  const mentors = searchText
-    ? fuse.search(searchText).map((x) => x.item)
-    : unfiltered;
+  let unfilteredProfiles = data?.getProfiles || [];
+
+  const fuse = new Fuse(unfilteredProfiles, {
+    keys: ["user.firstName", "user.lastName", "profileJson", "bio"],
+  });
+
+  const filterMentors = () => {
+    let newMentors = searchText
+      ? fuse.search(searchText).map((x) => x.item)
+      : unfilteredProfiles;
+    console.log(searchText, newMentors);
+    if (!filteredTags.length) {
+      return newMentors;
+    }
+
+    newMentors = newMentors.filter((profile) => {
+      const profileTagIds = new Set(
+        profile.profileTags.map((tag) => tag.profileTagId)
+      );
+      for (const tag of filteredTags) {
+        if (!profileTagIds.has(tag)) return false;
+      }
+      return true;
+    });
+
+    return newMentors;
+  };
+
+  const filteredMentors = filterMentors();
 
   // const sortDropdown = () => {
   //   return (
   //     <div className="flex items-center">
   //       <Text b>Sort By</Text>
-  //       <div className="w-2"></div>
+  //       <div className="w-2" />
   //       <select
   //         className="h-8 rounded-md"
   //         name="sort"
@@ -51,10 +78,8 @@ const ViewMentorsPage: Page = () => {
   //     </div>
   //   );
   // };
-
   return (
     <Fragment>
-      <div className="h-1"></div>
       <div className="flex justify-between">
         <Text b h2>
           All Mentors
@@ -66,10 +91,24 @@ const ViewMentorsPage: Page = () => {
         placeholder="Search..."
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
-      ></Input>
-      <div className="h-8"></div>
+      />
+      <div className="h-4" />
+      <div className="flex">
+        <Text>Tag Filters:</Text>
+        <div className="w-2" />
+        <div className="w-9/10">
+          <TagSelector
+            selectableTags={profileTagsData?.getProfileTagsByProgram || []}
+            selectedTagIds={filteredTags}
+            onChange={(newSelectedTagIds: string[]) => {
+              setFilteredTags(newSelectedTagIds);
+            }}
+          />
+        </div>
+      </div>
+      <div className="h-4" />
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {mentors?.map((mentor, index: number) => {
+        {filteredMentors.map((mentor, index: number) => {
           return <ProfileCard profile={mentor} key={index} />;
         })}
       </div>

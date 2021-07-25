@@ -33,7 +33,7 @@ const AdminBox = (user: User) => {
     <div className="box-border border-1.5 border-inactive rounded-md w-full flex items-center justify-start p-3">
       <img
         className="w-8 h-8 rounded-full"
-        src={user.profilePictureUrl || "/static/HappyBlobs.svg"}
+        src={user.profilePictureUrl}
         alt={`Picture of ${user.firstName} ${user.lastName}`}
       />
       <div className="w-4" />
