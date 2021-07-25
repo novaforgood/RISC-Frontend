@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Button, Text } from "../../../../../components/atomic";
-import CatchUnsavedChangesModal from "../../../../../components/CatchUnsavedChangesModal";
-import FormSchemaEditor from "../../../../../components/FormSchemaEditor";
-import TagSchemaEditor from "../../../../../components/tags/TagSchemaEditor";
-import { ProfileTag } from "../../../../../components/tags/types";
+import { Button, Text } from "../../../../../../components/atomic";
+import CatchUnsavedChangesModal from "../../../../../../components/CatchUnsavedChangesModal";
+import FormSchemaEditor from "../../../../../../components/FormSchemaEditor";
+import TagSchemaEditor from "../../../../../../components/tags/TagSchemaEditor";
+import { ProfileTag } from "../../../../../../components/tags/types";
 import {
   refetchGetProfileTagsByProgramQuery,
   useGetProfileTagsByProgramQuery,
   useUpdateProfileTagsOfProgramMutation,
   useUpdateProgramMutation,
-} from "../../../../../generated/graphql";
-import { AuthorizationLevel, useCurrentProgram } from "../../../../../hooks";
-import AuthorizationWrapper from "../../../../../layouts/AuthorizationWrapper";
-import ChooseTabLayout from "../../../../../layouts/ChooseTabLayout";
-import PageContainer from "../../../../../layouts/PageContainer";
-import { Question } from "../../../../../types/Form";
-import Page from "../../../../../types/Page";
+} from "../../../../../../generated/graphql";
+import { AuthorizationLevel, useCurrentProgram } from "../../../../../../hooks";
+import AuthorizationWrapper from "../../../../../../layouts/AuthorizationWrapper";
+import ChooseTabLayout from "../../../../../../layouts/ChooseTabLayout";
+import PageContainer from "../../../../../../layouts/PageContainer";
+import { Question } from "../../../../../../types/Form";
+import Page from "../../../../../../types/Page";
 
 function getQuestionsFromJson(json: string): Question[] {
   try {

@@ -1,11 +1,11 @@
 import React from "react";
-import { Text } from "../../../components/atomic";
-import { ChatRequestFilterer } from "../../../components/ReviewChats/ChatRequestFilterer";
-import { AuthorizationLevel, useCurrentProfile } from "../../../hooks";
-import AuthorizationWrapper from "../../../layouts/AuthorizationWrapper";
-import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
-import PageContainer from "../../../layouts/PageContainer";
-import Page from "../../../types/Page";
+import { Text } from "../../../../components/atomic";
+import { ChatRequestFilterer } from "../../../../components/ReviewChats/ChatRequestFilterer";
+import { AuthorizationLevel, useCurrentProfile } from "../../../../hooks";
+import AuthorizationWrapper from "../../../../layouts/AuthorizationWrapper";
+import ChooseTabLayout from "../../../../layouts/ChooseTabLayout";
+import PageContainer from "../../../../layouts/PageContainer";
+import Page from "../../../../types/Page";
 
 const MentorApplicationsPage: Page = () => {
   const { currentProfile } = useCurrentProfile();

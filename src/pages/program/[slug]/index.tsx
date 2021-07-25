@@ -7,23 +7,18 @@ import AuthenticationModal from "../../../components/Authentication/Authenticati
 import ErrorScreen, { ErrorScreenType } from "../../../components/ErrorScreen";
 import {
   defaultContentState,
-  EditorProvider,
-  PublishButton,
   ReadOnlyTextEditor,
-  TextEditor,
-  ToolBar,
 } from "../../../components/RichTextEditing";
 import {
   PageGetProgramBySlugComp,
   ssrGetProgramBySlug,
 } from "../../../generated/page";
 import { AuthorizationLevel, useAuthorizationLevel } from "../../../hooks";
-import SignedInAsIndicator from "../../../layouts/SignedInAsIndicator";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../layouts/PageContainer";
+import SignedInAsIndicator from "../../../layouts/SignedInAsIndicator";
 import Page from "../../../types/Page";
 import { parseParam } from "../../../utils";
-import LocalStorage from "../../../utils/localstorage";
 
 function getRawContentState(json: string): RawDraftContentState {
   try {
@@ -39,45 +34,6 @@ type DisplayProgramHomepageProps = {
   iconUrl: string;
   homepage: string;
 };
-
-const AdminHome = ({
-  programId,
-  name,
-  iconUrl,
-  homepage,
-}: DisplayProgramHomepageProps) => (
-  <div>
-    <EditorProvider currentHomepage={getRawContentState(homepage)}>
-      <div className="flex items-center">
-        <div className="flex w-full items-center justify-between">
-          <Text h2 b>
-            Edit Homepage
-          </Text>
-          <PublishButton className="" programId={programId} />
-        </div>
-      </div>
-      <div className="h-24"></div>
-
-      <Card className="box-border w-full px-16 p-8 z-0">
-        <img
-          className="w-28 h-28 relative rounded-md -top-24"
-          src={iconUrl}
-          alt={`${name} Logo`}
-        />
-        <div className="relative -top-20">
-          <Text h1 b>
-            {name}
-          </Text>
-          <div className="w-full bg-white sticky -top-10 p-4 z-10 rounded-md">
-            <ToolBar />
-          </div>
-          <div className="h-2" />
-          <TextEditor />
-        </div>
-      </Card>
-    </EditorProvider>
-  </div>
-);
 
 const ReadOnlyHome = ({
   name,
@@ -159,41 +115,18 @@ const ReadOnlyHome = ({
 
 //TODO: Change type of this to not any
 const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
-  const authorizationLevel = useAuthorizationLevel();
-
   const program = props.data?.getProgramBySlug;
-
-  switch (authorizationLevel) {
-    case AuthorizationLevel.Admin:
-    case AuthorizationLevel.Mentor:
-    case AuthorizationLevel.Mentee:
-      LocalStorage.set("cachedProgramSlug", program.slug);
-      break;
-    default:
-      break;
-  }
 
   if (!program) {
     return <ErrorScreen type={ErrorScreenType.PageNotFound} />;
   }
 
-  const getProgramPage = () => {
-    switch (authorizationLevel) {
-      case AuthorizationLevel.Admin:
-        return <AdminHome {...program} />;
-      case AuthorizationLevel.Mentee:
-      case AuthorizationLevel.Mentor:
-        return <ReadOnlyHome {...program} inProgram={true} />;
-      default:
-        return (
-          <>
-            <SignedInAsIndicator />
-            <ReadOnlyHome {...program} />
-          </>
-        );
-    }
-  };
-  return <PageContainer>{getProgramPage()}</PageContainer>;
+  return (
+    <PageContainer>
+      <SignedInAsIndicator />
+      <ReadOnlyHome {...program} />
+    </PageContainer>
+  );
 };
 
 export default ProgramPage;

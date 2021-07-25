@@ -1,18 +1,18 @@
 import Fuse from "fuse.js";
 import React, { Fragment, useState } from "react";
-import { Input, Text } from "../../../../components/atomic";
-import ProfileCard from "../../../../components/ProfileCard";
-import TagSelector from "../../../../components/tags/TagSelector";
+import { Input, Text } from "../../../../../components/atomic";
+import ProfileCard from "../../../../../components/ProfileCard";
+import TagSelector from "../../../../../components/tags/TagSelector";
 import {
   ProfileType,
   useGetProfilesQuery,
   useGetProfileTagsByProgramQuery,
-} from "../../../../generated/graphql";
-import { AuthorizationLevel, useCurrentProgram } from "../../../../hooks";
-import AuthorizationWrapper from "../../../../layouts/AuthorizationWrapper";
-import ChooseTabLayout from "../../../../layouts/ChooseTabLayout";
-import PageContainer from "../../../../layouts/PageContainer";
-import Page from "../../../../types/Page";
+} from "../../../../../generated/graphql";
+import { AuthorizationLevel, useCurrentProgram } from "../../../../../hooks";
+import AuthorizationWrapper from "../../../../../layouts/AuthorizationWrapper";
+import ChooseTabLayout from "../../../../../layouts/ChooseTabLayout";
+import PageContainer from "../../../../../layouts/PageContainer";
+import Page from "../../../../../types/Page";
 
 const ViewMentorsPage: Page = () => {
   //const [getMentors, { mentorsData }] = useGetMentorssLazyQuery();

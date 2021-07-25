@@ -14,6 +14,12 @@ const MAP_PROFILETYPE_TO_NAME = {
   [ProfileType.Mentee]: "Mentee",
 };
 
+const MAP_PROFILETYPE_TO_ROUTE = {
+  [ProfileType.Admin]: "admin",
+  [ProfileType.Mentor]: "mentor",
+  [ProfileType.Mentee]: "mentee",
+};
+
 const ProgramDropdown = () => {
   const { currentProgram } = useCurrentProgram();
   const { data } = useGetMyUserQuery();
@@ -59,7 +65,7 @@ const ProgramDropdown = () => {
             shadow-lg ring-1 ring-primary ring-opacity-5 focus:outline-none"
           >
             {data?.getMyUser?.profiles.map((profile, i) => {
-              const { program } = profile;
+              const { program, profileType } = profile;
               const active = program.programId === currentProgram?.programId;
               const styles = classNames({
                 "p-2 w-full cursor-pointer flex items-center": true,
@@ -68,7 +74,9 @@ const ProgramDropdown = () => {
               });
               return (
                 <Menu.Item key={i}>
-                  <Link href={`/program/${program.slug}`}>
+                  <Link
+                    href={`/program/${program.slug}/${MAP_PROFILETYPE_TO_ROUTE[profileType]}`}
+                  >
                     <div className={styles}>
                       <img
                         className="h-8 w-8 object-contain border border-inactive rounded"
@@ -98,7 +106,7 @@ const ProgramDropdown = () => {
                 href="/"
                 className="w-full"
                 onClick={() => {
-                  LocalStorage.delete("cachedProgramSlug");
+                  LocalStorage.delete("cachedProfileSlug");
                 }}
               >
                 <div className="p-2 w-full cursor-pointer hover:bg-tertiary">

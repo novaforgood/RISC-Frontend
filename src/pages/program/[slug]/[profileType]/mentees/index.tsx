@@ -1,15 +1,15 @@
 import React, { Fragment } from "react";
-import { Input, Text } from "../../../../components/atomic";
-import ProfileCard from "../../../../components/ProfileCard";
+import { Input, Text } from "../../../../../components/atomic";
+import ProfileCard from "../../../../../components/ProfileCard";
 import {
   ProfileType,
   useGetProfilesQuery,
-} from "../../../../generated/graphql";
-import { AuthorizationLevel, useCurrentProgram } from "../../../../hooks";
-import AuthorizationWrapper from "../../../../layouts/AuthorizationWrapper";
-import ChooseTabLayout from "../../../../layouts/ChooseTabLayout";
-import PageContainer from "../../../../layouts/PageContainer";
-import Page from "../../../../types/Page";
+} from "../../../../../generated/graphql";
+import { AuthorizationLevel, useCurrentProgram } from "../../../../../hooks";
+import AuthorizationWrapper from "../../../../../layouts/AuthorizationWrapper";
+import ChooseTabLayout from "../../../../../layouts/ChooseTabLayout";
+import PageContainer from "../../../../../layouts/PageContainer";
+import Page from "../../../../../types/Page";
 
 const ViewMenteesPage: Page = () => {
   //const [getMentors, { mentorsData }] = useGetMentorssLazyQuery();

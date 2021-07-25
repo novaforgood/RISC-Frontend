@@ -1,13 +1,13 @@
 import React from "react";
-import { Card, Text } from "../../../components/atomic";
-import { SetAvailabilityOverridesCard } from "../../../components/Availabilities/SetAvailabilityOverridesCard";
-import { SetWeeklyAvailabilitiesCard } from "../../../components/Availabilities/SetWeeklyAvailabilitiesCard";
-import { useGetMyUserQuery } from "../../../generated/graphql";
-import { AuthorizationLevel, useCurrentProfile } from "../../../hooks";
-import AuthorizationWrapper from "../../../layouts/AuthorizationWrapper";
-import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
-import PageContainer from "../../../layouts/PageContainer";
-import Page from "../../../types/Page";
+import { Card, Text } from "../../../../components/atomic";
+import { SetAvailabilityOverridesCard } from "../../../../components/Availabilities/SetAvailabilityOverridesCard";
+import { SetWeeklyAvailabilitiesCard } from "../../../../components/Availabilities/SetWeeklyAvailabilitiesCard";
+import { useGetMyUserQuery } from "../../../../generated/graphql";
+import { AuthorizationLevel, useCurrentProfile } from "../../../../hooks";
+import AuthorizationWrapper from "../../../../layouts/AuthorizationWrapper";
+import ChooseTabLayout from "../../../../layouts/ChooseTabLayout";
+import PageContainer from "../../../../layouts/PageContainer";
+import Page from "../../../../types/Page";
 
 // type SelectTimezoneProps = {
 //   profileId: string;

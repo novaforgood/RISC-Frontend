@@ -126,7 +126,7 @@ const CreateProgramPage: Page = () => {
       .then(async (res) => {
         if (res) {
           if (refetchMyUserData) await refetchMyUserData();
-          router.push(`/program/${res.data?.createProgram.slug}`);
+          router.push(`/program/${res.data?.createProgram.slug}/admin`);
 
           // If we use subdomains
           // router.push(

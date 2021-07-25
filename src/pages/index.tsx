@@ -175,6 +175,12 @@ const MAP_PROFILETYPE_TO_NAME = {
   [ProfileType.Mentee]: "Mentee",
 };
 
+const MAP_PROFILETYPE_TO_ROUTE = {
+  [ProfileType.Admin]: "admin",
+  [ProfileType.Mentor]: "mentor",
+  [ProfileType.Mentee]: "mentee",
+};
+
 type ProgramRowProps = {
   iconUrl: string;
   name: string;
@@ -203,7 +209,11 @@ const ProgramRow = ({ iconUrl, name, route, profileType }: ProgramRowProps) => {
         b
         className="text-secondary hover:cursor-pointer hover:text-primary"
       >
-        <Link href={`/program/${route}`}>Go to Mentorship</Link>
+        <Link
+          href={`/program/${route}/${MAP_PROFILETYPE_TO_ROUTE[profileType]}`}
+        >
+          Go to Mentorship
+        </Link>
       </Text>
     </div>
   );
@@ -325,9 +335,9 @@ const NoMentorshipHome: Page = () => {
   const router = useRouter();
   const [showApplications, setShowApplications] = useState(false);
 
-  const cachedProgramSlug = LocalStorage.get("cachedProgramSlug");
-  if (cachedProgramSlug !== null && typeof cachedProgramSlug === "string") {
-    router.push(`/program/${cachedProgramSlug}`);
+  const cachedProfileSlug = LocalStorage.get("cachedProfileSlug");
+  if (cachedProfileSlug !== null && typeof cachedProfileSlug === "string") {
+    router.push(`/program/${cachedProfileSlug}`);
     return <Fragment />;
   }
 

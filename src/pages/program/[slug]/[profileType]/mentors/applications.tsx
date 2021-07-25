@@ -1,12 +1,12 @@
 import React, { Fragment } from "react";
-import { Text } from "../../../../components/atomic";
-import { ApplicationFilterer } from "../../../../components/ReviewApplications/ApplicationFilterer";
-import { ApplicationType } from "../../../../generated/graphql";
-import { AuthorizationLevel, useCurrentProgram } from "../../../../hooks";
-import AuthorizationWrapper from "../../../../layouts/AuthorizationWrapper";
-import ChooseTabLayout from "../../../../layouts/ChooseTabLayout";
-import PageContainer from "../../../../layouts/PageContainer";
-import Page from "../../../../types/Page";
+import { Text } from "../../../../../components/atomic";
+import { ApplicationFilterer } from "../../../../../components/ReviewApplications/ApplicationFilterer";
+import { ApplicationType } from "../../../../../generated/graphql";
+import { AuthorizationLevel, useCurrentProgram } from "../../../../../hooks";
+import AuthorizationWrapper from "../../../../../layouts/AuthorizationWrapper";
+import ChooseTabLayout from "../../../../../layouts/ChooseTabLayout";
+import PageContainer from "../../../../../layouts/PageContainer";
+import Page from "../../../../../types/Page";
 
 const MentorApplicationsPage: Page = () => {
   const { currentProgram } = useCurrentProgram();

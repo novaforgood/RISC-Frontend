@@ -1,11 +1,11 @@
 import React from "react";
-import { Text } from "../../../components/atomic";
-import { MyChatsFilterer } from "../../../components/ReviewChats/MyChatsFilterer";
-import { AuthorizationLevel, useCurrentProfile } from "../../../hooks";
-import AuthorizationWrapper from "../../../layouts/AuthorizationWrapper";
-import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
-import PageContainer from "../../../layouts/PageContainer";
-import Page from "../../../types/Page";
+import { Text } from "../../../../components/atomic";
+import { MyChatsFilterer } from "../../../../components/ReviewChats/MyChatsFilterer";
+import { AuthorizationLevel, useCurrentProfile } from "../../../../hooks";
+import AuthorizationWrapper from "../../../../layouts/AuthorizationWrapper";
+import ChooseTabLayout from "../../../../layouts/ChooseTabLayout";
+import PageContainer from "../../../../layouts/PageContainer";
+import Page from "../../../../types/Page";
 
 const MyChatsPage: Page = () => {
   const { currentProfile } = useCurrentProfile();

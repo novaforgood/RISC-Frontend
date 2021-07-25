@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Button, Text } from "../../../../../components/atomic";
-import CatchUnsavedChangesModal from "../../../../../components/CatchUnsavedChangesModal";
-import FormSchemaEditor from "../../../../../components/FormSchemaEditor";
-import { useUpdateProgramMutation } from "../../../../../generated/graphql";
-import { AuthorizationLevel, useCurrentProgram } from "../../../../../hooks";
-import AuthorizationWrapper from "../../../../../layouts/AuthorizationWrapper";
-import ChooseTabLayout from "../../../../../layouts/ChooseTabLayout";
-import PageContainer from "../../../../../layouts/PageContainer";
-import { Question } from "../../../../../types/Form";
-import Page from "../../../../../types/Page";
+import { Button, Text } from "../../../../../../components/atomic";
+import CatchUnsavedChangesModal from "../../../../../../components/CatchUnsavedChangesModal";
+import FormSchemaEditor from "../../../../../../components/FormSchemaEditor";
+import { useUpdateProgramMutation } from "../../../../../../generated/graphql";
+import { AuthorizationLevel, useCurrentProgram } from "../../../../../../hooks";
+import AuthorizationWrapper from "../../../../../../layouts/AuthorizationWrapper";
+import ChooseTabLayout from "../../../../../../layouts/ChooseTabLayout";
+import PageContainer from "../../../../../../layouts/PageContainer";
+import { Question } from "../../../../../../types/Form";
+import Page from "../../../../../../types/Page";
 
 function getQuestionsFromJson(json: string): Question[] {
   try {
