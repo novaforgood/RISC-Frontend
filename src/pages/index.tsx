@@ -8,6 +8,7 @@ import {
   ApplicationStatus,
   ApplicationType,
   GetMyUserApplicationsQuery,
+  ProfileType,
   useGetMyUserApplicationsQuery,
   useGetMyUserQuery,
 } from "../generated/graphql";
@@ -168,24 +169,35 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
 
 // ====================== LOGGED IN HOMEPAGE ======================
 
+const MAP_PROFILETYPE_TO_NAME = {
+  [ProfileType.Admin]: "Admin",
+  [ProfileType.Mentor]: "Mentor",
+  [ProfileType.Mentee]: "Mentee",
+};
+
 type ProgramRowProps = {
   iconUrl: string;
   name: string;
   route: string;
+  profileType: ProfileType;
 };
 
-const ProgramRow = ({ iconUrl, name, route }: ProgramRowProps) => {
+const ProgramRow = ({ iconUrl, name, route, profileType }: ProgramRowProps) => {
   return (
-    <div className="flex items-center">
+    <div className="flex items-center justify-between">
       <div className="flex gap-4 items-center">
         <img
           src={iconUrl}
           alt={`Program ${name} icon`}
           className="h-10 w-10 col-span-1"
         />
-        <Text>{name}</Text>
+        <div className="flex flex-col">
+          <Text>{name}</Text>
+          <Text className="text-secondary text-caption">
+            {MAP_PROFILETYPE_TO_NAME[profileType]}
+          </Text>
+        </div>
       </div>
-      <div className="flex-grow" />
       <Text
         u
         b
@@ -386,6 +398,7 @@ const NoMentorshipHome: Page = () => {
                 return (
                   <div key={i}>
                     <ProgramRow
+                      profileType={profile.profileType}
                       iconUrl={program.iconUrl}
                       name={program.name}
                       route={program.slug}

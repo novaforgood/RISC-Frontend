@@ -4,9 +4,15 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { Text } from "../../components/atomic";
-import { useGetMyUserQuery } from "../../generated/graphql";
+import { ProfileType, useGetMyUserQuery } from "../../generated/graphql";
 import { useCurrentProgram } from "../../hooks";
 import LocalStorage from "../../utils/localstorage";
+
+const MAP_PROFILETYPE_TO_NAME = {
+  [ProfileType.Admin]: "Admin",
+  [ProfileType.Mentor]: "Mentor",
+  [ProfileType.Mentee]: "Mentee",
+};
 
 const ProgramDropdown = () => {
   const { currentProgram } = useCurrentProgram();
@@ -69,7 +75,12 @@ const ProgramDropdown = () => {
                         src={program.iconUrl || "/static/DefaultLogo.svg"}
                       />
                       <div className="w-3 flex-shrink-0"></div>
-                      <Text className="truncate">{program.name}</Text>
+                      <div className="flex flex-col">
+                        <Text className="truncate">{program.name}</Text>
+                        <Text className="text-secondary text-caption leading-4">
+                          {MAP_PROFILETYPE_TO_NAME[profile.profileType]}
+                        </Text>
+                      </div>
                     </div>
                   </Link>
                 </Menu.Item>
