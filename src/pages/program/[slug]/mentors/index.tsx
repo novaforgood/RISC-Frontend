@@ -1,5 +1,5 @@
 import Fuse from "fuse.js";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useState } from "react";
 import { Input, Text } from "../../../../components/atomic";
 import ProfileCard from "../../../../components/ProfileCard";
 import TagSelector from "../../../../components/tags/TagSelector";
@@ -31,24 +31,17 @@ const ViewMentorsPage: Page = () => {
     variables: { programId: currentProgram?.programId! },
   });
   let unfilteredProfiles = data?.getProfiles || [];
-  const [mentors, setMentors] = useState(unfilteredProfiles);
-
-  useEffect(() => {
-    if (unfilteredProfiles) {
-      setMentors(unfilteredProfiles);
-    }
-  }, [unfilteredProfiles]);
 
   const fuse = new Fuse(unfilteredProfiles, {
-    keys: ["user.firstName", "user.lastName", "profileJson"],
+    keys: ["user.firstName", "user.lastName", "profileJson", "bio"],
   });
 
-  const filterMentors = (tags: string[]) => {
+  const filterMentors = () => {
     let newMentors = searchText
       ? fuse.search(searchText).map((x) => x.item)
       : unfilteredProfiles;
-
-    if (!tags.length) {
+    console.log(searchText, newMentors);
+    if (!filteredTags.length) {
       return newMentors;
     }
 
@@ -56,7 +49,7 @@ const ViewMentorsPage: Page = () => {
       const profileTagIds = new Set(
         profile.profileTags.map((tag) => tag.profileTagId)
       );
-      for (const tag of tags) {
+      for (const tag of filteredTags) {
         if (!profileTagIds.has(tag)) return false;
       }
       return true;
@@ -65,9 +58,7 @@ const ViewMentorsPage: Page = () => {
     return newMentors;
   };
 
-  useEffect(() => {
-    filterMentors(filteredTags);
-  }, [searchText]);
+  const filteredMentors = filterMentors();
 
   // const sortDropdown = () => {
   //   return (
@@ -111,14 +102,13 @@ const ViewMentorsPage: Page = () => {
             selectedTagIds={filteredTags}
             onChange={(newSelectedTagIds: string[]) => {
               setFilteredTags(newSelectedTagIds);
-              filterMentors(newSelectedTagIds);
             }}
           />
         </div>
       </div>
       <div className="h-4" />
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {mentors?.map((mentor, index: number) => {
+        {filteredMentors.map((mentor, index: number) => {
           return <ProfileCard profile={mentor} key={index} />;
         })}
       </div>
