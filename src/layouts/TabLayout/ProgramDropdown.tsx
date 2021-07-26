@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { Text } from "../../components/atomic";
 import { ProfileType, useGetMyUserQuery } from "../../generated/graphql";
-import { useCurrentProgram } from "../../hooks";
+import { useCurrentProfile, useCurrentProgram } from "../../hooks";
 import { MAP_PROFILETYPE_TO_ROUTE } from "../../utils/constants";
 import LocalStorage from "../../utils/localstorage";
 
@@ -17,6 +17,7 @@ const MAP_PROFILETYPE_TO_NAME = {
 
 const ProgramDropdown = () => {
   const { currentProgram } = useCurrentProgram();
+  const { currentProfile } = useCurrentProfile();
   const { data } = useGetMyUserQuery();
   const router = useRouter();
 
@@ -61,7 +62,10 @@ const ProgramDropdown = () => {
           >
             {data?.getMyUser?.profiles.map((profile, i) => {
               const { program, profileType } = profile;
-              const active = program.programId === currentProgram?.programId;
+              const active =
+                program.programId === currentProgram?.programId &&
+                currentProfile?.profileType === profileType;
+
               const styles = classNames({
                 "p-2 w-full cursor-pointer flex items-center": true,
                 "bg-white hover:bg-tertiary": !active,
