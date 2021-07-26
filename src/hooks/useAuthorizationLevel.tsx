@@ -6,6 +6,7 @@ import {
   useGetMyUserQuery,
 } from "../generated/graphql";
 import { parseParam } from "../utils";
+import { MAP_PROFILETYPE_TO_ROUTE } from "../utils/constants";
 import { useAuth } from "../utils/firebase/auth";
 
 export enum AuthorizationLevel {
@@ -18,12 +19,6 @@ export enum AuthorizationLevel {
   Admin = "ADMIN",
   Unverified = "UNVERIFIED",
 }
-
-const MAP_PROFILETYPE_TO_ROUTE = {
-  [ProfileType.Admin]: "admin",
-  [ProfileType.Mentor]: "mentor",
-  [ProfileType.Mentee]: "mentee",
-};
 
 const getAuthorizationLevel = (
   user: firebase.User | null,

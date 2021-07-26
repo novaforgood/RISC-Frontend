@@ -16,6 +16,7 @@ import { PageGetProgramBySlugComp } from "../generated/page";
 import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";
 import NoProgramTabLayout from "../layouts/TabLayout/NoProgramTabLayout";
 import Page from "../types/Page";
+import { MAP_PROFILETYPE_TO_ROUTE } from "../utils/constants";
 import { useAuth } from "../utils/firebase/auth";
 import LocalStorage from "../utils/localstorage";
 
@@ -173,12 +174,6 @@ const MAP_PROFILETYPE_TO_NAME = {
   [ProfileType.Admin]: "Admin",
   [ProfileType.Mentor]: "Mentor",
   [ProfileType.Mentee]: "Mentee",
-};
-
-const MAP_PROFILETYPE_TO_ROUTE = {
-  [ProfileType.Admin]: "admin",
-  [ProfileType.Mentor]: "mentor",
-  [ProfileType.Mentee]: "mentee",
 };
 
 type ProgramRowProps = {

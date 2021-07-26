@@ -25,6 +25,7 @@ import ChooseTabLayout from "../../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../../layouts/PageContainer";
 import Page from "../../../../types/Page";
 import { parseParam } from "../../../../utils";
+import { MAP_PROFILETYPE_TO_ROUTE } from "../../../../utils/constants";
 import LocalStorage from "../../../../utils/localstorage";
 
 function getRawContentState(json: string): RawDraftContentState {
@@ -131,12 +132,6 @@ const ReadOnlyHome = ({
   );
 };
 
-const MAP_AUTHORIZATIONLEVEL_TO_ROUTE = {
-  [AuthorizationLevel.Admin]: "admin",
-  [AuthorizationLevel.Mentor]: "mentor",
-  [AuthorizationLevel.Mentee]: "mentee",
-};
-
 //TODO: Change type of this to not any
 const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
   const authorizationLevel = useAuthorizationLevel();
@@ -149,7 +144,7 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
     case AuthorizationLevel.Mentee:
       LocalStorage.set(
         "cachedProfileSlug",
-        `${program.slug}/${MAP_AUTHORIZATIONLEVEL_TO_ROUTE[authorizationLevel]}`
+        `${program.slug}/${MAP_PROFILETYPE_TO_ROUTE[authorizationLevel]}`
       );
       break;
     default:

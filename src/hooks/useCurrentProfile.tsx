@@ -1,13 +1,8 @@
 import { useRouter } from "next/router";
-import { ProfileType, useGetMyUserQuery } from "../generated/graphql";
+import { useGetMyUserQuery } from "../generated/graphql";
 import { parseParam } from "../utils";
+import { MAP_PROFILETYPE_TO_ROUTE } from "../utils/constants";
 import useCurrentProgram from "./useCurrentProgram";
-
-const MAP_PROFILETYPE_TO_ROUTE = {
-  [ProfileType.Admin]: "admin",
-  [ProfileType.Mentor]: "mentor",
-  [ProfileType.Mentee]: "mentee",
-};
 
 const useCurrentProfile = () => {
   const router = useRouter();
