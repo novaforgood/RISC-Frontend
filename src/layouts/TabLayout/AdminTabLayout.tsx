@@ -34,16 +34,6 @@ const AdminTabLayout: React.FC<BaseTabLayoutProps> = ({
           Icon={User}
           path={joinPath(basePath, "mentors", "edit-profile")}
         />
-        <PageItem
-          label="Mentor Applications"
-          Icon={Clipboard}
-          path={joinPath(basePath, "mentors", "applications")}
-        />
-        <PageItem
-          label="Edit Mentor Application"
-          Icon={Edit}
-          path={joinPath(basePath, "mentors", "edit-application")}
-        />
       </Dropdown>
       <Separator />
       <Dropdown label="Mentees" id="admin-mentees">
@@ -57,15 +47,28 @@ const AdminTabLayout: React.FC<BaseTabLayoutProps> = ({
           Icon={User}
           path={joinPath(basePath, "mentees", "edit-profile")}
         />
+      </Dropdown>
+      <Separator />
+      <Dropdown label="Applications" id="admin-applications">
+        <PageItem
+          label="Mentor Applications"
+          Icon={Clipboard}
+          path={joinPath(basePath, "applications", "mentors")}
+        />
+        <PageItem
+          label="Edit Mentor Application"
+          Icon={Edit}
+          path={joinPath(basePath, "applications", "edit-mentor-app")}
+        />
         <PageItem
           label="Mentee Applications"
           Icon={Clipboard}
-          path={joinPath(basePath, "mentees", "applications")}
+          path={joinPath(basePath, "applications", "mentees")}
         />
         <PageItem
           label="Edit Mentee Application"
           Icon={Edit}
-          path={joinPath(basePath, "mentees", "edit-application")}
+          path={joinPath(basePath, "applications", "edit-mentee-app")}
         />
       </Dropdown>
       <Separator />

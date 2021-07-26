@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import React, { Fragment } from "react";
 import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";
 import { parseParam } from "../utils";
+import { MAP_PROFILETYPE_TO_ROUTE } from "../utils/constants";
 import { AdminTabLayout, MenteeTabLayout, MentorTabLayout } from "./TabLayout";
 import NoMatchingProfileLayout from "./TabLayout/NoMatchingProfileTabLayout";
 import { BaseTabLayoutProps } from "./TabLayout/TabLayout";
@@ -31,16 +32,16 @@ function getTabLayout(
   }
 }
 
-const MAP_AUTHORIZATIONLEVEL_TO_ROUTE = {
-  [AuthorizationLevel.Admin]: "admin",
-  [AuthorizationLevel.Mentor]: "mentor",
-  [AuthorizationLevel.Mentee]: "mentee",
-  [AuthorizationLevel.Unauthenticated]: "",
-  [AuthorizationLevel.WaitingForUserData]: "",
-  [AuthorizationLevel.NotInProgram]: "",
-  [AuthorizationLevel.Unverified]: "",
-  [AuthorizationLevel.NoMatchingProfile]: "",
-};
+function getAuthRoute(level: AuthorizationLevel) {
+  switch (level) {
+    case AuthorizationLevel.Admin:
+    case AuthorizationLevel.Mentor:
+    case AuthorizationLevel.Mentee:
+      return MAP_PROFILETYPE_TO_ROUTE[level];
+    default:
+      return "";
+  }
+}
 
 interface ChooseTabLayoutProps {
   children: React.ReactNode;
@@ -55,7 +56,7 @@ const ChooseTabLayout = ({ children }: ChooseTabLayoutProps) => {
 
   return (
     <TabLayout
-      basePath={`/program/${slug}/${MAP_AUTHORIZATIONLEVEL_TO_ROUTE[authorizationLevel]}`}
+      basePath={`/program/${slug}/${getAuthRoute(authorizationLevel)}`}
     >
       {children}
     </TabLayout>

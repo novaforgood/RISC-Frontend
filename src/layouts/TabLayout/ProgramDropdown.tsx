@@ -6,18 +6,13 @@ import { Fragment } from "react";
 import { Text } from "../../components/atomic";
 import { ProfileType, useGetMyUserQuery } from "../../generated/graphql";
 import { useCurrentProgram } from "../../hooks";
+import { MAP_PROFILETYPE_TO_ROUTE } from "../../utils/constants";
 import LocalStorage from "../../utils/localstorage";
 
 const MAP_PROFILETYPE_TO_NAME = {
   [ProfileType.Admin]: "Admin",
   [ProfileType.Mentor]: "Mentor",
   [ProfileType.Mentee]: "Mentee",
-};
-
-const MAP_PROFILETYPE_TO_ROUTE = {
-  [ProfileType.Admin]: "admin",
-  [ProfileType.Mentor]: "mentor",
-  [ProfileType.Mentee]: "mentee",
 };
 
 const ProgramDropdown = () => {
