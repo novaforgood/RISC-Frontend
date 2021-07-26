@@ -90,6 +90,8 @@ const ReadOnlyHome = ({
 }: DisplayProgramHomepageProps & { inProgram?: boolean }) => {
   const router = useRouter();
 
+  const slug = parseParam(router.query.slug);
+
   const JSONHomepage: RawDraftContentState = getRawContentState(homepage);
   return (
     //TODO: Figure out whether the buttons at the top should be sticky
@@ -98,7 +100,7 @@ const ReadOnlyHome = ({
         <></>
       ) : (
         <div className="flex transform -translate-y-14 lg:-translate-y-20 float-right z-10">
-          <Link href={router.asPath + "/apply?as=mentor"}>
+          <Link href={`/program/${slug}/apply?as=mentor`}>
             <Button variant="inverted" size="small">
               Apply as Mentor
             </Button>
@@ -106,7 +108,7 @@ const ReadOnlyHome = ({
 
           <div className="w-4" />
 
-          <Link href={router.asPath + "/apply?as=mentee"}>
+          <Link href={`/program/${slug}/apply?as=mentee`}>
             <Button variant="solid" size="small">
               Apply as Mentee
             </Button>

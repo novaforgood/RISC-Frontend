@@ -24,7 +24,7 @@ const getAuthorizationLevel = (
   user: firebase.User | null,
   myUserData: GetMyUserQuery["getMyUser"] | undefined,
   programSlug: string,
-  profileType: string
+  profileRoute: string
 ): AuthorizationLevel => {
   if (!user) return AuthorizationLevel.Unauthenticated;
   if (!user.emailVerified) return AuthorizationLevel.Unverified;
@@ -34,7 +34,7 @@ const getAuthorizationLevel = (
   for (let profile of myUserData.profiles) {
     if (profile.program.slug === programSlug) {
       inProgram = true;
-      if (MAP_PROFILETYPE_TO_ROUTE[profile.profileType] === profileType) {
+      if (MAP_PROFILETYPE_TO_ROUTE[profile.profileType] === profileRoute) {
         switch (profile.profileType) {
           case ProfileType.Admin:
             return AuthorizationLevel.Admin;
@@ -62,8 +62,8 @@ const useAuthorizationLevel = () => {
   let authLevel;
   if (router) {
     const slug = parseParam(router.query.slug);
-    const profileType = parseParam(router.query.profileType);
-    authLevel = getAuthorizationLevel(user, myUserData, slug, profileType);
+    const profileRoute = parseParam(router.query.profileRoute);
+    authLevel = getAuthorizationLevel(user, myUserData, slug, profileRoute);
   }
 
   return authLevel || AuthorizationLevel.Unauthenticated;

@@ -8,13 +8,13 @@ const useCurrentProfile = () => {
   const router = useRouter();
   const { data, refetch } = useGetMyUserQuery();
   const { currentProgram } = useCurrentProgram();
-  const profileType = parseParam(router.query.profileType);
+  const profileRoute = parseParam(router.query.profileRoute);
 
   if (data) {
     for (let profile of data.getMyUser.profiles) {
       if (
         profile.program.programId === currentProgram?.programId &&
-        MAP_PROFILETYPE_TO_ROUTE[profile.profileType] === profileType
+        MAP_PROFILETYPE_TO_ROUTE[profile.profileType] === profileRoute
       ) {
         return { currentProfile: profile, refetchCurrentProfile: refetch };
       }
