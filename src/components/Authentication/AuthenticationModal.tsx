@@ -18,11 +18,16 @@ const AuthenticationModal = ({
   const [isLogin, setIsLogin] = useState(false);
   const router = useRouter();
 
+  const reset = () => {
+    setIsLogin(false);
+    onClose();
+  }
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={reset}>
       <div className="flex flex-col w-144">
         <button
-          onClick={onClose}
+          onClick={reset}
           className="cursor-pointer focus:outline-none self-end"
         >
           <img src="/static/Close.svg" className="h-4 w-4" />
