@@ -4,6 +4,7 @@ import { useAuth } from "../utils/firebase/auth";
 import { validateEmail } from "../utils";
 import Link from "next/link";
 import Page from "../types/Page";
+import { useRouter } from "next/router";
 
 enum ResetPasswordStages {
   InputEmail = 0,
@@ -16,7 +17,8 @@ const ResetPasswordPage: Page = () => {
   const { sendPasswordResetEmail } = useAuth();
   const [email, setEmail] = useState("");
   const [stage, setStage] = useState(ResetPasswordStages.InputEmail);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<String | null>(null);
+  const router = useRouter();
 
   return (
     <div className="flex w-screen min-h-screen relative">
@@ -44,23 +46,39 @@ const ResetPasswordPage: Page = () => {
               }}
             />
             <div className="h-4" />
-            <Button
-              type="submit"
-              size="small"
-              onClick={(e) => {
-                e.preventDefault();
-                if (validateEmail(email)) {
-                  sendPasswordResetEmail(email).then(() => {
-                    setStage(ResetPasswordStages.SuccessfulReset);
-                    setError("");
-                  });
-                } else {
-                  setError("Please provide a valid email.");
-                }
-              }}
-            >
-              Send Email
-            </Button>
+            <div className="flex space-x-4">
+              <Button
+                type="reset"
+                size="small"
+                variant="inverted"
+                onClick={() => {
+                  router.back();
+                }}
+              >
+                Back
+              </Button>
+              <Button
+                type="submit"
+                size="small"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (validateEmail(email)) {
+                    sendPasswordResetEmail(email)
+                      .then(() => {
+                        setStage(ResetPasswordStages.SuccessfulReset);
+                        setError(null);
+                      })
+                      .catch((err) => {
+                        setError(err.message);
+                      });
+                  } else {
+                    setError("Please provide a valid email.");
+                  }
+                }}
+              >
+                Send Email
+              </Button>
+            </div>
           </form>
         ) : (
           <>
@@ -73,7 +91,7 @@ const ResetPasswordPage: Page = () => {
                   setStage(ResetPasswordStages.InputEmail);
                 }}
               >
-                <Text className="text-darkblue hover:underline">
+                <Text className="text-darkblue hover:underline" b>
                   Resend the link.
                 </Text>
               </button>

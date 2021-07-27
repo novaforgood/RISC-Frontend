@@ -88,7 +88,7 @@ const SettingsPage: Page = () => {
     setMentorshipDescription(description);
   }, []);
 
-  if (!currentProgram || error) return <div>Loading... </div>;
+  if (!currentProgram || error) return <Fragment />;
 
   return (
     <Fragment>

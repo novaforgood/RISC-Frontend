@@ -26,23 +26,20 @@ const GeneralProfile: Page = () => {
 
   const [profilePicture, setProfilePicture] = useState<File | null>();
   const [src, setSrc] = useState(data?.getMyUser.profilePictureUrl);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<String | null>(null);
   const router = useRouter();
 
   useEffect(() => {
-    reset();
-  }, [data?.getMyUser]);
-
-  const reset = () => {
+    //reset the data on data change
     if (data) {
       setModified(false);
       setFirstName(data.getMyUser.firstName);
       setLastName(data.getMyUser.lastName);
       setSrc(data.getMyUser.profilePictureUrl);
       setProfilePicture(null);
-      setError("");
+      setError(null);
     }
-  };
+  }, [data?.getMyUser]);
 
   return (
     <div className="h-screen bg-tertiary flex flex-col items-center py-10 overflow-y-auto">

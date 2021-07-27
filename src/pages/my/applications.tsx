@@ -9,6 +9,7 @@ import {
 import AuthorizationWrapper from "../../layouts/AuthorizationWrapper";
 import Page from "../../types/Page";
 
+//TODO: Deprecate this page for user homepage
 const ApplicationsViewer: Page = () => {
   const applications =
     useGetMyUserApplicationsQuery().data?.getMyUser.applications;

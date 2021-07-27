@@ -12,7 +12,6 @@ import {
   useUploadImageAndResizeMutation,
 } from "../generated/graphql";
 import AuthorizationWrapper from "../layouts/AuthorizationWrapper";
-import RedirectIfNotLoggedIn from "../layouts/RedirectIfNotLoggedIn";
 import Page from "../types/Page";
 
 const defaultMentorApplication = [
@@ -79,7 +78,7 @@ const CreateProgramPage: Page = () => {
   const [programIdentifier, setProgramIdentifier] = useState("");
   //const [programIsPublic, setProgramIsPublic] = useState(true); // TODO: add checkbox on form for setting program public or not
   const [createProgram] = useCreateProgramMutation();
-  const [displayError, setError] = useState(""); // TODO: Proper error box
+  const [error, setError] = useState<String | null>(null); // TODO: Proper error box
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { refetch: refetchMyUserData } = useGetMyUserQuery();
@@ -138,14 +137,12 @@ const CreateProgramPage: Page = () => {
         }
       })
       .catch((err) => {
+        setLoading(false);
         console.log({ ...err });
 
         if (err.message.includes("duplicate key value violates unique"))
           setError(`Error: Slug "${programIdentifier}" already exists`);
         else setError("Error: " + err.message);
-      })
-      .finally(() => {
-        setLoading(false);
       });
   };
 
@@ -160,32 +157,45 @@ const CreateProgramPage: Page = () => {
         <Text className="text-secondary">
           What is the name of your mentorship program?
         </Text>
+        <form className="space-y-6">
+          <div className="w-full">
+            <Input
+              name="Program Name"
+              placeholder="e.g. Nova Mentorship"
+              value={programName}
+              className="w-full"
+              onChange={(e) => {
+                setProgramName(e.target.value);
+              }}
+            />
+          </div>
+          <div className="flex justify-between">
+            <Button
+              type="reset"
+              variant="inverted"
+              onClick={() => {
+                router.back();
+              }}
+            >
+              Back
+            </Button>
+            <Button
+              type="submit"
+              disabled={programName.length == 0}
+              onClick={(e) => {
+                e.preventDefault();
+                if (validateProgramName(programName)) {
+                  setStage((prev) => prev + 1);
+                  setError(null);
+                } else setError("Please enter a program name.");
+              }}
+            >
+              Next
+            </Button>
+          </div>
+        </form>
 
-        <div className="w-full">
-          <Input
-            name="Program Name"
-            placeholder="e.g. Nova Mentorship"
-            value={programName}
-            className="w-full"
-            onChange={(e) => {
-              setProgramName(e.target.value);
-            }}
-          />
-        </div>
-
-        <Button
-          disabled={programName.length == 0}
-          onClick={() => {
-            if (validateProgramName(programName)) {
-              setStage((prev) => prev + 1);
-              setError("");
-            } else setError("Please enter a program name.");
-          }}
-        >
-          Next
-        </Button>
-
-        <Text className="text-error">{displayError}</Text>
+        <Text className="text-error">{error}</Text>
       </div>
     );
   };
@@ -211,56 +221,58 @@ const CreateProgramPage: Page = () => {
             onSrcChange={setProgramLogoURL}
           />
         </div>
-
-        <div>
-          <Text b>Identifier</Text>
-          <div className="h-2" />
-          <div className="inline space-x-2">
-            <Text b2>www.mentorcenter.us/ </Text>
-            <Input
-              title="Identifier"
-              name="Program Identifier"
-              placeholder="mentorship-identifier"
-              value={programIdentifier}
-              className="flex-1"
-              onChange={(e) => {
-                setProgramIdentifier(e.target.value);
-              }}
-            />
+        <form className="space-y-10">
+          <div>
+            <Text b>Identifier</Text>
+            <div className="h-2" />
+            <div className="inline space-x-2">
+              <Text b2>www.mentorcenter.us/ </Text>
+              <Input
+                title="Identifier"
+                name="Program Identifier"
+                placeholder="mentorship-identifier"
+                value={programIdentifier}
+                className="flex-1"
+                onChange={(e) => {
+                  setProgramIdentifier(e.target.value);
+                }}
+              />
+            </div>
           </div>
-        </div>
 
-        <div className="flex">
-          <Button
-            variant="inverted"
-            onClick={() => {
-              setStage((prev) => prev - 1);
-            }}
-          >
-            Back
-          </Button>
-          <div className="w-4"></div>
-          <Button
-            disabled={loading || programIdentifier.length == 0}
-            onClick={() => {
-              if (!validateProgramIdentifier(programIdentifier))
-                setError(
-                  "Your program identifier must be alphanumeric and have at least 4 characters."
-                );
-              else if (
-                !loading &&
-                validateProgramIdentifier(programIdentifier)
-              ) {
-                setError("");
-                callCreateProgram();
-              }
-            }}
-          >
-            Create!
-          </Button>
-        </div>
+          <div className="flex">
+            <Button
+              type="reset"
+              variant="inverted"
+              onClick={() => {
+                setStage((prev) => prev - 1);
+              }}
+            >
+              Back
+            </Button>
+            <div className="w-4"></div>
+            <Button
+              type="submit"
+              disabled={loading || programIdentifier.length == 0}
+              onClick={(e) => {
+                e.preventDefault();
+                if (loading) return;
+                if (!validateProgramIdentifier(programIdentifier))
+                  setError(
+                    "Your program identifier must be alphanumeric and have at least 4 characters."
+                  );
+                else if (validateProgramIdentifier(programIdentifier)) {
+                  setError(null);
+                  callCreateProgram();
+                }
+              }}
+            >
+              Create!
+            </Button>
+          </div>
+        </form>
 
-        <Text className="text-error">{displayError}</Text>
+        <Text className="text-error">{error}</Text>
       </div>
     );
   };
@@ -293,11 +305,7 @@ const CreateProgramPage: Page = () => {
 };
 
 CreateProgramPage.getLayout = (page, _) => (
-  <AuthorizationWrapper>
-    <RedirectIfNotLoggedIn pathAfterLoggingIn="/create">
-      {page}
-    </RedirectIfNotLoggedIn>
-  </AuthorizationWrapper>
+  <AuthorizationWrapper>{page}</AuthorizationWrapper>
 );
 
 export default CreateProgramPage;

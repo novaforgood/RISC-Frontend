@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { Button, Card, Text } from "../../../components/atomic";
+import AuthenticationModal from "../../../components/Authentication/AuthenticationModal";
 import ErrorScreen, { ErrorScreenType } from "../../../components/ErrorScreen";
 import Form from "../../../components/Form";
 import {
@@ -15,8 +16,7 @@ import {
   useAuthorizationLevel,
   useCurrentProgram,
 } from "../../../hooks";
-import AuthorizationWrapper from "../../../layouts/AuthorizationWrapper";
-import RedirectIfNotLoggedIn from "../../../layouts/RedirectIfNotLoggedIn";
+import SignedInAsIndicator from "../../../layouts/SignedInAsIndicator";
 import { Question } from "../../../types/Form";
 import Page from "../../../types/Page";
 import { useAuth } from "../../../utils/firebase/auth";
@@ -110,6 +110,7 @@ const ProgramApplyPage: Page = (_) => {
               : "")
           }
         >
+          <SignedInAsIndicator />
           <div className={formSubmitted ? "hidden" : ""}>
             <div className="mt-9">
               <Text h1 b>
@@ -197,17 +198,17 @@ const ProgramApplyPage: Page = (_) => {
           </div>
         </div>
       </div>
-      {user == null ? (
-        <RedirectIfNotLoggedIn
-          pathAfterLoggingIn={`${router.asPath}`}
-        ></RedirectIfNotLoggedIn>
-      ) : null}
+      <AuthenticationModal
+        isOpen={
+          user == null || authorizationLevel === AuthorizationLevel.Unverified
+        }
+        onClose={() => {}}
+        programName={currentProgram.name}
+      />
     </>
   );
 };
 
-ProgramApplyPage.getLayout = (page) => (
-  <AuthorizationWrapper>{page}</AuthorizationWrapper>
-);
+ProgramApplyPage.getLayout = (page) => <>{page}</>;
 
 export default ProgramApplyPage;
