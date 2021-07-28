@@ -139,6 +139,7 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
   const authorizationLevel = useAuthorizationLevel();
 
   const program = props.data?.getProgramBySlug;
+  console.log(props);
 
   switch (authorizationLevel) {
     case AuthorizationLevel.Admin:

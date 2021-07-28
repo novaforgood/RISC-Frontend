@@ -2,7 +2,6 @@ import classNames from "classnames";
 import { useRouter } from "next/router";
 import { Text } from "../../components/atomic";
 import { Home } from "../../components/icons";
-import RedirectIfNotLoggedIn from "../../layouts/RedirectIfNotLoggedIn";
 import { useAuth } from "../../utils/firebase/auth";
 import LocalStorage from "../../utils/localstorage";
 import TabLayout, { BaseTabLayoutProps } from "./TabLayout";
@@ -17,9 +16,7 @@ const NoMatchingProfileLayout: React.FC<BaseTabLayoutProps> = ({
 
   if (user == null) {
     router.push("/login");
-    return (
-      <RedirectIfNotLoggedIn pathAfterLoggingIn={"/"}></RedirectIfNotLoggedIn>
-    );
+    return <div />;
   }
 
   const active = false;
