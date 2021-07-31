@@ -6,9 +6,12 @@ import { Arrow } from "./icons";
 import { getDatesInThisMonth, padDatesInMonth } from "./utils";
 
 const today = new Date();
-const initMonth = today.getMonth();
-const initYear = today.getFullYear();
+const tomorrow = new Date();
+tomorrow.setDate(today.getDate() + 1);
+const initMonth = tomorrow.getMonth();
+const initYear = tomorrow.getFullYear();
 
+console.log(tomorrow);
 interface CalendarProps {
   onSelect: (date: Date | null) => void;
   selectedDate: Date | null;
@@ -97,7 +100,7 @@ const Calendar = ({
           const selected =
             selectedDate && selectedDate.getTime() === day.getTime();
           const selectable =
-            day > new Date() &&
+            day > today &&
             inMonth &&
             (selectAnyDate || selectableDatesSet.has(day.getDate()));
 
@@ -118,6 +121,7 @@ const Calendar = ({
               key={i}
               className={backgroundStyles}
               onClick={() => {
+                console.log(day);
                 onSelect(day);
               }}
             >

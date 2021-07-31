@@ -13,6 +13,7 @@ import React from "react";
 import { DateInterval } from "../../generated/graphql";
 import { Text } from "../atomic";
 import Select from "../atomic/Select";
+import { DeleteIcon } from "../FormSchemaEditor/icons";
 
 type SetDateIntervalProps = {
   date: Date;
@@ -89,9 +90,9 @@ export const SetDateInterval = ({
   };
 
   return (
-    <div className="flex space-x-2 items-center">
+    <div className="flex items-center space-x-2 w-full">
       <Text>From</Text>
-      <div className="w-28">
+      <div>
         <Select
           options={getAvailableStartTimes()}
           value={selectedInterval.startTime}
@@ -130,11 +131,11 @@ export const SetDateInterval = ({
           }}
         />
       </div>
-      <div className="flex-1" />
       <button
+        className="h-6 w-6 rounded p-1 hover:bg-tertiary cursor-pointer justify-self-end"
         onClick={() => onDeleteInterval(getDay(selectedInterval.startTime))}
       >
-        delete
+        <DeleteIcon className="h-4 m-auto" />
       </button>
     </div>
   );
