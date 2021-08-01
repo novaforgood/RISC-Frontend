@@ -11,6 +11,7 @@ import { AppProps } from "next/app";
 import { ReactElement } from "react";
 import "tailwindcss/tailwind.css";
 import AuthLoadingScreen from "../layouts/AuthLoadingScreen";
+import { SnackbarProvider } from "../notifications/SnackbarContext";
 import "../styles/globals.css";
 import Page from "../types/Page";
 import { AuthProvider } from "../utils/firebase/auth";
@@ -63,11 +64,15 @@ function MyApp({ Component, pageProps }: CustomAppProps) {
 
   return (
     <ApolloProvider client={client}>
-      <AuthProvider>
-        <AuthLoadingScreen>
-          {getLayout(<Component {...pageProps} />, pageProps)}
-        </AuthLoadingScreen>
-      </AuthProvider>
+      <SnackbarProvider>
+        <AuthProvider>
+          <AuthLoadingScreen>
+            {getLayout(<Component {...pageProps} />, pageProps)}
+          </AuthLoadingScreen>
+        </AuthProvider>
+      </SnackbarProvider>
+
+      {/* Hack to prevent CSS transitions from firing on first render */}
       <script> </script>
     </ApolloProvider>
   );

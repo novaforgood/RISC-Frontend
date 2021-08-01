@@ -19,6 +19,7 @@ import { AuthorizationLevel, useCurrentProgram } from "../../../../hooks";
 import AuthorizationWrapper from "../../../../layouts/AuthorizationWrapper";
 import ChooseTabLayout from "../../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../../layouts/PageContainer";
+import { useSnackbar } from "../../../../notifications/SnackbarContext";
 import Page from "../../../../types/Page";
 
 type User = {
@@ -62,6 +63,8 @@ const SettingsPage: Page = () => {
     iconUrl: "/static/DefaultLogo.svg",
     slug: "",
   };
+
+  const { setSnackbarMessage } = useSnackbar();
 
   //TODO: Image Upload and Resize => URL save
   const [uploadImageAndResizeMutation] = useUploadImageAndResizeMutation();
@@ -215,6 +218,7 @@ const SettingsPage: Page = () => {
                 .then(() => {
                   refetchCurrentProgram();
                   setModified(false);
+                  setSnackbarMessage({ text: "Saved settings!" });
                 })
                 .catch((err) => setError(err));
             }}

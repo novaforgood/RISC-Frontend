@@ -9,6 +9,7 @@ module.exports = {
       tertiary: { DEFAULT: "#F2F2F2" },
       inactive: { DEFAULT: "#E3E3E3" },
       error: { DEFAULT: "#DB3B25" },
+      success: { DEFAULT: "#73A562" },
       white: { DEFAULT: "#FFFFFF" },
       black: { DEFAULT: "#000000" },
       skyblue: { DEFAULT: "#7AC5F8" },

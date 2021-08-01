@@ -14,6 +14,7 @@ import { AuthorizationLevel, useCurrentProgram } from "../../../../../../hooks";
 import AuthorizationWrapper from "../../../../../../layouts/AuthorizationWrapper";
 import ChooseTabLayout from "../../../../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../../../../layouts/PageContainer";
+import { useSnackbar } from "../../../../../../notifications/SnackbarContext";
 import { Question } from "../../../../../../types/Form";
 import Page from "../../../../../../types/Page";
 
@@ -42,6 +43,8 @@ const EditMentorProfilePage: Page = (_) => {
   const [profileTags, setProfileTags] = useState<ProfileTag[]>([]);
   const [modified, setModified] = useState(false);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const { setSnackbarMessage } = useSnackbar();
+
   isSavingProfile; // TODO: If is saving, set loading state of button to true.
 
   useEffect(() => {
@@ -84,6 +87,7 @@ const EditMentorProfilePage: Page = (_) => {
 
       setIsSavingProfile(false);
       setModified(false);
+      setSnackbarMessage({ text: "Saved mentor profile format!" });
     });
   };
 

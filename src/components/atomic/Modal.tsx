@@ -8,10 +8,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+import { sleep } from "../../utils";
 
 type ModalProps = HTMLAttributes<HTMLDivElement> & {
   isOpen: boolean;

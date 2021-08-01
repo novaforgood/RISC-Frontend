@@ -12,6 +12,7 @@ import {
   useUploadImageAndResizeMutation,
 } from "../../generated/graphql";
 import AuthorizationWrapper from "../../layouts/AuthorizationWrapper";
+import { useSnackbar } from "../../notifications/SnackbarContext";
 import Page from "../../types/Page";
 
 const GeneralProfile: Page = () => {
@@ -23,6 +24,7 @@ const GeneralProfile: Page = () => {
   const [modified, setModified] = useState(false);
   const [firstName, setFirstName] = useState(data?.getMyUser.firstName);
   const [lastName, setLastName] = useState(data?.getMyUser.lastName);
+  const { setSnackbarMessage } = useSnackbar();
 
   const [profilePicture, setProfilePicture] = useState<File | null>();
   const [src, setSrc] = useState(data?.getMyUser.profilePictureUrl);
@@ -45,14 +47,14 @@ const GeneralProfile: Page = () => {
     <div className="h-screen bg-tertiary flex flex-col items-center py-10 overflow-y-auto">
       <CatchUnsavedChangesModal unsavedChangesExist={modified === true} />
 
-      <div className="w-3/4 grid grid-cols-8 gap-4">
+      <div className="w-3/4 grid grid-cols-10 gap-4">
         <button
-          className="cursor-pointer h-max w-max col-span-1"
+          className="cursor-pointer w-max col-span-1"
           onClick={() => router.back()}
         >
-          <BackArrow />
+          <BackArrow className="w-6" />
         </button>
-        <div className="flex justify-between items-center col-span-7">
+        <div className="flex justify-between items-center col-span-9">
           <Text h2 b>
             General Profile
           </Text>
@@ -83,6 +85,7 @@ const GeneralProfile: Page = () => {
                 },
               });
               setModified(false);
+              setSnackbarMessage({ text: "Saved general profile!" });
             }}
           >
             Save
