@@ -8,11 +8,18 @@ query getChatRequests($profileId: String!) {
     chatRejectMessage
     mentorProfileId
     mentorProfile {
+      profileJson
+      tagsJson
+      bio
       user {
-        userId
+        email
         firstName
         lastName
         profilePictureUrl
+      }
+      profileTags {
+        profileTagId
+        name
       }
     }
     menteeProfileId

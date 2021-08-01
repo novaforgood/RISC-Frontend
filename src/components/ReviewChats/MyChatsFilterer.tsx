@@ -3,12 +3,14 @@ import React, { Fragment, useState } from "react";
 import {
   ChatRequestStatus,
   GetChatRequestsQuery,
+  Profile,
   useGetChatRequestsQuery,
 } from "../../generated/graphql";
 import useTimezoneConverters from "../../hooks/useTimezoneConverters";
 import { Button, Modal, Text } from "../atomic";
 import InlineProfileAvatar from "../InlineProfileAvatar";
 import ListFilterer from "../ListFilterer";
+import ProfileModal from "../ProfileModal";
 import ChatRequestMutators from "./ChatRequestMutators";
 
 type ChatRequestPartial = Omit<
@@ -32,6 +34,7 @@ type DetailsModalButtonProps = {
 
 const DetailsModalButton = ({ chatRequest }: DetailsModalButtonProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
 
   return (
     <div className="flex flex-1">
@@ -45,8 +48,15 @@ const DetailsModalButton = ({ chatRequest }: DetailsModalButtonProps) => {
           setIsOpen(false);
         }}
       >
+        <ProfileModal
+          isOpen={profileModalOpen}
+          onClose={() => {
+            setProfileModalOpen(false);
+          }}
+          profile={chatRequest.mentorProfile as Profile}
+        />
         <div className="w-200 p-2 flex flex-col space-y-2 box-border">
-          <div className="flex w-full">
+          <div className="flex w-full space-x-4">
             <Text h3>
               Chat with{" "}
               <Text h3 b>
@@ -55,11 +65,14 @@ const DetailsModalButton = ({ chatRequest }: DetailsModalButtonProps) => {
                   chatRequest.mentorProfile.user.lastName}
               </Text>
             </Text>
-            <div className="flex-1" />
-            <Text>
+            <Text i>
               {chatRequestStatusToTextMap[chatRequest.chatRequestStatus]} chat
               request
             </Text>
+            <div className="flex-1" />
+            <Button size="small" onClick={() => setProfileModalOpen(true)}>
+              View Profile
+            </Button>
           </div>
           <Text>
             {format(chatRequest.chatStartTime, "MMM d, yyyy | h:mma") +
@@ -67,15 +80,20 @@ const DetailsModalButton = ({ chatRequest }: DetailsModalButtonProps) => {
               format(chatRequest.chatEndTime, "MMM d, yyyy | h:mma")}
           </Text>
           <div className="h-2" />
+          <div>
+            <Text b>Your message:</Text>
+            <div className="h-2" />
+            <div className="bg-tertiary rounded-md p-2">
+              <Text>{chatRequest.chatRequestMessage || "No message"}</Text>
+            </div>
+          </div>
           {chatRequest.chatRequestStatus === ChatRequestStatus.Rejected && (
             <>
-              <Text>Reason for rejection:</Text>
+              <Text b>Reason for rejection:</Text>
               <div className="w-full bg-tertiary rounded-md p-4">
-                {chatRequest.chatRejectMessage ? (
-                  <Text>{chatRequest.chatRejectMessage}</Text>
-                ) : (
-                  <Text i>No reason given.</Text>
-                )}
+                <Text>
+                  {chatRequest.chatRejectMessage || "No reason given."}
+                </Text>
               </div>
             </>
           )}
@@ -87,9 +105,9 @@ const DetailsModalButton = ({ chatRequest }: DetailsModalButtonProps) => {
                 chatRequest.chatRequestStatus === ChatRequestStatus.Canceled
               }
             />
-            <Button size={"small"} onClick={() => setIsOpen(false)}>
+            {/* <Button size={"small"} onClick={() => setIsOpen(false)}>
               Ok
-            </Button>
+            </Button> */}
           </div>
         </div>
       </Modal>
@@ -162,7 +180,16 @@ export const MyChatsFilterer = ({ profileId }: MyChatsFiltererProps) => {
       applicationList: ChatRequestPartial[]
     ) => ChatRequestPartial[];
   } = {
-    All: (x) => x,
+    Upcoming: (x) =>
+      x.filter(
+        (y) =>
+          y.chatRequestStatus === ChatRequestStatus.Accepted &&
+          y.chatStartTime.getTime() > new Date().getTime()
+      ),
+    Pending: (x) =>
+      x.filter((y) => y.chatRequestStatus === ChatRequestStatus.PendingReview),
+    Past: (x) =>
+      x.filter((y) => y.chatStartTime.getTime() < new Date().getTime()),
   };
 
   const { fromUTC } = useTimezoneConverters();
@@ -181,7 +208,7 @@ export const MyChatsFilterer = ({ profileId }: MyChatsFiltererProps) => {
     <ListFilterer
       listToFilter={chatRequests}
       filterOptions={filterOptions}
-      defaultFilterOption={"All"}
+      defaultFilterOption={"Upcoming"}
       listComponent={(filterOption, filteredList) => (
         <MyChatsList
           title={`${filterOption} Chats`}

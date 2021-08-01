@@ -36,7 +36,7 @@ const DetailsModalButton = ({ chatRequest }: DetailsModalButtonProps) => {
   return (
     <>
       <button onClick={() => setIsOpen(true)}>
-        <Text u>View Request</Text>
+        <Text u>Details</Text>
       </button>
       <Modal
         isOpen={isOpen}
@@ -70,7 +70,7 @@ const DetailsModalButton = ({ chatRequest }: DetailsModalButtonProps) => {
           <div className="h-2" />
           {chatRequest.chatRequestMessage && (
             <>
-              <Text>From {chatRequest.menteeProfile.user.firstName}:</Text>
+              <Text b>From {chatRequest.menteeProfile.user.firstName}:</Text>
               <div className="w-full bg-tertiary rounded-md p-2">
                 <Text>{chatRequest.chatRequestMessage}</Text>
               </div>
