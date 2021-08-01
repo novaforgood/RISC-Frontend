@@ -3,7 +3,7 @@ import type { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
-import { Button, Card, Text } from "../../../../components/atomic";
+import { Button, Card, Input, Text } from "../../../../components/atomic";
 import ErrorScreen, {
   ErrorScreenType,
 } from "../../../../components/ErrorScreen";
@@ -58,6 +58,36 @@ const AdminHome = ({
           </Text>
           <PublishButton className="" programId={programId} />
         </div>
+      </div>
+      <div className="h-4" />
+      <div className="flex items-center space-x-4">
+        <Text b>Share your program!</Text>
+        <Input
+          id="mentorship-link"
+          type="text"
+          className="w-96"
+          disabled
+          readOnly
+          value={`${window.location.host}/program/${useRouter().query.slug}`}
+        />
+        <Button
+          onClick={() => {
+            const link = document.getElementById(
+              "mentorship-link"
+            ) as HTMLInputElement;
+
+            //TODO: ExecCommand has been deprecated although copy command is still supported on most browsers
+            link.focus();
+            link.disabled = false;
+            link.select();
+            link.disabled = true;
+            document.execCommand("copy");
+            document.getSelection()?.removeAllRanges();
+          }}
+          size="small"
+        >
+          copy
+        </Button>
       </div>
       <div className="h-24"></div>
 
@@ -139,7 +169,6 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
   const authorizationLevel = useAuthorizationLevel();
 
   const program = props.data?.getProgramBySlug;
-  console.log(props);
 
   switch (authorizationLevel) {
     case AuthorizationLevel.Admin:
