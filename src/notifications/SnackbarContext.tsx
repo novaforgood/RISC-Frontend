@@ -22,7 +22,7 @@ export const SnackBarContext = createContext<SnackBarContext | undefined>(
   undefined
 );
 
-const DEFAULT_DURATION = 5000;
+const DEFAULT_DURATION_IN_MS = 3000;
 
 interface SnackbarProviderProps {
   children: ReactNode;
@@ -38,7 +38,7 @@ export function SnackbarProvider({ children }: SnackbarProviderProps) {
         setShowing(false);
         await sleep(200);
         setMessage(null);
-      }, message.durationInMs || DEFAULT_DURATION);
+      }, message.durationInMs || DEFAULT_DURATION_IN_MS);
       return () => clearTimeout(timer);
     }
   }, [message]);
@@ -62,10 +62,10 @@ export function SnackbarProvider({ children }: SnackbarProviderProps) {
           className="fixed w-full flex justify-center pointer-events-none"
           enter="ease-out duration-200"
           enterFrom="-top-10"
-          enterTo="top-0"
-          entered="top-0"
+          enterTo="top-1"
+          entered="top-1"
           leave="ease-in duration-200"
-          leaveFrom="top-0"
+          leaveFrom="top-1"
           leaveTo="-top-10"
         >
           <div className="bg-success px-3 p-2 border-2 border-success text-white flex gap-2 items-center rounded-md">

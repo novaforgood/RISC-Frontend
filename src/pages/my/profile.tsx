@@ -12,6 +12,7 @@ import {
   useUploadImageAndResizeMutation,
 } from "../../generated/graphql";
 import AuthorizationWrapper from "../../layouts/AuthorizationWrapper";
+import { useSnackbar } from "../../notifications/SnackbarContext";
 import Page from "../../types/Page";
 
 const GeneralProfile: Page = () => {
@@ -23,6 +24,7 @@ const GeneralProfile: Page = () => {
   const [modified, setModified] = useState(false);
   const [firstName, setFirstName] = useState(data?.getMyUser.firstName);
   const [lastName, setLastName] = useState(data?.getMyUser.lastName);
+  const { setSnackbarMessage } = useSnackbar();
 
   const [profilePicture, setProfilePicture] = useState<File | null>();
   const [src, setSrc] = useState(data?.getMyUser.profilePictureUrl);
@@ -83,6 +85,7 @@ const GeneralProfile: Page = () => {
                 },
               });
               setModified(false);
+              setSnackbarMessage({ text: "Saved general profile!" });
             }}
           >
             Save

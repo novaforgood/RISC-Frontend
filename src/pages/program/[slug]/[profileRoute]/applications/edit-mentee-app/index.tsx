@@ -7,6 +7,7 @@ import { AuthorizationLevel, useCurrentProgram } from "../../../../../../hooks";
 import AuthorizationWrapper from "../../../../../../layouts/AuthorizationWrapper";
 import ChooseTabLayout from "../../../../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../../../../layouts/PageContainer";
+import { useSnackbar } from "../../../../../../notifications/SnackbarContext";
 import { Question } from "../../../../../../types/Form";
 import Page from "../../../../../../types/Page";
 
@@ -23,6 +24,7 @@ const EditMenteeApplicationPage: Page = (_) => {
   const [updateProgram] = useUpdateProgramMutation();
   const [applicationSchema, setApplicationSchema] = useState<Question[]>([]);
   const [modified, setModified] = useState(false);
+  const { setSnackbarMessage } = useSnackbar();
   const [isSavingApplicationSchema, setIsSavingApplicationSchema] =
     useState(false);
   isSavingApplicationSchema; // TODO: If is saving, set loading state of button to true.
@@ -48,6 +50,7 @@ const EditMenteeApplicationPage: Page = (_) => {
       refetchCurrentProgram();
       setIsSavingApplicationSchema(false);
       setModified(false);
+      setSnackbarMessage({ text: "Saved mentor application format!" });
     });
   };
 

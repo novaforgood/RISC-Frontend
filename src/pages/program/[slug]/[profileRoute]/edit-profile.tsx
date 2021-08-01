@@ -21,6 +21,7 @@ import useCurrentProfile from "../../../../hooks/useCurrentProfile";
 import AuthorizationWrapper from "../../../../layouts/AuthorizationWrapper";
 import ChooseTabLayout from "../../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../../layouts/PageContainer";
+import { useSnackbar } from "../../../../notifications/SnackbarContext";
 import { Question } from "../../../../types/Form";
 import Page from "../../../../types/Page";
 
@@ -49,6 +50,7 @@ const EditProfilePage: Page = (_) => {
   const [updateProfile] = useUpdateProfileMutation({
     refetchQueries: ["getMyUser"],
   });
+  const { setSnackbarMessage } = useSnackbar();
 
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
   const [profileJson, setProfileJson] = useState<ResponseJson>({});
@@ -134,6 +136,7 @@ const EditProfilePage: Page = (_) => {
                 }),
               ]).then(() => {
                 setModified(false);
+                setSnackbarMessage({ text: "Profile changes saved!" });
               });
             }}
           >
