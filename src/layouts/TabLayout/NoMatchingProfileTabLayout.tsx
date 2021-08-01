@@ -41,9 +41,7 @@ const NoMatchingProfileLayout: React.FC<BaseTabLayoutProps> = ({
           className="p-2 h-9 w-9 duration-150 flex-none"
         />
         <div className="w-1 flex-none" />
-        <Text className="whitespace-nowrap overflow-ellipsis">
-          Go to my homepage
-        </Text>
+        <Text className="whitespace-nowrap overflow-ellipsis">Home</Text>
       </div>
     </TabLayout>
   );

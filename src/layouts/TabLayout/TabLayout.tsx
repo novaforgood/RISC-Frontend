@@ -81,7 +81,7 @@ const TabLayout: React.FC<TabLayoutProps> & {
       <div className="flex flex-col h-screen w-72 flex-shrink-0 bg-white shadow-lg relative">
         <ProgramDropdown />
         <div className="h-0.25 w-full bg-tertiary flex-shrink-0"></div>
-        <div className="overflow-y-scroll h-full">{children}</div>
+        <div className="overflow-y-auto h-full">{children}</div>
         <TabFooterMenu />
       </div>
       <div className="flex-grow overflow-x-hidden">{currentPageChildren}</div>
