@@ -1,4 +1,4 @@
-import { Calendar, Home, Smile, User } from "../../components/icons";
+import { Calendar, Home, Smile, User, Users } from "../../components/icons";
 import TabLayout, { BaseTabLayoutProps, joinPath } from "./TabLayout";
 
 const { PageItem } = TabLayout;
@@ -10,6 +10,11 @@ const MentorTabLayout: React.FC<BaseTabLayoutProps> = ({
   return (
     <TabLayout currentPageChildren={children}>
       <PageItem label="Homepage" Icon={Home} path={joinPath(basePath)} />
+      <PageItem
+        label="View Mentors"
+        Icon={Users}
+        path={joinPath(basePath, "mentors")}
+      />
       <PageItem
         label="My Availabilities"
         Icon={Calendar}
