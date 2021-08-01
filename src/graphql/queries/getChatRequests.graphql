@@ -17,12 +17,18 @@ query getChatRequests($profileId: String!) {
     }
     menteeProfileId
     menteeProfile {
+      profileJson
+      tagsJson
+      bio
       user {
-        userId
         email
         firstName
         lastName
         profilePictureUrl
+      }
+      profileTags {
+        profileTagId
+        name
       }
     }
   }

@@ -3,6 +3,7 @@ import React, { Fragment, useState } from "react";
 import {
   ChatRequestStatus,
   GetChatRequestsQuery,
+  Profile,
   refetchGetChatRequestsQuery,
   useAcceptChatRequestMutation,
   useGetChatRequestsQuery,
@@ -13,6 +14,7 @@ import { Button, Modal, Text, TextArea } from "../atomic";
 import { CircledCheck, CircledCross } from "../icons";
 import InlineProfileAvatar from "../InlineProfileAvatar";
 import ListFilterer from "../ListFilterer";
+import ProfileModal from "../ProfileModal";
 import ModifyChatRequestModal from "./ChatRequestMutators";
 
 type ChatRequestPartial = Omit<
@@ -29,10 +31,12 @@ type DetailsModalButtonProps = {
 
 const DetailsModalButton = ({ chatRequest }: DetailsModalButtonProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
+
   return (
     <>
       <button onClick={() => setIsOpen(true)}>
-        <Text u>Details</Text>
+        <Text u>View Request</Text>
       </button>
       <Modal
         isOpen={isOpen}
@@ -52,8 +56,8 @@ const DetailsModalButton = ({ chatRequest }: DetailsModalButtonProps) => {
             </Text>
             <div className="flex-1" />
             {/*TODO: View Profile should go here, not Close */}
-            <Button size="small" onClick={() => setIsOpen(false)}>
-              Close
+            <Button size="small" onClick={() => setProfileModalOpen(true)}>
+              View Profile
             </Button>
           </div>
           <Text>
@@ -82,6 +86,13 @@ const DetailsModalButton = ({ chatRequest }: DetailsModalButtonProps) => {
             </div>
           )}
         </div>
+        <ProfileModal
+          isOpen={profileModalOpen}
+          onClose={() => {
+            setProfileModalOpen(false);
+          }}
+          profile={chatRequest.menteeProfile as Profile}
+        />
       </Modal>
     </>
   );
@@ -146,7 +157,6 @@ const ChatRequestListItem = ({ chatRequest }: ChatRequestListItemProps) => {
       return <></>;
     }
   };
-
   return (
     <>
       <div className="flex items-center space-x-4 p-3 hover:bg-tertiary duration-150 rounded">
