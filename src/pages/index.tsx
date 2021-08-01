@@ -15,6 +15,7 @@ import {
 import { PageGetProgramBySlugComp } from "../generated/page";
 import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";
 import NoProgramTabLayout from "../layouts/TabLayout/NoProgramTabLayout";
+import { useSnackbar } from "../notifications/SnackbarContext";
 import Page from "../types/Page";
 import { MAP_PROFILETYPE_TO_ROUTE } from "../utils/constants";
 import { useAuth } from "../utils/firebase/auth";
@@ -336,6 +337,8 @@ const NoMentorshipHome: Page = () => {
     return <Fragment />;
   }
 
+  const { setSnackbarMessage } = useSnackbar();
+
   return (
     <NoProgramTabLayout basePath={router.asPath}>
       <div className="h-screen bg-tertiary">
@@ -401,7 +404,12 @@ const NoMentorshipHome: Page = () => {
                 const { program } = profile;
 
                 return (
-                  <div key={i}>
+                  <div
+                    key={i}
+                    onClick={() => {
+                      setSnackbarMessage({ text: "Changes Saved" });
+                    }}
+                  >
                     <ProgramRow
                       profileType={profile.profileType}
                       iconUrl={program.iconUrl}
