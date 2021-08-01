@@ -47,14 +47,14 @@ const GeneralProfile: Page = () => {
     <div className="h-screen bg-tertiary flex flex-col items-center py-10 overflow-y-auto">
       <CatchUnsavedChangesModal unsavedChangesExist={modified === true} />
 
-      <div className="w-3/4 grid grid-cols-8 gap-4">
+      <div className="w-3/4 grid grid-cols-10 gap-4">
         <button
-          className="cursor-pointer h-max w-max col-span-1"
+          className="cursor-pointer w-max col-span-1"
           onClick={() => router.back()}
         >
-          <BackArrow />
+          <BackArrow className="w-6" />
         </button>
-        <div className="flex justify-between items-center col-span-7">
+        <div className="flex justify-between items-center col-span-9">
           <Text h2 b>
             General Profile
           </Text>
