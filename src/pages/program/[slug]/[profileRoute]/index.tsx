@@ -2,7 +2,7 @@ import { RawDraftContentState } from "draft-js";
 import type { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { HTMLAttributes } from "react";
 import { Button, Card, Input, Text } from "../../../../components/atomic";
 import ErrorScreen, {
   ErrorScreenType,
@@ -36,6 +36,41 @@ function getRawContentState(json: string): RawDraftContentState {
   }
 }
 
+const LinkToProgram = ({
+  className,
+  ...props
+}: HTMLAttributes<HTMLDivElement>) => (
+  <div {...props} className={"space-x-4 " + className}>
+    <Text b>Share your program!</Text>
+    <Input
+      id="mentorship-link"
+      type="text"
+      className="w-96"
+      disabled
+      readOnly
+      value={`${window.location.host}/program/${useRouter().query.slug}`}
+    />
+    <Button
+      onClick={() => {
+        const link = document.getElementById(
+          "mentorship-link"
+        ) as HTMLInputElement;
+
+        //TODO: ExecCommand has been deprecated although copy command is still supported on most browsers
+        link.focus();
+        link.disabled = false;
+        link.select();
+        link.disabled = true;
+        document.execCommand("copy");
+        document.getSelection()?.removeAllRanges();
+      }}
+      size="small"
+    >
+      copy
+    </Button>
+  </div>
+);
+
 type DisplayProgramHomepageProps = {
   programId: string;
   name: string;
@@ -60,35 +95,7 @@ const AdminHome = ({
         </div>
       </div>
       <div className="h-4" />
-      <div className="flex items-center space-x-4">
-        <Text b>Share your program!</Text>
-        <Input
-          id="mentorship-link"
-          type="text"
-          className="w-96"
-          disabled
-          readOnly
-          value={`${window.location.host}/program/${useRouter().query.slug}`}
-        />
-        <Button
-          onClick={() => {
-            const link = document.getElementById(
-              "mentorship-link"
-            ) as HTMLInputElement;
-
-            //TODO: ExecCommand has been deprecated although copy command is still supported on most browsers
-            link.focus();
-            link.disabled = false;
-            link.select();
-            link.disabled = true;
-            document.execCommand("copy");
-            document.getSelection()?.removeAllRanges();
-          }}
-          size="small"
-        >
-          copy
-        </Button>
-      </div>
+      <LinkToProgram />
       <div className="h-24"></div>
 
       <Card className="box-border w-full px-16 p-8 z-0">
@@ -127,7 +134,7 @@ const ReadOnlyHome = ({
     //TODO: Figure out whether the buttons at the top should be sticky
     <div className="box-border bg-tertiary min-h-full pt-16 lg:pt-32 overflow-hidden">
       {inProgram ? (
-        <></>
+        <LinkToProgram className="transform -translate-y-20" />
       ) : (
         <div className="flex transform -translate-y-14 lg:-translate-y-20 float-right z-10">
           <Link href={`/program/${slug}/apply?as=mentor`}>
