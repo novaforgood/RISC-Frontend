@@ -99,7 +99,7 @@ const EditMentorProfilePage: Page = (_) => {
         <Text h2 b>
           Edit Mentor Profile
         </Text>
-        <div className="w-12"></div>
+        <div className="w-12" />
         <div className="flex">
           <Button
             size="small"
@@ -113,7 +113,7 @@ const EditMentorProfilePage: Page = (_) => {
         </div>
       </div>
 
-      <div className="h-8"></div>
+      <div className="h-8" />
 
       <div className="w-80 sm:w-120 md:w-160 lg:w-200 flex flex-col">
         <Text b2>
@@ -121,17 +121,21 @@ const EditMentorProfilePage: Page = (_) => {
         </Text>
         <div className="h-8" />
 
-        <Text h3 b className="text-secondary">
+        <Text h3 b>
           Edit tags
         </Text>
-        <div className="h-2"></div>
+        <div className="h-2" />
 
         <Text>
           Add some tags that can be used to categorize your mentors. Mentors
           will be able to select the tags that best describe them for mentees to
           view and filter by.
         </Text>
-        <div className="h-4"></div>
+        <div className="h-2" />
+        <Text i secondary>
+          Example Tags: Economics, Biology, First-Gen, LGBTQ+
+        </Text>
+        <div className="h-4" />
 
         <TagSchemaEditor
           tags={profileTags}
@@ -140,17 +144,17 @@ const EditMentorProfilePage: Page = (_) => {
             setProfileTags(newProfileTags);
           }}
         />
-        <div className="h-16"></div>
+        <div className="h-16" />
 
-        <Text h3 b className="text-secondary">
+        <Text h3 b>
           Edit questions
         </Text>
-        <div className="h-2"></div>
+        <div className="h-2" />
 
         <Text>
           What should mentees know about a mentor before reaching out?
         </Text>
-        <div className="h-4"></div>
+        <div className="h-4" />
 
         <FormSchemaEditor
           questions={profileSchema}

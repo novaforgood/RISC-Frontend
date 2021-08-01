@@ -40,12 +40,14 @@ const LinkToProgram = ({
   className,
   ...props
 }: HTMLAttributes<HTMLDivElement>) => (
-  <div {...props} className={"space-x-4 " + className}>
-    <Text b>Share your program!</Text>
+  <div {...props} className={"flex items-center space-x-4 " + className}>
+    <Text b className="hidden xl:inline">
+      Share your program!
+    </Text>
     <Input
       id="mentorship-link"
       type="text"
-      className="w-96"
+      className="flex-1 xl:flex-none xl:w-96"
       disabled
       readOnly
       value={`${window.location.host}/program/${useRouter().query.slug}`}
@@ -86,13 +88,19 @@ const AdminHome = ({
 }: DisplayProgramHomepageProps) => (
   <div>
     <EditorProvider currentHomepage={getRawContentState(homepage)}>
-      <div className="flex items-center">
+      <div className="flex flex-col justify-center">
         <div className="flex w-full items-center justify-between">
           <Text h2 b>
             Edit Homepage
           </Text>
           <PublishButton className="" programId={programId} />
         </div>
+        <div className="h-4" />
+        <Text>
+          People will see this landing page when they click your program link.
+          Use this space to welcome people to your program, provide basic
+          program information, outline FAQs, or whatever else you can imagine!
+        </Text>
       </div>
       <div className="h-4" />
       <LinkToProgram />
@@ -132,7 +140,7 @@ const ReadOnlyHome = ({
   const JSONHomepage: RawDraftContentState = getRawContentState(homepage);
   return (
     //TODO: Figure out whether the buttons at the top should be sticky
-    <div className="box-border bg-tertiary min-h-full pt-16 lg:pt-32 overflow-hidden">
+    <div className="box-border bg-tertiary min-h-full pt-16 lg:pt-32">
       {inProgram ? (
         <LinkToProgram className="transform -translate-y-20" />
       ) : (

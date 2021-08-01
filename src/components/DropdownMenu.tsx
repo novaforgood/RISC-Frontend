@@ -73,7 +73,7 @@ export default function Dropdown({ button }: DropdownProps) {
                           LocalStorage.delete("cachedProfileSlug");
                         }}
                       >
-                        My Homepage
+                        My Dashboard
                       </a>
                     )}
                   </Menu.Item>

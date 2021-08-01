@@ -101,19 +101,6 @@ const ProgramDropdown = () => {
               </Link>
             </Menu.Item> */}
             <Menu.Item>
-              <a
-                href="/"
-                className="w-full"
-                onClick={() => {
-                  LocalStorage.delete("cachedProfileSlug");
-                }}
-              >
-                <div className="p-2 w-full cursor-pointer hover:bg-tertiary">
-                  <Text>Go to my homepage</Text>
-                </div>
-              </a>
-            </Menu.Item>
-            <Menu.Item>
               <Link href="/create">
                 <div className="p-2 w-full cursor-pointer hover:bg-tertiary">
                   Create a mentorship

@@ -16,9 +16,9 @@ const MentorTabLayout: React.FC<BaseTabLayoutProps> = ({
         path={joinPath(basePath, "mentors")}
       />
       <PageItem
-        label="My Availabilities"
+        label="My Availability"
         Icon={Calendar}
-        path={joinPath(basePath, "availabilities")}
+        path={joinPath(basePath, "availability")}
       />
       <PageItem
         label="Chat Requests"

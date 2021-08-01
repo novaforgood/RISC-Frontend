@@ -310,7 +310,7 @@ const EditAvailOverrideDayModalContents = ({
         <div className="w-96">
           <Text>
             Select a date to override. <br />
-            Weekly availabilities on that day will be overridden.
+            Weekly availability on that day will be overridden.
           </Text>
         </div>
       )}
@@ -501,7 +501,7 @@ export const SetAvailabilityOverridesCard = ({
       <div className="h-2"></div>
       <div className="w-5/6 mx-auto">
         <Text className="text-secondary">
-          Add dates when your availability changes from your weekly hours.
+          Adjust your availability manually for certain dates.
         </Text>
       </div>
       <div className="h-4" />

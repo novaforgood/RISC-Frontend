@@ -157,7 +157,7 @@ export const SetWeeklyAvailabilitiesCard = ({
     <div className="flex flex-col">
       <div className="w-5/6 mx-auto">
         <Text h3 b>
-          Set Weekly Availabilities
+          Set Weekly Availability
         </Text>
       </div>
       <div className="h-4" />

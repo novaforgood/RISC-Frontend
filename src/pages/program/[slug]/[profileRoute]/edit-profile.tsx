@@ -105,12 +105,11 @@ const EditProfilePage: Page = (_) => {
   return (
     <div className="flex flex-col items-center">
       <CatchUnsavedChangesModal unsavedChangesExist={modified === true} />
-
       <div className="flex justify-between items-center w-full">
         <Text h2 b>
           Edit My {isMentor ? "Mentor" : "Mentee"} Profile
         </Text>
-        <div className="w-12"></div>
+        <div className="w-12" />
         <div className="flex">
           <Button
             size="small"
@@ -144,25 +143,31 @@ const EditProfilePage: Page = (_) => {
           </Button>
         </div>
       </div>
-      <div className="h-8"></div>
+      <div className="h-4" />
+      <Text className="w-full">
+        {isMentor
+          ? "Mentees will use your profile to learn more about you before booking a chat."
+          : "Mentors will use your profile to learn more about you after you book a chat with them. Your profile is only visible to admins and mentors you book chats with."}
+      </Text>
+      <div className="h-4" />
       <Card className="flex flex-col w-80 p-6 items-center border-0">
         <ProfilePictureImg
           className="h-40 w-40 rounded-full object-cover bg-tertiary border border-inactive"
           src={profilePictureUrl}
         />
 
-        <div className="h-4"></div>
+        <div className="h-4" />
 
         <Text b className="text-body-1 text-center">
           {firstName} {lastName}
         </Text>
-        <div className="h-4"></div>
+        <div className="h-4" />
 
         <div className="flex flex-wrap justify-center">
           {tags}
           {tagsList.length > 3 && moreTag}
         </div>
-        <div className="h-4"></div>
+        <div className="h-4" />
 
         <TextArea
           value={bio}
@@ -173,20 +178,19 @@ const EditProfilePage: Page = (_) => {
           }}
           placeholder="Bio"
         ></TextArea>
-        <div className="h-4"></div>
+        <div className="h-4" />
 
         {/* <Button disabled onClick={() => {}}>
           View Profile
         </Button> */}
       </Card>
-      <div className="h-8"></div>
-
+      <div className="h-8" />
       {authorizationLevel === AuthorizationLevel.Mentor &&
         programTagsData.getProfileTagsByProgram.length != 0 && (
           <Fragment>
             <Card className="flex flex-col p-6 items-start border-0">
               <Text b>Select the tags that best describe you.</Text>
-              <div className="h-4"></div>
+              <div className="h-4" />
               <TagSelector
                 selectableTags={programTagsData.getProfileTagsByProgram}
                 selectedTagIds={selectedTagIds}
@@ -196,10 +200,13 @@ const EditProfilePage: Page = (_) => {
                 }}
               />
             </Card>
-            <div className="h-8"></div>
+            <div className="h-8" />
           </Fragment>
         )}
-
+      <Text className="w-full">
+        Please answer the following questions set by your program admin.
+      </Text>
+      <div className="h-4" />
       <Form
         questions={getQuestionsFromJson(
           isMentor
