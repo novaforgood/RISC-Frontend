@@ -1,7 +1,7 @@
 import React from "react";
-import { Text } from "../../../../../components/atomic";
-import { useCurrentProgram } from "../../../../../hooks";
-import Page from "../../../../../types/Page";
+import { Text } from "../../../../../../components/atomic";
+import { useCurrentProgram } from "../../../../../../hooks";
+import Page from "../../../../../../types/Page";
 
 // import { Question } from "../../../../../types/Form";
 // function getQuestionsFromJson(json: string): Question[] {

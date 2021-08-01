@@ -5,21 +5,21 @@ import {
   Input,
   Text,
   TextArea,
-} from "../../../components/atomic";
-import CatchUnsavedChangesModal from "../../../components/CatchUnsavedChangesModal";
-import UploadIconWithPreview from "../../../components/UploadIconWithPreview";
+} from "../../../../components/atomic";
+import CatchUnsavedChangesModal from "../../../../components/CatchUnsavedChangesModal";
+import UploadIconWithPreview from "../../../../components/UploadIconWithPreview";
 import {
   ProfileType,
   refetchGetMyUserQuery,
   useGetProfilesQuery,
   useUpdateProgramMutation,
   useUploadImageAndResizeMutation,
-} from "../../../generated/graphql";
-import { AuthorizationLevel, useCurrentProgram } from "../../../hooks";
-import AuthorizationWrapper from "../../../layouts/AuthorizationWrapper";
-import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
-import PageContainer from "../../../layouts/PageContainer";
-import Page from "../../../types/Page";
+} from "../../../../generated/graphql";
+import { AuthorizationLevel, useCurrentProgram } from "../../../../hooks";
+import AuthorizationWrapper from "../../../../layouts/AuthorizationWrapper";
+import ChooseTabLayout from "../../../../layouts/ChooseTabLayout";
+import PageContainer from "../../../../layouts/PageContainer";
+import Page from "../../../../types/Page";
 
 type User = {
   userId: string;

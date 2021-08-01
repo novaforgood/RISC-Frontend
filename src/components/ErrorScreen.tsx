@@ -34,7 +34,7 @@ function ErrorScreen({ type }: ErrorScreenProps) {
         <Text>{ERROR_SCREEN_INFO[type].message} </Text>
         <button
           onClick={() => {
-            LocalStorage.delete("cachedProgramSlug");
+            LocalStorage.delete("cachedProfileSlug");
           }}
         >
           <Link href="/">

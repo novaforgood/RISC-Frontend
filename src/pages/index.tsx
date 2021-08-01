@@ -8,6 +8,7 @@ import {
   ApplicationStatus,
   ApplicationType,
   GetMyUserApplicationsQuery,
+  ProfileType,
   useGetMyUserApplicationsQuery,
   useGetMyUserQuery,
 } from "../generated/graphql";
@@ -15,6 +16,7 @@ import { PageGetProgramBySlugComp } from "../generated/page";
 import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";
 import NoProgramTabLayout from "../layouts/TabLayout/NoProgramTabLayout";
 import Page from "../types/Page";
+import { MAP_PROFILETYPE_TO_ROUTE } from "../utils/constants";
 import { useAuth } from "../utils/firebase/auth";
 import LocalStorage from "../utils/localstorage";
 
@@ -168,30 +170,45 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
 
 // ====================== LOGGED IN HOMEPAGE ======================
 
+const MAP_PROFILETYPE_TO_NAME = {
+  [ProfileType.Admin]: "Admin",
+  [ProfileType.Mentor]: "Mentor",
+  [ProfileType.Mentee]: "Mentee",
+};
+
 type ProgramRowProps = {
   iconUrl: string;
   name: string;
   route: string;
+  profileType: ProfileType;
 };
 
-const ProgramRow = ({ iconUrl, name, route }: ProgramRowProps) => {
+const ProgramRow = ({ iconUrl, name, route, profileType }: ProgramRowProps) => {
   return (
-    <div className="flex items-center">
+    <div className="flex items-center justify-between">
       <div className="flex gap-4 items-center">
         <img
           src={iconUrl}
           alt={`Program ${name} icon`}
           className="h-10 w-10 col-span-1"
         />
-        <Text>{name}</Text>
+        <div className="flex flex-col">
+          <Text>{name}</Text>
+          <Text className="text-secondary text-caption">
+            {MAP_PROFILETYPE_TO_NAME[profileType]}
+          </Text>
+        </div>
       </div>
-      <div className="flex-grow" />
       <Text
         u
         b
         className="text-secondary hover:cursor-pointer hover:text-primary"
       >
-        <Link href={`/program/${route}`}>Go to Mentorship</Link>
+        <Link
+          href={`/program/${route}/${MAP_PROFILETYPE_TO_ROUTE[profileType]}`}
+        >
+          Go to Mentorship
+        </Link>
       </Text>
     </div>
   );
@@ -313,9 +330,9 @@ const NoMentorshipHome: Page = () => {
   const router = useRouter();
   const [showApplications, setShowApplications] = useState(false);
 
-  const cachedProgramSlug = LocalStorage.get("cachedProgramSlug");
-  if (cachedProgramSlug !== null && typeof cachedProgramSlug === "string") {
-    router.push(`/program/${cachedProgramSlug}`);
+  const cachedProfileSlug = LocalStorage.get("cachedProfileSlug");
+  if (cachedProfileSlug !== null && typeof cachedProfileSlug === "string") {
+    router.push(`/program/${cachedProfileSlug}`);
     return <Fragment />;
   }
 
@@ -386,6 +403,7 @@ const NoMentorshipHome: Page = () => {
                 return (
                   <div key={i}>
                     <ProgramRow
+                      profileType={profile.profileType}
                       iconUrl={program.iconUrl}
                       name={program.name}
                       route={program.slug}

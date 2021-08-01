@@ -26,7 +26,7 @@ module.exports = {
       h3: "1.5rem",
       "body-1": "1.375rem",
       "body-2": "1rem",
-      caption: "0.75",
+      caption: "0.75rem",
     },
     fontWeight: {
       normal: 400,

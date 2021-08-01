@@ -4,12 +4,20 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { Text } from "../../components/atomic";
-import { useGetMyUserQuery } from "../../generated/graphql";
-import { useCurrentProgram } from "../../hooks";
+import { ProfileType, useGetMyUserQuery } from "../../generated/graphql";
+import { useCurrentProfile, useCurrentProgram } from "../../hooks";
+import { MAP_PROFILETYPE_TO_ROUTE } from "../../utils/constants";
 import LocalStorage from "../../utils/localstorage";
+
+const MAP_PROFILETYPE_TO_NAME = {
+  [ProfileType.Admin]: "Admin",
+  [ProfileType.Mentor]: "Mentor",
+  [ProfileType.Mentee]: "Mentee",
+};
 
 const ProgramDropdown = () => {
   const { currentProgram } = useCurrentProgram();
+  const { currentProfile } = useCurrentProfile();
   const { data } = useGetMyUserQuery();
   const router = useRouter();
 
@@ -53,8 +61,11 @@ const ProgramDropdown = () => {
             shadow-lg ring-1 ring-primary ring-opacity-5 focus:outline-none"
           >
             {data?.getMyUser?.profiles.map((profile, i) => {
-              const { program } = profile;
-              const active = program.programId === currentProgram?.programId;
+              const { program, profileType } = profile;
+              const active =
+                program.programId === currentProgram?.programId &&
+                currentProfile?.profileType === profileType;
+
               const styles = classNames({
                 "p-2 w-full cursor-pointer flex items-center": true,
                 "bg-white hover:bg-tertiary": !active,
@@ -62,14 +73,21 @@ const ProgramDropdown = () => {
               });
               return (
                 <Menu.Item key={i}>
-                  <Link href={`/program/${program.slug}`}>
+                  <Link
+                    href={`/program/${program.slug}/${MAP_PROFILETYPE_TO_ROUTE[profileType]}`}
+                  >
                     <div className={styles}>
                       <img
                         className="h-8 w-8 object-contain border border-inactive rounded"
                         src={program.iconUrl || "/static/DefaultLogo.svg"}
                       />
                       <div className="w-3 flex-shrink-0"></div>
-                      <Text className="truncate">{program.name}</Text>
+                      <div className="flex flex-col">
+                        <Text className="truncate">{program.name}</Text>
+                        <Text className="text-secondary text-caption leading-4">
+                          {MAP_PROFILETYPE_TO_NAME[profile.profileType]}
+                        </Text>
+                      </div>
                     </div>
                   </Link>
                 </Menu.Item>
@@ -87,7 +105,7 @@ const ProgramDropdown = () => {
                 href="/"
                 className="w-full"
                 onClick={() => {
-                  LocalStorage.delete("cachedProgramSlug");
+                  LocalStorage.delete("cachedProfileSlug");
                 }}
               >
                 <div className="p-2 w-full cursor-pointer hover:bg-tertiary">

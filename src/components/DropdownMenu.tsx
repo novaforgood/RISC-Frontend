@@ -70,7 +70,7 @@ export default function Dropdown({ button }: DropdownProps) {
                         href="/"
                         className={ItemStyle(active)}
                         onClick={() => {
-                          LocalStorage.delete("cachedProgramSlug");
+                          LocalStorage.delete("cachedProfileSlug");
                         }}
                       >
                         My Homepage

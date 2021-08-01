@@ -3,11 +3,11 @@ import { utcToZonedTime, zonedTimeToUtc } from "date-fns-tz";
 import { NextRouter } from "next/router";
 import timezoneRawData from "./data/timezones.json";
 
-export function parseParam(slug: string | string[] | undefined) {
-  if (!slug || typeof slug !== "string") {
+export function parseParam(param: string | string[] | undefined) {
+  if (!param || typeof param !== "string") {
     return "";
   } else {
-    return slug;
+    return param;
   }
 }
 
