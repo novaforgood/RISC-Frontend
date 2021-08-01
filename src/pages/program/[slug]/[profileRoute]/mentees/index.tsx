@@ -56,7 +56,6 @@ const ViewMenteesPage: Page = () => {
       <div className="h-8"></div>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {mentees?.map((mentee, index: number) => {
-          console.log(mentee);
           return <ProfileCard profile={mentee} key={index} />;
         })}
       </div>

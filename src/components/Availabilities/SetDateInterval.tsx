@@ -92,7 +92,7 @@ export const SetDateInterval = ({
   return (
     <div className="flex items-center space-x-2 w-full">
       <Text>From</Text>
-      <div>
+      <div className="w-28">
         <Select
           options={getAvailableStartTimes()}
           value={selectedInterval.startTime}

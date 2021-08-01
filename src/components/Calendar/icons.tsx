@@ -16,7 +16,7 @@ export const Arrow = ({
 }: ArrowProps) => {
   const [hovered, setHovered] = useState(false);
   const styles = classNames({
-    [`hover:bg-tertiary rounded`]: true,
+    "hover:bg-tertiary rounded": true,
     "transform rotate-180": direction === "left",
     [`${className}`]: true,
   });

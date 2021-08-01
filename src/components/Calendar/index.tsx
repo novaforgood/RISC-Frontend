@@ -11,7 +11,6 @@ tomorrow.setDate(today.getDate() + 1);
 const initMonth = tomorrow.getMonth();
 const initYear = tomorrow.getFullYear();
 
-console.log(tomorrow);
 interface CalendarProps {
   onSelect: (date: Date | null) => void;
   selectedDate: Date | null;
@@ -120,10 +119,7 @@ const Calendar = ({
               disabled={!selectable}
               key={i}
               className={backgroundStyles}
-              onClick={() => {
-                console.log(day);
-                onSelect(day);
-              }}
+              onClick={() => onSelect(day)}
             >
               <Text b2>{day.getDate()}</Text>
             </button>
