@@ -38,7 +38,8 @@ const Signup = ({
         onClick={() =>
           signInWithGoogle()
             .then((res) => {
-              if (res.additionalUserInfo?.isNewUser) {
+              setLoading(true);
+              if (res.additionalUserInfo && res.additionalUserInfo.isNewUser) {
                 //no need for verification
                 const arr = res.user?.displayName?.split(" ") || [];
                 const highResPhotoURL = res.user?.photoURL?.replace(
@@ -58,10 +59,12 @@ const Signup = ({
                   }
                 );
               } else {
+                console.log(loading);
+                signOut();
+                setLoading(false);
                 setError(
                   "An account with this email already exists. Please log in."
                 );
-                signOut();
               }
             })
             .catch((e) => {

@@ -1,12 +1,10 @@
-import { Fragment } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import { Text } from "../components/atomic";
 import Page from "../types/Page";
-import { redirectAfterAuthentication } from "../utils";
 import Signup from "../components/Authentication/Signup";
-import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";
+import { redirectAfterAuthentication } from "../utils";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24 md:h-64 md:w-64 lg:h-80 lg:w-80";
@@ -20,16 +18,7 @@ const BlobCircle = () => {
 };
 
 const SignUpPage: Page = () => {
-  const authorizationLevel = useAuthorizationLevel();
   const router = useRouter();
-
-  if (
-    authorizationLevel !== AuthorizationLevel.Unverified &&
-    authorizationLevel !== AuthorizationLevel.Unauthenticated
-  ) {
-    router.push("/");
-    return <Fragment />;
-  }
 
   return (
     <div className="flex w-screen min-h-screen">

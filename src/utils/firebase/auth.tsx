@@ -27,6 +27,7 @@ function useProvideAuth() {
   const [loading, setLoading] = useState(true);
 
   const clearCache = () => {
+    client.stop();
     client.resetStore();
     localStorage.clear();
   };
