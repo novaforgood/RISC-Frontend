@@ -75,8 +75,8 @@ function useProvideAuth() {
       .auth()
       .signOut()
       .then(() => {
-        clearCache();
         setUser(null);
+        clearCache();
       });
   };
 

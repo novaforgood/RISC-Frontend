@@ -1,12 +1,10 @@
 import { Fragment } from "react";
-import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
-import { Button, Input, Text } from "../components/atomic";
-import TitledInput from "../components/TitledInput";
-import { useAuth } from "../utils/firebase/auth";
+import Link from "next/link";
+import { Text } from "../components/atomic";
 import { redirectAfterAuthentication } from "../utils";
 import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";
+import Login from "../components/Authentication/Login";
 
 const BlobCircle = () => {
   const sizes = "h-24 w-24 md:h-64 md:w-64 lg:h-80 lg:w-80";
@@ -20,10 +18,6 @@ const BlobCircle = () => {
 };
 
 const LoginPage = () => {
-  const { signInWithEmail, signInWithGoogle } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [displayError, setError] = useState("");
   const authorizationLevel = useAuthorizationLevel();
   const router = useRouter();
 
@@ -31,7 +25,7 @@ const LoginPage = () => {
     authorizationLevel !== AuthorizationLevel.Unverified &&
     authorizationLevel !== AuthorizationLevel.Unauthenticated
   ) {
-    router.push("/");
+    redirectAfterAuthentication(router);
     return <Fragment />;
   }
 
@@ -64,92 +58,10 @@ const LoginPage = () => {
             </Text>
           </Text>
           <div className="h-6" />
-          <button
-            onClick={() =>
-              signInWithGoogle()
-                .then(async (res) => {
-                  if (res) {
-                    if (res.additionalUserInfo?.isNewUser) {
-                      res.user?.delete();
-                      setError(
-                        "An account with this email has not been created yet."
-                      );
-                    } else {
-                      redirectAfterAuthentication(router);
-                    }
-                  }
-                })
-                .catch((e) => setError(e.message))
-            }
-            className="h-16 w-full bg-tertiary flex items-center justify-center cursor-pointer"
-          >
-            <div className="flex-1">
-              <img className="h-10 w-10 ml-6" src="/static/GoogleLogo.svg" />
-            </div>
-            <Text b className="text-primary">
-              Login with Google
-            </Text>
-            <div className="flex-1"></div>
-          </button>
-          <div className="h-6" />
-          <div className="w-full h-3 flex justify-center items-center">
-            <div className="h-0.25 flex-1 bg-inactive"></div>
-            <Text b className="text-secondary px-4">
-              Or
-            </Text>
-            <div className="h-0.25 flex-1 bg-inactive"></div>
-          </div>
-          <div className="h-6" />
-          <form method="post">
-            <TitledInput
-              title="Email"
-              name="Email"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
-            />
-            <div className="h-3" />
-            <div>
-              <div className="flex justify-between">
-                <Text b>Password</Text>
-
-                <Text className="text-darkblue hover:underline">
-                  <Link href="/reset-password">Forgot Password?</Link>
-                </Text>
-              </div>
-              <div className="h-1" />
-              <Input
-                className="w-full"
-                title="Password"
-                name="Password"
-                type="password"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
-              />
-            </div>
-            <div className="h-6" />
-
-            <Button
-              type="submit"
-              onClick={(e) => {
-                e.preventDefault();
-                signInWithEmail(email, password)
-                  .then((_) => {
-                    redirectAfterAuthentication(router);
-                  })
-                  .catch((error) => {
-                    setError(error.message);
-                  });
-              }}
-            >
-              Login
-            </Button>
-          </form>
-          <div className="h-6" />
-          <Text className="text-error">{displayError}</Text>
+          <Login
+            onSuccessfulEmailLogin={() => redirectAfterAuthentication(router)}
+            onSuccessfulGoogleLogin={() => redirectAfterAuthentication(router)}
+          />
         </div>
       </div>
     </div>
