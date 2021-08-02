@@ -166,7 +166,10 @@ export const SetWeeklyAvailabilitiesCard = ({
         <Button
           disabled={!modified}
           size="small"
-          onClick={saveWeeklyAvailabilities}
+          onClick={() => {
+            saveWeeklyAvailabilities();
+            setModified(false);
+          }}
         >
           Save
         </Button>

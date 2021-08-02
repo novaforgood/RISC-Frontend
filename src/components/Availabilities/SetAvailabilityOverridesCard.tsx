@@ -365,20 +365,25 @@ export const SetAvailabilityOverridesCard = ({
     //Save the override if it's new or needs to be updated
     for (const availOverrideDate of Object.values(dayToTimeslots)) {
       if (availOverrideDate.availOverrideDateId === DEFAULT_AVAIL_ID) {
-        await createAvailOverrideDateMutation({
-          variables: {
-            data: {
-              startTime: toUTC(availOverrideDate.startTime).getTime(),
-              endTime: toUTC(availOverrideDate.endTime).getTime(),
-              availOverrideTimeslots: availOverrideDate.availOverrideTimeslots,
-              profileId: profileId,
+        if (
+          availOverrideDate.availOverrideTimeslots.length ||
+          availOverrideDate.unavailable
+        )
+          await createAvailOverrideDateMutation({
+            variables: {
+              data: {
+                startTime: toUTC(availOverrideDate.startTime).getTime(),
+                endTime: toUTC(availOverrideDate.endTime).getTime(),
+                availOverrideTimeslots:
+                  availOverrideDate.availOverrideTimeslots,
+                profileId: profileId,
+              },
             },
-          },
-        });
+          });
       } else if (availOverrideDate.edited) {
         if (
-          availOverrideDate.unavailable ||
-          availOverrideDate.availOverrideTimeslots.length !== 0
+          availOverrideDate.availOverrideTimeslots.length ||
+          availOverrideDate.unavailable
         ) {
           await updateAvailOverrideDateMutation({
             variables: {
@@ -498,7 +503,7 @@ export const SetAvailabilityOverridesCard = ({
                   setModified(true);
                   const newDayToTimeslots = {
                     ...dayToTimeslots,
-                    [`${newAvailOverrideDate.startTime.toLocaleString()}`]:
+                    [newAvailOverrideDate.startTime.toLocaleString()]:
                       newAvailOverrideDate,
                   };
                   setDayToTimeSlots(newDayToTimeslots);
