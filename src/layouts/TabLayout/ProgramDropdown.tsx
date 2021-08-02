@@ -7,7 +7,6 @@ import { Text } from "../../components/atomic";
 import { ProfileType, useGetMyUserQuery } from "../../generated/graphql";
 import { useCurrentProfile, useCurrentProgram } from "../../hooks";
 import { MAP_PROFILETYPE_TO_ROUTE } from "../../utils/constants";
-import LocalStorage from "../../utils/localstorage";
 
 const MAP_PROFILETYPE_TO_NAME = {
   [ProfileType.Admin]: "Admin",
