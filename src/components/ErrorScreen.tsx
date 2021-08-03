@@ -32,17 +32,18 @@ function ErrorScreen({ type }: ErrorScreenProps) {
       <div className="h-8"></div>
       <div>
         <Text>{ERROR_SCREEN_INFO[type].message} </Text>
-        <button
-          onClick={() => {
-            LocalStorage.delete("cachedProfileSlug");
-          }}
-        >
-          <Link href="/">
+
+        <Link href="/">
+          <button
+            onClick={() => {
+              LocalStorage.delete("cachedProfileSlug");
+            }}
+          >
             <Text u className="cursor-pointer">
               Go back to home.
             </Text>
-          </Link>
-        </button>
+          </button>
+        </Link>
       </div>
     </div>
   );

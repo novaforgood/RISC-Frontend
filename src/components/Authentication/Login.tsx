@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import { useAuth } from "../../utils/firebase/auth";
-import { Text, Button } from "../atomic";
+import { Text, Button, Input } from "../atomic";
 import TitledInput from "../TitledInput";
 
 const Login = ({
@@ -64,18 +64,22 @@ const Login = ({
             onChange={(e) => setEmail(e.target.value)}
           />
           <div>
-            <Link href="/reset-password">
-              <a target="_blank">
-                <Text className="absolute text-darkblue right-6 hover:underline cursor-pointer">
-                  Forgot Password?
-                </Text>
-              </a>
-            </Link>
-            <TitledInput
-              title="Password"
+            <div className="flex">
+              <Text b>Password</Text>
+              <div className="flex-1" />
+              <Link href="/reset-password">
+                <a target="_blank">
+                  <Text className="text-darkblue right-6 hover:underline cursor-pointer">
+                    Forgot Password?
+                  </Text>
+                </a>
+              </Link>
+            </div>
+            <Input
               type="password"
               name="Password"
               value={password}
+              className="w-full"
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>

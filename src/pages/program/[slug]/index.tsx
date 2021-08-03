@@ -16,7 +16,6 @@ import {
 import { AuthorizationLevel, useAuthorizationLevel } from "../../../hooks";
 import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../layouts/PageContainer";
-import SignedInAsIndicator from "../../../layouts/SignedInAsIndicator";
 import Page from "../../../types/Page";
 import { parseParam } from "../../../utils";
 
@@ -42,6 +41,9 @@ const ReadOnlyHome = ({
   inProgram = false,
 }: DisplayProgramHomepageProps & { inProgram?: boolean }) => {
   const [authenticationModalOpen, setAuthenticationModalOpen] = useState(false);
+  const [queryAfterAuthentication, setQueryAfterAuthentication] = useState<
+    "mentor" | "mentee"
+  >("mentor");
   const authorizationLevel = useAuthorizationLevel();
   const router = useRouter();
 
@@ -51,8 +53,11 @@ const ReadOnlyHome = ({
     <div className="box-border bg-tertiary min-h-full pt-16 lg:pt-32 overflow-hidden">
       <AuthenticationModal
         isOpen={authenticationModalOpen}
-        onClose={() => setAuthenticationModalOpen(false)}
+        onClose={() => {
+          setAuthenticationModalOpen(false);
+        }}
         programName={name}
+        afterRoute={router.asPath + "/apply?as=" + queryAfterAuthentication}
       />
       {inProgram ? (
         <></>
@@ -66,6 +71,7 @@ const ReadOnlyHome = ({
                 authorizationLevel === AuthorizationLevel.Unauthenticated ||
                 authorizationLevel === AuthorizationLevel.Unverified
               ) {
+                setQueryAfterAuthentication("mentor");
                 setAuthenticationModalOpen(true);
               } else {
                 router.push(router.asPath + "/apply?as=mentor");
@@ -84,6 +90,7 @@ const ReadOnlyHome = ({
                 authorizationLevel === AuthorizationLevel.Unauthenticated ||
                 authorizationLevel === AuthorizationLevel.Unverified
               ) {
+                setQueryAfterAuthentication("mentee");
                 setAuthenticationModalOpen(true);
               } else {
                 router.push(router.asPath + "/apply?as=mentee");
@@ -123,7 +130,6 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
 
   return (
     <PageContainer>
-      <SignedInAsIndicator />
       <ReadOnlyHome {...program} />
     </PageContainer>
   );

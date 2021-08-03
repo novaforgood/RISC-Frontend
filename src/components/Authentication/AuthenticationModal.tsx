@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, Modal } from "../atomic";
 import Login from "./Login";
 import Signup from "./Signup";
@@ -8,26 +8,39 @@ type AuthenticationModalProps = {
   isOpen: boolean;
   onClose: () => void;
   programName?: string;
+  afterRoute?: string;
 };
 
 const AuthenticationModal = ({
   isOpen,
   onClose,
   programName = "",
+  afterRoute = "",
 }: AuthenticationModalProps) => {
   const [isLogin, setIsLogin] = useState(false);
   const router = useRouter();
 
-  const reset = () => {
-    setIsLogin(false);
-    onClose();
-  }
+  useEffect(() => {
+    if (isOpen) {
+      setIsLogin(false);
+    }
+  }, [isOpen]);
+
+  const afterAuthentication = () => {
+    if (afterRoute) {
+      router.push(afterRoute).then(() => {
+        location.reload();
+      });
+    } else {
+      location.reload();
+    }
+  };
 
   return (
-    <Modal isOpen={isOpen} onClose={reset}>
+    <Modal isOpen={isOpen} onClose={onClose}>
       <div className="flex flex-col w-144">
         <button
-          onClick={reset}
+          onClick={onClose}
           className="cursor-pointer focus:outline-none self-end"
         >
           <img src="/static/Close.svg" className="h-4 w-4" />
@@ -52,7 +65,10 @@ const AuthenticationModal = ({
               </Text>
             </div>
             <div className="h-6" />
-            <Login />
+            <Login
+              onSuccessfulGoogleLogin={afterAuthentication}
+              onSuccessfulEmailLogin={afterAuthentication}
+            />
           </div>
         ) : (
           <div>
@@ -75,9 +91,7 @@ const AuthenticationModal = ({
             </div>
             <div className="h-6" />
             <Signup
-              onSuccessfulGoogleSignup={() => {
-                location.reload();
-              }}
+              onSuccessfulGoogleSignup={afterAuthentication}
               onSuccessfulEmailSignup={() => {
                 router.push({
                   pathname: "/verify",
