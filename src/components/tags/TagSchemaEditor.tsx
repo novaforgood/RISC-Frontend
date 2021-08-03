@@ -13,8 +13,8 @@ import {
   Droppable,
   DropResult,
 } from "react-beautiful-dnd";
-import { Button, Card, Input, Tag, Text } from "../atomic";
-import { DragHandle } from "../FormSchemaEditor/icons";
+import { Button, Card, Tag, Text } from "../atomic";
+import { DeleteIcon, DragHandle } from "../FormSchemaEditor/icons";
 import { reindexItemInList } from "../FormSchemaEditor/utils";
 import SelectOptionModal from "../SelectOptionModal";
 import { ProfileTag, ProfileTagCategory } from "./types";
@@ -177,7 +177,7 @@ function TagSchemaEditor({
   };
 
   return (
-    <Card className="w-full p-5">
+    <Fragment>
       <NoSSR>
         <DragDropContext onDragEnd={_onDragEnd}>
           <Droppable droppableId="allTagCategories" type="tagCategories">
@@ -192,94 +192,157 @@ function TagSchemaEditor({
                         index={index}
                       >
                         {(provided, _) => {
+                          const [deleteModalOpen, setDeleteModalOpen] =
+                            useState(false);
+
                           return (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              style={{
-                                userSelect: "none",
-                                ...provided.draggableProps.style,
-                              }}
-                            >
-                              <DragHandle
-                                className="cursor-grab p-1.5"
-                                {...provided.dragHandleProps}
-                              />
-                              <Input
-                                value={category.name}
-                                onChange={(e) => {
+                            <Fragment>
+                              <SelectOptionModal
+                                isOpen={deleteModalOpen}
+                                onClose={() => {
+                                  setDeleteModalOpen(false);
+                                }}
+                                onPrimaryButtonClick={() => {
                                   onChange(
                                     tags,
-                                    categories.map((cat) => {
-                                      if (
-                                        cat.profileTagCategoryId ===
+                                    categories.filter(
+                                      (cat) =>
+                                        cat.profileTagCategoryId !==
                                         category.profileTagCategoryId
-                                      ) {
-                                        return {
-                                          ...cat,
-                                          name: e.target.value,
-                                        };
-                                      } else {
-                                        return cat;
-                                      }
-                                    })
+                                    )
                                   );
                                 }}
-                              />
-                              <div>{category.name}</div>
-                              <div className="flex items-center flex-wrap gap-2">
-                                {tags.map((tag) => {
-                                  if (
-                                    tag.profileTagCategoryId !==
-                                    category.profileTagCategoryId
-                                  ) {
-                                    return null;
-                                  }
-                                  return (
-                                    <TagComponent
-                                      key={tag.profileTagId}
-                                      tag={tag}
-                                      onDelete={() => {
-                                        onChange(
-                                          tags.filter(
-                                            (t) =>
-                                              t.profileTagId !==
-                                              tag.profileTagId
-                                          ),
-                                          categories
-                                        );
-                                      }}
-                                    />
-                                  );
-                                })}
-                                <AddTagInput
-                                  onEnter={(newTagName) => {
-                                    if (
-                                      tags.find(
-                                        (tag) => tag.name === newTagName
-                                      )
-                                    ) {
-                                      alert(
-                                        `Cannot add tag: Tag "${newTagName}" already exists.`
-                                      );
-                                      return;
+                                primaryButtonText="Delete"
+                                onSecondaryButtonClick={() => {
+                                  setDeleteModalOpen(false);
+                                }}
+                                secondaryButtonText="Cancel"
+                                title="Delete Tag Category"
+                              >
+                                <Text>
+                                  Are you sure you want to delete this tag
+                                  category? Doing so will delete all tags within
+                                  the category as well. Once you save your
+                                  changes, all mentors will have tags of this
+                                  category removed.
+                                </Text>
+                              </SelectOptionModal>
+                              <Card
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                style={{
+                                  userSelect: "none",
+                                  ...provided.draggableProps.style,
+                                }}
+                                className="p-6"
+                              >
+                                <div className="flex items-center justify-between">
+                                  <DragHandle
+                                    className="cursor-grab p-1.5"
+                                    {...provided.dragHandleProps}
+                                  />
+                                  <div className="w-2"></div>
+
+                                  <div className="w-1"></div>
+                                  <button
+                                    className="rounded hover:bg-tertiary p-1.5 cursor-pointer"
+                                    onClick={() => {
+                                      setDeleteModalOpen(true);
+                                    }}
+                                  >
+                                    <DeleteIcon className="h-3.5" />
+                                  </button>
+                                </div>
+                                <div className="h-4"></div>
+
+                                <div className="flex items-start">
+                                  <input
+                                    placeholder="Category name"
+                                    className={
+                                      "w-full px-2 py-1 rounded-md placeholder-secondary border border-inactive \
+                                    resize-none box-border font-bold  \
+                                    hover:border-secondary \
+                                    focus:ring-2 focus:ring-inactive focus:outline-none"
                                     }
-                                    onChange(
-                                      [
-                                        ...tags,
-                                        {
-                                          name: newTagName,
-                                          profileTagId: nanoid(),
-                                          profileTagCategoryId:
-                                            category.profileTagCategoryId,
-                                        },
-                                      ],
-                                      categories
+                                    value={category.name}
+                                    onChange={(e) => {
+                                      onChange(
+                                        tags,
+                                        categories.map((cat) => {
+                                          if (
+                                            cat.profileTagCategoryId ===
+                                            category.profileTagCategoryId
+                                          ) {
+                                            return {
+                                              ...cat,
+                                              name: e.target.value,
+                                            };
+                                          } else {
+                                            return cat;
+                                          }
+                                        })
+                                      );
+                                    }}
+                                  />
+                                </div>
+
+                                <div className="h-4"></div>
+
+                                <div className="flex items-center flex-wrap gap-2">
+                                  {tags.map((tag) => {
+                                    if (
+                                      tag.profileTagCategoryId !==
+                                      category.profileTagCategoryId
+                                    ) {
+                                      return null;
+                                    }
+                                    return (
+                                      <TagComponent
+                                        key={tag.profileTagId}
+                                        tag={tag}
+                                        onDelete={() => {
+                                          onChange(
+                                            tags.filter(
+                                              (t) =>
+                                                t.profileTagId !==
+                                                tag.profileTagId
+                                            ),
+                                            categories
+                                          );
+                                        }}
+                                      />
                                     );
-                                  }}
-                                />
-                              </div>
-                            </div>
+                                  })}
+                                  <AddTagInput
+                                    onEnter={(newTagName) => {
+                                      if (
+                                        tags.find(
+                                          (tag) => tag.name === newTagName
+                                        )
+                                      ) {
+                                        alert(
+                                          `Cannot add tag: Tag "${newTagName}" already exists.`
+                                        );
+                                        return;
+                                      }
+                                      onChange(
+                                        [
+                                          ...tags,
+                                          {
+                                            name: newTagName,
+                                            profileTagId: nanoid(),
+                                            profileTagCategoryId:
+                                              category.profileTagCategoryId,
+                                          },
+                                        ],
+                                        categories
+                                      );
+                                    }}
+                                  />
+                                </div>
+                              </Card>
+                              <div className="h-4"></div>
+                            </Fragment>
                           );
                         }}
                       </Draggable>
@@ -292,7 +355,10 @@ function TagSchemaEditor({
           </Droppable>
         </DragDropContext>
       </NoSSR>
+      <div className="h-4"></div>
       <Button
+        size="small"
+        className="mx-auto"
         onClick={() => {
           onChange(tags, [
             ...categories,
@@ -304,9 +370,9 @@ function TagSchemaEditor({
           ]);
         }}
       >
-        Add category lel
+        Add Tag Category
       </Button>
-    </Card>
+    </Fragment>
   );
 }
 
