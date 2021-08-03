@@ -12,7 +12,6 @@ import {
 import React, { useEffect, useState } from "react";
 import {
   DateInterval,
-  refetchGetAvailWeeklysQuery,
   useGetAvailWeeklysQuery,
   useSetAvailWeeklysMutation,
 } from "../../generated/graphql";
@@ -28,7 +27,7 @@ type SetWeeklyAvailabilitiesCardProps = {
 export const SetWeeklyAvailabilitiesCard = ({
   profileId,
 }: SetWeeklyAvailabilitiesCardProps) => {
-  const { data, loading, error } = useGetAvailWeeklysQuery({
+  const { data, loading, error, refetch } = useGetAvailWeeklysQuery({
     variables: {
       profileId,
     },
@@ -40,9 +39,7 @@ export const SetWeeklyAvailabilitiesCard = ({
   >([]);
   const [modified, setModified] = useState(false);
 
-  const [setWeeklyAvailabilitiesMutation] = useSetAvailWeeklysMutation({
-    refetchQueries: [refetchGetAvailWeeklysQuery({ profileId })],
-  });
+  const [setWeeklyAvailabilitiesMutation] = useSetAvailWeeklysMutation();
   const [allDayAvailableError, setAllDayAvailableError] = useState(-1); // Index of error
 
   useEffect(() => {
@@ -154,6 +151,8 @@ export const SetWeeklyAvailabilitiesCard = ({
         profileId: profileId,
         availabilities: weeklyAvailabilities,
       },
+    }).then(() => {
+      refetch();
     });
   };
 
