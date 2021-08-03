@@ -52,7 +52,8 @@ const ChooseTabLayout = ({ children }: ChooseTabLayoutProps) => {
 
   const authorizationLevel = useAuthorizationLevel();
 
-  let TabLayout = getTabLayout(authorizationLevel);
+  const TabLayout = getTabLayout(authorizationLevel);
+
   return (
     <TabLayout
       basePath={`/program/${slug}/${getAuthRoute(authorizationLevel)}`}
