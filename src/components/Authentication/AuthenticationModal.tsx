@@ -49,13 +49,11 @@ const AuthenticationModal = ({
           <div>
             <div className="flex flex-col space-y-1">
               {programName ? (
-                <Text h3 b>
-                  Login to join <Text i>{programName}</Text>
+                <Text h3>
+                  Login to join <Text b>{programName}</Text>
                 </Text>
               ) : (
-                <Text h3 b>
-                  Login to access the Mentor Center
-                </Text>
+                <Text h3>Login to access the Mentor Center</Text>
               )}
               <Text>
                 Don't have a <Text>Mentor Center </Text>account?{" "}
@@ -74,13 +72,11 @@ const AuthenticationModal = ({
           <div>
             <div className="flex flex-col">
               {programName ? (
-                <Text h3 b>
-                  Create an account to join <Text i>{programName}</Text>
+                <Text h3>
+                  Create an account to join <Text b>{programName}</Text>
                 </Text>
               ) : (
-                <Text h3 b>
-                  Create an account to access the Mentor Center
-                </Text>
+                <Text h3>Create an account to access the Mentor Center</Text>
               )}
               <Text>
                 Already have a <Text>Mentor Center </Text>account?{" "}

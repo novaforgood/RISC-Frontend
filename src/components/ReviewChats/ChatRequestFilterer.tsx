@@ -128,7 +128,7 @@ const ChatRequestListItem = ({ chatRequest }: ChatRequestListItemProps) => {
   const getAcceptRejectButtons = () => {
     if (chatRequest.chatRequestStatus === ChatRequestStatus.PendingReview) {
       return (
-        <div className="flex space-x-4">
+        <div className="flex space-x-2">
           <button
             className="hover:bg-inactive p-1 rounded"
             title="Accept Chat Request"
@@ -136,7 +136,7 @@ const ChatRequestListItem = ({ chatRequest }: ChatRequestListItemProps) => {
               acceptChatRequestMutation();
             }}
           >
-            <CircledCheck />
+            <CircledCheck className="h-8 w-8" />
           </button>
           <button
             className="hover:bg-inactive p-1 rounded"
@@ -145,7 +145,7 @@ const ChatRequestListItem = ({ chatRequest }: ChatRequestListItemProps) => {
               setIsRejectModalOpen(true);
             }}
           >
-            <CircledCross />
+            <CircledCross className="h-8 w-8" />
           </button>
         </div>
       );

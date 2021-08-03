@@ -55,6 +55,7 @@ const EditAvailOverrideDayModalContents = ({
   const [timeslots, setTimeslots] = useState(
     overrideDate?.availOverrideTimeslots || []
   );
+  const [modified, setModified] = useState(false);
 
   const [updateAvailOverrideDateMutation] = useUpdateAvailOverrideDateMutation({
     refetchQueries: [refetchGetAvailOverrideDatesQuery({ profileId })],
@@ -158,10 +159,12 @@ const EditAvailOverrideDayModalContents = ({
         endTime: toUTC(newAvailability.endTime),
       })
       .sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
+    setModified(true);
     setTimeslots(newTimeslots);
   };
 
   const editTimeslot = (timeslotIndex: number, newTimeslot: DateInterval) => {
+    setModified(true);
     setTimeslots((prev) => {
       return [
         ...prev.slice(0, timeslotIndex),
@@ -175,6 +178,7 @@ const EditAvailOverrideDayModalContents = ({
   };
 
   const deleteTimeslot = (timeslotIndex: number) => {
+    setModified(true);
     setTimeslots((prev) => {
       return [
         ...prev.slice(0, timeslotIndex),
@@ -215,7 +219,7 @@ const EditAvailOverrideDayModalContents = ({
               }
               return prev;
             });
-
+            setModified(false);
             setTimeslots(
               availWeeklys
                 .filter((avail) => avail.startTime.getDay() === weekday)
@@ -237,6 +241,7 @@ const EditAvailOverrideDayModalContents = ({
             );
           }
         }}
+        modified={modified}
         selectedDate={overrideDate ? new Date(overrideDate.startTime) : null}
       />
       <div className="h-8"></div>
@@ -328,6 +333,7 @@ const EditAvailOverrideDayModalContents = ({
         </Button>
         <div className="w-2"></div>
         <Button
+          disabled={overrideDate === null}
           size="small"
           onClick={() => {
             createOrUpdateOverrideDay()
@@ -486,10 +492,6 @@ export const SetAvailabilityOverridesCard = ({
       };
     });
   }
-
-  console.log(
-    Intl.DateTimeFormat.supportedLocalesOf(["ban", "id-u-co-pinyin", "de-ID"])
-  );
 
   return (
     <div className="flex flex-col">

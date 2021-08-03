@@ -141,7 +141,7 @@ const ApplicationReviewListItem = ({
     switch (app.applicationStatus) {
       case ApplicationStatus.PendingReview:
         return (
-          <div className="flex space-x-2">
+          <div className="flex justify-center">
             <button
               className="hover:bg-inactive p-1 rounded"
               title="Accept Application"
@@ -149,7 +149,7 @@ const ApplicationReviewListItem = ({
                 acceptApplicationMutation();
               }}
             >
-              <CircledCheck />
+              <CircledCheck className="h-8 w-8" />
             </button>
             <button
               className="hover:bg-inactive p-1 rounded"
@@ -158,7 +158,7 @@ const ApplicationReviewListItem = ({
                 rejectApplicationMutation();
               }}
             >
-              <CircledCross />
+              <CircledCross className="h-8 w-8" />
             </button>
           </div>
         );
@@ -171,8 +171,10 @@ const ApplicationReviewListItem = ({
 
   return (
     <div className="grid grid-cols-5 items-center gap-4 p-2 hover:bg-tertiary duration-150 rounded">
-      <div className="w-24 col-span-1">{getStatusIcon(application)}</div>
-      <div className="flex-1 col-span-2">
+      <div className="col-span-1 justify-start flex">
+        {getStatusIcon(application)}
+      </div>
+      <div className="col-span-2">
         <InlineProfileAvatar user={application.user} />
       </div>
       <Text className="hidden xl:inline col-span-1">

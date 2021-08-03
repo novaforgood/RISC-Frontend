@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { GetProfilesQuery } from "../generated/graphql";
+import { GetProfilesQuery, ProfileType } from "../generated/graphql";
 import { Button, Card, Tag, Text } from "./atomic";
 import ProfileModal from "./ProfileModal";
 import ProfilePictureImg from "./ProfilePictureImg";
@@ -31,13 +31,14 @@ const ProfileCard = ({ profile }: ProfileCardProps) => {
         {profile.user.firstName} {profile.user.lastName}
       </Text>
       <div className="flex flex-wrap gap-2 justify-center row-span-2">
-        {tags.length > 0 ? (
-          tags
-        ) : (
-          <Text i className="text-secondary">
-            No tags
-          </Text>
-        )}
+        {profile.profileType === ProfileType.Mentor &&
+          (tags.length > 0 ? (
+            tags
+          ) : (
+            <Text i className="text-secondary">
+              No tags
+            </Text>
+          ))}
         {profile.profileTags.length > 3 ? moreTag : <div></div>}
       </div>
       <div className="h-24 w-full text-center break-words overflow-hidden overflow-ellipsis row-span-3">
