@@ -176,7 +176,7 @@ const EditProfilePage: Page = (_) => {
             setModified(true);
             setBio(target.value);
           }}
-          placeholder="Bio"
+          placeholder="A little bit about me"
         ></TextArea>
         <div className="h-4" />
 

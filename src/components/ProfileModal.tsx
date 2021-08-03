@@ -115,7 +115,7 @@ const ProfileModal = ({
             <div className="flex flex-col justify-items-center items-center space-y-4">
               <Card className="p-6 w-full">
                 <div>
-                  <Text b>Bio</Text>
+                  <Text b>A little bit about me</Text>
                 </div>
                 <div className={profile.bio ? "h-1" : "h-2"}></div>
                 <div>
