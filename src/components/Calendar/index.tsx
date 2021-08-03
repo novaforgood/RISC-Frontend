@@ -6,8 +6,10 @@ import { Arrow } from "./icons";
 import { getDatesInThisMonth, padDatesInMonth } from "./utils";
 
 const today = new Date();
-const initMonth = today.getMonth();
-const initYear = today.getFullYear();
+const tomorrow = new Date();
+tomorrow.setDate(today.getDate() + 1);
+const initMonth = tomorrow.getMonth();
+const initYear = tomorrow.getFullYear();
 
 interface CalendarProps {
   onSelect: (date: Date | null) => void;
@@ -43,50 +45,47 @@ const Calendar = ({
   }, [monthyear, getSelectableDates]);
 
   return (
-    <div className="w-96">
-      <div className="flex justify-between w-full">
-        <Text b className="text-secondary pl-1.5">
+    <div className="w-96 border border-6 rounded-md border-black">
+      <div className="bg-black p-2 flex items-center justify-center space-x-2">
+        <Arrow
+          direction="left"
+          color="white"
+          className="h-6 w-6 p-1 cursor-pointer hover:bg-secondary"
+          onClick={() => {
+            setMonthyear(([prevMonth, prevYear]) => {
+              let newMonthYear: [number, number];
+              if (prevMonth === 0) {
+                newMonthYear = [11, prevYear - 1];
+              } else {
+                newMonthYear = [prevMonth - 1, prevYear];
+              }
+              setDays(padDatesInMonth(getDatesInThisMonth(...newMonthYear)));
+              return newMonthYear;
+            });
+          }}
+        />
+        <Text b className="text-white">
           {monthNames[monthyear[0]]} {monthyear[1]}
         </Text>
-        <div className="flex">
-          <Arrow
-            direction="left"
-            className="h-6 w-6 p-1 cursor-pointer"
-            onClick={() => {
-              setMonthyear(([prevMonth, prevYear]) => {
-                let newMonthYear: [number, number];
-                if (prevMonth === 0) {
-                  newMonthYear = [11, prevYear - 1];
-                } else {
-                  newMonthYear = [prevMonth - 1, prevYear];
-                }
-                setDays(padDatesInMonth(getDatesInThisMonth(...newMonthYear)));
-                return newMonthYear;
-              });
-            }}
-          />
-          <div className="w-2" />
-          <Arrow
-            direction="right"
-            className="h-6 w-6 p-1 cursor-pointer"
-            onClick={() => {
-              setMonthyear(([prevMonth, prevYear]) => {
-                let newMonthYear: [number, number];
-                if (prevMonth === 11) {
-                  newMonthYear = [0, prevYear + 1];
-                } else {
-                  newMonthYear = [prevMonth + 1, prevYear];
-                }
-                setDays(padDatesInMonth(getDatesInThisMonth(...newMonthYear)));
-                return newMonthYear;
-              });
-            }}
-          />
-          <div className="w-1" />
-        </div>
+        <Arrow
+          direction="right"
+          color="white"
+          className="h-6 w-6 p-1 cursor-pointer hover:bg-secondary"
+          onClick={() => {
+            setMonthyear(([prevMonth, prevYear]) => {
+              let newMonthYear: [number, number];
+              if (prevMonth === 11) {
+                newMonthYear = [0, prevYear + 1];
+              } else {
+                newMonthYear = [prevMonth + 1, prevYear];
+              }
+              setDays(padDatesInMonth(getDatesInThisMonth(...newMonthYear)));
+              return newMonthYear;
+            });
+          }}
+        />
       </div>
-      <div className="h-4"></div>
-      <div className="grid grid-cols-7 gap-y-3 w-full">
+      <div className="grid grid-cols-7 gap-y-3 w-full p-2">
         <React.Fragment>
           {weekdayNamesAbbreviated.map((dayOfWeek, i) => (
             <div className="text-center select-none font-bold" key={i}>
@@ -100,7 +99,7 @@ const Calendar = ({
           const selected =
             selectedDate && selectedDate.getTime() === day.getTime();
           const selectable =
-            day > new Date() &&
+            day > today &&
             inMonth &&
             (selectAnyDate || selectableDatesSet.has(day.getDate()));
 
@@ -120,9 +119,7 @@ const Calendar = ({
               disabled={!selectable}
               key={i}
               className={backgroundStyles}
-              onClick={() => {
-                onSelect(day);
-              }}
+              onClick={() => onSelect(day)}
             >
               <Text b2>{day.getDate()}</Text>
             </button>

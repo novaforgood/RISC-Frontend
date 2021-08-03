@@ -40,7 +40,6 @@ const ViewMentorsPage: Page = () => {
     let newMentors = searchText
       ? fuse.search(searchText).map((x) => x.item)
       : unfilteredProfiles;
-    console.log(searchText, newMentors);
     if (!filteredTags.length) {
       return newMentors;
     }

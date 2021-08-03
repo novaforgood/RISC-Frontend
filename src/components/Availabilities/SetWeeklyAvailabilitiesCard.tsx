@@ -9,7 +9,7 @@ import {
   startOfDay,
   startOfWeek,
 } from "date-fns";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   DateInterval,
   refetchGetAvailWeeklysQuery,
@@ -35,19 +35,26 @@ export const SetWeeklyAvailabilitiesCard = ({
   });
   const { toUTC, fromUTC } = useTimezoneConverters();
 
+  const [weeklyAvailabilities, setWeeklyAvailabilities] = useState<
+    DateInterval[]
+  >([]);
+  const [modified, setModified] = useState(false);
+
   const [setWeeklyAvailabilitiesMutation] = useSetAvailWeeklysMutation({
     refetchQueries: [refetchGetAvailWeeklysQuery({ profileId })],
   });
   const [allDayAvailableError, setAllDayAvailableError] = useState(-1); // Index of error
 
-  let weeklyAvailabilities: DateInterval[] = [];
-
-  if (!loading && !error && data && fromUTC) {
-    weeklyAvailabilities = data.getAvailWeeklys.map((x) => ({
-      startTime: fromUTC(new Date(x.startTime)),
-      endTime: fromUTC(new Date(x.endTime)),
-    }));
-  }
+  useEffect(() => {
+    if (!loading && !error && data && fromUTC) {
+      setWeeklyAvailabilities(
+        data.getAvailWeeklys.map((x) => ({
+          startTime: fromUTC(new Date(x.startTime)),
+          endTime: fromUTC(new Date(x.endTime)),
+        }))
+      );
+    }
+  }, [loading]);
 
   const addWeeklyAvailability = (date: Date) => {
     const availabilitiesForDate = weeklyAvailabilities.filter((interval) =>
@@ -108,12 +115,8 @@ export const SetWeeklyAvailabilitiesCard = ({
         endTime: toUTC(newAvailability.endTime),
       })
       .sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
-    setWeeklyAvailabilitiesMutation({
-      variables: {
-        profileId: profileId,
-        availabilities: newWeeklyAvailabilities,
-      },
-    });
+    setWeeklyAvailabilities(newWeeklyAvailabilities);
+    setModified(true);
   };
 
   const editWeeklyAvailability =
@@ -130,12 +133,8 @@ export const SetWeeklyAvailabilitiesCard = ({
           endTime: toUTC(newDateInterval.endTime),
         },
       ].sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
-      setWeeklyAvailabilitiesMutation({
-        variables: {
-          profileId: profileId,
-          availabilities: newWeeklyAvailabilities,
-        },
-      });
+      setWeeklyAvailabilities(newWeeklyAvailabilities);
+      setModified(true);
       setAllDayAvailableError(-1);
     };
 
@@ -144,21 +143,36 @@ export const SetWeeklyAvailabilitiesCard = ({
       ...weeklyAvailabilities.slice(0, dateIntervalIndex),
       ...weeklyAvailabilities.slice(dateIntervalIndex + 1),
     ];
+    setWeeklyAvailabilities(newWeeklyAvailabilities);
+    setModified(true);
+    setAllDayAvailableError(-1);
+  };
+
+  const saveWeeklyAvailabilities = () => {
     setWeeklyAvailabilitiesMutation({
       variables: {
         profileId: profileId,
-        availabilities: newWeeklyAvailabilities,
+        availabilities: weeklyAvailabilities,
       },
     });
-    setAllDayAvailableError(-1);
   };
 
   return (
     <div className="flex flex-col">
-      <div className="w-5/6 mx-auto">
+      <div className="w-5/6 mx-auto flex justify-between">
         <Text h3 b>
           Set Weekly Availabilities
         </Text>
+        <Button
+          disabled={!modified}
+          size="small"
+          onClick={() => {
+            saveWeeklyAvailabilities();
+            setModified(false);
+          }}
+        >
+          Save
+        </Button>
       </div>
       <div className="h-4" />
       <div className="flex flex-col">
@@ -177,9 +191,7 @@ export const SetWeeklyAvailabilitiesCard = ({
                 <Text b>{weekdayNames[getDay(date)].toUpperCase() + "S"}</Text>
                 {weeklyAvailabilities.map((interval, intervalIndex) => {
                   if (getDay(interval.startTime) !== getDay(date)) {
-                    return (
-                      <React.Fragment key={intervalIndex}></React.Fragment>
-                    );
+                    return <React.Fragment key={intervalIndex} />;
                   }
                   return (
                     <SetDateInterval

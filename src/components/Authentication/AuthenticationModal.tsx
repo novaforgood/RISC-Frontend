@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, Modal } from "../atomic";
 import Login from "./Login";
 import Signup from "./Signup";
@@ -18,16 +18,17 @@ const AuthenticationModal = ({
   const [isLogin, setIsLogin] = useState(false);
   const router = useRouter();
 
-  const reset = () => {
-    setIsLogin(false);
-    onClose();
-  }
+  useEffect(() => {
+    if (isOpen) {
+      setIsLogin(false);
+    }
+  }, [isOpen]);
 
   return (
-    <Modal isOpen={isOpen} onClose={reset}>
+    <Modal isOpen={isOpen} onClose={onClose}>
       <div className="flex flex-col w-144">
         <button
-          onClick={reset}
+          onClick={onClose}
           className="cursor-pointer focus:outline-none self-end"
         >
           <img src="/static/Close.svg" className="h-4 w-4" />
@@ -36,8 +37,8 @@ const AuthenticationModal = ({
           <div>
             <div className="flex flex-col space-y-1">
               {programName ? (
-                <Text h3 b>
-                  Login to join <Text i>{programName}</Text>
+                <Text h3>
+                  Login to join <Text b>{programName}</Text>
                 </Text>
               ) : (
                 <Text h3 b>
@@ -58,8 +59,8 @@ const AuthenticationModal = ({
           <div>
             <div className="flex flex-col">
               {programName ? (
-                <Text h3 b>
-                  Create an account to join <Text i>{programName}</Text>
+                <Text h3>
+                  Create an account to join <Text b>{programName}</Text>
                 </Text>
               ) : (
                 <Text h3 b>
@@ -75,9 +76,7 @@ const AuthenticationModal = ({
             </div>
             <div className="h-6" />
             <Signup
-              onSuccessfulGoogleSignup={() => {
-                location.reload();
-              }}
+              onSuccessfulGoogleSignup={onClose}
               onSuccessfulEmailSignup={() => {
                 router.push({
                   pathname: "/verify",

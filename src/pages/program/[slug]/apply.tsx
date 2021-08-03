@@ -89,29 +89,12 @@ const ProgramApplyPage: Page = (_) => {
   }
 
   return (
-    <>
-      {/* For Testing */}
-      {/* <Button
-        variant={formSubmitted ? "inverted" : "solid"}
-        onClick={() => {
-          setFormSubmitted(!formSubmitted);
-          console.log(applicant);
-        }}
-      >
-        Submitted: <pre>{formSubmitted ? "true" : "false"}</pre>
-      </Button> */}
-      <div className="min-w-screen h-screen bg-tertiary">
-        {/* Nav bar goes here */}
-        <div
-          className={
-            "max-w-4xl mx-auto p-10" +
-            (formSubmitted
-              ? " h-screen w-screen flex flex-col justify-center items-center"
-              : "")
-          }
-        >
-          <SignedInAsIndicator />
-          <div className={formSubmitted ? "hidden" : ""}>
+    <div className="min-w-screen h-screen bg-tertiary">
+      {/* Nav bar goes here */}
+      <div className={"max-w-4xl mx-auto p-10"}>
+        <SignedInAsIndicator />
+        {!formSubmitted ? (
+          <div className="w-full">
             <div className="mt-9">
               <Text h1 b>
                 {currentProgram?.name}
@@ -161,12 +144,11 @@ const ProgramApplyPage: Page = (_) => {
               </div>
             </div>
           </div>
-          <div className={"mx-10" + (formSubmitted ? "" : " hidden")}>
-            <div>
-              <Text h1 b>
-                Thank You
-              </Text>
-            </div>
+        ) : (
+          <div>
+            <Text h1 b>
+              Thank You
+            </Text>
             <div className="mt-6">
               <Card className="p-9 border-inactive rounded-xl">
                 <Text b>
@@ -196,16 +178,18 @@ const ProgramApplyPage: Page = (_) => {
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
       <AuthenticationModal
         isOpen={
           user == null || authorizationLevel === AuthorizationLevel.Unverified
         }
-        onClose={() => {}}
+        onClose={() => {
+          setFormSubmitted(false);
+        }}
         programName={currentProgram.name}
       />
-    </>
+    </div>
   );
 };
 
