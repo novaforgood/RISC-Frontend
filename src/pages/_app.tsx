@@ -47,7 +47,17 @@ export const getApolloClient = (
 ) => {
   // TODO: Do we need to initialize a new ApolloClient?
   //       Or can we just use [client] as defined above?
-  const cache = new InMemoryCache().restore(initialState || {});
+  const cache = new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          getAvailOverrideDates: {
+            merge: true,
+          },
+        },
+      },
+    },
+  }).restore(initialState || {});
   return new ApolloClient({
     link: from([authLink, uploadLink]),
     cache,

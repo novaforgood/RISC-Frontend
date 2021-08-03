@@ -9,7 +9,6 @@ import {
 import React, { Fragment, useState } from "react";
 import {
   DateInterval,
-  refetchGetAvailOverrideDatesQuery,
   useCreateAvailOverrideDateMutation,
   useDeleteAvailOverrideDateMutation,
   useGetAvailOverrideDatesQuery,
@@ -36,25 +35,129 @@ type AvailOverrideDate = {
   availOverrideTimeslots: Timeslots;
 };
 
-type EditAvailOverrideDayModalContentsProps = {
-  overrideDate: NewAvailOverrideDate;
-  onUpdateTimeslots: (newAvailOverrideDate: NewAvailOverrideDate) => void;
-};
-const EditAvailOverrideDayModalContents = ({
-  overrideDate,
-  onUpdateTimeslots,
-}: EditAvailOverrideDayModalContentsProps) => {
+const EditAvailabilityOverridesModal = ({
+  profileId,
+  initOverrideDate = null,
+  availOverrideDates,
+  isOpen = false,
+  onClose,
+}: {
+  profileId: string;
+  initOverrideDate?: NewAvailOverrideDate | null;
+  availOverrideDates: { [key: string]: NewAvailOverrideDate };
+  isOpen: boolean;
+  onClose: () => void;
+}) => {
   const { toUTC } = useTimezoneConverters();
 
-  const timeslots = overrideDate.availOverrideTimeslots || [];
+  const [currentDate, setCurrentDate] = useState<NewAvailOverrideDate | null>(
+    initOverrideDate || null
+  );
+  const [modified, setModified] = useState(false);
+  const [dayToTimeslots, setDayToTimeSlots] = useState<{
+    [key: string]: NewAvailOverrideDate;
+  }>({});
 
-  const addTimeslot = () => {
-    if (!overrideDate) {
+  const [updateAvailOverrideDateMutation] =
+    useUpdateAvailOverrideDateMutation();
+  const [createAvailOverrideDateMutation] =
+    useCreateAvailOverrideDateMutation();
+  const [deleteAvailOverrideDateMutation] =
+    useDeleteAvailOverrideDateMutation();
+
+  const updateCurrentDay = ({
+    edited = true,
+    unavailable = false,
+    newTimeslots = [],
+  }: {
+    edited?: boolean;
+    unavailable?: boolean;
+    newTimeslots?: Timeslots;
+  }) => {
+    if (!currentDate) {
       console.error("Must select timeslot first");
       return;
     }
+    const newOverride = {
+      ...currentDate,
+      edited,
+      unavailable,
+      availOverrideTimeslots: newTimeslots,
+    };
+    setModified(true);
+    setCurrentDate(newOverride);
+    setDayToTimeSlots({
+      ...dayToTimeslots,
+      [currentDate.startTime.toLocaleString()]: newOverride,
+    });
+  };
+
+  const saveNewOverrides = async () => {
+    if (!toUTC) {
+      throw new Error("Error: toUTC is undefined.");
+    }
+    let allEdits: Promise<any>[] = [];
+    //Save the override if it's new or needs to be updated
+    for (const availOverrideDate of Object.values(dayToTimeslots)) {
+      if (availOverrideDate.availOverrideDateId === DEFAULT_AVAIL_ID) {
+        if (
+          availOverrideDate.availOverrideTimeslots.length ||
+          availOverrideDate.unavailable
+        ) {
+          allEdits.push(
+            createAvailOverrideDateMutation({
+              variables: {
+                data: {
+                  startTime: toUTC(availOverrideDate.startTime).getTime(),
+                  endTime: toUTC(availOverrideDate.endTime).getTime(),
+                  availOverrideTimeslots:
+                    availOverrideDate.availOverrideTimeslots,
+                  profileId: profileId,
+                },
+              },
+            })
+          );
+        }
+      } else if (availOverrideDate.edited) {
+        if (
+          availOverrideDate.availOverrideTimeslots.length ||
+          availOverrideDate.unavailable
+        ) {
+          allEdits.push(
+            updateAvailOverrideDateMutation({
+              variables: {
+                availOverrideDateId: availOverrideDate.availOverrideDateId,
+                data: {
+                  startTime: toUTC(availOverrideDate.startTime).getTime(),
+                  endTime: toUTC(availOverrideDate.endTime).getTime(),
+                  availOverrideTimeslots:
+                    availOverrideDate.availOverrideTimeslots,
+                },
+              },
+            })
+          );
+        } else if (!availOverrideDate.unavailable) {
+          allEdits.push(
+            deleteAvailOverrideDateMutation({
+              variables: {
+                availOverrideDateId: availOverrideDate.availOverrideDateId,
+              },
+            }).catch((err) => console.log(err.message))
+          );
+        }
+      }
+      Promise.all(allEdits).then(onClose);
+    }
+  };
+
+  const addTimeslot = () => {
+    if (!currentDate) {
+      console.error("Must select timeslot first");
+      return;
+    }
+    const timeslots = currentDate.availOverrideTimeslots;
     // If there are no availabilities for the day, add one starting at 12:00 AM
-    const dateStart = startOfDay(new Date(overrideDate.startTime));
+    const dateStart = startOfDay(new Date(currentDate.startTime));
     let newAvailability: DateInterval | null = {
       startTime: addMinutes(dateStart, 8 * 60),
       endTime: addMinutes(dateStart, 8 * 60 + 30),
@@ -105,15 +208,17 @@ const EditAvailOverrideDayModalContents = ({
       })
       .sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
 
-    onUpdateTimeslots({
-      ...overrideDate,
-      edited: true,
-      unavailable: false,
-      availOverrideTimeslots: newTimeslots,
+    updateCurrentDay({
+      newTimeslots,
     });
   };
 
   const editTimeslot = (timeslotIndex: number, newTimeslot: DateInterval) => {
+    if (!currentDate) {
+      console.error("Must select timeslot first");
+      return;
+    }
+    const timeslots = currentDate.availOverrideTimeslots;
     const newTimeslots = [
       ...timeslots.slice(0, timeslotIndex),
       ...timeslots.slice(timeslotIndex + 1),
@@ -122,144 +227,212 @@ const EditAvailOverrideDayModalContents = ({
         endTime: toUTC!(newTimeslot.endTime),
       },
     ].sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
-    onUpdateTimeslots({
-      ...overrideDate,
-      edited: true,
-      availOverrideTimeslots: newTimeslots,
-    });
+
+    updateCurrentDay({ newTimeslots });
   };
 
   const deleteTimeslot = (timeslotIndex: number) => {
+    if (!currentDate) {
+      console.error("Must select timeslot first");
+      return;
+    }
+    const timeslots = currentDate.availOverrideTimeslots;
     const newTimeslots = [
       ...timeslots.slice(0, timeslotIndex),
       ...timeslots.slice(timeslotIndex + 1),
     ];
-    onUpdateTimeslots({
-      ...overrideDate,
-      edited: true,
-      unavailable: newTimeslots.length === 0,
-      availOverrideTimeslots: newTimeslots,
+
+    updateCurrentDay({
+      newTimeslots,
     });
   };
 
   return (
-    <div className="w-5/6 p-8">
-      <div>
-        <div>
-          <Text>
-            Selected date:{" "}
-            <Text b>
-              {format(overrideDate?.startTime, "EEEE, MMMM d, yyyy")}
-            </Text>
-            <br />
-            <br />
-            <Text b i>
-              What times are you free on this day?
-            </Text>
-          </Text>
-          <br />
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <div className="flex flex-col w-144 mx-auto items-center space-y-4">
+        <Text h3 b className="self-start">
+          Edit Overrides
+        </Text>
+        <Calendar
+          selectAnyDate
+          onSelect={(newSelectedDate) => {
+            if (newSelectedDate) {
+              let newAvailOverrideDate: NewAvailOverrideDate;
 
-          <div className="h-2"></div>
-          {timeslots.map((timeslot, timeslotIndex) => {
-            const date = startOfDay(overrideDate.startTime);
-            if (getDay(timeslot.startTime) !== getDay(date)) {
-              return <React.Fragment key={timeslotIndex}></React.Fragment>;
+              //If there are already timeslots on this day set those as current timeslots
+              const existingOverride =
+                dayToTimeslots[newSelectedDate.toLocaleString()] ||
+                availOverrideDates[newSelectedDate.toLocaleString()];
+              if (existingOverride) {
+                newAvailOverrideDate = existingOverride;
+
+                //otherwise create new availOverrideDate object
+              } else {
+                const newDay = {
+                  startTime: newSelectedDate,
+                  endTime: addDays(newSelectedDate, 1),
+                };
+                newAvailOverrideDate = {
+                  availOverrideDateId: DEFAULT_AVAIL_ID,
+                  ...newDay,
+                  profileId,
+                  availOverrideTimeslots: [],
+                  edited: false,
+                  unavailable: false,
+                };
+              }
+              setDayToTimeSlots({
+                ...dayToTimeslots,
+                [newSelectedDate.toLocaleString()]: newAvailOverrideDate,
+              });
+              setCurrentDate(newAvailOverrideDate);
             }
-            return (
-              <div className="py-2">
-                <SetDateInterval
-                  key={timeslotIndex}
-                  date={startOfDay(timeslot.startTime)}
-                  intervalsForDate={timeslots}
-                  selectedInterval={timeslot}
-                  onEditInterval={(newInterval) => {
-                    editTimeslot(timeslotIndex, newInterval);
-                  }}
-                  onDeleteInterval={() => {
-                    deleteTimeslot(timeslotIndex);
-                  }}
-                />
+          }}
+          selectedDate={currentDate?.startTime || null}
+        />
+        {currentDate && (
+          <div className="w-5/6 p-8">
+            <div>
+              <div>
+                <Text>
+                  Selected date:{" "}
+                  <Text b>
+                    {format(currentDate.startTime, "EEEE, MMMM d, yyyy")}
+                  </Text>
+                  <br />
+                  <br />
+                  <Text b i>
+                    What times are you free on this day?
+                  </Text>
+                </Text>
+                <br />
+
+                <div className="h-2" />
+                {currentDate &&
+                  currentDate.availOverrideTimeslots.map(
+                    (timeslot, timeslotIndex) => {
+                      const date = startOfDay(currentDate.startTime);
+                      if (getDay(timeslot.startTime) !== getDay(date)) {
+                        return (
+                          <React.Fragment key={timeslotIndex}></React.Fragment>
+                        );
+                      }
+                      return (
+                        <div className="py-2" key={timeslotIndex}>
+                          <SetDateInterval
+                            key={timeslotIndex}
+                            date={startOfDay(timeslot.startTime)}
+                            intervalsForDate={
+                              currentDate.availOverrideTimeslots
+                            }
+                            selectedInterval={timeslot}
+                            onEditInterval={(newInterval) => {
+                              editTimeslot(timeslotIndex, newInterval);
+                            }}
+                            onDeleteInterval={() => {
+                              deleteTimeslot(timeslotIndex);
+                            }}
+                          />
+                        </div>
+                      );
+                    }
+                  )}
+
+                {currentDate &&
+                  currentDate.availOverrideTimeslots.length === 0 &&
+                  (currentDate.unavailable ? (
+                    <Fragment>
+                      <div className="p-2 bg-tertiary rounded-sm">
+                        <Text i className="text-secondary">
+                          You have set today as unavailable.
+                        </Text>
+                      </div>
+
+                      <div className="h-2"></div>
+                    </Fragment>
+                  ) : (
+                    <Fragment>
+                      <div className="p-2 bg-tertiary rounded-sm">
+                        <Text i className="text-secondary">
+                          Your availabilities will be the same as weekly
+                          availability today.
+                        </Text>
+                      </div>
+
+                      <div className="h-2"></div>
+                    </Fragment>
+                  ))}
+
+                <div className="h-2" />
+                <div className="flex justify-between">
+                  <Button
+                    size="small"
+                    variant="inverted"
+                    onClick={() => {
+                      if (currentDate.unavailable) {
+                        updateCurrentDay({
+                          unavailable: false,
+                        });
+                      } else {
+                        updateCurrentDay({
+                          unavailable: true,
+                          newTimeslots: [],
+                        });
+                      }
+                    }}
+                  >
+                    {currentDate && currentDate.unavailable
+                      ? "Reset to Weekly"
+                      : "Set Unavailable"}
+                  </Button>
+                  <Button
+                    size="small"
+                    onClick={() => {
+                      addTimeslot();
+                    }}
+                  >
+                    Add time
+                  </Button>
+                </div>
               </div>
-            );
-          })}
-
-          {timeslots.length === 0 &&
-            (overrideDate.unavailable ? (
-              <Fragment>
-                <div className="p-2 bg-tertiary rounded-sm">
-                  <Text i className="text-secondary">
-                    You have set today as unavailable.
-                  </Text>
-                </div>
-
-                <div className="h-2"></div>
-              </Fragment>
-            ) : (
-              <Fragment>
-                <div className="p-2 bg-tertiary rounded-sm">
-                  <Text i className="text-secondary">
-                    Your availabilities will be the same as weekly availability
-                    today.
-                  </Text>
-                </div>
-
-                <div className="h-2"></div>
-              </Fragment>
-            ))}
-
-          <div className="h-2"></div>
-          <div className="flex justify-between">
-            <Button
-              size="small"
-              variant="inverted"
-              onClick={() => {
-                if (overrideDate.unavailable) {
-                  onUpdateTimeslots({
-                    ...overrideDate,
-                    edited: true,
-                    unavailable: false,
-                  });
-                } else {
-                  onUpdateTimeslots({
-                    ...overrideDate,
-                    edited: true,
-                    availOverrideTimeslots: [],
-                    unavailable: true,
-                  });
-                }
-              }}
-            >
-              {overrideDate.unavailable ? "Reset to Weekly" : "Set Unavailable"}
-            </Button>
-            <Button
-              size="small"
-              onClick={() => {
-                addTimeslot();
-              }}
-            >
-              Add time
-            </Button>
+            </div>
           </div>
+        )}
+        <div className="flex w-full justify-between">
+          <Button size="small" variant="inverted" onClick={onClose}>
+            Close
+          </Button>
+          <div className="w-2"></div>
+          <Button
+            disabled={!modified}
+            size="small"
+            onClick={() => {
+              setModified(false);
+              saveNewOverrides();
+            }}
+          >
+            Save
+          </Button>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };
 
 type AvailOverrideDateSectionProps = {
   overrideDate: AvailOverrideDate;
+  availOverrideDates: { [key: string]: NewAvailOverrideDate };
+  onSuccessfulDelete: () => void;
 };
 const AvailOverrideDateSection = ({
   overrideDate,
+  availOverrideDates,
+  onSuccessfulDelete,
 }: // availWeeklys,
 AvailOverrideDateSectionProps) => {
-  // const [modalOpen, setModalOpen] = useState(false);
-
-  const [deleteAvailOverrideDateMutation] = useDeleteAvailOverrideDateMutation({
-    refetchQueries: [
-      refetchGetAvailOverrideDatesQuery({ profileId: overrideDate.profileId }),
-    ],
-  });
+  const [modalOpen, setModalOpen] = useState(false);
+  const [deleteAvailOverrideDateMutation] =
+    useDeleteAvailOverrideDateMutation();
 
   return (
     <Fragment>
@@ -271,7 +444,7 @@ AvailOverrideDateSectionProps) => {
         <div className="flex">
           <button
             onClick={() => {
-              // setModalOpen(true);
+              setModalOpen(true);
             }}
           >
             <Text u>edit</Text>
@@ -284,7 +457,13 @@ AvailOverrideDateSectionProps) => {
                 variables: {
                   availOverrideDateId: overrideDate.availOverrideDateId,
                 },
-              }).catch(() => {});
+              })
+                .catch((e) => {
+                  console.log(e.message);
+                })
+                .then(() => {
+                  onSuccessfulDelete();
+                });
             }}
           >
             <DeleteIcon />
@@ -304,20 +483,15 @@ AvailOverrideDateSectionProps) => {
           </div>
         );
       })}
-      {/* <Modal
+      <EditAvailabilityOverridesModal
+        profileId={overrideDate.profileId}
+        availOverrideDates={availOverrideDates}
         isOpen={modalOpen}
-        onClose={() => {
+        onClose={async () => {
+          await onSuccessfulDelete();
           setModalOpen(false);
         }}
-      >
-        <EditAvailOverrideDayModalContents
-          initOverrideDate={overrideDate}
-          profileId={overrideDate.profileId}
-          onClose={() => {
-            setModalOpen(false);
-          }}
-        />
-      </Modal> */}
+      />
       <div className="h-4"></div>
     </Fragment>
   );
@@ -339,67 +513,15 @@ export const SetAvailabilityOverridesCard = ({
     data: availOverrideDatesData,
     loading: availOverrideDatesLoading,
     error: availOverrideDatesError,
+    refetch: refetchAvailOverrideDates,
   } = useGetAvailOverrideDatesQuery({
     variables: { profileId },
   });
-
-  const [currentDate, setCurrentDate] = useState<Date | null>(null);
-  const [dayToTimeslots, setDayToTimeSlots] = useState<{
-    [key: string]: NewAvailOverrideDate;
-  }>({});
-  const [modified, setModified] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
 
   const { fromUTC } = useTimezoneConverters();
-  const { toUTC } = useTimezoneConverters();
 
-  if (!fromUTC || !toUTC) return <Fragment />;
-  const [updateAvailOverrideDateMutation] = useUpdateAvailOverrideDateMutation({
-    refetchQueries: [refetchGetAvailOverrideDatesQuery({ profileId })],
-  });
-  const [createAvailOverrideDateMutation] = useCreateAvailOverrideDateMutation({
-    refetchQueries: [refetchGetAvailOverrideDatesQuery({ profileId })],
-  });
-
-  const saveNewOverrides = async () => {
-    //Save the override if it's new or needs to be updated
-    for (const availOverrideDate of Object.values(dayToTimeslots)) {
-      if (availOverrideDate.availOverrideDateId === DEFAULT_AVAIL_ID) {
-        if (
-          availOverrideDate.availOverrideTimeslots.length ||
-          availOverrideDate.unavailable
-        )
-          await createAvailOverrideDateMutation({
-            variables: {
-              data: {
-                startTime: toUTC(availOverrideDate.startTime).getTime(),
-                endTime: toUTC(availOverrideDate.endTime).getTime(),
-                availOverrideTimeslots:
-                  availOverrideDate.availOverrideTimeslots,
-                profileId: profileId,
-              },
-            },
-          });
-      } else if (availOverrideDate.edited) {
-        if (
-          availOverrideDate.availOverrideTimeslots.length ||
-          availOverrideDate.unavailable
-        ) {
-          await updateAvailOverrideDateMutation({
-            variables: {
-              availOverrideDateId: availOverrideDate.availOverrideDateId,
-              data: {
-                startTime: toUTC(availOverrideDate.startTime).getTime(),
-                endTime: toUTC(availOverrideDate.endTime).getTime(),
-                availOverrideTimeslots:
-                  availOverrideDate.availOverrideTimeslots,
-              },
-            },
-          });
-        }
-      }
-    }
-  };
+  if (!fromUTC) return <Fragment />;
 
   let availOverrideDates: { [key: string]: NewAvailOverrideDate } = {};
 
@@ -408,7 +530,10 @@ export const SetAvailabilityOverridesCard = ({
     !availOverrideDatesError &&
     availOverrideDatesData
   ) {
-    for (const overrideDate of availOverrideDatesData.getAvailOverrideDates) {
+    const sorted = [...availOverrideDatesData.getAvailOverrideDates].sort(
+      (a, b) => a.startTime - b.startTime
+    );
+    for (const overrideDate of sorted) {
       const startTime = fromUTC(new Date(overrideDate.startTime));
       let temp = {
         ...overrideDate,
@@ -445,7 +570,13 @@ export const SetAvailabilityOverridesCard = ({
         {Object.values(availOverrideDates).map((overrideDate, idx) => {
           return (
             <React.Fragment key={idx}>
-              <AvailOverrideDateSection overrideDate={overrideDate} />
+              <AvailOverrideDateSection
+                overrideDate={overrideDate}
+                availOverrideDates={availOverrideDates}
+                onSuccessfulDelete={() => {
+                  refetchAvailOverrideDates();
+                }}
+              />
               <div className="w-full h-px bg-inactive" />
             </React.Fragment>
           );
@@ -459,81 +590,15 @@ export const SetAvailabilityOverridesCard = ({
       <Button className="mx-auto" onClick={() => setModalOpen(true)}>
         Add Availability
       </Button>
-      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-        <div className="flex flex-col w-144 mx-auto items-center space-y-4">
-          <Text h3 b className="self-start">
-            Edit Overrides
-          </Text>
-          <Calendar
-            selectAnyDate
-            onSelect={(newSelectedDate) => {
-              if (newSelectedDate) {
-                let newOverrides = dayToTimeslots;
-                const existingOverride =
-                  dayToTimeslots[newSelectedDate.toLocaleString()] ||
-                  availOverrideDates[newSelectedDate.toLocaleString()];
-                if (existingOverride) {
-                  dayToTimeslots[newSelectedDate.toLocaleString()] =
-                    existingOverride;
-                } else {
-                  const newDay = {
-                    startTime: newSelectedDate,
-                    endTime: addDays(newSelectedDate, 1),
-                  };
-                  newOverrides[newSelectedDate.toLocaleString()] = {
-                    availOverrideDateId: DEFAULT_AVAIL_ID,
-                    ...newDay,
-                    profileId,
-                    availOverrideTimeslots: [],
-                    edited: false,
-                    unavailable: false,
-                  };
-                }
-                setDayToTimeSlots(newOverrides);
-                setCurrentDate(newSelectedDate);
-              }
-            }}
-            selectedDate={currentDate || null}
-          />
-          {currentDate && dayToTimeslots[currentDate.toLocaleString()] && (
-            <EditAvailOverrideDayModalContents
-              overrideDate={dayToTimeslots[currentDate.toLocaleString()]}
-              onUpdateTimeslots={(newAvailOverrideDate) => {
-                if (newAvailOverrideDate) {
-                  setModified(true);
-                  const newDayToTimeslots = {
-                    ...dayToTimeslots,
-                    [newAvailOverrideDate.startTime.toLocaleString()]:
-                      newAvailOverrideDate,
-                  };
-                  setDayToTimeSlots(newDayToTimeslots);
-                }
-              }}
-            />
-          )}
-          <div className="flex w-full justify-between">
-            <Button
-              size="small"
-              variant="inverted"
-              onClick={() => setModalOpen(false)}
-            >
-              Close
-            </Button>
-            <div className="w-2"></div>
-            <Button
-              disabled={!modified}
-              size="small"
-              onClick={() => {
-                saveNewOverrides();
-                setModified(false);
-                setModalOpen(false);
-              }}
-            >
-              Save
-            </Button>
-          </div>
-        </div>
-      </Modal>
+      <EditAvailabilityOverridesModal
+        profileId={profileId}
+        availOverrideDates={availOverrideDates}
+        isOpen={modalOpen}
+        onClose={async () => {
+          await refetchAvailOverrideDates();
+          setModalOpen(false);
+        }}
+      />
     </div>
   );
 };
