@@ -16,7 +16,7 @@ import {
   useAuthorizationLevel,
   useCurrentProgram,
 } from "../../../hooks";
-import SignedInAsIndicator from "../../../layouts/SignedInAsIndicator";
+import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
 import { Question } from "../../../types/Form";
 import Page from "../../../types/Page";
 import { useAuth } from "../../../utils/firebase/auth";
@@ -110,7 +110,6 @@ const ProgramApplyPage: Page = (_) => {
               : "")
           }
         >
-          <SignedInAsIndicator />
           <div className={formSubmitted ? "hidden" : ""}>
             <div className="mt-9">
               <Text h1 b>
@@ -209,6 +208,8 @@ const ProgramApplyPage: Page = (_) => {
   );
 };
 
-ProgramApplyPage.getLayout = (page) => <>{page}</>;
+ProgramApplyPage.getLayout = (page, pageProps) => (
+  <ChooseTabLayout {...pageProps}>{page}</ChooseTabLayout>
+);
 
 export default ProgramApplyPage;

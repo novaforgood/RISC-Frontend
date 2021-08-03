@@ -1,9 +1,7 @@
-import { Fragment } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Text } from "../components/atomic";
 import { redirectAfterAuthentication } from "../utils";
-import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";
 import Login from "../components/Authentication/Login";
 
 const BlobCircle = () => {
@@ -18,16 +16,7 @@ const BlobCircle = () => {
 };
 
 const LoginPage = () => {
-  const authorizationLevel = useAuthorizationLevel();
   const router = useRouter();
-
-  if (
-    authorizationLevel !== AuthorizationLevel.Unverified &&
-    authorizationLevel !== AuthorizationLevel.Unauthenticated
-  ) {
-    redirectAfterAuthentication(router);
-    return <Fragment />;
-  }
 
   return (
     <div className="flex w-screen min-h-screen relative">

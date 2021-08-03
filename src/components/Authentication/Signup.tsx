@@ -59,7 +59,6 @@ const Signup = ({
                   }
                 );
               } else {
-                console.log(loading);
                 signOut();
                 setLoading(false);
                 setError(
