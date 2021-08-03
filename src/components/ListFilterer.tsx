@@ -56,7 +56,7 @@ const ListFilterer = <T,>({
         {Object.keys(filterOptions).map(getFilterTab)}
       </div>
       <div className="h-4" />
-      <Card className="w-full h-5/6">
+      <Card className="w-full h-max">
         {listComponent(filterOption, filterOptions[filterOption](listToFilter))}
       </Card>
     </>

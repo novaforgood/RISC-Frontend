@@ -7,7 +7,6 @@ import { Text } from "../../components/atomic";
 import { ProfileType, useGetMyUserQuery } from "../../generated/graphql";
 import { useCurrentProfile, useCurrentProgram } from "../../hooks";
 import { MAP_PROFILETYPE_TO_ROUTE } from "../../utils/constants";
-import LocalStorage from "../../utils/localstorage";
 
 const MAP_PROFILETYPE_TO_NAME = {
   [ProfileType.Admin]: "Admin",
@@ -100,19 +99,6 @@ const ProgramDropdown = () => {
                 </div>
               </Link>
             </Menu.Item> */}
-            <Menu.Item>
-              <a
-                href="/"
-                className="w-full"
-                onClick={() => {
-                  LocalStorage.delete("cachedProfileSlug");
-                }}
-              >
-                <div className="p-2 w-full cursor-pointer hover:bg-tertiary">
-                  <Text>Go to my homepage</Text>
-                </div>
-              </a>
-            </Menu.Item>
             <Menu.Item>
               <Link href="/create">
                 <div className="p-2 w-full cursor-pointer hover:bg-tertiary">

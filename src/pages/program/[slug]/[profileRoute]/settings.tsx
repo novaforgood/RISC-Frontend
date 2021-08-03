@@ -4,7 +4,7 @@ import {
   Card,
   Input,
   Text,
-  TextArea,
+  // TextArea,
 } from "../../../../components/atomic";
 import CatchUnsavedChangesModal from "../../../../components/CatchUnsavedChangesModal";
 import UploadIconWithPreview from "../../../../components/UploadIconWithPreview";
@@ -163,7 +163,7 @@ const SettingsPage: Page = () => {
             copy
           </Button>
         </div>
-        <div className="w-full">
+        {/* <div className="w-full">
           <Text b secondary>
             Mentorship Description:
           </Text>
@@ -177,19 +177,8 @@ const SettingsPage: Page = () => {
               setModified(true);
             }}
           />
-        </div>
-        <div className="flex justify-end space-x-4">
-          <Button
-            disabled={!modified}
-            onClick={() => {
-              setMentorshipName(name);
-              setMentorshipDescription(description);
-            }}
-            variant="inverted"
-            size="small"
-          >
-            Reset to Last Saved
-          </Button>
+        </div> */}
+        <div className="flex justify-end">
           <Button
             onClick={async () => {
               let newIconUrl = iconUrl;

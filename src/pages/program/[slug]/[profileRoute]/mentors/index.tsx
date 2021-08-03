@@ -40,7 +40,6 @@ const ViewMentorsPage: Page = () => {
     let newMentors = searchText
       ? fuse.search(searchText).map((x) => x.item)
       : unfilteredProfiles;
-    console.log(searchText, newMentors);
     if (!filteredTags.length) {
       return newMentors;
     }
@@ -86,6 +85,13 @@ const ViewMentorsPage: Page = () => {
         </Text>
         {/* {sortDropdown()} */}
       </div>
+      <div className="h-4" />
+      <Text>
+        Mentors fill out their profiles and set their availability so that
+        mentees can book chats with them. They are <Text b>super excited</Text>{" "}
+        to talk!
+      </Text>
+      <div className="h-4" />
       <Input
         className="w-full"
         placeholder="Search..."

@@ -178,6 +178,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
     );
 
     // Subtract times where mentor has already accepted a chat
+    // TODO: Subtract times only if accepted (right now it subtracts if you request)
     ret = mergeIntervalLists(
       ret,
       mentorChatTimeslots,

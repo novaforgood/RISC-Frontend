@@ -80,7 +80,7 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
 
               <div>
                 <Text>
-                  Mentor Center works to make peer mentorship accessible and
+                  Mentor Center works to make mentorship accessible and
                   manageable for any organization.
                 </Text>
               </div>
@@ -207,7 +207,7 @@ const ProgramRow = ({ iconUrl, name, route, profileType }: ProgramRowProps) => {
         <Link
           href={`/program/${route}/${MAP_PROFILETYPE_TO_ROUTE[profileType]}`}
         >
-          Go to Mentorship
+          Go to Homepage
         </Link>
       </Text>
     </div>
@@ -354,7 +354,7 @@ const NoMentorshipHome: Page = () => {
           <img src="/static/HappyBlobs2.svg" className="w-40 h-40" />
           <div>
             <Text h1>
-              Welcome to the <Text b>Mentor Center</Text>!
+              Welcome to <Text b>Mentor Center</Text>!
             </Text>
           </div>
           <div>
@@ -366,7 +366,7 @@ const NoMentorshipHome: Page = () => {
                     showApplications && "text-secondary"
                   }`}
                 >
-                  My Mentorships
+                  My Programs
                 </Text>
               </button>
               <button onClick={() => setShowApplications(true)}>
@@ -382,8 +382,8 @@ const NoMentorshipHome: Page = () => {
             </div>
             <div className="h-1" />
             <div
-              className={`w-32 h-1 bg-primary transform transition-transform ${
-                showApplications && "translate-x-40"
+              className={`w-26 h-1 bg-primary transform transition-transform ${
+                showApplications && "translate-x-34 w-32"
               }`}
             />
           </div>
@@ -396,7 +396,7 @@ const NoMentorshipHome: Page = () => {
               })}
             </TitledCard>
           ) : (
-            <TitledCard title="My Mentorships">
+            <TitledCard title="My Programs">
               {myUserData?.getMyUser.profiles.map((profile, i) => {
                 const { program } = profile;
 

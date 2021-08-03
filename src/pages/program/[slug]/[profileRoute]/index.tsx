@@ -2,7 +2,7 @@ import { RawDraftContentState } from "draft-js";
 import type { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { HTMLAttributes } from "react";
 import { Button, Card, Text } from "../../../../components/atomic";
 import ErrorScreen, {
   ErrorScreenType,
@@ -36,6 +36,44 @@ function getRawContentState(json: string): RawDraftContentState {
   }
 }
 
+const LinkToProgram = ({
+  className,
+  ...props
+}: HTMLAttributes<HTMLDivElement>) => (
+  <div {...props} className={"flex items-center space-x-4 " + className}>
+    <Text b className="hidden xl:inline">
+      Share your program!
+    </Text>
+    <div className="flex flex-1 xl:flex-none xl:w-96 rounded-md border-tertiary bg-white">
+      <input
+        id="mentorship-link"
+        type="text"
+        className="bg-white flex-1 rounded-md p-2"
+        disabled
+        readOnly
+        value={`${window.location.host}/program/${useRouter().query.slug}`}
+      />
+      <button
+        className="bg-black text-white h-full rounded-r-md p-2"
+        onClick={() => {
+          const link = document.getElementById(
+            "mentorship-link"
+          ) as HTMLInputElement;
+
+          //TODO: ExecCommand has been deprecated although copy command is still supported on most browsers
+          link.focus();
+          link.disabled = false;
+          link.select();
+          link.disabled = true;
+          document.execCommand("copy");
+        }}
+      >
+        copy
+      </button>
+    </div>
+  </div>
+);
+
 type DisplayProgramHomepageProps = {
   programId: string;
   name: string;
@@ -51,14 +89,22 @@ const AdminHome = ({
 }: DisplayProgramHomepageProps) => (
   <div>
     <EditorProvider currentHomepage={getRawContentState(homepage)}>
-      <div className="flex items-center">
+      <div className="flex flex-col justify-center">
         <div className="flex w-full items-center justify-between">
           <Text h2 b>
             Edit Homepage
           </Text>
           <PublishButton className="" programId={programId} />
         </div>
+        <div className="h-4" />
+        <Text>
+          People will see this landing page when they click your program link.
+          Use this space to welcome people to your program, provide basic
+          program information, outline FAQs, or whatever else you can imagine!
+        </Text>
       </div>
+      <div className="h-4" />
+      <LinkToProgram />
       <div className="h-24"></div>
 
       <Card className="box-border w-full px-16 p-8 z-0">
@@ -95,9 +141,9 @@ const ReadOnlyHome = ({
   const JSONHomepage: RawDraftContentState = getRawContentState(homepage);
   return (
     //TODO: Figure out whether the buttons at the top should be sticky
-    <div className="box-border bg-tertiary min-h-full pt-16 lg:pt-32 overflow-hidden">
+    <div className="box-border bg-tertiary min-h-full pt-16 lg:pt-32">
       {inProgram ? (
-        <></>
+        <LinkToProgram className="transform -translate-y-20" />
       ) : (
         <div className="flex transform -translate-y-14 lg:-translate-y-20 float-right z-10">
           <Link href={`/program/${slug}/apply?as=mentor`}>
@@ -139,7 +185,6 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
   const authorizationLevel = useAuthorizationLevel();
 
   const program = props.data?.getProgramBySlug;
-  console.log(props);
 
   switch (authorizationLevel) {
     case AuthorizationLevel.Admin:

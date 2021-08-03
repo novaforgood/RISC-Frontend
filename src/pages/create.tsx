@@ -32,8 +32,7 @@ const defaultMentorProfile = [
   },
   {
     id: nanoid(),
-    title:
-      "What has been the most challenging part of your college experience?",
+    title: "Who is your dream dinner guest? Why?",
     description: "Limit your response to 5 sentences.",
     type: QuestionTypes.longText,
   },
@@ -42,7 +41,7 @@ const defaultMentorProfile = [
 const defaultMenteeApplication = [
   {
     id: nanoid(),
-    title: "What are you looking for in a mentor?",
+    title: "What is something you've laughed really hard at?",
     description: "Limit your response to 5 sentences.",
     type: QuestionTypes.longText,
   },

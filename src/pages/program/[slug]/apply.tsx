@@ -42,6 +42,7 @@ const ProgramApplyPage: Page = (_) => {
   const [responses, setResponses] = useState({}); // Should fetch previously saved answers
   const [formChanged, setFormChanged] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
   const { Admin, Mentor, Mentee } = AuthorizationLevel;
 
@@ -119,6 +120,7 @@ const ProgramApplyPage: Page = (_) => {
             <div className="mt-4">
               <Text h3>{capitalize(applicant as string)} Application</Text>
             </div>
+            <Text error>{error}</Text>
             <div className="mt-6 mx-10">
               <Form
                 questions={getApplicationSchemaFromJson(
@@ -143,6 +145,7 @@ const ProgramApplyPage: Page = (_) => {
                 <Button
                   disabled={!formChanged}
                   onClick={() => {
+                    setError("");
                     if (!currentProgram || !user) return; // Should show an error message
                     const createApplicationInput: CreateApplicationInput = {
                       programId: currentProgram.programId!,
@@ -151,8 +154,11 @@ const ProgramApplyPage: Page = (_) => {
                     };
                     createApplication({
                       variables: { data: createApplicationInput },
-                    });
-                    setFormSubmitted(true);
+                    })
+                      .then(() => setFormSubmitted(true))
+                      .catch((err) => {
+                        setError(err.message);
+                      });
                   }}
                 >
                   Submit
