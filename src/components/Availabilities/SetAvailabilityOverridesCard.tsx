@@ -487,10 +487,6 @@ export const SetAvailabilityOverridesCard = ({
     });
   }
 
-  console.log(
-    Intl.DateTimeFormat.supportedLocalesOf(["ban", "id-u-co-pinyin", "de-ID"])
-  );
-
   return (
     <div className="flex flex-col">
       <div className="w-5/6 mx-auto">
