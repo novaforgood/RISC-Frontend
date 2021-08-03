@@ -41,7 +41,9 @@ const ReadOnlyHome = ({
   inProgram = false,
 }: DisplayProgramHomepageProps & { inProgram?: boolean }) => {
   const [authenticationModalOpen, setAuthenticationModalOpen] = useState(false);
-  const [role, setRole] = useState<"mentor" | "mentee">("mentor");
+  const [queryAfterAuthentication, setQueryAfterAuthentication] = useState<
+    "mentor" | "mentee"
+  >("mentor");
   const authorizationLevel = useAuthorizationLevel();
   const router = useRouter();
 
@@ -55,7 +57,7 @@ const ReadOnlyHome = ({
           setAuthenticationModalOpen(false);
         }}
         programName={name}
-        afterRoute={router.asPath + "/apply?as=" + role}
+        afterRoute={router.asPath + "/apply?as=" + queryAfterAuthentication}
       />
       {inProgram ? (
         <></>
@@ -69,7 +71,7 @@ const ReadOnlyHome = ({
                 authorizationLevel === AuthorizationLevel.Unauthenticated ||
                 authorizationLevel === AuthorizationLevel.Unverified
               ) {
-                setRole("mentor");
+                setQueryAfterAuthentication("mentor");
                 setAuthenticationModalOpen(true);
               } else {
                 router.push(router.asPath + "/apply?as=mentor");
@@ -88,7 +90,7 @@ const ReadOnlyHome = ({
                 authorizationLevel === AuthorizationLevel.Unauthenticated ||
                 authorizationLevel === AuthorizationLevel.Unverified
               ) {
-                setRole("mentee");
+                setQueryAfterAuthentication("mentee");
                 setAuthenticationModalOpen(true);
               } else {
                 router.push(router.asPath + "/apply?as=mentee");
