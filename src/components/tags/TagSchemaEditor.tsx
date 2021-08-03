@@ -1,8 +1,29 @@
 import { nanoid } from "nanoid";
-import { InputHTMLAttributes, useEffect, useRef, useState } from "react";
-import { Card, Tag, Text } from "../atomic";
+import dynamic from "next/dynamic";
+import {
+  Fragment,
+  InputHTMLAttributes,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  DropResult,
+} from "react-beautiful-dnd";
+import { Button, Card, Input, Tag, Text } from "../atomic";
+import { DragHandle } from "../FormSchemaEditor/icons";
+import { reindexItemInList } from "../FormSchemaEditor/utils";
 import SelectOptionModal from "../SelectOptionModal";
-import { ProfileTag } from "./types";
+import { ProfileTag, ProfileTagCategory } from "./types";
+
+const NoSSRComponent = (props: any) => <Fragment>{props.children}</Fragment>;
+
+const NoSSR = dynamic(() => Promise.resolve(NoSSRComponent), {
+  ssr: false,
+});
 
 function XIcon() {
   return (
@@ -125,34 +146,166 @@ function TagComponent({ tag, onDelete }: TagComponentProps) {
 
 interface TagSchemaEditorProps {
   tags: ProfileTag[];
-  onChange: (newTags: ProfileTag[]) => void;
+  categories: ProfileTagCategory[];
+  onChange: (
+    newTags: ProfileTag[],
+    newCategories: ProfileTagCategory[]
+  ) => void;
 }
 function TagSchemaEditor({
   tags = [],
+  categories = [],
   onChange = () => {},
 }: TagSchemaEditorProps) {
+  const _onDragEnd = (result: DropResult) => {
+    if (!result.destination) {
+      // Dropped outside the list.
+      return;
+    }
+
+    const { source, destination } = result;
+
+    if (source.droppableId !== destination.droppableId) {
+      // Something is wrong.
+      return;
+    }
+
+    onChange(
+      tags,
+      reindexItemInList(categories, source.index, destination.index)
+    );
+  };
+
   return (
     <Card className="w-full p-5">
-      <div className="flex items-center flex-wrap gap-2">
-        {tags.map((tag) => (
-          <TagComponent
-            key={tag.profileTagId}
-            tag={tag}
-            onDelete={() => {
-              onChange(tags.filter((t) => t.profileTagId !== tag.profileTagId));
+      <NoSSR>
+        <DragDropContext onDragEnd={_onDragEnd}>
+          <Droppable droppableId="allTagCategories" type="tagCategories">
+            {(provided, _) => {
+              return (
+                <div {...provided.droppableProps} ref={provided.innerRef}>
+                  {categories.map((category, index) => {
+                    return (
+                      <Draggable
+                        key={category.profileTagCategoryId}
+                        draggableId={category.profileTagCategoryId}
+                        index={index}
+                      >
+                        {(provided, _) => {
+                          return (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              style={{
+                                userSelect: "none",
+                                ...provided.draggableProps.style,
+                              }}
+                            >
+                              <DragHandle
+                                className="cursor-grab p-1.5"
+                                {...provided.dragHandleProps}
+                              />
+                              <Input
+                                value={category.name}
+                                onChange={(e) => {
+                                  onChange(
+                                    tags,
+                                    categories.map((cat) => {
+                                      if (
+                                        cat.profileTagCategoryId ===
+                                        category.profileTagCategoryId
+                                      ) {
+                                        return {
+                                          ...cat,
+                                          name: e.target.value,
+                                        };
+                                      } else {
+                                        return cat;
+                                      }
+                                    })
+                                  );
+                                }}
+                              />
+                              <div>{category.name}</div>
+                              <div className="flex items-center flex-wrap gap-2">
+                                {tags.map((tag) => {
+                                  if (
+                                    tag.profileTagCategoryId !==
+                                    category.profileTagCategoryId
+                                  ) {
+                                    return null;
+                                  }
+                                  return (
+                                    <TagComponent
+                                      key={tag.profileTagId}
+                                      tag={tag}
+                                      onDelete={() => {
+                                        onChange(
+                                          tags.filter(
+                                            (t) =>
+                                              t.profileTagId !==
+                                              tag.profileTagId
+                                          ),
+                                          categories
+                                        );
+                                      }}
+                                    />
+                                  );
+                                })}
+                                <AddTagInput
+                                  onEnter={(newTagName) => {
+                                    if (
+                                      tags.find(
+                                        (tag) => tag.name === newTagName
+                                      )
+                                    ) {
+                                      alert(
+                                        `Cannot add tag: Tag "${newTagName}" already exists.`
+                                      );
+                                      return;
+                                    }
+                                    onChange(
+                                      [
+                                        ...tags,
+                                        {
+                                          name: newTagName,
+                                          profileTagId: nanoid(),
+                                          profileTagCategoryId:
+                                            category.profileTagCategoryId,
+                                        },
+                                      ],
+                                      categories
+                                    );
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          );
+                        }}
+                      </Draggable>
+                    );
+                  })}
+                  {provided.placeholder}
+                </div>
+              );
             }}
-          />
-        ))}
-        <AddTagInput
-          onEnter={(newTagName) => {
-            if (tags.find((tag) => tag.name === newTagName)) {
-              alert(`Cannot add tag: Tag "${newTagName}" already exists.`);
-              return;
-            }
-            onChange([...tags, { name: newTagName, profileTagId: nanoid() }]);
-          }}
-        />
-      </div>
+          </Droppable>
+        </DragDropContext>
+      </NoSSR>
+      <Button
+        onClick={() => {
+          onChange(tags, [
+            ...categories,
+            {
+              name: "",
+              profileTagCategoryId: nanoid(),
+              listIndex: categories.length,
+            },
+          ]);
+        }}
+      >
+        Add category lel
+      </Button>
     </Card>
   );
 }
