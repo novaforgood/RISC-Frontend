@@ -10,6 +10,7 @@ src/generated/
 
 # testing
 /coverage
+src/pages/test/
 
 # next.js
 /.next/
