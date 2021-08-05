@@ -192,6 +192,7 @@ const EditProfilePage: Page = (_) => {
               <Text b>Select the tags that best describe you.</Text>
               <div className="h-4" />
               <TagSelector
+                selectableTagCategories={currentProgram.profileTagCategories}
                 selectableTags={programTagsData.getProfileTagsByProgram}
                 selectedTagIds={selectedTagIds}
                 onChange={(newSelectedTagIds) => {
