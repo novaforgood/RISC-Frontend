@@ -14,6 +14,7 @@ import { Button, Modal, Text, TextArea } from "../atomic";
 import { CircledCheck, CircledCross } from "../icons";
 import InlineProfileAvatar from "../InlineProfileAvatar";
 import ListFilterer from "../ListFilterer";
+import OneOptionModal from "../OneOptionModal";
 import ProfileModal from "../ProfileModal";
 import ModifyChatRequestModal from "./ChatRequestMutators";
 
@@ -100,9 +101,15 @@ const DetailsModalButton = ({ chatRequest }: DetailsModalButtonProps) => {
 
 type ChatRequestListItemProps = {
   chatRequest: ChatRequestPartial;
+  setIsAcceptModalOpen: (b: boolean) => void;
+  setMentee: (s: string) => void;
 };
 
-const ChatRequestListItem = ({ chatRequest }: ChatRequestListItemProps) => {
+const ChatRequestListItem = ({
+  chatRequest,
+  setIsAcceptModalOpen,
+  setMentee,
+}: ChatRequestListItemProps) => {
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [rejectMessage, setRejectMessage] = useState("");
 
@@ -133,7 +140,14 @@ const ChatRequestListItem = ({ chatRequest }: ChatRequestListItemProps) => {
             className="hover:bg-inactive p-1 rounded"
             title="Accept Chat Request"
             onClick={() => {
-              acceptChatRequestMutation();
+              setMentee(
+                chatRequest.menteeProfile.user.firstName +
+                  " " +
+                  chatRequest.menteeProfile.user.lastName
+              );
+              acceptChatRequestMutation().then(() => {
+                setIsAcceptModalOpen(true);
+              });
             }}
           >
             <CircledCheck className="h-8 w-8" />
@@ -238,18 +252,43 @@ type ChatRequestsListProps = {
 };
 
 const ChatRequestsList = ({ title, chatRequests }: ChatRequestsListProps) => {
+  const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
+  const [mentee, setMentee] = useState("NULL NULL");
+
   return (
-    <div className="flex flex-col px-8 py-6">
-      <Text h3>{title}</Text>
-      <div className="h-4"></div>
-      {chatRequests.length > 0 ? (
-        chatRequests.map((cr) => (
-          <ChatRequestListItem key={cr.chatRequestId} chatRequest={cr} />
-        ))
-      ) : (
-        <Text>None</Text>
-      )}
-    </div>
+    <Fragment>
+      <div className="flex flex-col px-8 py-6">
+        <Text h3>{title}</Text>
+        <div className="h-4"></div>
+        {chatRequests.length > 0 ? (
+          chatRequests.map((cr) => (
+            <ChatRequestListItem
+              key={cr.chatRequestId}
+              chatRequest={cr}
+              setIsAcceptModalOpen={setIsAcceptModalOpen}
+              setMentee={setMentee}
+            />
+          ))
+        ) : (
+          <Text>None</Text>
+        )}
+      </div>
+      <OneOptionModal
+        isOpen={isAcceptModalOpen}
+        onClose={() => setIsAcceptModalOpen(false)}
+        title="Chat Accepted! 🎉"
+        buttonText="Close"
+        onButtonClick={() => {
+          setIsAcceptModalOpen(false);
+        }}
+      >
+        <Text>
+          You have scheduled a chat with <Text b>{mentee}</Text>! Check your
+          email for a calendar invite and some next steps to make sure that your
+          chat goes smoothly.
+        </Text>
+      </OneOptionModal>
+    </Fragment>
   );
 };
 
