@@ -186,6 +186,10 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
 
   const program = props.data?.getProgramBySlug;
 
+  if (!program) {
+    return <ErrorScreen type={ErrorScreenType.PageNotFound} />;
+  }
+
   switch (authorizationLevel) {
     case AuthorizationLevel.Admin:
     case AuthorizationLevel.Mentor:
@@ -197,10 +201,6 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
       break;
     default:
       break;
-  }
-
-  if (!program) {
-    return <ErrorScreen type={ErrorScreenType.PageNotFound} />;
   }
 
   const getProgramPage = () => {
@@ -228,6 +228,8 @@ ProgramPage.getLayout = (page, pageProps) => (
 // TODO: Extract this function because it'll probably be reused
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const slug = parseParam(ctx.params?.slug);
+
+  console.log(slug);
   const apolloProps = await ssrGetProgramBySlug
     .getServerPage({ variables: { slug: slug } }, ctx)
     .catch((_) => {
@@ -235,6 +237,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         props: {},
       };
     });
+
+  console.log(apolloProps);
 
   return apolloProps;
 };

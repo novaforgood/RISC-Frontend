@@ -204,7 +204,11 @@ function TagSchemaEditor({
                                 }}
                                 onPrimaryButtonClick={() => {
                                   onChange(
-                                    tags,
+                                    tags.filter(
+                                      (tag) =>
+                                        tag.profileTagCategoryId !==
+                                        category.profileTagCategoryId
+                                    ),
                                     categories.filter(
                                       (cat) =>
                                         cat.profileTagCategoryId !==
