@@ -101,13 +101,13 @@ const DetailsModalButton = ({ chatRequest }: DetailsModalButtonProps) => {
 
 type ChatRequestListItemProps = {
   chatRequest: ChatRequestPartial;
-  setIsAcceptModalOpen: (b: boolean) => void;
+  onChatRequestAccept: () => void;
   setMentee: (s: string) => void;
 };
 
 const ChatRequestListItem = ({
   chatRequest,
-  setIsAcceptModalOpen,
+  onChatRequestAccept,
   setMentee,
 }: ChatRequestListItemProps) => {
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
@@ -146,7 +146,7 @@ const ChatRequestListItem = ({
                   chatRequest.menteeProfile.user.lastName
               );
               acceptChatRequestMutation().then(() => {
-                setIsAcceptModalOpen(true);
+                onChatRequestAccept();
               });
             }}
           >
@@ -265,7 +265,9 @@ const ChatRequestsList = ({ title, chatRequests }: ChatRequestsListProps) => {
             <ChatRequestListItem
               key={cr.chatRequestId}
               chatRequest={cr}
-              setIsAcceptModalOpen={setIsAcceptModalOpen}
+              onChatRequestAccept={() => {
+                setIsAcceptModalOpen(true);
+              }}
               setMentee={setMentee}
             />
           ))
