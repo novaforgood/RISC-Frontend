@@ -1,5 +1,6 @@
 import { addMinutes } from "date-fns";
 import dateFormat from "dateformat";
+import _ from "lodash";
 import React, { Fragment, useMemo, useState } from "react";
 import {
   CreateChatRequestInput,
@@ -15,6 +16,7 @@ import useTimezoneConverters from "../../hooks/useTimezoneConverters";
 import { Button, Card, Modal, Text, TextArea } from "../atomic";
 import Calendar from "../Calendar";
 import { getDatesInThisMonth } from "../Calendar/utils";
+import OneOptionModal from "../OneOptionModal";
 import { mergeIntervalLists } from "./utils";
 
 type MentorProfile = GetProfilesQuery["getProfiles"][number];
@@ -85,6 +87,8 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
     null
   );
   const [sendChatModalOpen, setSendChatModalOpen] = useState(false);
+  const [chatSentConfirmModalOpen, setChatSentConfirmModalOpen] =
+    useState(false);
   const { data: availWeeklyData, error: availWeeklyError } =
     useGetAvailWeeklysQuery({
       variables: { profileId: mentor.profileId },
@@ -216,6 +220,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
         If no times are open, the mentor is either completely booked or has not
         set availabilities yet.
       </Text>
+      <Text b>{chatSentConfirmModalOpen.toString()}</Text>
       <div className="h-8"></div>
 
       <div className="flex">
@@ -357,6 +362,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
                 }).then(() => {
                   setLoadingCreateChatRequest(false);
                   setSendChatModalOpen(false);
+                  _.delay(setChatSentConfirmModalOpen, 250, true);
                 });
               }}
             >
@@ -365,6 +371,20 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
           </div>
         </div>
       </Modal>
+      <OneOptionModal
+        isOpen={chatSentConfirmModalOpen}
+        onClose={() => setChatSentConfirmModalOpen(false)}
+        title="Request Sent! 🎉"
+        buttonText="Close"
+        onButtonClick={() => {
+          setChatSentConfirmModalOpen(false);
+        }}
+      >
+        <Text>
+          Your chat request has been sent! You will receive an email when this
+          mentor accepts or declines the chat.
+        </Text>
+      </OneOptionModal>
     </div>
   );
 };

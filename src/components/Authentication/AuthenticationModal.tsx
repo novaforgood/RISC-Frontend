@@ -28,11 +28,7 @@ const AuthenticationModal = ({
 
   const afterAuthentication = () => {
     if (afterRoute) {
-      router.push(afterRoute).then(() => {
-        location.reload();
-      });
-    } else {
-      location.reload();
+      router.push(afterRoute);
     }
   };
 
