@@ -17,7 +17,10 @@ import ChooseTabLayout from "../../../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../../../layouts/PageContainer";
 import Page from "../../../../../types/Page";
 
-const appRoot = document.getElementById("__next")!;
+function getAppRoot() {
+  if (typeof document === "undefined") return null;
+  return document.getElementById("__next");
+}
 
 interface DrawerProps {
   isOpen: boolean;
@@ -43,6 +46,11 @@ const Drawer = ({
       window.removeEventListener("click", handleClickOutside, false);
     };
   }, []);
+
+  const appRoot = getAppRoot();
+
+  if (!appRoot) return <></>;
+
   return createPortal(
     <Transition
       show={isOpen}

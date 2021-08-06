@@ -132,7 +132,7 @@ const EditMentorProfilePage: Page = (_) => {
 
       <div className="h-8" />
 
-      <div className="w-80 sm:w-120 md:w-160 lg:w-200 flex flex-col">
+      <div className="w-full xl:w-200 flex flex-col">
         <Text b2>
           This page is for editing how <b>mentors</b> fill out their profile.
         </Text>

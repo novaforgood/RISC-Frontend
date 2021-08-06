@@ -1,5 +1,6 @@
 import { HTMLAttributes, useState } from "react";
 import { useUpdateProgramMutation } from "../../generated/graphql";
+import { useSnackbar } from "../../notifications/SnackbarContext";
 import { Button } from "../atomic";
 import { useEditor } from "./EditorContext";
 
@@ -13,6 +14,7 @@ const PublishButton = ({ programId, ...props }: PublishButtonProps) => {
     useEditor();
   const [updateProgram] = useUpdateProgramMutation();
   const [loading, setLoading] = useState(false);
+  const { setSnackbarMessage } = useSnackbar();
 
   const save = async () => {
     setLoading(true);
@@ -23,6 +25,7 @@ const PublishButton = ({ programId, ...props }: PublishButtonProps) => {
       .then(() => {
         setLoading(false);
         setPublishable!(false);
+        setSnackbarMessage({ text: "Homepage saved!" });
       })
       .catch((err) => {
         console.log("Fail: ", err);

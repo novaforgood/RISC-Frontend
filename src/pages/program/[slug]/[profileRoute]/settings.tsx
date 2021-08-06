@@ -1,11 +1,5 @@
 import React, { ChangeEvent, Fragment, useEffect, useState } from "react";
-import {
-  Button,
-  Card,
-  Input,
-  Text,
-  // TextArea,
-} from "../../../../components/atomic";
+import { Button, Card, Input, Text } from "../../../../components/atomic";
 import CatchUnsavedChangesModal from "../../../../components/CatchUnsavedChangesModal";
 import UploadIconWithPreview from "../../../../components/UploadIconWithPreview";
 import {
@@ -41,7 +35,7 @@ const AdminBox = (user: User) => {
       <Text className="w-1/2" b>
         {user.firstName} {user.lastName}
       </Text>
-      <div className="flex-grow flex items-center justify-end">
+      {/* <div className="flex-grow flex items-center justify-end">
         <button className="hover:bg-tertiary rounded-sm w-6 h-6 flex items-center justify-center">
           <img
             className="w-4 h-4"
@@ -49,7 +43,7 @@ const AdminBox = (user: User) => {
             src="/static/DeleteIcon.svg"
           />
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };
@@ -99,6 +93,7 @@ const SettingsPage: Page = () => {
       <Text h2 b>
         Settings
       </Text>
+      <div className="h-4"></div>
       <Card className="flex flex-col p-12 space-y-6 overflow-y-auto">
         <Text h3 b>
           Mentorship Details
@@ -136,32 +131,37 @@ const SettingsPage: Page = () => {
           <Text b secondary>
             Mentorship Link:
           </Text>
-          <Input
-            id="mentorship-link"
-            type="text"
-            className="col-span-2"
-            disabled
-            readOnly
-            value={`${window.location.host}/program/${slug}`}
-          />
-          <Button
-            onClick={() => {
-              const link = document.getElementById(
-                "mentorship-link"
-              ) as HTMLInputElement;
+          <div className="flex flex-1 xl:flex-none xl:w-96 rounded-md border-tertiary bg-tertiary">
+            <input
+              id="mentorship-link"
+              type="text"
+              className="bg-tertiary flex-1 rounded-md p-2"
+              disabled
+              readOnly
+              value={`${window.location.protocol}//${window.location.host}/program/${slug}`}
+            />
+            <button
+              className="bg-black text-white h-full rounded-r-md p-2"
+              onClick={() => {
+                const link = document.getElementById(
+                  "mentorship-link"
+                ) as HTMLInputElement;
 
-              //TODO: ExecCommand has been deprecated although copy command is still supported on most browsers
-              link.focus();
-              link.disabled = false;
-              link.select();
-              link.disabled = true;
-              document.execCommand("copy");
-              document.getSelection()?.removeAllRanges();
-            }}
-            size="small"
-          >
-            copy
-          </Button>
+                //TODO: ExecCommand has been deprecated although copy command is still supported on most browsers
+                link.focus();
+                link.disabled = false;
+                link.select();
+                link.disabled = true;
+                document.execCommand("copy");
+                setSnackbarMessage({
+                  text: "Copied link!",
+                  durationInMs: 1000,
+                });
+              }}
+            >
+              copy
+            </button>
+          </div>
         </div>
         {/* <div className="w-full">
           <Text b secondary>
