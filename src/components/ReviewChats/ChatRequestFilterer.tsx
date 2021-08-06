@@ -101,14 +101,12 @@ const DetailsModalButton = ({ chatRequest }: DetailsModalButtonProps) => {
 
 type ChatRequestListItemProps = {
   chatRequest: ChatRequestPartial;
-  onChatRequestAccept: () => void;
-  setMentee: (s: string) => void;
+  onChatRequestAccept: (mentee: string) => void;
 };
 
 const ChatRequestListItem = ({
   chatRequest,
   onChatRequestAccept,
-  setMentee,
 }: ChatRequestListItemProps) => {
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [rejectMessage, setRejectMessage] = useState("");
@@ -140,13 +138,12 @@ const ChatRequestListItem = ({
             className="hover:bg-inactive p-1 rounded"
             title="Accept Chat Request"
             onClick={() => {
-              setMentee(
-                chatRequest.menteeProfile.user.firstName +
-                  " " +
-                  chatRequest.menteeProfile.user.lastName
-              );
               acceptChatRequestMutation().then(() => {
-                onChatRequestAccept();
+                onChatRequestAccept(
+                  chatRequest.menteeProfile.user.firstName +
+                    " " +
+                    chatRequest.menteeProfile.user.lastName
+                );
               });
             }}
           >
@@ -265,10 +262,10 @@ const ChatRequestsList = ({ title, chatRequests }: ChatRequestsListProps) => {
             <ChatRequestListItem
               key={cr.chatRequestId}
               chatRequest={cr}
-              onChatRequestAccept={() => {
+              onChatRequestAccept={(mentee: string) => {
                 setIsAcceptModalOpen(true);
+                setMentee(mentee);
               }}
-              setMentee={setMentee}
             />
           ))
         ) : (
