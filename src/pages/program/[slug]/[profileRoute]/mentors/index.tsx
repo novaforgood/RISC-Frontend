@@ -1,8 +1,9 @@
 import { Transition } from "@headlessui/react";
 import Fuse from "fuse.js";
 import React, { Fragment, ReactNode, useEffect, useRef, useState } from "react";
-import { Input, Text } from "../../../../../components/atomic";
-import { Filter } from "../../../../../components/icons";
+import { createPortal } from "react-dom";
+import { Button, Input, Text } from "../../../../../components/atomic";
+import { Filter, Search } from "../../../../../components/icons";
 import ProfileCard from "../../../../../components/ProfileCard";
 import TagSelector from "../../../../../components/tags/TagSelector";
 import {
@@ -16,31 +17,36 @@ import ChooseTabLayout from "../../../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../../../layouts/PageContainer";
 import Page from "../../../../../types/Page";
 
+const appRoot = document.getElementById("__next")!;
+
 interface DrawerProps {
   isOpen: boolean;
+  title: string;
   children: ReactNode;
   onRequestClose: () => void;
 }
-const Drawer = ({ isOpen = false, children, onRequestClose }: DrawerProps) => {
+const Drawer = ({
+  isOpen = false,
+  title,
+  children,
+  onRequestClose,
+}: DrawerProps) => {
   const ref = useRef<HTMLDivElement>(null);
-  const handleMouseDownOutside = (event: Event) => {
-    console.log("lel");
-    console.log(ref.current);
+  const handleClickOutside = (event: Event) => {
     if (ref.current && !ref.current!.contains(event.target as Node)) {
-      console.log("fucker");
       onRequestClose();
     }
   };
   useEffect(() => {
-    window.addEventListener("mousedown", handleMouseDownOutside, false);
+    window.addEventListener("click", handleClickOutside, false);
     return () => {
-      window.removeEventListener("mousedown", handleMouseDownOutside, false);
+      window.removeEventListener("click", handleClickOutside, false);
     };
   }, []);
-  return (
+  return createPortal(
     <Transition
       show={isOpen}
-      className="fixed h-screen right-0 top-0 w-96"
+      className="fixed h-screen right-0 top-0 w-96 bg-white p-6 shadow-md"
       enter="ease-out duration-200"
       enterFrom="-right-96"
       enterTo="right-0"
@@ -49,10 +55,21 @@ const Drawer = ({ isOpen = false, children, onRequestClose }: DrawerProps) => {
       leaveFrom="right-0"
       leaveTo="-right-96"
     >
-      <div ref={ref} className="w-full h-full">
-        {children}
+      <div ref={ref}>
+        <div className="flex justify-between">
+          <Text h3 b>
+            {title}
+          </Text>
+          <Button size="auto" className="px-2" onClick={onRequestClose}>
+            close
+          </Button>
+        </div>
+
+        <div className="h-6"></div>
+        <div className="w-full h-full">{children}</div>
       </div>
-    </Transition>
+    </Transition>,
+    appRoot
   );
 };
 
@@ -123,25 +140,20 @@ const ViewMentorsPage: Page = () => {
   return (
     <Fragment>
       <Drawer
+        title="Filter Mentors"
         isOpen={drawerOpen}
         onRequestClose={() => {
           setDrawerOpen(false);
         }}
       >
-        <div className="bg-white h-full w-full p-6 shadow-md">
-          <Text h3 b>
-            Filter Mentors
-          </Text>
-          <div className="h-6"></div>
-          <TagSelector
-            selectableTagCategories={currentProgram?.profileTagCategories || []}
-            selectableTags={profileTagsData?.getProfileTagsByProgram || []}
-            selectedTagIds={filteredTags}
-            onChange={(newSelectedTagIds: string[]) => {
-              setFilteredTags(newSelectedTagIds);
-            }}
-          />
-        </div>
+        <TagSelector
+          selectableTagCategories={currentProgram?.profileTagCategories || []}
+          selectableTags={profileTagsData?.getProfileTagsByProgram || []}
+          selectedTagIds={filteredTags}
+          onChange={(newSelectedTagIds: string[]) => {
+            setFilteredTags(newSelectedTagIds);
+          }}
+        />
       </Drawer>
       <div className="flex justify-between">
         <Text b h2>
@@ -157,19 +169,29 @@ const ViewMentorsPage: Page = () => {
       </Text>
       <div className="h-4" />
       <div className="flex items-center gap-4">
-        <Input
-          className="w-full"
-          placeholder="Search..."
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-        />
-        <Filter
-          className="h-6 w-6 cursor-pointer"
-          color={"black"}
+        <Button
+          size="small"
+          className="flex gap-2 cursor-pointer items-center justify-center flex-shrink-0"
           onClick={() => {
-            setDrawerOpen(true);
+            if (!drawerOpen) setDrawerOpen(true);
           }}
-        />
+        >
+          Filter <Filter className="h-4 w-4" />
+        </Button>
+        <div className="relative">
+          <Input
+            autoFocus
+            placeholder="Search"
+            className="w-full relative pl-8"
+            value={searchText}
+            onChange={(e) => {
+              setSearchText(e.target.value);
+            }}
+          />
+          <div className="absolute left-3 h-full top-0 flex items-center my-auto">
+            <Search className="h-4 w-4" />
+          </div>
+        </div>
       </div>
 
       <div className="h-4" />

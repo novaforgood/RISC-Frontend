@@ -16,6 +16,9 @@ function TagSelector({
 }: TagSelectorProps) {
   const selectedTagSet = new Set(selectedTagIds);
 
+  if (selectableTagCategories.length === 0)
+    return <Text i>No tags to select.</Text>;
+
   return (
     <div className="flex flex-col gap-4">
       {selectableTagCategories.map((category) => {
@@ -34,6 +37,7 @@ function TagSelector({
                   return (
                     <Tag
                       key={i}
+                      className="shadow-md"
                       variant={tagIsSelected ? "dark" : "outline"}
                       onClick={() => {
                         if (tagIsSelected) {
