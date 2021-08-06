@@ -10,5 +10,10 @@ query getProgramBySlug($slug: String!) {
     menteeProfileSchemaJson
     mentorApplicationSchemaJson
     menteeApplicationSchemaJson
+    profileTagCategories {
+      profileTagCategoryId
+      name
+      listIndex
+    }
   }
 }

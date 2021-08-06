@@ -23,6 +23,7 @@ import { AuthorizationLevel, useAuthorizationLevel } from "../../../../hooks";
 import AuthorizationWrapper from "../../../../layouts/AuthorizationWrapper";
 import ChooseTabLayout from "../../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../../layouts/PageContainer";
+import { useSnackbar } from "../../../../notifications/SnackbarContext";
 import Page from "../../../../types/Page";
 import { parseParam } from "../../../../utils";
 import { MAP_PROFILETYPE_TO_ROUTE } from "../../../../utils/constants";
@@ -39,40 +40,46 @@ function getRawContentState(json: string): RawDraftContentState {
 const LinkToProgram = ({
   className,
   ...props
-}: HTMLAttributes<HTMLDivElement>) => (
-  <div {...props} className={"flex items-center space-x-4 " + className}>
-    <Text b className="hidden xl:inline">
-      Share your program!
-    </Text>
-    <div className="flex flex-1 xl:flex-none xl:w-96 rounded-md border-tertiary bg-white">
-      <input
-        id="mentorship-link"
-        type="text"
-        className="bg-white flex-1 rounded-md p-2"
-        disabled
-        readOnly
-        value={`${window.location.host}/program/${useRouter().query.slug}`}
-      />
-      <button
-        className="bg-black text-white h-full rounded-r-md p-2"
-        onClick={() => {
-          const link = document.getElementById(
-            "mentorship-link"
-          ) as HTMLInputElement;
+}: HTMLAttributes<HTMLDivElement>) => {
+  const { setSnackbarMessage } = useSnackbar();
+  return (
+    <div {...props} className={"flex items-center space-x-4 " + className}>
+      <Text b className="hidden xl:inline">
+        Share your program!
+      </Text>
+      <div className="flex flex-1 xl:flex-none xl:w-96 rounded-md border-tertiary bg-white">
+        <input
+          id="mentorship-link"
+          type="text"
+          className="bg-white flex-1 rounded-md p-2"
+          disabled
+          readOnly
+          value={`${window.location.protocol}//${
+            window.location.host
+          }/program/${useRouter().query.slug}`}
+        />
+        <button
+          className="bg-black text-white h-full rounded-r-md p-2"
+          onClick={() => {
+            const link = document.getElementById(
+              "mentorship-link"
+            ) as HTMLInputElement;
 
-          //TODO: ExecCommand has been deprecated although copy command is still supported on most browsers
-          link.focus();
-          link.disabled = false;
-          link.select();
-          link.disabled = true;
-          document.execCommand("copy");
-        }}
-      >
-        copy
-      </button>
+            //TODO: ExecCommand has been deprecated although copy command is still supported on most browsers
+            link.focus();
+            link.disabled = false;
+            link.select();
+            link.disabled = true;
+            document.execCommand("copy");
+            setSnackbarMessage({ text: "Copied link!", durationInMs: 1000 });
+          }}
+        >
+          copy
+        </button>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 type DisplayProgramHomepageProps = {
   programId: string;
@@ -186,6 +193,10 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
 
   const program = props.data?.getProgramBySlug;
 
+  if (!program) {
+    return <ErrorScreen type={ErrorScreenType.PageNotFound} />;
+  }
+
   switch (authorizationLevel) {
     case AuthorizationLevel.Admin:
     case AuthorizationLevel.Mentor:
@@ -197,10 +208,6 @@ const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
       break;
     default:
       break;
-  }
-
-  if (!program) {
-    return <ErrorScreen type={ErrorScreenType.PageNotFound} />;
   }
 
   const getProgramPage = () => {
@@ -228,6 +235,8 @@ ProgramPage.getLayout = (page, pageProps) => (
 // TODO: Extract this function because it'll probably be reused
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const slug = parseParam(ctx.params?.slug);
+
+  console.log(slug);
   const apolloProps = await ssrGetProgramBySlug
     .getServerPage({ variables: { slug: slug } }, ctx)
     .catch((_) => {
@@ -235,6 +244,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         props: {},
       };
     });
+
+  console.log(apolloProps);
 
   return apolloProps;
 };

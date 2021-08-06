@@ -1,7 +1,8 @@
-import { Tag } from "../atomic";
-import { ProfileTag } from "./types";
+import { Tag, Text } from "../atomic";
+import { ProfileTag, ProfileTagCategory } from "./types";
 
 interface TagSelectorProps {
+  selectableTagCategories: ProfileTagCategory[];
   selectableTags: ProfileTag[];
   selectedTagIds: string[];
   onChange?: (selectedTagIds: string[]) => void;
@@ -9,32 +10,53 @@ interface TagSelectorProps {
 
 function TagSelector({
   selectableTags,
+  selectableTagCategories = [],
   selectedTagIds,
   onChange = () => {},
 }: TagSelectorProps) {
   const selectedTagSet = new Set(selectedTagIds);
 
-  return (
-    <div className="flex flex-wrap gap-2">
-      {selectableTags.map((tag, i) => {
-        const tagIsSelected = selectedTagSet.has(tag.profileTagId);
+  if (selectableTagCategories.length === 0)
+    return <Text i>No tags to select.</Text>;
 
+  return (
+    <div className="flex flex-col gap-4">
+      {selectableTagCategories.map((category) => {
         return (
-          <Tag
-            key={i}
-            variant={tagIsSelected ? "dark" : "outline"}
-            onClick={() => {
-              if (tagIsSelected) {
-                onChange(
-                  selectedTagIds.filter((id) => id !== tag.profileTagId)
-                );
-              } else {
-                onChange([...selectedTagIds, tag.profileTagId]);
-              }
-            }}
-          >
-            {tag.name}
-          </Tag>
+          <div>
+            <Text b>{category.name}</Text>
+            <div className="flex flex-wrap gap-2 pt-2">
+              {selectableTags
+                .filter(
+                  (tag) =>
+                    tag.profileTagCategoryId === category.profileTagCategoryId
+                )
+                .map((tag, i) => {
+                  const tagIsSelected = selectedTagSet.has(tag.profileTagId);
+
+                  return (
+                    <Tag
+                      key={i}
+                      className="shadow-md"
+                      variant={tagIsSelected ? "dark" : "outline"}
+                      onClick={() => {
+                        if (tagIsSelected) {
+                          onChange(
+                            selectedTagIds.filter(
+                              (id) => id !== tag.profileTagId
+                            )
+                          );
+                        } else {
+                          onChange([...selectedTagIds, tag.profileTagId]);
+                        }
+                      }}
+                    >
+                      {tag.name}
+                    </Tag>
+                  );
+                })}
+            </div>
+          </div>
         );
       })}
     </div>

@@ -1,8 +1,13 @@
 mutation updateProfileTagsOfProgram(
   $programId: String!
   $profileTags: [UpdateProfileTagInput!]!
+  $profileTagCategories: [UpdateProfileTagCategoryInput!]!
 ) {
-  updateProfileTagsOfProgram(programId: $programId, profileTags: $profileTags) {
-    profileTagId
+  updateProfileTagsOfProgram(
+    programId: $programId
+    profileTags: $profileTags
+    profileTagCategories: $profileTagCategories
+  ) {
+    profileTagCategoryId
   }
 }

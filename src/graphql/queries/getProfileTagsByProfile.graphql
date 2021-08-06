@@ -1,6 +1,7 @@
 query getProfileTagsByProfile($profileId: String!) {
   getProfileTagsByProfile(profileId: $profileId) {
     profileTagId
+    profileTagCategoryId
     name
   }
 }

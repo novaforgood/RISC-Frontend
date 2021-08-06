@@ -3,7 +3,10 @@ import { Button, Text } from "../../../../../../components/atomic";
 import CatchUnsavedChangesModal from "../../../../../../components/CatchUnsavedChangesModal";
 import FormSchemaEditor from "../../../../../../components/FormSchemaEditor";
 import TagSchemaEditor from "../../../../../../components/tags/TagSchemaEditor";
-import { ProfileTag } from "../../../../../../components/tags/types";
+import {
+  ProfileTag,
+  ProfileTagCategory,
+} from "../../../../../../components/tags/types";
 import {
   refetchGetProfileTagsByProgramQuery,
   useGetProfileTagsByProgramQuery,
@@ -41,6 +44,9 @@ const EditMentorProfilePage: Page = (_) => {
   });
   const [profileSchema, setProfileSchema] = useState<Question[]>([]);
   const [profileTags, setProfileTags] = useState<ProfileTag[]>([]);
+  const [profileTagCategories, setProfileTagCategories] = useState<
+    ProfileTagCategory[]
+  >([]);
   const [modified, setModified] = useState(false);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const { setSnackbarMessage } = useSnackbar();
@@ -51,6 +57,11 @@ const EditMentorProfilePage: Page = (_) => {
     if (!currentProgram) return;
     setProfileSchema(
       getQuestionsFromJson(currentProgram?.mentorProfileSchemaJson)
+    );
+    setProfileTagCategories(
+      [...currentProgram.profileTagCategories].sort(
+        (a, b) => a.listIndex - b.listIndex
+      )
     );
     return () => {};
   }, [currentProgram]);
@@ -79,6 +90,12 @@ const EditMentorProfilePage: Page = (_) => {
           profileTags: profileTags.map((tag) => ({
             profileTagId: tag.profileTagId,
             name: tag.name,
+            profileTagCategoryId: tag.profileTagCategoryId,
+          })),
+          profileTagCategories: profileTagCategories.map((cat, idx) => ({
+            profileTagCategoryId: cat.profileTagCategoryId,
+            name: cat.name,
+            listIndex: idx,
           })),
         },
       }),
@@ -115,7 +132,7 @@ const EditMentorProfilePage: Page = (_) => {
 
       <div className="h-8" />
 
-      <div className="w-80 sm:w-120 md:w-160 lg:w-200 flex flex-col">
+      <div className="w-full xl:w-200 flex flex-col">
         <Text b2>
           This page is for editing how <b>mentors</b> fill out their profile.
         </Text>
@@ -139,9 +156,11 @@ const EditMentorProfilePage: Page = (_) => {
 
         <TagSchemaEditor
           tags={profileTags}
-          onChange={(newProfileTags) => {
+          categories={profileTagCategories}
+          onChange={(newProfileTags, newProfileTagCategories) => {
             setModified(true);
             setProfileTags(newProfileTags);
+            setProfileTagCategories(newProfileTagCategories);
           }}
         />
         <div className="h-16" />

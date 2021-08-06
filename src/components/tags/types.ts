@@ -1,4 +1,8 @@
-import { GetProfileTagsByProfileQuery } from "../../generated/graphql";
+import {
+  UpdateProfileTagCategoryInput,
+  UpdateProfileTagInput,
+} from "../../generated/graphql";
 
-export type ProfileTag =
-  GetProfileTagsByProfileQuery["getProfileTagsByProfile"][number];
+export type ProfileTag = UpdateProfileTagInput;
+
+export type ProfileTagCategory = UpdateProfileTagCategoryInput;

@@ -68,7 +68,7 @@ export function SnackbarProvider({ children }: SnackbarProviderProps) {
           leaveFrom="top-1"
           leaveTo="-top-10"
         >
-          <div className="bg-success px-3 p-2 border-2 border-success text-white flex gap-2 items-center rounded-md">
+          <div className="bg-success px-3 p-2 border-2 border-success text-white flex gap-2 items-center rounded-md shadow-md">
             <div className="bg-white rounded-full h-5 w-5">
               <CircledCheck className="h-full w-full" />
             </div>
