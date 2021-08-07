@@ -54,7 +54,7 @@ const Drawer = ({
   return createPortal(
     <Transition
       show={isOpen}
-      className="fixed h-screen right-0 top-0 w-96 bg-white p-6 shadow-md"
+      className="fixed h-screen right-0 top-0 w-96 bg-white shadow-md overflow-y-auto"
       enter="ease-out duration-200"
       enterFrom="-right-96"
       enterTo="right-0"
@@ -64,7 +64,7 @@ const Drawer = ({
       leaveTo="-right-96"
     >
       <div ref={ref}>
-        <div className="flex justify-between">
+        <div className="flex justify-between sticky top-0 bg-white shadow px-6 py-3">
           <Text h3 b>
             {title}
           </Text>
@@ -73,8 +73,9 @@ const Drawer = ({
           </Button>
         </div>
 
-        <div className="h-6"></div>
-        <div className="w-full h-full">{children}</div>
+        <div className="p-6">
+          <div className="w-full h-full">{children}</div>
+        </div>
       </div>
     </Transition>,
     appRoot
