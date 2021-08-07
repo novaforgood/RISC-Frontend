@@ -109,13 +109,6 @@ const FormQuestionSchemaEditor: React.FC<FormQuestionSchemaEditorProps> = ({
             ref={provided.innerRef}
             {...provided.draggableProps}
             style={{
-              // some basic styles to make the items look a bit nicer
-              userSelect: "none",
-
-              // change background colour if dragging
-              // background: snapshot.isDragging ? "lightgreen" : "white",
-
-              // styles we need to apply on draggables
               ...provided.draggableProps.style,
             }}
           >

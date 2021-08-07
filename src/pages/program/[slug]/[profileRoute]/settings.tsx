@@ -136,8 +136,8 @@ const SettingsPage: Page = () => {
               id="mentorship-link"
               type="text"
               className="bg-tertiary flex-1 rounded-md p-2"
-              disabled
               readOnly
+              disabled
               value={`${window.location.protocol}//${window.location.host}/program/${slug}`}
             />
             <button
