@@ -70,35 +70,36 @@ const EditMentorProfilePage: Page = (_) => {
 
     setIsSavingProfile(true);
 
-    Promise.all([
-      updateProgram({
-        variables: {
-          programId: currentProgram.programId,
-          data: { mentorProfileSchemaJson: JSON.stringify(profileSchema) },
-        },
-      }),
-      updateProfileTagsOfProgram({
-        variables: {
-          programId: currentProgram.programId,
-          profileTags: profileTags.map((tag) => ({
-            profileTagId: tag.profileTagId,
-            name: tag.name,
-            profileTagCategoryId: tag.profileTagCategoryId,
-          })),
-          profileTagCategories: profileTagCategories.map((cat, idx) => ({
-            profileTagCategoryId: cat.profileTagCategoryId,
-            name: cat.name,
-            listIndex: idx,
-          })),
-        },
-      }),
-    ]).then(() => {
-      refetchCurrentProgram();
+    updateProgram({
+      variables: {
+        programId: currentProgram.programId,
+        data: { mentorProfileSchemaJson: JSON.stringify(profileSchema) },
+      },
+    })
+      .then(() => {
+        return updateProfileTagsOfProgram({
+          variables: {
+            programId: currentProgram.programId,
+            profileTags: profileTags.map((tag) => ({
+              profileTagId: tag.profileTagId,
+              name: tag.name,
+              profileTagCategoryId: tag.profileTagCategoryId,
+            })),
+            profileTagCategories: profileTagCategories.map((cat, idx) => ({
+              profileTagCategoryId: cat.profileTagCategoryId,
+              name: cat.name,
+              listIndex: idx,
+            })),
+          },
+        });
+      })
+      .then(() => {
+        refetchCurrentProgram();
 
-      setIsSavingProfile(false);
-      setModified(false);
-      setSnackbarMessage({ text: "Saved mentor profile format!" });
-    });
+        setIsSavingProfile(false);
+        setModified(false);
+        setSnackbarMessage({ text: "Saved mentor profile format!" });
+      });
   };
 
   return (
