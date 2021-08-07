@@ -68,6 +68,10 @@ const BlobCircle = () => {
 };
 
 const CreateProgramPage: Page = () => {
+  const [enteredCode, setEnteredCode] = useState(false);
+  const [code, setCode] = useState("");
+  const [codeError, setCodeError] = useState<string | null>(null);
+
   const [stage, setStage] = useState(0);
   const [programName, setProgramName] = useState("");
   const [programLogo, setProgramLogo] = useState<File | null>(null);
@@ -285,6 +289,58 @@ const CreateProgramPage: Page = () => {
         return <Text>Placeholder (Should not show)</Text>;
     }
   };
+
+  if (!enteredCode) {
+    return (
+      <div className="h-screen w-screen flex flex-col justify-center items-center gap-2">
+        <div>
+          Enter code to create program.{" "}
+          <Text
+            u
+            className="cursor-pointer text-secondary"
+            onClick={() => {
+              router.back();
+            }}
+          >
+            Go back to previous page
+          </Text>
+        </div>
+        <div className="flex items-center gap-2">
+          <Input
+            value={code}
+            onChange={(e) => {
+              setCodeError(null);
+              setCode(e.target.value);
+            }}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                if (code === "WelcomeToMentorCenter") {
+                  setEnteredCode(true);
+                } else {
+                  setCodeError("Invalid code.");
+                }
+              }
+            }}
+          />
+          <Button
+            size="auto"
+            className="px-3 py-1"
+            onClick={() => {
+              if (code === "WelcomeToMentorCenter") {
+                setEnteredCode(true);
+              } else {
+                setCodeError("Invalid code.");
+              }
+            }}
+          >
+            Enter
+          </Button>
+        </div>
+        <div className="text-error h-4">{codeError}</div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex w-screen h-screen">
       <div className="w-9/12 h-full flex">
