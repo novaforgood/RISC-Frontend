@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { nanoid } from "nanoid";
 import dynamic from "next/dynamic";
 import {
@@ -195,8 +196,40 @@ function TagSchemaEditor({
                           const [deleteModalOpen, setDeleteModalOpen] =
                             useState(false);
 
+                          const [focused, setFocused] = useState(false);
+
+                          const ref = useRef<HTMLDivElement>(null);
+                          const handleMouseDownOutside = (event: Event) => {
+                            if (
+                              ref.current &&
+                              !ref.current!.contains(event.target as Node)
+                            ) {
+                              setFocused(false);
+                            }
+                          };
+                          useEffect(() => {
+                            window.addEventListener(
+                              "mousedown",
+                              handleMouseDownOutside,
+                              false
+                            );
+                            return () => {
+                              window.removeEventListener(
+                                "mousedown",
+                                handleMouseDownOutside,
+                                false
+                              );
+                            };
+                          }, []);
+
+                          const wrapperStyles = classNames({
+                            "border-2 rounded p-6": true,
+                            "border-white": !focused,
+                            "border-secondary": focused,
+                          });
+
                           return (
-                            <Fragment>
+                            <div>
                               <SelectOptionModal
                                 isOpen={deleteModalOpen}
                                 onClose={() => {
@@ -231,122 +264,127 @@ function TagSchemaEditor({
                                   category removed.
                                 </Text>
                               </SelectOptionModal>
-                              <Card
+                              <div
                                 ref={provided.innerRef}
                                 {...provided.draggableProps}
-                                style={{
-                                  userSelect: "none",
-                                  ...provided.draggableProps.style,
+                                style={provided.draggableProps.style}
+                                onMouseDown={() => {
+                                  setFocused(true);
                                 }}
-                                className="p-6"
                               >
-                                <div className="flex items-center justify-between">
-                                  <DragHandle
-                                    className="cursor-grab p-1.5"
-                                    {...provided.dragHandleProps}
-                                  />
-                                  <div className="w-2"></div>
+                                <div ref={ref}>
+                                  <Card>
+                                    <div className={wrapperStyles}>
+                                      <div className="flex items-center justify-between">
+                                        <DragHandle
+                                          className="cursor-grab p-1.5"
+                                          {...provided.dragHandleProps}
+                                        />
+                                        <div className="w-2"></div>
 
-                                  <div className="w-1"></div>
-                                  <button
-                                    className="rounded hover:bg-tertiary p-1.5 cursor-pointer"
-                                    onClick={() => {
-                                      setDeleteModalOpen(true);
-                                    }}
-                                  >
-                                    <DeleteIcon className="h-3.5" />
-                                  </button>
-                                </div>
-                                <div className="h-4"></div>
+                                        <div className="w-1"></div>
+                                        <button
+                                          className="rounded hover:bg-tertiary p-1.5 cursor-pointer"
+                                          onClick={() => {
+                                            setDeleteModalOpen(true);
+                                          }}
+                                        >
+                                          <DeleteIcon className="h-3.5" />
+                                        </button>
+                                      </div>
+                                      <div className="h-4"></div>
 
-                                <div className="flex items-start">
-                                  <input
-                                    placeholder="Category name"
-                                    className={
-                                      "w-full px-2 py-1 rounded-md placeholder-secondary border border-inactive \
+                                      <div className="flex items-start">
+                                        <input
+                                          placeholder="Category name"
+                                          className={
+                                            "w-full px-2 py-1 rounded-md placeholder-secondary border border-inactive \
                                     resize-none box-border font-bold  \
                                     hover:border-secondary \
                                     focus:ring-2 focus:ring-inactive focus:outline-none"
-                                    }
-                                    value={category.name}
-                                    onChange={(e) => {
-                                      onChange(
-                                        tags,
-                                        categories.map((cat) => {
+                                          }
+                                          value={category.name}
+                                          onChange={(e) => {
+                                            onChange(
+                                              tags,
+                                              categories.map((cat) => {
+                                                if (
+                                                  cat.profileTagCategoryId ===
+                                                  category.profileTagCategoryId
+                                                ) {
+                                                  return {
+                                                    ...cat,
+                                                    name: e.target.value,
+                                                  };
+                                                } else {
+                                                  return cat;
+                                                }
+                                              })
+                                            );
+                                          }}
+                                        />
+                                      </div>
+
+                                      <div className="h-4"></div>
+
+                                      <div className="flex items-center flex-wrap gap-2">
+                                        {tags.map((tag) => {
                                           if (
-                                            cat.profileTagCategoryId ===
+                                            tag.profileTagCategoryId !==
                                             category.profileTagCategoryId
                                           ) {
-                                            return {
-                                              ...cat,
-                                              name: e.target.value,
-                                            };
-                                          } else {
-                                            return cat;
+                                            return null;
                                           }
-                                        })
-                                      );
-                                    }}
-                                  />
-                                </div>
-
-                                <div className="h-4"></div>
-
-                                <div className="flex items-center flex-wrap gap-2">
-                                  {tags.map((tag) => {
-                                    if (
-                                      tag.profileTagCategoryId !==
-                                      category.profileTagCategoryId
-                                    ) {
-                                      return null;
-                                    }
-                                    return (
-                                      <TagComponent
-                                        key={tag.profileTagId}
-                                        tag={tag}
-                                        onDelete={() => {
-                                          onChange(
-                                            tags.filter(
-                                              (t) =>
-                                                t.profileTagId !==
-                                                tag.profileTagId
-                                            ),
-                                            categories
+                                          return (
+                                            <TagComponent
+                                              key={tag.profileTagId}
+                                              tag={tag}
+                                              onDelete={() => {
+                                                onChange(
+                                                  tags.filter(
+                                                    (t) =>
+                                                      t.profileTagId !==
+                                                      tag.profileTagId
+                                                  ),
+                                                  categories
+                                                );
+                                              }}
+                                            />
                                           );
-                                        }}
-                                      />
-                                    );
-                                  })}
-                                  <AddTagInput
-                                    onEnter={(newTagName) => {
-                                      if (
-                                        tags.find(
-                                          (tag) => tag.name === newTagName
-                                        )
-                                      ) {
-                                        alert(
-                                          `Cannot add tag: Tag "${newTagName}" already exists.`
-                                        );
-                                        return;
-                                      }
-                                      onChange(
-                                        [
-                                          ...tags,
-                                          {
-                                            name: newTagName,
-                                            profileTagId: nanoid(),
-                                            profileTagCategoryId:
-                                              category.profileTagCategoryId,
-                                          },
-                                        ],
-                                        categories
-                                      );
-                                    }}
-                                  />
+                                        })}
+                                        <AddTagInput
+                                          onEnter={(newTagName) => {
+                                            if (
+                                              tags.find(
+                                                (tag) => tag.name === newTagName
+                                              )
+                                            ) {
+                                              alert(
+                                                `Cannot add tag: Tag "${newTagName}" already exists.`
+                                              );
+                                              return;
+                                            }
+                                            onChange(
+                                              [
+                                                ...tags,
+                                                {
+                                                  name: newTagName,
+                                                  profileTagId: nanoid(),
+                                                  profileTagCategoryId:
+                                                    category.profileTagCategoryId,
+                                                },
+                                              ],
+                                              categories
+                                            );
+                                          }}
+                                        />
+                                      </div>
+                                    </div>
+                                  </Card>
                                 </div>
-                              </Card>
-                              <div className="h-4"></div>
-                            </Fragment>
+                                <div className="h-4"></div>
+                              </div>
+                            </div>
                           );
                         }}
                       </Draggable>
