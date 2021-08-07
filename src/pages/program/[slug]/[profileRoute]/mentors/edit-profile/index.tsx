@@ -8,7 +8,6 @@ import {
   ProfileTagCategory,
 } from "../../../../../../components/tags/types";
 import {
-  refetchGetProfileTagsByProgramQuery,
   useGetProfileTagsByProgramQuery,
   useUpdateProfileTagsOfProgramMutation,
   useUpdateProgramMutation,
@@ -32,13 +31,7 @@ function getQuestionsFromJson(json: string): Question[] {
 const EditMentorProfilePage: Page = (_) => {
   const { currentProgram, refetchCurrentProgram } = useCurrentProgram();
   const [updateProgram] = useUpdateProgramMutation();
-  const [updateProfileTagsOfProgram] = useUpdateProfileTagsOfProgramMutation({
-    refetchQueries: [
-      refetchGetProfileTagsByProgramQuery({
-        programId: currentProgram?.programId!,
-      }),
-    ],
-  });
+  const [updateProfileTagsOfProgram] = useUpdateProfileTagsOfProgramMutation();
   const { data: profileTagsData } = useGetProfileTagsByProgramQuery({
     variables: { programId: currentProgram?.programId! },
   });

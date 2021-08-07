@@ -57,6 +57,21 @@ const ShortTextAsker = ({
   showDescriptions,
   onChange,
 }: TextAskerProps) => {
+  if (readonly) {
+    return (
+      <div>
+        <Text b>{title}</Text>
+        <div className="h-1" />
+        {showDescriptions && description && (
+          <Fragment>
+            <Text className="text-secondary">{description}</Text>
+            <div className="h-2" />
+          </Fragment>
+        )}
+        <div>{initResponse}</div>
+      </div>
+    );
+  }
   return (
     <div>
       <Text b>{title}</Text>
@@ -98,6 +113,22 @@ const LongTextAsker = ({
     "w-full": true,
     "bg-white resize-none": readonly,
   });
+
+  if (readonly) {
+    return (
+      <div>
+        <Text b>{title}</Text>
+        <div className="h-1" />
+        {showDescriptions && description && (
+          <Fragment>
+            <Text className="text-secondary">{description}</Text>
+            <div className="h-2" />
+          </Fragment>
+        )}
+        <div>{initResponse}</div>
+      </div>
+    );
+  }
   return (
     <div>
       <Text b>{title}</Text>
