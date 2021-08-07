@@ -20,6 +20,7 @@ import ChooseTabLayout from "../../../layouts/ChooseTabLayout";
 import { Question } from "../../../types/Form";
 import Page from "../../../types/Page";
 import { useAuth } from "../../../utils/firebase/auth";
+import LocalStorage from "../../../utils/localstorage";
 
 // Question: Do we want users to see mentor app (behind the modal) before they log in?
 // Urgent: Should check if user applied to be mentor before prior to allowing them to access the form.
@@ -174,6 +175,7 @@ const ProgramApplyPage: Page = (_) => {
               <div className="mt-14">
                 <Button
                   onClick={() => {
+                    LocalStorage.delete("cachedProfileSlug");
                     router.push("/");
                   }}
                 >
