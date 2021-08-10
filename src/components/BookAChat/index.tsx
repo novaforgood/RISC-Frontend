@@ -220,7 +220,6 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
         If no times are open, the mentor is either completely booked or has not
         set availabilities yet.
       </Text>
-      <Text b>{chatSentConfirmModalOpen.toString()}</Text>
       <div className="h-8"></div>
 
       <div className="flex">
