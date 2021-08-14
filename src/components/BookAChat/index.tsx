@@ -208,19 +208,19 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
 
   return (
     <div>
-      <div className="h-4"></div>
+      <div className="h-4" />
       <Text h2>
         Book a chat with{" "}
         <b>
           {mentor.user.firstName} {mentor.user.lastName}
         </b>
       </Text>
-      <div className="h-2"></div>
+      <div className="h-2" />
       <Text className="text-secondary">
         If no times are open, the mentor is either completely booked or has not
         set availabilities yet.
       </Text>
-      <div className="h-8"></div>
+      <div className="h-8" />
 
       <div className="flex">
         <Card className="p-12">
@@ -254,14 +254,14 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
           />
         </Card>
 
-        <div className="w-8"></div>
+        <div className="w-8" />
         <Card className="p-12 w-80">
           <div>
             <Text b1 b>
               Available Times
             </Text>
           </div>
-          <div className="h-2"></div>
+          <div className="h-2" />
           <div>
             <Text b className="text-secondary">
               {selectedDate
@@ -270,7 +270,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
             </Text>
           </div>
 
-          <div className="h-4"></div>
+          <div className="h-4" />
           <div className="h-80 box-border flex flex-col gap-2 overflow-y-auto">
             {timeslots.map((timeslot) => {
               return (
@@ -305,7 +305,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
               </Text>
             </Text>
           </div>
-          <div className="h-2"></div>
+          <div className="h-2" />
           <div>
             <Text b>Date:</Text>{" "}
             <Text>
@@ -319,7 +319,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
               {dateFormat(selectedTimeslot?.endTime, "h:MMtt")}
             </Text>
           </div>
-          <div className="h-6"></div>
+          <div className="h-6" />
 
           <TextArea
             value={chatRequestMessage}
@@ -328,9 +328,9 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
               setChatRequestMessage(target.value);
             }}
             className="p-2 w-96"
-            placeholder="Optional message"
-          ></TextArea>
-          <div className="h-8"></div>
+            placeholder="Optional message (i.e. preferred location)"
+          />
+          <div className="h-8" />
 
           <div className="flex">
             <Button
@@ -342,7 +342,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
             >
               Cancel
             </Button>
-            <div className="w-2"></div>
+            <div className="w-2" />
             <Button
               size="small"
               onClick={() => {
