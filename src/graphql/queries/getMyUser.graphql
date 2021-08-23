@@ -4,6 +4,8 @@ query getMyUser {
     email
     firstName
     lastName
+    defaultLocation
+    videoChatLink
     profilePictureUrl
     timezone
     profiles {

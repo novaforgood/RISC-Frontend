@@ -138,6 +138,7 @@ const ChatRequestListItem = ({
             className="hover:bg-inactive p-1 rounded"
             title="Accept Chat Request"
             onClick={() => {
+              
               acceptChatRequestMutation().then(() => {
                 onChatRequestAccept(
                   chatRequest.menteeProfile.user.firstName +

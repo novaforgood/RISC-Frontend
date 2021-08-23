@@ -14,6 +14,7 @@ import {
 } from "../generated/graphql";
 import { PageGetProgramBySlugComp } from "../generated/page";
 import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";
+import AuthorizationWrapper from "../layouts/AuthorizationWrapper";
 import NoProgramTabLayout from "../layouts/TabLayout/NoProgramTabLayout";
 import Page from "../types/Page";
 import { MAP_PROFILETYPE_TO_ROUTE } from "../utils/constants";
@@ -34,7 +35,9 @@ const BlobCircle = () => {
 const IndexPage: PageGetProgramBySlugComp = (_) => {
   const router = useRouter();
   const authorizationLevel = useAuthorizationLevel();
-  const { user } = useAuth();
+  const { user, setLoading } = useAuth();
+  //This is so that universally (wherever you log out from), you'll stop the loading screen here
+  setLoading(false);
 
   if (authorizationLevel === AuthorizationLevel.Unauthenticated) {
     if (user)
@@ -183,36 +186,32 @@ type ProgramRowProps = {
   profileType: ProfileType;
 };
 
-const ProgramRow = ({ iconUrl, name, route, profileType }: ProgramRowProps) => {
-  return (
-    <div className="flex items-center justify-between">
-      <div className="flex gap-4 items-center">
-        <img
-          src={iconUrl}
-          alt={`Program ${name} icon`}
-          className="h-10 w-10 col-span-1"
-        />
-        <div className="flex flex-col">
-          <Text>{name}</Text>
-          <Text className="text-secondary text-caption">
-            {MAP_PROFILETYPE_TO_NAME[profileType]}
-          </Text>
-        </div>
+const ProgramRow = ({ iconUrl, name, route, profileType }: ProgramRowProps) => (
+  <div className="flex items-center justify-between">
+    <div className="flex gap-4 items-center">
+      <img
+        src={iconUrl}
+        alt={`Program ${name} icon`}
+        className="h-10 w-10 col-span-1"
+      />
+      <div className="flex flex-col">
+        <Text>{name}</Text>
+        <Text className="text-secondary text-caption">
+          {MAP_PROFILETYPE_TO_NAME[profileType]}
+        </Text>
       </div>
-      <Text
-        u
-        b
-        className="text-secondary hover:cursor-pointer hover:text-primary"
-      >
-        <Link
-          href={`/program/${route}/${MAP_PROFILETYPE_TO_ROUTE[profileType]}`}
-        >
-          Go to Homepage
-        </Link>
-      </Text>
     </div>
-  );
-};
+    <Text
+      u
+      b
+      className="text-secondary hover:cursor-pointer hover:text-primary"
+    >
+      <Link href={`/program/${route}/${MAP_PROFILETYPE_TO_ROUTE[profileType]}`}>
+        Go to Homepage
+      </Link>
+    </Text>
+  </div>
+);
 
 interface ApplicationRowProps {
   application: GetMyUserApplicationsQuery["getMyUser"]["applications"][number];

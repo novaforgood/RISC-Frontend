@@ -2,7 +2,7 @@ import { RawDraftContentState } from "draft-js";
 import type { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { HTMLAttributes } from "react";
+import React, { Fragment, HTMLAttributes } from "react";
 import { Button, Card, Text } from "../../../../components/atomic";
 import ErrorScreen, {
   ErrorScreenType,
@@ -27,6 +27,7 @@ import { useSnackbar } from "../../../../notifications/SnackbarContext";
 import Page from "../../../../types/Page";
 import { parseParam } from "../../../../utils";
 import { MAP_PROFILETYPE_TO_ROUTE } from "../../../../utils/constants";
+import { useAuth } from "../../../../utils/firebase/auth";
 import LocalStorage from "../../../../utils/localstorage";
 
 function getRawContentState(json: string): RawDraftContentState {
@@ -189,9 +190,12 @@ const ReadOnlyHome = ({
 
 //TODO: Change type of this to not any
 const ProgramPage: PageGetProgramBySlugComp & Page = (props: any) => {
+  const { loading } = useAuth();
   const authorizationLevel = useAuthorizationLevel();
 
   const program = props.data?.getProgramBySlug;
+
+  if (loading) return <Fragment />;
 
   if (!program) {
     return <ErrorScreen type={ErrorScreenType.PageNotFound} />;

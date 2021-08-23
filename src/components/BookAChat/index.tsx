@@ -17,6 +17,7 @@ import { Button, Card, Modal, Text, TextArea } from "../atomic";
 import Calendar from "../Calendar";
 import { getDatesInThisMonth } from "../Calendar/utils";
 import OneOptionModal from "../OneOptionModal";
+import TitledInput from "../TitledInput";
 import { mergeIntervalLists } from "./utils";
 
 type MentorProfile = GetProfilesQuery["getProfiles"][number];
@@ -112,6 +113,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
   const [loadingCreateChatRequest, setLoadingCreateChatRequest] =
     useState(false);
   const [chatRequestMessage, setChatRequestMessage] = useState("");
+  const [preferredLocation, setPreferredLocation] = useState("");
 
   loadingCreateChatRequest; // TODO: Use this variable
 
@@ -320,7 +322,17 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
             </Text>
           </div>
           <div className="h-6" />
-
+          <TitledInput
+            title="Preferred meeting location"
+            placeholder="Favorite coffee shop address, zoom link, or other"
+            className="w-full"
+            value={preferredLocation}
+            onChange={(e) => setPreferredLocation(e.target.value)}
+          />
+          <div className="h-6" />
+          <Text b className="w-full">
+            Optional Message
+          </Text>
           <TextArea
             value={chatRequestMessage}
             onChange={(e: any) => {
@@ -328,7 +340,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
               setChatRequestMessage(target.value);
             }}
             className="p-2 w-96"
-            placeholder="Optional message (i.e. preferred location)"
+            placeholder="Hi! My name is John Doe, and I'd love to talk to you about your experience at the circus!"
           />
           <div className="h-8" />
 
@@ -351,6 +363,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
                 const createChatRequestInput: CreateChatRequestInput = {
                   mentorProfileId: mentor.profileId,
                   chatRequestMessage: chatRequestMessage,
+                  location: preferredLocation,
                   chatStartTime: toUTC(selectedTimeslot.startTime).getTime(),
                   chatEndTime: toUTC(selectedTimeslot.endTime).getTime(),
                 };

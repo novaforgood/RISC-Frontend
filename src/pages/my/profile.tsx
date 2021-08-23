@@ -24,6 +24,10 @@ const GeneralProfile: Page = () => {
   const [modified, setModified] = useState(false);
   const [firstName, setFirstName] = useState(data?.getMyUser.firstName);
   const [lastName, setLastName] = useState(data?.getMyUser.lastName);
+  const [location, setLocation] = useState(data?.getMyUser.defaultLocation);
+  const [videoChatLink, setVideoChatLink] = useState(
+    data?.getMyUser.videoChatLink
+  );
   const { setSnackbarMessage } = useSnackbar();
 
   const [profilePicture, setProfilePicture] = useState<File | null>();
@@ -81,6 +85,8 @@ const GeneralProfile: Page = () => {
                     firstName: firstName,
                     lastName: lastName,
                     profilePictureUrl: url,
+                    defaultLocation: location,
+                    videoChatLink: videoChatLink,
                   },
                 },
               });
@@ -93,7 +99,9 @@ const GeneralProfile: Page = () => {
         </div>
         <div className="h-4" />
         {data?.getMyUser ? (
-          <Card className="p-10 space-y-4 col-span-7">
+          <Card className="p-10 space-y-4 col-span-9">
+            <Text className="text-error">{error}</Text>
+            <div />
             <Text h3 b>
               Profile Picture
             </Text>
@@ -129,7 +137,28 @@ const GeneralProfile: Page = () => {
                 }}
               />
             </div>
-            <Text className="text-error">{error}</Text>
+            <div className="h-4" />
+            <Text h3 b>
+              Default Locations
+            </Text>
+            <TitledInput
+              title="Default Location for In-Person Chats"
+              placeholder="Office address, favorite coffee shop, etc."
+              value={location}
+              onChange={(e) => {
+                setModified(true);
+                setLocation(e.target.value);
+              }}
+            />
+            <TitledInput
+              title="Default Link for Online Chats"
+              placeholder="Permanent Zoom link, Google Meets link, etc."
+              value={videoChatLink}
+              onChange={(e) => {
+                setModified(true);
+                setVideoChatLink(e.target.value);
+              }}
+            />
           </Card>
         ) : (
           <div>Loading</div>
