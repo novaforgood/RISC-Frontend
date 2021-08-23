@@ -14,7 +14,6 @@ import {
 } from "../generated/graphql";
 import { PageGetProgramBySlugComp } from "../generated/page";
 import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";
-import AuthorizationWrapper from "../layouts/AuthorizationWrapper";
 import NoProgramTabLayout from "../layouts/TabLayout/NoProgramTabLayout";
 import Page from "../types/Page";
 import { MAP_PROFILETYPE_TO_ROUTE } from "../utils/constants";

@@ -8,6 +8,7 @@ query getProfiles($programId: String!, $profileType: String!) {
     user {
       userId
       email
+      defaultLocation
       firstName
       lastName
       profilePictureUrl

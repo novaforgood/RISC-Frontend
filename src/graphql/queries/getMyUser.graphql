@@ -5,7 +5,6 @@ query getMyUser {
     firstName
     lastName
     defaultLocation
-    videoChatLink
     profilePictureUrl
     timezone
     profiles {

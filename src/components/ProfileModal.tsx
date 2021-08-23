@@ -75,7 +75,7 @@ const ProfileModal = ({
               <div>
                 <div>
                   <div className="rounded bg-tertiary p-4">
-                    <table className="table-auto">
+                    <table className="table-auto w-96">
                       <tr>
                         <td>
                           <Text b>Email:</Text>
@@ -83,6 +83,12 @@ const ProfileModal = ({
                         <td className="pl-4">
                           <Text>{profile.user.email}</Text>
                         </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <Text b>Preferred Location:</Text>
+                        </td>
+                        <td className="pl-4">{profile.user.defaultLocation}</td>
                       </tr>
                     </table>
                   </div>

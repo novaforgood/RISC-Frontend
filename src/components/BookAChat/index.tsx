@@ -11,13 +11,13 @@ import {
   useGetAvailOverrideDatesQuery,
   useGetAvailWeeklysQuery,
   useGetChatRequestsQuery,
+  useGetMyUserQuery,
 } from "../../generated/graphql";
 import useTimezoneConverters from "../../hooks/useTimezoneConverters";
-import { Button, Card, Modal, Text, TextArea } from "../atomic";
+import { Button, Card, Input, Modal, Text, TextArea } from "../atomic";
 import Calendar from "../Calendar";
 import { getDatesInThisMonth } from "../Calendar/utils";
 import OneOptionModal from "../OneOptionModal";
-import TitledInput from "../TitledInput";
 import { mergeIntervalLists } from "./utils";
 
 type MentorProfile = GetProfilesQuery["getProfiles"][number];
@@ -102,6 +102,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
     useGetChatRequestsQuery({
       variables: { profileId: mentor.profileId },
     });
+  const { data: user } = useGetMyUserQuery();
 
   const [createChatRequest] = useCreateChatRequestMutation({
     refetchQueries: [
@@ -113,7 +114,9 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
   const [loadingCreateChatRequest, setLoadingCreateChatRequest] =
     useState(false);
   const [chatRequestMessage, setChatRequestMessage] = useState("");
-  const [preferredLocation, setPreferredLocation] = useState("");
+  const [preferredLocation, setPreferredLocation] = useState(
+    user?.getMyUser.defaultLocation
+  );
 
   loadingCreateChatRequest; // TODO: Use this variable
 
@@ -298,7 +301,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
           setSendChatModalOpen(false);
         }}
       >
-        <div className="p-4 flex flex-col items-center">
+        <div className="p-4 flex flex-col items-center w-144">
           <div>
             <Text>
               Send Chat Request to{" "}
@@ -322,8 +325,16 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
             </Text>
           </div>
           <div className="h-6" />
-          <TitledInput
-            title="Preferred meeting location"
+          <Text b className="w-full">
+            Preferred meeting location:
+          </Text>
+          <Text i secondary>
+            You can set your default preferred location in Profile {">"} My
+            General Profile. Keep in mind that the mentor has the final say on
+            location!
+          </Text>
+          <div className="h-2" />
+          <Input
             placeholder="Favorite coffee shop address, zoom link, or other"
             className="w-full"
             value={preferredLocation}
@@ -333,18 +344,19 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
           <Text b className="w-full">
             Optional Message
           </Text>
+          <div className="h-2" />
           <TextArea
             value={chatRequestMessage}
             onChange={(e: any) => {
               const target = e.target as HTMLTextAreaElement;
               setChatRequestMessage(target.value);
             }}
-            className="p-2 w-96"
+            className="p-2 w-full"
             placeholder="Hi! My name is John Doe, and I'd love to talk to you about your experience at the circus!"
           />
           <div className="h-8" />
 
-          <div className="flex">
+          <div className="w-full flex justify-between">
             <Button
               variant="inverted"
               size="small"
@@ -354,7 +366,6 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
             >
               Cancel
             </Button>
-            <div className="w-2" />
             <Button
               size="small"
               onClick={() => {
@@ -363,7 +374,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
                 const createChatRequestInput: CreateChatRequestInput = {
                   mentorProfileId: mentor.profileId,
                   chatRequestMessage: chatRequestMessage,
-                  location: preferredLocation,
+                  location: preferredLocation || "",
                   chatStartTime: toUTC(selectedTimeslot.startTime).getTime(),
                   chatEndTime: toUTC(selectedTimeslot.endTime).getTime(),
                 };
