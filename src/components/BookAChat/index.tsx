@@ -1,7 +1,7 @@
 import { addMinutes } from "date-fns";
 import dateFormat from "dateformat";
 import _ from "lodash";
-import React, { Fragment, useMemo, useState } from "react";
+import React, { Fragment, useEffect, useMemo, useState } from "react";
 import {
   CreateChatRequestInput,
   DateInterval,
@@ -117,6 +117,10 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
   const [preferredLocation, setPreferredLocation] = useState(
     user?.getMyUser.defaultLocation
   );
+
+  useEffect(() => {
+    setPreferredLocation(user?.getMyUser.defaultLocation);
+  }, [user?.getMyUser]);
 
   loadingCreateChatRequest; // TODO: Use this variable
 
@@ -285,6 +289,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
                     setSendChatModalOpen(true);
                     setSelectedTimeslot(timeslot);
                     setChatRequestMessage("");
+                    setPreferredLocation("");
                   }}
                 >
                   {dateFormat(timeslot.startTime, "h:MMtt")} -{" "}
@@ -333,7 +338,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
             General Profile. Keep in mind that the mentor has the final say on
             location!
           </Text>
-          <div className="h-2" />
+          <div className="h-4" />
           <Input
             placeholder="Favorite coffee shop address, zoom link, or other"
             className="w-full"
