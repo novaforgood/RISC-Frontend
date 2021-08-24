@@ -3,7 +3,13 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { ReactNode, useEffect, useState } from "react";
 import { Text } from "../../components/atomic";
+import OnboardingScreen from "../../components/Onboarding/OnboardingModal";
 import TabFooterMenu from "../../components/TabFooterMenu";
+import {
+  UpdateProfileInput,
+  useUpdateProfileMutation,
+} from "../../generated/graphql";
+import { useCurrentProfile } from "../../hooks";
 import LocalStorage from "../../utils/localstorage";
 import ProgramDropdown from "./ProgramDropdown";
 
@@ -76,15 +82,52 @@ const TabLayout: React.FC<TabLayoutProps> & {
     Icon: React.FC<React.SVGProps<SVGSVGElement>>;
   }>;
 } = ({ children, currentPageChildren }) => {
+  const currentProfile = useCurrentProfile();
+  const [updateProfileMutation] = useUpdateProfileMutation({
+    refetchQueries: ["getMyUser"],
+  });
+
+  const tabLayoutStyles = classNames({
+    "flex flex-col flex-grow h-screen bg-white shadow-lg relative box-border":
+      true,
+    "pointer-events-none bg-black opacity-25":
+      currentProfile.currentProfile?.showOnboarding,
+  });
+
   return (
     <div className="flex h-screen w-screen">
-      <div className="flex flex-col h-screen w-72 flex-shrink-0 bg-white shadow-lg relative">
+      <div className={tabLayoutStyles}>
         <ProgramDropdown />
         <div className="h-0.25 w-full bg-tertiary flex-shrink-0"></div>
         <div className="overflow-y-auto h-full">{children}</div>
         <TabFooterMenu />
       </div>
-      <div className="flex-grow overflow-x-hidden">{currentPageChildren}</div>
+      <div className="flex flex-col h-screen w-5/6 box-border overflow-hidden">
+        <div
+          className={
+            currentProfile.currentProfile?.showOnboarding && "h-3/4 box-border"
+          }
+        >
+          {currentPageChildren}
+        </div>
+        {currentProfile.currentProfile?.showOnboarding && (
+          <OnboardingScreen
+            onClose={() => {
+              const updateProfileInput: UpdateProfileInput = {
+                ...currentProfile.currentProfile,
+                showOnboarding: false,
+              };
+              updateProfileMutation({
+                variables: {
+                  profileId: currentProfile.currentProfile.profileId,
+                  data: updateProfileInput,
+                },
+              }).catch((err) => console.log(err));
+              currentProfile.refetchCurrentProfile();
+            }}
+          />
+        )}
+      </div>
     </div>
   );
 };

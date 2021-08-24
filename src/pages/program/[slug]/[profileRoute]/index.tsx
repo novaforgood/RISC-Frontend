@@ -124,7 +124,7 @@ const AdminHome = ({
           <Text h1 b>
             {name}
           </Text>
-          <div className="w-full bg-white sticky -top-10 p-4 z-10 rounded-md">
+          <div className="w-full bg-white sticky -top-10 p-4 z-1 rounded-md">
             <ToolBar />
           </div>
           <div className="h-2" />

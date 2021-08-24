@@ -1,21 +1,22 @@
 import React from "react";
-import { Modal, Text } from "../atomic";
+import { Card, Text } from "../atomic";
+import AdminOnboarding from "./AdminOnboarding";
 
-type OnboardingModalProps = {
-  isOpen: boolean;
+type OnboardingProps = {
   onClose: () => void;
 };
 
-const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
+const OnboardingScreen = ({ onClose }: OnboardingProps) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="w-144 space-y-4">
-        <Text h1 b>
-          Let's get started with Mentor Center!
+    <div className="h-max w-full bg-tertiary p-6 z-10 box-border">
+      <Card className="w-full p-4 space-y-4 box-border">
+        <Text h2 b>
+          Welcome to your new program!
         </Text>
-      </div>
-    </Modal>
+        <AdminOnboarding onClose={onClose} />
+      </Card>
+    </div>
   );
 };
 
-export default OnboardingModal;
+export default OnboardingScreen;

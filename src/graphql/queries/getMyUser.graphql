@@ -12,6 +12,7 @@ query getMyUser {
       profileJson
       tagsJson
       bio
+      showOnboarding
       program {
         programId
         name

@@ -11,8 +11,8 @@ const StepTracker = ({ steps, currentStep }: StepTrackerProps) => (
     {range(1, steps).map((i: number) => {
       return (
         <div
-          className={`rounded-full ${
-            i == currentStep ? "bg-primary" : "bg-secondary"
+          className={`h-4 w-4 rounded-full ${
+            i == currentStep ? "bg-secondary" : "bg-inactive"
           }`}
         />
       );
