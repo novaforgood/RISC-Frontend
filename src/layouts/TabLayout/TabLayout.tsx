@@ -3,12 +3,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { ReactNode, useEffect, useState } from "react";
 import { Text } from "../../components/atomic";
-import OnboardingScreen from "../../components/Onboarding/OnboardingModal";
+import OnboardingScreen from "../../components/Onboarding/Onboarding";
 import TabFooterMenu from "../../components/TabFooterMenu";
-import {
-  UpdateProfileInput,
-  useUpdateProfileMutation,
-} from "../../generated/graphql";
 import { useCurrentProfile } from "../../hooks";
 import LocalStorage from "../../utils/localstorage";
 import ProgramDropdown from "./ProgramDropdown";
@@ -83,9 +79,6 @@ const TabLayout: React.FC<TabLayoutProps> & {
   }>;
 } = ({ children, currentPageChildren }) => {
   const currentProfile = useCurrentProfile();
-  const [updateProfileMutation] = useUpdateProfileMutation({
-    refetchQueries: ["getMyUser"],
-  });
 
   const tabLayoutStyles = classNames({
     "flex flex-col flex-grow h-screen bg-white shadow-lg relative box-border":
@@ -103,29 +96,10 @@ const TabLayout: React.FC<TabLayoutProps> & {
         <TabFooterMenu />
       </div>
       <div className="flex flex-col h-screen w-5/6 box-border overflow-hidden">
-        <div
-          className={
-            currentProfile.currentProfile?.showOnboarding && "h-3/4 box-border"
-          }
-        >
-          {currentPageChildren}
-        </div>
-        {currentProfile.currentProfile?.showOnboarding && (
-          <OnboardingScreen
-            onClose={() => {
-              const updateProfileInput: UpdateProfileInput = {
-                ...currentProfile.currentProfile,
-                showOnboarding: false,
-              };
-              updateProfileMutation({
-                variables: {
-                  profileId: currentProfile.currentProfile.profileId,
-                  data: updateProfileInput,
-                },
-              }).catch((err) => console.log(err));
-              currentProfile.refetchCurrentProfile();
-            }}
-          />
+        {currentProfile.currentProfile?.showOnboarding ? (
+          <OnboardingScreen currentPageChildren={currentPageChildren} />
+        ) : (
+          currentPageChildren
         )}
       </div>
     </div>

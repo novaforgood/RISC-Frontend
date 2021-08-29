@@ -8,7 +8,7 @@ type StepTrackerProps = HTMLAttributes<HTMLDivElement> & {
 
 const StepTracker = ({ steps, currentStep }: StepTrackerProps) => (
   <div className="flex space-x-4">
-    {range(1, steps).map((i: number) => {
+    {range(1, steps + 1).map((i: number) => {
       return (
         <div
           className={`h-4 w-4 rounded-full ${

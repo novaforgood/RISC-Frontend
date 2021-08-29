@@ -1,24 +1,16 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import { Button, Text } from "../atomic";
 import StepTracker from "../atomic/StepTracker";
+import { OnboardingProps } from "./OnboardingContext";
 
-type AdminOnboardingProps = {
-  onClose: () => void;
-};
-
-const ADMIN_STEPS = 6;
-
-const AdminOnboarding = ({ onClose }: AdminOnboardingProps) => {
-  const [currentStep, setCurrentStep] = useState(1);
+const AdminOnboarding = ({
+  onFinish,
+  currentStep,
+  setCurrentStep,
+  MAX_STEPS,
+  baseRoute,
+}: OnboardingProps) => {
   const router = useRouter();
-
-  const baseRoute = `/program/${router.query.slug}/${router.query.profileRoute}/`;
-  useEffect(() => {
-    if (currentStep === 1 && router.asPath !== baseRoute) {
-      router.push(baseRoute);
-    }
-  }, []);
 
   const getCurrentStep = () => {
     switch (currentStep) {
@@ -56,55 +48,40 @@ const AdminOnboarding = ({ onClose }: AdminOnboardingProps) => {
       <Text h3 className="w-full">
         {currentStep}) {getCurrentStep()}
       </Text>
-      <StepTracker steps={ADMIN_STEPS} currentStep={currentStep} />
-      <div className="flex w-full justify-between box-border">
+      <div className="h-2" />
+      <div className="flex w-full justify-end items-center box-border">
+        <div className="w-full">
+          <StepTracker steps={MAX_STEPS} currentStep={currentStep} />
+        </div>
         <Button
           size="small"
           variant="inverted"
-          className="self-start"
+          disabled={currentStep === 1}
           onClick={() => {
-            setCurrentStep(1);
-            onClose();
+            const prevStep = Math.max(currentStep - 1, 1);
+            router
+              .push(getStepRoute(prevStep))
+              .then(() => setCurrentStep(prevStep));
           }}
         >
-          Skip
+          Back
         </Button>
-        <div className="flex flex-end">
-          <Button
-            size="small"
-            variant="inverted"
-            disabled={
-              currentStep === 1 &&
-              router.asPath !==
-                `/program/${router.query.slug}/${router.query.profileRoute}`
-            }
-            onClick={() => {
-              const prevStep = Math.max(currentStep - 1, 1);
+        <div className="w-4" />
+        <Button
+          size="small"
+          onClick={() => {
+            if (currentStep !== MAX_STEPS - 1) {
+              const nextStep = Math.min(currentStep + 1, MAX_STEPS);
               router
-                .push(getStepRoute(prevStep))
-                .then(() => setCurrentStep(prevStep));
-            }}
-          >
-            Back
-          </Button>
-          <div className="w-4" />
-          <Button
-            size="small"
-            onClick={() => {
-              if (currentStep !== ADMIN_STEPS - 1) {
-                const nextStep = Math.min(currentStep + 1, ADMIN_STEPS);
-                router
-                  .push(getStepRoute(nextStep))
-                  .then(() => setCurrentStep(nextStep));
-              } else {
-                setCurrentStep(1);
-                onClose();
-              }
-            }}
-          >
-            {currentStep !== ADMIN_STEPS - 1 ? "Next" : "Finish"}
-          </Button>
-        </div>
+                .push(getStepRoute(nextStep))
+                .then(() => setCurrentStep(nextStep));
+            } else {
+              onFinish();
+            }
+          }}
+        >
+          {currentStep !== MAX_STEPS - 1 ? "Next" : "Finish"}
+        </Button>
       </div>
     </div>
   );
