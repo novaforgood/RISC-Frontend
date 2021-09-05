@@ -7,7 +7,9 @@ type OnboardingLayoutProps = {
 };
 
 const OnboardingLayout = ({ currentPageChildren }: OnboardingLayoutProps) => {
-  const { OnboardingComponent } = useOnboarding();
+  const { switchingRoutes, OnboardingComponent } = useOnboarding();
+
+  if (switchingRoutes) return <></>;
 
   return (
     <div className="flex flex-col h-full w-full bg-tertiary">

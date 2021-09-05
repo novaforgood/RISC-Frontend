@@ -71,9 +71,7 @@ const EditProfilePage: Page = (_) => {
     setBio(currentProfile.bio || "");
     setProfileJson(getResponsesFromJson(currentProfile.profileJson));
     setSelectedTagIds(currentProfile.profileTags.map((t) => t.profileTagId));
-
-    return () => {};
-  }, [currentProfile]);
+  }, []);
 
   if (!currentProgram || !currentProfile || !myUserData || !programTagsData)
     return <div>404</div>;

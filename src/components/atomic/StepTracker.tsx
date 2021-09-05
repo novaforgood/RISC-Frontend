@@ -11,6 +11,7 @@ const StepTracker = ({ steps, currentStep }: StepTrackerProps) => (
     {range(1, steps + 1).map((i: number) => {
       return (
         <div
+          key={i}
           className={`h-4 w-4 rounded-full ${
             i == currentStep ? "bg-secondary" : "bg-inactive"
           }`}

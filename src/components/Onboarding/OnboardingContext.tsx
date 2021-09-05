@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import {
   UpdateProfileInput,
   useUpdateProfileMutation,
@@ -9,19 +9,21 @@ import {
   useAuthorizationLevel,
   useCurrentProfile,
 } from "../../hooks";
-import AdminOnboarding from "./AdminOnboarding";
+import OnboardingComponent from "./OnboardingComponent";
 import LocalStorage from "../../utils/localstorage";
+
+interface OnboardingText {
+  [key: number]: { step: string; route: string };
+}
 
 export interface OnboardingProps {
   currentStep: number;
   setCurrentStep: (num: number) => void;
+  loading: boolean;
+  setLoading: (bool: boolean) => void;
+  onboardingText: OnboardingText;
   MAX_STEPS: number;
-  baseRoute: string;
   onFinish: () => void;
-}
-
-interface OnboardingContextProps {
-  OnboardingComponent: JSX.Element;
 }
 
 const authorizationLevelToMaxSteps = (authLevel: AuthorizationLevel) => {
@@ -37,17 +39,79 @@ const authorizationLevelToMaxSteps = (authLevel: AuthorizationLevel) => {
   }
 };
 
-const OnboardingContext = createContext<OnboardingContextProps | undefined>(
+const AdminOnboardingText = (baseRoute: string) => ({
+  1: {
+    step: "Set up your program homepage",
+    route: baseRoute,
+  },
+  2: {
+    step: "Edit your mentor applications",
+    route: baseRoute + "applications/edit-mentor-app",
+  },
+  3: {
+    step: "Edit your mentee applications",
+    route: baseRoute + "applications/edit-mentee-app",
+  },
+  4: {
+    step: "Edit your mentor profile structure",
+    route: baseRoute + "mentors/edit-profile",
+  },
+  5: {
+    step: "Edit your mentee profile structure",
+    route: baseRoute + "mentees/edit-profile",
+  },
+});
+
+const MentorOnboardingText = (baseRoute: string) => ({
+  1: {
+    step: "Fill out your profile",
+    route: baseRoute + "edit-profile",
+  },
+  2: {
+    step: "Set your availability",
+    route: baseRoute + "availability",
+  },
+});
+
+const MenteeOnboardingText = (baseRoute: string) => ({
+  1: {
+    step: "Fill out your profile",
+    route: baseRoute + "edit-profile",
+  },
+  2: {
+    step: "Browse through available mentors",
+    route: baseRoute + "mentors",
+  },
+});
+
+const authLevelToText = (authLevel: AuthorizationLevel) => {
+  switch (authLevel) {
+    case AuthorizationLevel.Admin:
+      return AdminOnboardingText;
+    case AuthorizationLevel.Mentor:
+      return MentorOnboardingText;
+    default:
+      return MenteeOnboardingText;
+  }
+};
+
+interface OnboardingContextType {
+  switchingRoutes: boolean;
+  OnboardingComponent: JSX.Element;
+}
+
+const OnboardingContext = createContext<OnboardingContextType | undefined>(
   undefined
 );
 
 const useOnboardingProvider = () => {
   const currentProfile = useCurrentProfile();
-  const [updateProfileMutation] = useUpdateProfileMutation({
+  const [updateProfile] = useUpdateProfileMutation({
     refetchQueries: ["getMyUser"],
   });
 
   const authorizationLevel = useAuthorizationLevel();
+  const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState<number>(1);
   const router = useRouter();
 
@@ -59,54 +123,55 @@ const useOnboardingProvider = () => {
       ...currentProfile.currentProfile,
       showOnboarding: false,
     };
-    updateProfileMutation({
+    updateProfile({
       variables: {
         profileId: currentProfile.currentProfile!.profileId,
         data: updateProfileInput,
       },
     })
-      .catch((err) => console.log(err))
       .then(() => {
-        console.log("finished");
-      });
-    currentProfile.refetchCurrentProfile!();
-    LocalStorage.delete("Onboarding Step");
+        currentProfile.refetchCurrentProfile!();
+        LocalStorage.delete("Onboarding Step");
+      })
+      .catch((err) => console.error(err));
   };
 
-  useEffect(() => {
-    const onboardingStep = LocalStorage.get("Onboarding Step");
-    if (onboardingStep && typeof onboardingStep == "number")
-      setCurrentStep(onboardingStep);
-  }, []);
-
-  const props = {
+  const props: OnboardingProps = {
     currentStep,
     setCurrentStep: (num: number) => {
-      setCurrentStep(num);
       LocalStorage.set("Onboarding Step", num);
+      setCurrentStep(num);
     },
+    loading,
+    setLoading,
+    onboardingText: authLevelToText(authorizationLevel)(baseRoute),
     MAX_STEPS,
-    baseRoute,
     onFinish,
   };
 
-  const getOnboardingFromAuthorizationLevel = () => {
-    switch (authorizationLevel) {
-      case AuthorizationLevel.Admin:
-        return <AdminOnboarding {...props} />;
-      case AuthorizationLevel.Mentor:
-        return <></>;
-      case AuthorizationLevel.Mentee:
-        return <></>;
-      default:
-        return <></>;
+  const onboardingStep = LocalStorage.get("Onboarding Step");
+  useEffect(() => {
+    if (onboardingStep && typeof onboardingStep == "number") {
+      setCurrentStep(onboardingStep);
     }
-  };
+  }, []);
 
-  const OnboardingComponent = getOnboardingFromAuthorizationLevel();
+  if (
+    authorizationLevel !== AuthorizationLevel.Admin &&
+    router.asPath !== props.onboardingText[currentStep]["route"] &&
+    onboardingStep &&
+    typeof onboardingStep == "number"
+  ) {
+    router.push(props.onboardingText[onboardingStep]["route"]);
+    return {
+      switchingRoutes: true,
+      OnboardingComponent: <OnboardingComponent {...props} />,
+    };
+  }
 
   return {
-    OnboardingComponent,
+    switchingRoutes: false,
+    OnboardingComponent: <OnboardingComponent {...props} />,
   };
 };
 
