@@ -21,10 +21,12 @@ import { weekdayNames } from "../Calendar/data";
 import { SetDateInterval } from "./SetDateInterval";
 
 type SetWeeklyAvailabilitiesCardProps = {
+  onSave: () => void;
   profileId: string;
 };
 
 export const SetWeeklyAvailabilitiesCard = ({
+  onSave,
   profileId,
 }: SetWeeklyAvailabilitiesCardProps) => {
   const { data, loading, error, refetch } = useGetAvailWeeklysQuery({
@@ -152,6 +154,7 @@ export const SetWeeklyAvailabilitiesCard = ({
         availabilities: weeklyAvailabilities,
       },
     }).then(() => {
+      onSave();
       refetch();
     });
   };

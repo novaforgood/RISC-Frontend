@@ -41,12 +41,14 @@ type EditAvailOverrideDayModalContentsProps = {
   profileId: string;
   availWeeklys: DateInterval[];
   onClose: () => void;
+  onSave: () => void;
 };
 const EditAvailOverrideDayModalContents = ({
   initOverrideDate = null,
   profileId,
   availWeeklys,
-  onClose = () => {},
+  onClose,
+  onSave,
 }: EditAvailOverrideDayModalContentsProps) => {
   const { toUTC } = useTimezoneConverters();
   const [overrideDate, setOverrideDay] = useState<AvailOverrideDate | null>(
@@ -339,6 +341,7 @@ const EditAvailOverrideDayModalContents = ({
             createOrUpdateOverrideDay()
               .then(() => {
                 onClose();
+                onSave();
               })
               .catch((err) => {
                 console.error(err);
@@ -354,10 +357,12 @@ const EditAvailOverrideDayModalContents = ({
 };
 
 type AvailOverrideDateSectionProps = {
+  onSave: () => void;
   overrideDate: AvailOverrideDate;
   availWeeklys: DateInterval[];
 };
 const AvailOverrideDateSection = ({
+  onSave,
   overrideDate,
   availWeeklys,
 }: AvailOverrideDateSectionProps) => {
@@ -421,6 +426,7 @@ const AvailOverrideDateSection = ({
           initOverrideDate={overrideDate}
           profileId={overrideDate.profileId}
           availWeeklys={availWeeklys}
+          onSave={onSave}
           onClose={() => {
             setModalOpen(false);
           }}
@@ -432,9 +438,11 @@ const AvailOverrideDateSection = ({
 };
 
 type SetAvailabilityOverridesCardProps = {
+  onSave: () => void;
   profileId: string;
 };
 export const SetAvailabilityOverridesCard = ({
+  onSave,
   profileId,
 }: SetAvailabilityOverridesCardProps) => {
   const {
@@ -513,6 +521,7 @@ export const SetAvailabilityOverridesCard = ({
             <React.Fragment key={idx}>
               <div className="w-full h-px bg-inactive" />
               <AvailOverrideDateSection
+                onSave={onSave}
                 overrideDate={overrideDate}
                 availWeeklys={availWeeklys}
               />
@@ -542,6 +551,7 @@ export const SetAvailabilityOverridesCard = ({
         <EditAvailOverrideDayModalContents
           profileId={profileId}
           availWeeklys={availWeeklys}
+          onSave={onSave}
           onClose={() => {
             setEditAvailOverrideDayModalOpen(false);
           }}
