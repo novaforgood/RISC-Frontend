@@ -11,7 +11,11 @@ import {
   useGetProfilesQuery,
   useGetProfileTagsByProgramQuery,
 } from "../../../../../generated/graphql";
-import { AuthorizationLevel, useCurrentProgram } from "../../../../../hooks";
+import {
+  AuthorizationLevel,
+  useAuthorizationLevel,
+  useCurrentProgram,
+} from "../../../../../hooks";
 import AuthorizationWrapper from "../../../../../layouts/AuthorizationWrapper";
 import ChooseTabLayout from "../../../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../../../layouts/PageContainer";
@@ -88,6 +92,7 @@ const ViewMentorsPage: Page = () => {
   const [searchText, setSearchText] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [filteredTags, setFilteredTags] = useState<string[]>([]);
+  const authorizationLevel = useAuthorizationLevel();
 
   const { currentProgram } = useCurrentProgram();
   const { data } = useGetProfilesQuery({
@@ -171,11 +176,13 @@ const ViewMentorsPage: Page = () => {
         {/* {sortDropdown()} */}
       </div>
       <div className="h-4" />
-      <Text>
-        Mentors fill out their profiles and set their availability so that
-        mentees can book chats with them. They are <Text b>super excited</Text>{" "}
-        to talk!
-      </Text>
+      {authorizationLevel === AuthorizationLevel.Mentee && (
+        <Text>
+          Mentors fill out their profiles and set their availability so that
+          mentees can book chats with them. They are{" "}
+          <Text b>super excited</Text> to talk!
+        </Text>
+      )}
       <div className="h-4" />
       <div className="flex items-center gap-4">
         <Button
