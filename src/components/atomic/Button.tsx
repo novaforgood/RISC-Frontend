@@ -2,7 +2,7 @@ import classNames from "classnames";
 import React, { ButtonHTMLAttributes } from "react";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "solid" | "inverted"; // Default solid
+  variant?: "solid" | "inverted" | "outline inverted"; // Default solid
   size?: "small" | "medium" | "large" | "auto"; // Default medium
 };
 
@@ -30,6 +30,10 @@ const Button = React.forwardRef(
       disabled:text-inactive disabled:border disabled:border-inactive disabled:bg-white \
       focus:ring-opacity-100"]:
         variant === "inverted",
+
+      ["border border-white hover:border-2 hover:bg-white hover:text-primary \
+      active:border-2 active:bg-white active:text-primary"]:
+        variant === "outline inverted",
 
       // Size styles
       "h-14 w-41": size === "medium",
