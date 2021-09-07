@@ -18,6 +18,7 @@ import {
 import useTimezoneConverters from "../../hooks/useTimezoneConverters";
 import { Button, Text } from "../atomic";
 import { weekdayNames } from "../Calendar/data";
+import CatchUnsavedChangesModal from "../CatchUnsavedChangesModal";
 import { SetDateInterval } from "./SetDateInterval";
 
 type SetWeeklyAvailabilitiesCardProps = {
@@ -161,6 +162,7 @@ export const SetWeeklyAvailabilitiesCard = ({
 
   return (
     <div className="flex flex-col">
+      <CatchUnsavedChangesModal unsavedChangesExist={modified === true} />
       <div className="w-5/6 mx-auto flex justify-between">
         <Text h3 b>
           Set Weekly Availabilities

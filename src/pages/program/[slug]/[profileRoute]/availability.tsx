@@ -68,7 +68,7 @@ const SetAvailabilitiesPage: Page = () => {
         <div className="flex-1" />
         <div className="flex items-center">
           <Text>Time Zone: </Text>
-          <div className="w-2"></div>
+          <div className="w-2" />
           <div>{myTimezone}</div>
           {/* <SelectTimezone
             profileId={currentProfile.profileId}
