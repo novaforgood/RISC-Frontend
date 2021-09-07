@@ -196,7 +196,7 @@ const EditAvailOverrideDayModalContents = ({
           Set the date to override
         </Text>
       </div>
-      <div className="h-8"></div>
+      <div className="h-8" />
       <Calendar
         selectAnyDate
         onSelect={(newSelectedDate) => {
@@ -246,7 +246,7 @@ const EditAvailOverrideDayModalContents = ({
         modified={modified}
         selectedDate={overrideDate ? new Date(overrideDate.startTime) : null}
       />
-      <div className="h-8"></div>
+      <div className="h-8" />
       {overrideDate ? (
         <div>
           <div>
@@ -263,7 +263,7 @@ const EditAvailOverrideDayModalContents = ({
             </Text>
             <br />
 
-            <div className="h-2"></div>
+            <div className="h-2" />
             {timeslots.map((timeslot, timeslotIndex) => {
               const date = startOfDay(overrideDate?.startTime);
               if (getDay(timeslot.startTime) !== getDay(date)) {
@@ -295,11 +295,11 @@ const EditAvailOverrideDayModalContents = ({
                   </Text>
                 </div>
 
-                <div className="h-2"></div>
+                <div className="h-2" />
               </Fragment>
             )}
 
-            <div className="h-2"></div>
+            <div className="h-2" />
             <div>
               <Button
                 size="small"
@@ -321,7 +321,7 @@ const EditAvailOverrideDayModalContents = ({
           </Text>
         </div>
       )}
-      <div className="h-8"></div>
+      <div className="h-8" />
 
       <div className="flex">
         <Button
@@ -333,7 +333,7 @@ const EditAvailOverrideDayModalContents = ({
         >
           Cancel
         </Button>
-        <div className="w-2"></div>
+        <div className="w-2" />
         <Button
           disabled={overrideDate === null}
           size="small"
@@ -375,7 +375,7 @@ const AvailOverrideDateSection = ({
 
   return (
     <Fragment>
-      <div className="h-4"></div>
+      <div className="h-4" />
       <div className="flex items-center justify-between w-full px-12">
         <div>
           <Text b>{format(overrideDate.startTime, "MMMM d, yyyy")}</Text>
@@ -388,7 +388,7 @@ const AvailOverrideDateSection = ({
           >
             <Text u>edit</Text>
           </button>
-          <div className="w-2"></div>
+          <div className="w-2" />
           <button
             className="h-6 w-6 rounded p-1 hover:bg-tertiary cursor-pointer"
             onClick={() => {
@@ -432,7 +432,7 @@ const AvailOverrideDateSection = ({
           }}
         />
       </Modal>
-      <div className="h-4"></div>
+      <div className="h-4" />
     </Fragment>
   );
 };
@@ -475,8 +475,8 @@ export const SetAvailabilityOverridesCard = ({
     !availOverrideDatesError &&
     availOverrideDatesData
   ) {
-    availOverrideDates = availOverrideDatesData.getAvailOverrideDates.map(
-      (date) => {
+    availOverrideDates = availOverrideDatesData.getAvailOverrideDates
+      .map((date) => {
         return {
           ...date,
           startTime: fromUTC(new Date(date.startTime)),
@@ -488,8 +488,10 @@ export const SetAvailabilityOverridesCard = ({
             })
           ),
         };
-      }
-    );
+      })
+      .sort((a, b) => {
+        return a.startTime.getDay() - b.startTime.getDay();
+      });
   }
 
   if (!availWeeklysLoading && !availWeeklysError && availWeeklysData) {
@@ -508,7 +510,7 @@ export const SetAvailabilityOverridesCard = ({
           Add date overrides
         </Text>
       </div>
-      <div className="h-2"></div>
+      <div className="h-2" />
       <div className="w-5/6 mx-auto">
         <Text className="text-secondary">
           Adjust your availability manually for certain dates.
@@ -530,7 +532,7 @@ export const SetAvailabilityOverridesCard = ({
         })}
         <div className="w-full h-px bg-inactive" />
       </div>
-      <div className="h-4"></div>
+      <div className="h-4" />
       <div className="flex px-12">
         <Button
           variant="inverted"

@@ -103,7 +103,6 @@ const EditProfilePage: Page = (_) => {
 
   const isMentor = authorizationLevel === AuthorizationLevel.Mentor;
 
-  console.log(profileJson);
   return (
     <div className="flex flex-col items-center">
       <CatchUnsavedChangesModal unsavedChangesExist={modified === true} />
