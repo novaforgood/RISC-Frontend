@@ -114,12 +114,12 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
   const [loadingCreateChatRequest, setLoadingCreateChatRequest] =
     useState(false);
   const [chatRequestMessage, setChatRequestMessage] = useState("");
-  const [preferredLocation, setPreferredLocation] = useState(
-    user?.getMyUser.defaultLocation
+  const [location, setlocation] = useState(
+    user?.getMyUser.preferredChatLocation
   );
 
   useEffect(() => {
-    setPreferredLocation(user?.getMyUser.defaultLocation);
+    setlocation(user?.getMyUser.preferredChatLocation);
   }, [user?.getMyUser]);
 
   loadingCreateChatRequest; // TODO: Use this variable
@@ -284,12 +284,13 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
             {timeslots.map((timeslot) => {
               return (
                 <button
+                  key={timeslot.startTime.toISOString()}
                   className="border border-inactive text-center w-full p-2 cursor-pointer hover:border-primary duration-150"
                   onClick={() => {
                     setSendChatModalOpen(true);
                     setSelectedTimeslot(timeslot);
                     setChatRequestMessage("");
-                    setPreferredLocation("");
+                    setlocation("");
                   }}
                 >
                   {dateFormat(timeslot.startTime, "h:MMtt")} -{" "}
@@ -342,8 +343,8 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
           <Input
             placeholder="Favorite coffee shop address, zoom link, or other"
             className="w-full"
-            value={preferredLocation}
-            onChange={(e) => setPreferredLocation(e.target.value)}
+            value={location}
+            onChange={(e) => setlocation(e.target.value)}
           />
           <div className="h-6" />
           <Text b className="w-full">
@@ -379,7 +380,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
                 const createChatRequestInput: CreateChatRequestInput = {
                   mentorProfileId: mentor.profileId,
                   chatRequestMessage: chatRequestMessage,
-                  location: preferredLocation || "",
+                  chatLocation: location || "",
                   chatStartTime: toUTC(selectedTimeslot.startTime).getTime(),
                   chatEndTime: toUTC(selectedTimeslot.endTime).getTime(),
                 };

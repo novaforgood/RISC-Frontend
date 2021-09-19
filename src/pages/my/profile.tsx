@@ -24,7 +24,9 @@ const GeneralProfile: Page = () => {
   const [modified, setModified] = useState(false);
   const [firstName, setFirstName] = useState(data?.getMyUser.firstName);
   const [lastName, setLastName] = useState(data?.getMyUser.lastName);
-  const [location, setLocation] = useState(data?.getMyUser.defaultLocation);
+  const [location, setLocation] = useState(
+    data?.getMyUser.preferredChatLocation
+  );
   const { setSnackbarMessage } = useSnackbar();
 
   const [profilePicture, setProfilePicture] = useState<File | null>();
@@ -39,7 +41,7 @@ const GeneralProfile: Page = () => {
       setFirstName(data.getMyUser.firstName);
       setLastName(data.getMyUser.lastName);
       setSrc(data.getMyUser.profilePictureUrl);
-      setLocation(data.getMyUser.defaultLocation);
+      setLocation(data.getMyUser.preferredChatLocation);
       setProfilePicture(null);
       setError(null);
     }
@@ -83,7 +85,7 @@ const GeneralProfile: Page = () => {
                     firstName: firstName,
                     lastName: lastName,
                     profilePictureUrl: url,
-                    defaultLocation: location,
+                    preferredChatLocation: location,
                   },
                 },
               });

@@ -1,5 +1,8 @@
-mutation acceptChatRequest($chatRequestId: String!, $location: String!) {
-  acceptChatRequest(chatRequestId: $chatRequestId, location: $location) {
+mutation acceptChatRequest($chatRequestId: String!, $chatLocation: String!) {
+  acceptChatRequest(
+    chatRequestId: $chatRequestId
+    chatLocation: $chatLocation
+  ) {
     chatRequestId
   }
 }

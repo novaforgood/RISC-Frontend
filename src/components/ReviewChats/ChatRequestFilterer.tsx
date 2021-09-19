@@ -114,12 +114,12 @@ const ChatRequestListItem = ({
 
   const [isSetLocationModalOpen, setSetLocationModalOpen] = useState(false);
   const [location, setLocation] = useState(
-    chatRequest.mentorProfile.user.defaultLocation
+    chatRequest.mentorProfile.user.preferredChatLocation
   );
   const [acceptChatRequestMutation] = useAcceptChatRequestMutation({
     variables: {
       chatRequestId: chatRequest.chatRequestId,
-      location: location,
+      chatLocation: location,
     },
     refetchQueries: [
       refetchGetChatRequestsQuery({
@@ -199,7 +199,7 @@ const ChatRequestListItem = ({
             {chatRequest.menteeProfile.user.firstName} has specified that they
             prefer to meet here:
             <br className="h-2" />
-            <Text i>{chatRequest.location}</Text>
+            <Text i>{chatRequest.chatLocation}</Text>
           </Text>
           <TitledInput
             title="Confirm the location:"

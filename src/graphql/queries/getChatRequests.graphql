@@ -6,7 +6,7 @@ query getChatRequests($profileId: String!) {
     chatEndTime
     chatRequestMessage
     chatRejectMessage
-    location
+    chatLocation
     mentorProfileId
     mentorProfile {
       profileJson
@@ -14,7 +14,7 @@ query getChatRequests($profileId: String!) {
       bio
       user {
         email
-        defaultLocation
+        preferredChatLocation
         firstName
         lastName
         profilePictureUrl
