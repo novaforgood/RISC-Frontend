@@ -1,18 +1,22 @@
-import React, { ReactNode } from "react";
+import classNames from "classnames";
+import React, { ReactNode, useState } from "react";
 import { Card, Text } from "../atomic";
-import { useOnboarding } from "./OnboardingContext";
+import OnboardingContent from "./OnboardingContent";
 
-type OnboardingLayoutProps = {
+type OnboardingProps = {
   currentPageChildren: ReactNode;
 };
 
-const OnboardingLayout = ({ currentPageChildren }: OnboardingLayoutProps) => {
-  const { switchingRoutes, OnboardingComponent } = useOnboarding();
+const OnboardingComponent = ({ currentPageChildren }: OnboardingProps) => {
+  const [switchingRoutes, setSwitchingRoutes] = useState(false);
 
-  if (switchingRoutes) return <></>;
+  const onboardingStyles = classNames({
+    "flex flex-col h-full w-full bg-tertiary": true,
+    hidden: switchingRoutes,
+  });
 
   return (
-    <div className="flex flex-col h-full w-full bg-tertiary">
+    <div className={onboardingStyles}>
       <div className="h-3/4 w-full box-border">{currentPageChildren}</div>
 
       <div className="h-1/4 w-full z-10 px-6">
@@ -20,11 +24,14 @@ const OnboardingLayout = ({ currentPageChildren }: OnboardingLayoutProps) => {
           <Text h2 b>
             Welcome to your new program!
           </Text>
-          {OnboardingComponent}
+          <OnboardingContent
+            switchingRoutes={switchingRoutes}
+            setSwitchingRoutes={setSwitchingRoutes}
+          />
         </Card>
       </div>
     </div>
   );
 };
 
-export default OnboardingLayout;
+export default OnboardingComponent;

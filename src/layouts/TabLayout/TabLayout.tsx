@@ -3,9 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { ReactNode, useEffect, useState } from "react";
 import { Text } from "../../components/atomic";
-import OnboardingScreen from "../../components/Onboarding/Onboarding";
 import TabFooterMenu from "../../components/TabFooterMenu";
-import { useCurrentProfile } from "../../hooks";
 import LocalStorage from "../../utils/localstorage";
 import ProgramDropdown from "./ProgramDropdown";
 
@@ -48,6 +46,7 @@ const Arrow: React.FC<ArrowProps> = ({ down }) => {
 
 export interface BaseTabLayoutProps {
   children: React.ReactNode;
+  onboarded: boolean;
   basePath: string;
 }
 
@@ -66,6 +65,7 @@ export function joinPath(...args: string[]): string {
 }
 
 interface TabLayoutProps {
+  onboarded: boolean;
   currentPageChildren: ReactNode;
   footerChildren?: ReactNode;
 }
@@ -77,14 +77,11 @@ const TabLayout: React.FC<TabLayoutProps> & {
     label: string;
     Icon: React.FC<React.SVGProps<SVGSVGElement>>;
   }>;
-} = ({ children, currentPageChildren }) => {
-  const currentProfile = useCurrentProfile();
-
+} = ({ children, onboarded, currentPageChildren }) => {
   const tabLayoutStyles = classNames({
     "flex flex-col flex-grow h-screen bg-white shadow-lg relative box-border":
       true,
-    "pointer-events-none bg-black opacity-25":
-      currentProfile.currentProfile?.showOnboarding,
+    "pointer-events-none bg-black opacity-25": !onboarded,
   });
 
   return (
@@ -96,11 +93,7 @@ const TabLayout: React.FC<TabLayoutProps> & {
         <TabFooterMenu />
       </div>
       <div className="flex flex-col h-screen w-5/6 box-border overflow-hidden">
-        {currentProfile.currentProfile?.showOnboarding ? (
-          <OnboardingScreen currentPageChildren={currentPageChildren} />
-        ) : (
-          currentPageChildren
-        )}
+        {currentPageChildren}
       </div>
     </div>
   );

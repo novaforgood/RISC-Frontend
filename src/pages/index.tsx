@@ -337,7 +337,7 @@ const NoMentorshipHome: Page = () => {
   }
 
   return (
-    <NoProgramTabLayout basePath={router.asPath}>
+    <NoProgramTabLayout onboarded={true} basePath={router.asPath}>
       <div className="h-screen bg-tertiary">
         <div className="bg-white flex flex-col pt-12 pb-2 px-20 space-y-4">
           <div className="w-full flex justify-end">

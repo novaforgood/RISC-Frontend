@@ -12,10 +12,11 @@ const { PageItem, Dropdown, Separator } = TabLayout;
 
 const AdminTabLayout: React.FC<BaseTabLayoutProps> = ({
   children,
+  onboarded,
   basePath,
 }) => {
   return (
-    <TabLayout currentPageChildren={children}>
+    <TabLayout onboarded={onboarded} currentPageChildren={children}>
       <PageItem label="Homepage" Icon={Home} path={joinPath(basePath)} />
       <PageItem
         label="Settings"
