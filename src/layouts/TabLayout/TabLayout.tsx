@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import React, { ReactNode, useEffect, useState } from "react";
 import { Text } from "../../components/atomic";
 import TabFooterMenu from "../../components/TabFooterMenu";
+import { useAuth } from "../../utils/firebase/auth";
 import LocalStorage from "../../utils/localstorage";
 import ProgramDropdown from "./ProgramDropdown";
 
@@ -76,12 +77,16 @@ const TabLayout: React.FC<TabLayoutProps> & {
     Icon: React.FC<React.SVGProps<SVGSVGElement>>;
   }>;
 } = ({ children, currentPageChildren }) => {
+  const { loading } = useAuth();
+
   return (
     <div className="flex h-screen w-screen">
       <div className="flex flex-col h-screen w-72 flex-shrink-0 bg-white shadow-lg relative">
         <ProgramDropdown />
         <div className="h-0.25 w-full bg-tertiary flex-shrink-0"></div>
-        <div className="overflow-y-auto h-full">{children}</div>
+        <div className="overflow-y-auto h-full">
+          {loading ? <>Loading Screen</> : children}
+        </div>
         <TabFooterMenu />
       </div>
       <div className="flex-grow overflow-x-hidden">{currentPageChildren}</div>

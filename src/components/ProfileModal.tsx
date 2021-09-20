@@ -75,15 +75,25 @@ const ProfileModal = ({
               <div>
                 <div>
                   <div className="rounded bg-tertiary p-4">
-                    <table className="table-auto">
-                      <tr>
-                        <td>
-                          <Text b>Email:</Text>
-                        </td>
-                        <td className="pl-4">
-                          <Text>{profile.user.email}</Text>
-                        </td>
-                      </tr>
+                    <table className="table-auto w-96">
+                      <tbody>
+                        <tr>
+                          <td>
+                            <Text b>Email:</Text>
+                          </td>
+                          <td className="pl-4">
+                            <Text>{profile.user.email}</Text>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <Text b>Preferred Location:</Text>
+                          </td>
+                          <td className="pl-4">
+                            {profile.user.preferredChatLocation}
+                          </td>
+                        </tr>
+                      </tbody>
                     </table>
                   </div>
                 </div>

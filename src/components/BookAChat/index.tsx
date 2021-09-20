@@ -1,7 +1,7 @@
 import { addMinutes } from "date-fns";
 import dateFormat from "dateformat";
 import _ from "lodash";
-import React, { Fragment, useMemo, useState } from "react";
+import React, { Fragment, useEffect, useMemo, useState } from "react";
 import {
   CreateChatRequestInput,
   DateInterval,
@@ -11,9 +11,11 @@ import {
   useGetAvailOverrideDatesQuery,
   useGetAvailWeeklysQuery,
   useGetChatRequestsQuery,
+  useGetMyUserQuery,
 } from "../../generated/graphql";
+import { useCurrentProfile } from "../../hooks";
 import useTimezoneConverters from "../../hooks/useTimezoneConverters";
-import { Button, Card, Modal, Text, TextArea } from "../atomic";
+import { Button, Card, Input, Modal, Text, TextArea } from "../atomic";
 import Calendar from "../Calendar";
 import { getDatesInThisMonth } from "../Calendar/utils";
 import OneOptionModal from "../OneOptionModal";
@@ -101,6 +103,8 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
     useGetChatRequestsQuery({
       variables: { profileId: mentor.profileId },
     });
+  const { data: user } = useGetMyUserQuery();
+  const currentProfile = useCurrentProfile();
 
   const [createChatRequest] = useCreateChatRequestMutation({
     refetchQueries: [
@@ -112,10 +116,18 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
   const [loadingCreateChatRequest, setLoadingCreateChatRequest] =
     useState(false);
   const [chatRequestMessage, setChatRequestMessage] = useState("");
+  const [location, setlocation] = useState(
+    user?.getMyUser.preferredChatLocation
+  );
+
+  useEffect(() => {
+    setlocation(user?.getMyUser.preferredChatLocation);
+  }, [user?.getMyUser]);
 
   loadingCreateChatRequest; // TODO: Use this variable
 
-  if (!fromUTC || !toUTC) return <Fragment />;
+  if (!fromUTC || !toUTC || !user || !currentProfile.currentProfile)
+    return <Fragment />;
 
   const extractDates = (
     input: {
@@ -208,19 +220,19 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
 
   return (
     <div>
-      <div className="h-4"></div>
+      <div className="h-4" />
       <Text h2>
         Book a chat with{" "}
         <b>
           {mentor.user.firstName} {mentor.user.lastName}
         </b>
       </Text>
-      <div className="h-2"></div>
+      <div className="h-2" />
       <Text className="text-secondary">
         If no times are open, the mentor is either completely booked or has not
         set availabilities yet.
       </Text>
-      <div className="h-8"></div>
+      <div className="h-8" />
 
       <div className="flex">
         <Card className="p-12">
@@ -254,14 +266,14 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
           />
         </Card>
 
-        <div className="w-8"></div>
+        <div className="w-8" />
         <Card className="p-12 w-80">
           <div>
             <Text b1 b>
               Available Times
             </Text>
           </div>
-          <div className="h-2"></div>
+          <div className="h-2" />
           <div>
             <Text b className="text-secondary">
               {selectedDate
@@ -270,16 +282,18 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
             </Text>
           </div>
 
-          <div className="h-4"></div>
+          <div className="h-4" />
           <div className="h-80 box-border flex flex-col gap-2 overflow-y-auto">
             {timeslots.map((timeslot) => {
               return (
                 <button
+                  key={timeslot.startTime.toISOString()}
                   className="border border-inactive text-center w-full p-2 cursor-pointer hover:border-primary duration-150"
                   onClick={() => {
                     setSendChatModalOpen(true);
                     setSelectedTimeslot(timeslot);
                     setChatRequestMessage("");
+                    setlocation("");
                   }}
                 >
                   {dateFormat(timeslot.startTime, "h:MMtt")} -{" "}
@@ -296,7 +310,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
           setSendChatModalOpen(false);
         }}
       >
-        <div className="p-4 flex flex-col items-center">
+        <div className="p-4 flex flex-col items-center w-144">
           <div>
             <Text>
               Send Chat Request to{" "}
@@ -305,7 +319,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
               </Text>
             </Text>
           </div>
-          <div className="h-2"></div>
+          <div className="h-2" />
           <div>
             <Text b>Date:</Text>{" "}
             <Text>
@@ -319,20 +333,39 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
               {dateFormat(selectedTimeslot?.endTime, "h:MMtt")}
             </Text>
           </div>
-          <div className="h-6"></div>
-
+          <div className="h-6" />
+          <Text b className="w-full">
+            Preferred meeting location:
+          </Text>
+          <Text i secondary>
+            You can set your default preferred location in Profile {">"} My
+            General Profile. Keep in mind that the mentor has the final say on
+            location!
+          </Text>
+          <div className="h-4" />
+          <Input
+            placeholder="Favorite coffee shop address, zoom link, or other"
+            className="w-full"
+            value={location}
+            onChange={(e) => setlocation(e.target.value)}
+          />
+          <div className="h-6" />
+          <Text b className="w-full">
+            Optional Message
+          </Text>
+          <div className="h-2" />
           <TextArea
             value={chatRequestMessage}
             onChange={(e: any) => {
               const target = e.target as HTMLTextAreaElement;
               setChatRequestMessage(target.value);
             }}
-            className="p-2 w-96"
-            placeholder="Optional message"
-          ></TextArea>
-          <div className="h-8"></div>
+            className="p-2 w-full"
+            placeholder="Hi! My name is John Doe, and I'd love to talk to you about your experience at the circus!"
+          />
+          <div className="h-8" />
 
-          <div className="flex">
+          <div className="w-full flex justify-between">
             <Button
               variant="inverted"
               size="small"
@@ -342,7 +375,6 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
             >
               Cancel
             </Button>
-            <div className="w-2"></div>
             <Button
               size="small"
               onClick={() => {
@@ -350,7 +382,9 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
                 setLoadingCreateChatRequest(true);
                 const createChatRequestInput: CreateChatRequestInput = {
                   mentorProfileId: mentor.profileId,
+                  menteeProfileId: currentProfile.currentProfile.profileId,
                   chatRequestMessage: chatRequestMessage,
+                  chatLocation: location || "",
                   chatStartTime: toUTC(selectedTimeslot.startTime).getTime(),
                   chatEndTime: toUTC(selectedTimeslot.endTime).getTime(),
                 };
@@ -358,11 +392,13 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
                   variables: {
                     data: createChatRequestInput,
                   },
-                }).then(() => {
-                  setLoadingCreateChatRequest(false);
-                  setSendChatModalOpen(false);
-                  _.delay(setChatSentConfirmModalOpen, 250, true);
-                });
+                })
+                  .catch((err) => console.log(err))
+                  .then(() => {
+                    setLoadingCreateChatRequest(false);
+                    setSendChatModalOpen(false);
+                    _.delay(setChatSentConfirmModalOpen, 250, true);
+                  });
               }}
             >
               Send

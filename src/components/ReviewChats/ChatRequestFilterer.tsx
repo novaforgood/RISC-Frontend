@@ -16,6 +16,7 @@ import InlineProfileAvatar from "../InlineProfileAvatar";
 import ListFilterer from "../ListFilterer";
 import OneOptionModal from "../OneOptionModal";
 import ProfileModal from "../ProfileModal";
+import TitledInput from "../TitledInput";
 import ModifyChatRequestModal from "./ChatRequestMutators";
 
 type ChatRequestPartial = Omit<
@@ -108,12 +109,17 @@ const ChatRequestListItem = ({
   chatRequest,
   onChatRequestAccept,
 }: ChatRequestListItemProps) => {
-  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  const [isRejectModalOpen, setRejectModalOpen] = useState(false);
   const [rejectMessage, setRejectMessage] = useState("");
 
+  const [isSetLocationModalOpen, setSetLocationModalOpen] = useState(false);
+  const [location, setLocation] = useState(
+    chatRequest.mentorProfile.user.preferredChatLocation
+  );
   const [acceptChatRequestMutation] = useAcceptChatRequestMutation({
     variables: {
       chatRequestId: chatRequest.chatRequestId,
+      chatLocation: location,
     },
     refetchQueries: [
       refetchGetChatRequestsQuery({
@@ -138,13 +144,7 @@ const ChatRequestListItem = ({
             className="hover:bg-inactive p-1 rounded"
             title="Accept Chat Request"
             onClick={() => {
-              acceptChatRequestMutation().then(() => {
-                onChatRequestAccept(
-                  chatRequest.menteeProfile.user.firstName +
-                    " " +
-                    chatRequest.menteeProfile.user.lastName
-                );
-              });
+              setSetLocationModalOpen(true);
             }}
           >
             <CircledCheck className="h-8 w-8" />
@@ -153,7 +153,7 @@ const ChatRequestListItem = ({
             className="hover:bg-inactive p-1 rounded"
             title="Reject Chat Request"
             onClick={() => {
-              setIsRejectModalOpen(true);
+              setRejectModalOpen(true);
             }}
           >
             <CircledCross className="h-8 w-8" />
@@ -186,20 +186,70 @@ const ChatRequestListItem = ({
         <div className="md:w-8 lg:w-12" />
       </div>
       <Modal
-        isOpen={isRejectModalOpen}
+        isOpen={isSetLocationModalOpen}
         onClose={() => {
-          setIsRejectModalOpen(false);
+          setSetLocationModalOpen(false);
         }}
       >
-        <div className="p-4 flex flex-col items-center">
-          <div>
-            <Text>
-              Let {chatRequest.menteeProfile.user.firstName} know why you are
-              rejecting the request:
-            </Text>
+        <div className="p-4 flex flex-col space-y-6">
+          <Text h3 b>
+            Accept Chat Request
+          </Text>
+          <Text>
+            {chatRequest.menteeProfile.user.firstName} has specified that they
+            prefer to meet here:
+            <br className="h-2" />
+            <Text i>{chatRequest.chatLocation}</Text>
+          </Text>
+          <TitledInput
+            title="Confirm the location:"
+            className="w-144"
+            placeholder="Set your default location in Profile Picture > My General Profile"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+          />
+          <div className="w-full flex justify-between">
+            <Button
+              size="small"
+              variant="inverted"
+              onClick={() => setSetLocationModalOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              size="small"
+              onClick={() => {
+                acceptChatRequestMutation().then(() => {
+                  onChatRequestAccept(
+                    chatRequest.menteeProfile.user.firstName +
+                      " " +
+                      chatRequest.menteeProfile.user.lastName
+                  );
+                });
+                setSetLocationModalOpen(false);
+              }}
+            >
+              Confirm
+            </Button>
           </div>
-          <div className="h-6"></div>
-
+        </div>
+      </Modal>
+      <Modal
+        isOpen={isRejectModalOpen}
+        onClose={() => {
+          setRejectModalOpen(false);
+        }}
+      >
+        <div className="p-4 flex flex-col">
+          <Text h3 b>
+            Reject Chat Request
+          </Text>
+          <div className="h-6" />
+          <Text>
+            Let {chatRequest.menteeProfile.user.firstName} know why you are
+            rejecting the request:
+          </Text>
+          <div className="h-6" />
           <TextArea
             value={rejectMessage}
             onChange={(e: any) => {
@@ -208,20 +258,19 @@ const ChatRequestListItem = ({
             }}
             className="w-96"
             placeholder="Reason for rejection"
-          ></TextArea>
-          <div className="h-8"></div>
+          />
+          <div className="h-8" />
 
-          <div className="flex">
+          <div className="flex justify-between">
             <Button
               variant="inverted"
               size="small"
               onClick={() => {
-                setIsRejectModalOpen(false);
+                setRejectModalOpen(false);
               }}
             >
               Cancel
             </Button>
-            <div className="w-2"></div>
             <Button
               size="small"
               onClick={() => {
@@ -231,7 +280,7 @@ const ChatRequestListItem = ({
                     chatRejectMessage: rejectMessage,
                   },
                 });
-                setIsRejectModalOpen(false);
+                setRejectModalOpen(false);
               }}
             >
               Reject
@@ -256,15 +305,17 @@ const ChatRequestsList = ({ title, chatRequests }: ChatRequestsListProps) => {
     <Fragment>
       <div className="flex flex-col px-8 py-6">
         <Text h3>{title}</Text>
-        <div className="h-4"></div>
+        <div className="h-4" />
         {chatRequests.length > 0 ? (
           chatRequests.map((cr) => (
             <ChatRequestListItem
               key={cr.chatRequestId}
               chatRequest={cr}
               onChatRequestAccept={(mentee: string) => {
-                setIsAcceptModalOpen(true);
-                setMentee(mentee);
+                setTimeout(() => {
+                  setIsAcceptModalOpen(true);
+                  setMentee(mentee);
+                }, 250);
               }}
             />
           ))

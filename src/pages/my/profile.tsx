@@ -24,6 +24,9 @@ const GeneralProfile: Page = () => {
   const [modified, setModified] = useState(false);
   const [firstName, setFirstName] = useState(data?.getMyUser.firstName);
   const [lastName, setLastName] = useState(data?.getMyUser.lastName);
+  const [location, setLocation] = useState(
+    data?.getMyUser.preferredChatLocation
+  );
   const { setSnackbarMessage } = useSnackbar();
 
   const [profilePicture, setProfilePicture] = useState<File | null>();
@@ -38,6 +41,7 @@ const GeneralProfile: Page = () => {
       setFirstName(data.getMyUser.firstName);
       setLastName(data.getMyUser.lastName);
       setSrc(data.getMyUser.profilePictureUrl);
+      setLocation(data.getMyUser.preferredChatLocation);
       setProfilePicture(null);
       setError(null);
     }
@@ -81,6 +85,7 @@ const GeneralProfile: Page = () => {
                     firstName: firstName,
                     lastName: lastName,
                     profilePictureUrl: url,
+                    preferredChatLocation: location,
                   },
                 },
               });
@@ -93,7 +98,9 @@ const GeneralProfile: Page = () => {
         </div>
         <div className="h-4" />
         {data?.getMyUser ? (
-          <Card className="p-10 space-y-4 col-span-7">
+          <Card className="p-10 space-y-4 col-span-9">
+            <Text className="text-error">{error}</Text>
+            <div />
             <Text h3 b>
               Profile Picture
             </Text>
@@ -129,7 +136,16 @@ const GeneralProfile: Page = () => {
                 }}
               />
             </div>
-            <Text className="text-error">{error}</Text>
+            <TitledInput
+              title="Default Location for Chats"
+              className="w-full"
+              placeholder="Office address, favorite coffee shop, zoom link, etc."
+              value={location}
+              onChange={(e) => {
+                setModified(true);
+                setLocation(e.target.value);
+              }}
+            />
           </Card>
         ) : (
           <div>Loading</div>

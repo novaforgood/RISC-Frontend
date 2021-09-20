@@ -5,6 +5,7 @@ import firebase from "./firebase";
 interface AuthContext {
   user: firebase.User | null;
   loading: boolean;
+  setLoading: (b: boolean) => void;
   //TODO: customize the forget password flow instead of directly through firebase's ugly ui
   // confirmPasswordReset: (c: string, n: string) => Promise<void>;
   sendPasswordResetEmail: (e: string) => Promise<void>;
@@ -75,8 +76,9 @@ function useProvideAuth() {
       .auth()
       .signOut()
       .then(() => {
-        clearCache();
+        setLoading(true);
         setUser(null);
+        clearCache();
       });
   };
 
@@ -93,6 +95,7 @@ function useProvideAuth() {
   return {
     user,
     loading,
+    setLoading,
     // confirmPasswordReset,
     sendPasswordResetEmail,
     signUpWithEmail,

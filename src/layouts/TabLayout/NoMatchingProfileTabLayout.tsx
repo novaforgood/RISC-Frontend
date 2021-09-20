@@ -11,7 +11,7 @@ import TabLayout, { BaseTabLayoutProps } from "./TabLayout";
 const NoMatchingProfileLayout: React.FC<BaseTabLayoutProps> = ({
   children,
 }) => {
-  const { user } = useAuth();
+  const { user, setLoading } = useAuth();
   const router = useRouter();
 
   if (user == null) {
@@ -33,6 +33,7 @@ const NoMatchingProfileLayout: React.FC<BaseTabLayoutProps> = ({
         className={pageItemStyles}
         onClick={() => {
           LocalStorage.delete("cachedProfileSlug");
+          setLoading(true);
           router.push("/");
         }}
       >

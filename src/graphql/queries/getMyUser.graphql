@@ -4,6 +4,7 @@ query getMyUser {
     email
     firstName
     lastName
+    preferredChatLocation
     profilePictureUrl
     timezone
     profiles {
