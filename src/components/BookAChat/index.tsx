@@ -13,6 +13,7 @@ import {
   useGetChatRequestsQuery,
   useGetMyUserQuery,
 } from "../../generated/graphql";
+import { useCurrentProfile } from "../../hooks";
 import useTimezoneConverters from "../../hooks/useTimezoneConverters";
 import { Button, Card, Input, Modal, Text, TextArea } from "../atomic";
 import Calendar from "../Calendar";
@@ -103,6 +104,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
       variables: { profileId: mentor.profileId },
     });
   const { data: user } = useGetMyUserQuery();
+  const currentProfile = useCurrentProfile();
 
   const [createChatRequest] = useCreateChatRequestMutation({
     refetchQueries: [
@@ -124,7 +126,8 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
 
   loadingCreateChatRequest; // TODO: Use this variable
 
-  if (!fromUTC || !toUTC) return <Fragment />;
+  if (!fromUTC || !toUTC || !user || !currentProfile.currentProfile)
+    return <Fragment />;
 
   const extractDates = (
     input: {
@@ -379,6 +382,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
                 setLoadingCreateChatRequest(true);
                 const createChatRequestInput: CreateChatRequestInput = {
                   mentorProfileId: mentor.profileId,
+                  menteeProfileId: currentProfile.currentProfile.profileId,
                   chatRequestMessage: chatRequestMessage,
                   chatLocation: location || "",
                   chatStartTime: toUTC(selectedTimeslot.startTime).getTime(),
@@ -388,11 +392,13 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
                   variables: {
                     data: createChatRequestInput,
                   },
-                }).then(() => {
-                  setLoadingCreateChatRequest(false);
-                  setSendChatModalOpen(false);
-                  _.delay(setChatSentConfirmModalOpen, 250, true);
-                });
+                })
+                  .catch((err) => console.log(err))
+                  .then(() => {
+                    setLoadingCreateChatRequest(false);
+                    setSendChatModalOpen(false);
+                    _.delay(setChatSentConfirmModalOpen, 250, true);
+                  });
               }}
             >
               Send

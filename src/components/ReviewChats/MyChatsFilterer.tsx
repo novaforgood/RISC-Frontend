@@ -169,14 +169,12 @@ type MyChatsFiltererProps = {
 };
 
 export const MyChatsFilterer = ({ profileId }: MyChatsFiltererProps) => {
-  console.log(profileId);
   const { data } = useGetChatRequestsQuery({
     variables: {
       profileId,
     },
   });
 
-  console.log(data);
   const filterOptions: {
     [key: string]: (
       applicationList: ChatRequestPartial[]
