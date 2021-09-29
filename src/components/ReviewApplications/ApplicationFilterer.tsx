@@ -141,7 +141,7 @@ const ApplicationReviewListItem = ({
     switch (app.applicationStatus) {
       case ApplicationStatus.PendingReview:
         return (
-          <div className="flex justify-center">
+          <div className="flex justify-center gap-x-2">
             <button
               className="hover:bg-inactive p-1 rounded"
               title="Accept Application"

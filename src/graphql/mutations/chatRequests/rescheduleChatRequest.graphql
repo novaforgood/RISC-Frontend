@@ -1,0 +1,5 @@
+mutation rescheduleChatRequest($chatRequestId: String!) {
+  rescheduleChatRequest(chatRequestId: $chatRequestId) {
+    chatRequestId
+  }
+}

@@ -1,4 +1,6 @@
 import { format } from "date-fns";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { Fragment, useState } from "react";
 import {
   ChatRequestStatus,
@@ -8,10 +10,11 @@ import {
   useAcceptChatRequestMutation,
   useGetChatRequestsQuery,
   useRejectChatRequestMutation,
+  useRescheduleChatRequestMutation,
 } from "../../generated/graphql";
 import useTimezoneConverters from "../../hooks/useTimezoneConverters";
 import { Button, Modal, Text, TextArea } from "../atomic";
-import { CircledCheck, CircledCross } from "../icons";
+import { CircledCheck, CircledCross, Reschedule } from "../icons";
 import InlineProfileAvatar from "../InlineProfileAvatar";
 import ListFilterer from "../ListFilterer";
 import OneOptionModal from "../OneOptionModal";
@@ -109,7 +112,10 @@ const ChatRequestListItem = ({
   onChatRequestAccept,
 }: ChatRequestListItemProps) => {
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  const [isUpdatedAvailabilityModalOpen, setIsUpdatedAvailabilityModalOpen] =
+    useState(false);
   const [rejectMessage, setRejectMessage] = useState("");
+  const router = useRouter();
 
   const [acceptChatRequestMutation] = useAcceptChatRequestMutation({
     variables: {
@@ -123,6 +129,17 @@ const ChatRequestListItem = ({
   });
 
   const [rejectChatRequestMutation] = useRejectChatRequestMutation({
+    refetchQueries: [
+      refetchGetChatRequestsQuery({
+        profileId: chatRequest.mentorProfileId,
+      }),
+    ],
+  });
+
+  const [rescheduleChatRequestMutation] = useRescheduleChatRequestMutation({
+    variables: {
+      chatRequestId: chatRequest.chatRequestId,
+    },
     refetchQueries: [
       refetchGetChatRequestsQuery({
         profileId: chatRequest.mentorProfileId,
@@ -151,6 +168,13 @@ const ChatRequestListItem = ({
           </button>
           <button
             className="hover:bg-inactive p-1 rounded"
+            title="Reschedule Chat Request"
+            onClick={() => setIsUpdatedAvailabilityModalOpen(true)}
+          >
+            <Reschedule className="h-8 w-8" />
+          </button>
+          <button
+            className="hover:bg-inactive p-1 rounded"
             title="Reject Chat Request"
             onClick={() => {
               setIsRejectModalOpen(true);
@@ -160,6 +184,10 @@ const ChatRequestListItem = ({
           </button>
         </div>
       );
+    } else if (
+      chatRequest.chatRequestStatus === ChatRequestStatus.Rescheduled
+    ) {
+      return <Text b>Rescheduled</Text>;
     } else if (chatRequest.chatRequestStatus === ChatRequestStatus.Accepted) {
       return <Text b>Accepted</Text>;
     } else if (chatRequest.chatRequestStatus === ChatRequestStatus.Rejected) {
@@ -171,7 +199,7 @@ const ChatRequestListItem = ({
   return (
     <>
       <div className="flex items-center space-x-4 p-3 hover:bg-tertiary duration-150 rounded">
-        <div className="w-24">{getAcceptRejectButtons()}</div>
+        <div className="w-36">{getAcceptRejectButtons()}</div>
         <div className="flex-1">
           <InlineProfileAvatar user={chatRequest.menteeProfile.user} />
         </div>
@@ -239,6 +267,39 @@ const ChatRequestListItem = ({
           </div>
         </div>
       </Modal>
+      <Modal
+        isOpen={isUpdatedAvailabilityModalOpen}
+        onClose={() => setIsUpdatedAvailabilityModalOpen(false)}
+      >
+        <Text h3 b>
+          Make sure your availability is updated before rescheduling!
+        </Text>
+        <div className="h-4" />
+        <Text>
+          We want to avoid reschedules as much as possible, which means having
+          updated availability is top priority. Check to confirm your
+          availability or reschedule if you're confident it's up to date.
+        </Text>
+        <div className="h-4" />
+        <div className="flex justify-between">
+          <Link
+            href={`/program/${router.query.slug}/${router.query.profileRoute}/availability`}
+          >
+            <Button size="small">Update Availability</Button>
+          </Link>
+          <Button
+            size="small"
+            variant="inverted"
+            onClick={() => {
+              rescheduleChatRequestMutation().then(() => {
+                setIsUpdatedAvailabilityModalOpen(false);
+              });
+            }}
+          >
+            Reschedule
+          </Button>
+        </div>
+      </Modal>
     </>
   );
 };
@@ -302,6 +363,8 @@ export const ChatRequestFilterer = ({ profileId }: ChatsFiltererProps) => {
     },
   });
 
+  const today = new Date();
+
   const filterOptions: {
     [key: string]: (
       applicationList: ChatRequestPartial[]
@@ -310,9 +373,12 @@ export const ChatRequestFilterer = ({ profileId }: ChatsFiltererProps) => {
     New: (x) =>
       x.filter((y) => y.chatRequestStatus === ChatRequestStatus.PendingReview),
     Upcoming: (x) =>
-      x.filter((y) => y.chatRequestStatus === ChatRequestStatus.Accepted),
-    Past: (x) =>
-      x.filter((y) => y.chatStartTime.getTime() < new Date().getTime()),
+      x.filter(
+        (y) =>
+          y.chatRequestStatus === ChatRequestStatus.Accepted &&
+          y.chatStartTime.getTime() > today.getTime()
+      ),
+    Past: (x) => x.filter((y) => y.chatStartTime.getTime() < today.getTime()),
   };
 
   const { fromUTC } = useTimezoneConverters();

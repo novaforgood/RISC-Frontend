@@ -26,6 +26,7 @@ const chatRequestStatusToTextMap = {
   [ChatRequestStatus.Accepted]: "Accepted",
   [ChatRequestStatus.Rejected]: "Rejected",
   [ChatRequestStatus.Canceled]: "Canceled",
+  [ChatRequestStatus.Rescheduled]: "Rescheduled",
 };
 
 type DetailsModalButtonProps = {
@@ -175,6 +176,8 @@ export const MyChatsFilterer = ({ profileId }: MyChatsFiltererProps) => {
     },
   });
 
+  const today = new Date();
+
   const filterOptions: {
     [key: string]: (
       applicationList: ChatRequestPartial[]
@@ -184,12 +187,11 @@ export const MyChatsFilterer = ({ profileId }: MyChatsFiltererProps) => {
       x.filter(
         (y) =>
           y.chatRequestStatus === ChatRequestStatus.Accepted &&
-          y.chatStartTime.getTime() > new Date().getTime()
+          y.chatStartTime.getTime() > today.getTime()
       ),
     Pending: (x) =>
       x.filter((y) => y.chatRequestStatus === ChatRequestStatus.PendingReview),
-    Past: (x) =>
-      x.filter((y) => y.chatStartTime.getTime() < new Date().getTime()),
+    Past: (x) => x.filter((y) => y.chatStartTime.getTime() < today.getTime()),
   };
 
   const { fromUTC } = useTimezoneConverters();
