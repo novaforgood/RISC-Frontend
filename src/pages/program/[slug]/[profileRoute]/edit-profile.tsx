@@ -175,7 +175,7 @@ const EditProfilePage: Page = (_) => {
             setBio(target.value);
           }}
           placeholder="A little bit about me"
-        ></TextArea>
+        />
         <div className="h-4" />
 
         {/* <Button disabled onClick={() => {}}>
