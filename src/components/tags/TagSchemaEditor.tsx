@@ -74,8 +74,8 @@ function AddTagInput({ onEnter, ...props }: AddTagInputProps) {
           if (e.key === "Enter") {
             const target = e.target as HTMLInputElement;
             const val = target.value.trim();
-            if (val.length > 20) {
-              alert("Your tag name cannot exceed 20 characters.");
+            if (val.length > 30) {
+              alert("Your tag name cannot exceed 30 characters.");
               return;
             }
             if (val.length > 0) {
