@@ -49,7 +49,7 @@ const EditMenteeProfilePage: Page = (_) => {
         },
       }),
     ]).then(() => {
-      refetchCurrentProgram();
+      refetchCurrentProgram({ slug: currentProgram.slug });
 
       setIsSavingProfile(false);
       setModified(false);
