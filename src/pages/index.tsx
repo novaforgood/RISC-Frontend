@@ -416,7 +416,7 @@ const ApplicationRow = ({ application }: ApplicationRowProps) => {
       </div>
 
       <div className="flex items-center gap-8">
-        <div className="">{status()}</div>
+        <div>{status()}</div>
         <button
           onClick={() => {
             setAppModalOpen(true);
@@ -515,7 +515,7 @@ const NoMentorshipHome: Page = () => {
                 router.push("/create");
               }}
             >
-              <Text>Create a Mentorship Program</Text>
+              <Text>Create a New Program</Text>
             </Button>
           </div>
           <img src="/static/HappyBlobs2.svg" className="w-40 h-40" />

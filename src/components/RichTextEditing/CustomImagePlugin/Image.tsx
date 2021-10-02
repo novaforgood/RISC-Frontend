@@ -62,7 +62,7 @@ export default React.forwardRef<HTMLDivElement, ImageProps>(
       height,
       difference = 0,
     } = contentState.getEntity(entityKey).getData();
-    console.log(width, height, difference);
+
     useEffect(() => {
       contentState.mergeEntityData(entityKey, { entityKey });
     }, []);

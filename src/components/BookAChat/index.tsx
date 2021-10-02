@@ -327,7 +327,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
               setChatRequestMessage(target.value);
             }}
             className="p-2 w-96"
-            placeholder="Suggest a location (Zoom link, in person address, etc) and leave an optional message."
+            placeholder="Suggest a location (Zoom link, in person address, etc.) and leave an optional message."
           ></TextArea>
           <div className="h-8"></div>
 

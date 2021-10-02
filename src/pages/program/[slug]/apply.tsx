@@ -49,16 +49,18 @@ const ProgramApplyPage: Page = (_) => {
   const applicant: string | string[] = router.query.as;
   // const path: string = router.asPath;
 
-  const getApplicationType = (): ApplicationType => {
+  const getApplicationType = (): ApplicationType | null => {
     switch (applicant) {
       case "mentor":
         return ApplicationType.Mentor;
-      default:
+      case "mentee":
         return ApplicationType.Mentee;
+      default:
+        return null;
     }
   };
 
-  const applicationType: ApplicationType = getApplicationType();
+  const applicationType: ApplicationType | null = getApplicationType();
 
   if ([Admin, Mentor, Mentee].includes(authorizationLevel))
     // TODO: Integrate with ErrorScreen component
@@ -124,6 +126,12 @@ const ProgramApplyPage: Page = (_) => {
                 <Button
                   disabled={!formChanged}
                   onClick={() => {
+                    if (!applicationType) {
+                      setError(
+                        "Your application type is invalid. Please return to the homepage and go to this page through site buttons."
+                      );
+                      return;
+                    }
                     setError("");
                     if (!currentProgram || !user) return; // Should show an error message
                     const createApplicationInput: CreateApplicationInput = {

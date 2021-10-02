@@ -490,7 +490,7 @@ export const SetAvailabilityOverridesCard = ({
         };
       })
       .sort((a, b) => {
-        return a.startTime.getDay() - b.startTime.getDay();
+        return a.startTime.getTime() - b.startTime.getTime();
       });
   }
 

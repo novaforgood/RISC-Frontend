@@ -62,7 +62,6 @@ const useProvideEditor = (storedState = defaultContentState) => {
       const entityKeys = Object.keys(rawContentState.entityMap);
       for (const key of entityKeys) {
         const entityData = rawContentState.entityMap[key].data;
-        console.log(entityData);
         if (entityData.file) {
           let photoUrl = await uploadImageWithoutResizing({
             variables: {

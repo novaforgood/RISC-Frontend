@@ -103,7 +103,7 @@ const AdminHome = ({
             <Text h2 b>
               Edit Homepage
             </Text>
-            <PublishButton className="" programId={programId} />
+            <PublishButton programId={programId} />
           </div>
           <div className="h-4" />
           <Text>
@@ -153,7 +153,7 @@ const ReadOnlyHome = ({
     //TODO: Figure out whether the buttons at the top should be sticky
     <div className="box-border bg-tertiary min-h-full pt-16 lg:pt-32">
       {inProgram ? (
-        <></>
+        <LinkToProgram className="transform -translate-y-20" />
       ) : (
         <div className="flex transform -translate-y-14 lg:-translate-y-20 float-right z-10">
           <Link href={`/program/${slug}/apply?as=mentor`}>

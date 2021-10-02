@@ -9,6 +9,7 @@ import ProfilePictureImg from "./ProfilePictureImg";
 
 const TabFooterMenu = () => {
   const { data } = useGetMyUserQuery();
+
   if (data == null) {
     return <div></div>;
   }
