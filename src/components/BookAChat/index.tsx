@@ -320,7 +320,6 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
             </Text>
           </div>
           <div className="h-6"></div>
-
           <TextArea
             value={chatRequestMessage}
             onChange={(e: any) => {
@@ -328,7 +327,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
               setChatRequestMessage(target.value);
             }}
             className="p-2 w-96"
-            placeholder="Optional message"
+            placeholder="Suggest a location (Zoom link, in person address, etc.) and leave an optional message."
           ></TextArea>
           <div className="h-8"></div>
 
