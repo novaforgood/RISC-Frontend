@@ -52,7 +52,7 @@ export default React.forwardRef<HTMLDivElement, ImageProps>(
     const combinedClassName = classNames(
       theme.image,
       className,
-      readonly ? "box-border max-w-full m-auto" : "h-full w-full"
+      readonly ? "m-auto" : "h-full w-full"
     );
     const entityKey = block.getEntityAt(0);
     const {
@@ -78,7 +78,6 @@ export default React.forwardRef<HTMLDivElement, ImageProps>(
         style={{
           width: `${width + difference}px`,
           height: "auto",
-          maxWidth: "90%",
         }}
       />
     ) : (

@@ -93,50 +93,47 @@ const AdminHome = ({
   name,
   iconUrl,
   homepage,
-}: DisplayProgramHomepageProps) => {
-  const JSONHomepage = getRawContentState(homepage);
-  return (
-    <div>
-      <EditorProvider currentHomepage={JSONHomepage}>
-        <div className="flex flex-col justify-center">
-          <div className="flex w-full items-center justify-between">
-            <Text h2 b>
-              Edit Homepage
-            </Text>
-            <PublishButton programId={programId} />
-          </div>
-          <div className="h-4" />
-          <Text>
-            People will see this landing page when they click your program link.
-            Use this space to welcome people to your program, provide basic
-            program information, outline FAQs, or whatever else you can imagine!
+}: DisplayProgramHomepageProps) => (
+  <div>
+    <EditorProvider currentHomepage={getRawContentState(homepage)}>
+      <div className="flex flex-col justify-center">
+        <div className="flex w-full items-center justify-between">
+          <Text h2 b>
+            Edit Homepage
           </Text>
+          <PublishButton className="" programId={programId} />
         </div>
         <div className="h-4" />
-        <LinkToProgram />
-        <div className="h-24"></div>
+        <Text>
+          People will see this landing page when they click your program link.
+          Use this space to welcome people to your program, provide basic
+          program information, outline FAQs, or whatever else you can imagine!
+        </Text>
+      </div>
+      <div className="h-4" />
+      <LinkToProgram />
+      <div className="h-24"></div>
 
-        <Card className="box-border w-full px-16 p-8 z-0">
-          <img
-            className="w-28 h-28 relative rounded-md -top-24"
-            src={iconUrl}
-            alt={`${name} Logo`}
-          />
-          <div className="relative -top-20">
-            <Text h1 b>
-              {name}
-            </Text>
-            <div className="w-full bg-white sticky -top-10 p-4 z-10 rounded-md">
-              <ToolBar />
-            </div>
-            <div className="h-2" />
-            <TextEditor />
+      <Card className="box-border w-full px-16 p-8 z-0">
+        <img
+          className="w-28 h-28 relative rounded-md -top-24"
+          src={iconUrl}
+          alt={`${name} Logo`}
+        />
+        <div className="relative -top-20">
+          <Text h1 b>
+            {name}
+          </Text>
+          <div className="w-full bg-white sticky -top-10 p-4 z-10 rounded-md">
+            <ToolBar />
           </div>
-        </Card>
-      </EditorProvider>
-    </div>
-  );
-};
+          <div className="h-2" />
+          <TextEditor />
+        </div>
+      </Card>
+    </EditorProvider>
+  </div>
+);
 
 const ReadOnlyHome = ({
   name,
@@ -239,6 +236,7 @@ ProgramPage.getLayout = (page, pageProps) => (
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const slug = parseParam(ctx.params?.slug);
 
+  console.log(slug);
   const apolloProps = await ssrGetProgramBySlug
     .getServerPage({ variables: { slug: slug } }, ctx)
     .catch((_) => {
@@ -246,6 +244,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         props: {},
       };
     });
+
+  console.log(apolloProps);
 
   return apolloProps;
 };

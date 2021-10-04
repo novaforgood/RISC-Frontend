@@ -102,7 +102,7 @@ const ProgramDropdown = () => {
             <Menu.Item>
               <Link href="/create">
                 <div className="p-2 w-full cursor-pointer hover:bg-tertiary">
-                  Create a new program
+                  Create a mentorship
                 </div>
               </Link>
             </Menu.Item>

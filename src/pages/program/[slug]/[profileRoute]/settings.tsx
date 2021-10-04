@@ -96,13 +96,13 @@ const SettingsPage: Page = () => {
       <div className="h-4"></div>
       <Card className="flex flex-col p-12 space-y-6 overflow-y-auto">
         <Text h3 b>
-          Program Details
+          Mentorship Details
         </Text>
         <Text className="text-error">{err}</Text>
 
         <div className="grid grid-cols-4 gap-4 justify-center items-center">
           <Text className="col-span-1" b secondary>
-            Program Icon:
+            Mentorship Icon:
           </Text>
           <UploadIconWithPreview
             onFileChanged={(file) => {
@@ -115,7 +115,7 @@ const SettingsPage: Page = () => {
           <div />
           <div />
           <Text b secondary>
-            Program Name:
+            Mentorship Name:
           </Text>
           <Input
             id="mentorship-name"
@@ -129,7 +129,7 @@ const SettingsPage: Page = () => {
           />
           <div></div>
           <Text b secondary>
-            Program Link:
+            Mentorship Link:
           </Text>
           <div className="flex flex-1 xl:flex-none xl:w-96 rounded-md border-tertiary bg-tertiary">
             <input
@@ -165,7 +165,7 @@ const SettingsPage: Page = () => {
         </div>
         {/* <div className="w-full">
           <Text b secondary>
-            Program Description:
+            Mentorship Description:
           </Text>
           <div className="h-4" />
           <TextArea
@@ -218,7 +218,7 @@ const SettingsPage: Page = () => {
           </Button>
         </div>
         <Text h3 b>
-          Program Admins
+          Mentorship Admins
         </Text>
         <div className="box-border grid grid-cols-2 gap-2">
           {data?.getProfiles.map((admin) => (

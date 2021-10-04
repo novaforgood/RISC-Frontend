@@ -102,44 +102,46 @@ const EditProfilePage: Page = (_) => {
     return <div>404</div>;
 
   const isMentor = authorizationLevel === AuthorizationLevel.Mentor;
-
   return (
     <div className="flex flex-col items-center">
       <CatchUnsavedChangesModal unsavedChangesExist={modified === true} />
-      <div className="sticky -top-10 flex justify-between items-center w-full bg-tertiary pt-4 pb-4">
+      <div className="flex justify-between items-center w-full">
         <Text h2 b>
           Edit My {isMentor ? "Mentor" : "Mentee"} Profile
         </Text>
-        <Button
-          size="small"
-          disabled={!modified}
-          onClick={() => {
-            const updateProfileInput: UpdateProfileInput = {
-              profileJson: JSON.stringify(profileJson),
-              bio: bio,
-            };
+        <div className="w-12" />
+        <div className="flex">
+          <Button
+            size="small"
+            disabled={!modified}
+            onClick={() => {
+              const updateProfileInput: UpdateProfileInput = {
+                profileJson: JSON.stringify(profileJson),
+                bio: bio,
+              };
 
-            Promise.all([
-              updateProfile({
-                variables: {
-                  profileId: profileId,
-                  data: updateProfileInput,
-                },
-              }),
-              updateProfileTagsOfProfile({
-                variables: {
-                  profileId: currentProfile.profileId,
-                  profileTagIds: selectedTagIds,
-                },
-              }),
-            ]).then(() => {
-              setModified(false);
-              setSnackbarMessage({ text: "Profile changes saved!" });
-            });
-          }}
-        >
-          Save
-        </Button>
+              Promise.all([
+                updateProfile({
+                  variables: {
+                    profileId: profileId,
+                    data: updateProfileInput,
+                  },
+                }),
+                updateProfileTagsOfProfile({
+                  variables: {
+                    profileId: currentProfile.profileId,
+                    profileTagIds: selectedTagIds,
+                  },
+                }),
+              ]).then(() => {
+                setModified(false);
+                setSnackbarMessage({ text: "Profile changes saved!" });
+              });
+            }}
+          >
+            Save
+          </Button>
+        </div>
       </div>
       <div className="h-4" />
       <Text className="w-full">
@@ -175,7 +177,7 @@ const EditProfilePage: Page = (_) => {
             setBio(target.value);
           }}
           placeholder="A little bit about me"
-        />
+        ></TextArea>
         <div className="h-4" />
 
         {/* <Button disabled onClick={() => {}}>
