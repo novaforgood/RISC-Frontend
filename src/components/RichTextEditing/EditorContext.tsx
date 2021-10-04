@@ -1,4 +1,4 @@
-import React, { useState, useContext, HTMLAttributes, useEffect } from "react";
+import React, { useState, useContext, HTMLAttributes } from "react";
 import {
   EditorState,
   convertFromRaw,
@@ -37,9 +37,8 @@ export const defaultContentState: RawDraftContentState = {
   entityMap: {},
 };
 
-const EditorContext = React.createContext<EditorStateInterface | undefined>(
-  undefined
-);
+const EditorContext =
+  React.createContext<EditorStateInterface | undefined>(undefined);
 
 //Works with publish only- will need to change for autosave
 const useProvideEditor = (storedState = defaultContentState) => {
@@ -48,10 +47,6 @@ const useProvideEditor = (storedState = defaultContentState) => {
     EditorState.createWithContent(convertFromRaw(storedState))
   );
   const [publishable, setPublishable] = useState(false);
-
-  useEffect(() => {
-    setEditorState(EditorState.createWithContent(convertFromRaw(storedState)));
-  }, [storedState]);
 
   return {
     editorState,

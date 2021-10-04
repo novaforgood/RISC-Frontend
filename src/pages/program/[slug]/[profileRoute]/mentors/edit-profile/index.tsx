@@ -106,19 +106,22 @@ const EditMentorProfilePage: Page = (_) => {
     <div className="flex flex-col items-center">
       <CatchUnsavedChangesModal unsavedChangesExist={modified === true} />
 
-      <div className="sticky -top-10 bg-tertiary flex justify-between items-center w-full pt-4 pb-4">
+      <div className="flex justify-between items-center w-full">
         <Text h2 b>
           Edit Mentor Profile
         </Text>
-        <Button
-          size="small"
-          disabled={!modified || profileSchema.length == 0}
-          onClick={() => {
-            saveProfile();
-          }}
-        >
-          Save
-        </Button>
+        <div className="w-12" />
+        <div className="flex">
+          <Button
+            size="small"
+            disabled={!modified || profileSchema.length == 0}
+            onClick={() => {
+              saveProfile();
+            }}
+          >
+            Save
+          </Button>
+        </div>
       </div>
 
       <div className="h-8" />

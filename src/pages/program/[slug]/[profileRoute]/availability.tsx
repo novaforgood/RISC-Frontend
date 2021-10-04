@@ -7,7 +7,6 @@ import { AuthorizationLevel, useCurrentProfile } from "../../../../hooks";
 import AuthorizationWrapper from "../../../../layouts/AuthorizationWrapper";
 import ChooseTabLayout from "../../../../layouts/ChooseTabLayout";
 import PageContainer from "../../../../layouts/PageContainer";
-import { useSnackbar } from "../../../../notifications/SnackbarContext";
 import Page from "../../../../types/Page";
 
 // type SelectTimezoneProps = {
@@ -46,12 +45,6 @@ const SetAvailabilitiesPage: Page = () => {
 
   const { data } = useGetMyUserQuery();
 
-  const { setSnackbarMessage } = useSnackbar();
-
-  const onSave = () => {
-    setSnackbarMessage({ text: "Saved availability!" });
-  };
-
   if (!currentProfile || !data) {
     return <></>;
   }
@@ -68,7 +61,7 @@ const SetAvailabilitiesPage: Page = () => {
         <div className="flex-1" />
         <div className="flex items-center">
           <Text>Time Zone: </Text>
-          <div className="w-2" />
+          <div className="w-2"></div>
           <div>{myTimezone}</div>
           {/* <SelectTimezone
             profileId={currentProfile.profileId}
@@ -80,14 +73,10 @@ const SetAvailabilitiesPage: Page = () => {
       <div className="w-full flex-1">
         <div className="flex space-x-10">
           <Card className="flex-1 py-4">
-            <SetWeeklyAvailabilitiesCard
-              profileId={currentProfile.profileId}
-              onSave={onSave}
-            />
+            <SetWeeklyAvailabilitiesCard profileId={currentProfile.profileId} />
           </Card>
           <Card className="flex-1 py-4">
             <SetAvailabilityOverridesCard
-              onSave={onSave}
               profileId={currentProfile.profileId}
             />
           </Card>
