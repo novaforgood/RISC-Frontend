@@ -153,7 +153,7 @@ const CreateProgramPage: Page = () => {
     return (
       <div className="flex flex-col w-9/10 space-y-6">
         <Text h1 b className="whitespace-nowrap">
-          Create your Program!
+          Create your mentorship!
         </Text>
         <div className="h-18" />
 

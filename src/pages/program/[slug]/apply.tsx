@@ -23,6 +23,7 @@ import { useAuth } from "../../../utils/firebase/auth";
 import LocalStorage from "../../../utils/localstorage";
 
 // Question: Do we want users to see mentor app (behind the modal) before they log in?
+// Urgent: Should check if user applied to be mentor before prior to allowing them to access the form.
 
 function getApplicationSchemaFromJson(json: string): Question[] {
   try {
@@ -79,9 +80,12 @@ const ProgramApplyPage: Page = (_) => {
       </div>
     );
 
-  if (!currentProgram) {
-    return <></>;
-  }
+  // TODO: Make these into modals with back button
+  if (applicationType == null)
+    return <ErrorScreen type={ErrorScreenType.PageNotFound} />;
+
+  // This creates a flash before applying when the program exists
+  // There must be a better/more direct way of checking whether the program exists or not.
   if (currentProgram?.name == null) {
     return <ErrorScreen type={ErrorScreenType.PageNotFound} />;
   }
@@ -97,18 +101,16 @@ const ProgramApplyPage: Page = (_) => {
         {!formSubmitted ? (
           <div className="w-full">
             <div className="mt-4">
-              <Text h3>
-                {capitalize(applicationType as string)} Application
-              </Text>
+              <Text h3>{capitalize(applicant as string)} Application</Text>
             </div>
             <Text error>{error}</Text>
             <div className="mt-6 mx-10">
               <Form
                 questions={getApplicationSchemaFromJson(
-                  applicationType == ApplicationType.Mentee
+                  applicant == "mentee"
                     ? currentProgram.menteeApplicationSchemaJson
                     : currentProgram.mentorApplicationSchemaJson
-                )}
+                )} // Should actually fetch form schema
                 responses={responses}
                 onChange={(newResponses) => {
                   setFormChanged(true);
@@ -126,12 +128,6 @@ const ProgramApplyPage: Page = (_) => {
                 <Button
                   disabled={!formChanged}
                   onClick={() => {
-                    if (!applicationType) {
-                      setError(
-                        "Your application type is invalid. Please return to the homepage and go to this page through site buttons."
-                      );
-                      return;
-                    }
                     setError("");
                     if (!currentProgram || !user) return; // Should show an error message
                     const createApplicationInput: CreateApplicationInput = {

@@ -18,16 +18,13 @@ import {
 import useTimezoneConverters from "../../hooks/useTimezoneConverters";
 import { Button, Text } from "../atomic";
 import { weekdayNames } from "../Calendar/data";
-import CatchUnsavedChangesModal from "../CatchUnsavedChangesModal";
 import { SetDateInterval } from "./SetDateInterval";
 
 type SetWeeklyAvailabilitiesCardProps = {
-  onSave: () => void;
   profileId: string;
 };
 
 export const SetWeeklyAvailabilitiesCard = ({
-  onSave,
   profileId,
 }: SetWeeklyAvailabilitiesCardProps) => {
   const { data, loading, error, refetch } = useGetAvailWeeklysQuery({
@@ -155,14 +152,12 @@ export const SetWeeklyAvailabilitiesCard = ({
         availabilities: weeklyAvailabilities,
       },
     }).then(() => {
-      onSave();
       refetch();
     });
   };
 
   return (
     <div className="flex flex-col">
-      <CatchUnsavedChangesModal unsavedChangesExist={modified === true} />
       <div className="w-5/6 mx-auto flex justify-between">
         <Text h3 b>
           Set Weekly Availabilities

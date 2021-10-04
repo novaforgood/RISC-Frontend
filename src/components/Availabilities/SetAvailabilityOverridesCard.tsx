@@ -41,14 +41,12 @@ type EditAvailOverrideDayModalContentsProps = {
   profileId: string;
   availWeeklys: DateInterval[];
   onClose: () => void;
-  onSave: () => void;
 };
 const EditAvailOverrideDayModalContents = ({
   initOverrideDate = null,
   profileId,
   availWeeklys,
-  onClose,
-  onSave,
+  onClose = () => {},
 }: EditAvailOverrideDayModalContentsProps) => {
   const { toUTC } = useTimezoneConverters();
   const [overrideDate, setOverrideDay] = useState<AvailOverrideDate | null>(
@@ -196,7 +194,7 @@ const EditAvailOverrideDayModalContents = ({
           Set the date to override
         </Text>
       </div>
-      <div className="h-8" />
+      <div className="h-8"></div>
       <Calendar
         selectAnyDate
         onSelect={(newSelectedDate) => {
@@ -246,7 +244,7 @@ const EditAvailOverrideDayModalContents = ({
         modified={modified}
         selectedDate={overrideDate ? new Date(overrideDate.startTime) : null}
       />
-      <div className="h-8" />
+      <div className="h-8"></div>
       {overrideDate ? (
         <div>
           <div>
@@ -263,7 +261,7 @@ const EditAvailOverrideDayModalContents = ({
             </Text>
             <br />
 
-            <div className="h-2" />
+            <div className="h-2"></div>
             {timeslots.map((timeslot, timeslotIndex) => {
               const date = startOfDay(overrideDate?.startTime);
               if (getDay(timeslot.startTime) !== getDay(date)) {
@@ -295,11 +293,11 @@ const EditAvailOverrideDayModalContents = ({
                   </Text>
                 </div>
 
-                <div className="h-2" />
+                <div className="h-2"></div>
               </Fragment>
             )}
 
-            <div className="h-2" />
+            <div className="h-2"></div>
             <div>
               <Button
                 size="small"
@@ -321,7 +319,7 @@ const EditAvailOverrideDayModalContents = ({
           </Text>
         </div>
       )}
-      <div className="h-8" />
+      <div className="h-8"></div>
 
       <div className="flex">
         <Button
@@ -333,7 +331,7 @@ const EditAvailOverrideDayModalContents = ({
         >
           Cancel
         </Button>
-        <div className="w-2" />
+        <div className="w-2"></div>
         <Button
           disabled={overrideDate === null}
           size="small"
@@ -341,7 +339,6 @@ const EditAvailOverrideDayModalContents = ({
             createOrUpdateOverrideDay()
               .then(() => {
                 onClose();
-                onSave();
               })
               .catch((err) => {
                 console.error(err);
@@ -357,12 +354,10 @@ const EditAvailOverrideDayModalContents = ({
 };
 
 type AvailOverrideDateSectionProps = {
-  onSave: () => void;
   overrideDate: AvailOverrideDate;
   availWeeklys: DateInterval[];
 };
 const AvailOverrideDateSection = ({
-  onSave,
   overrideDate,
   availWeeklys,
 }: AvailOverrideDateSectionProps) => {
@@ -375,7 +370,7 @@ const AvailOverrideDateSection = ({
 
   return (
     <Fragment>
-      <div className="h-4" />
+      <div className="h-4"></div>
       <div className="flex items-center justify-between w-full px-12">
         <div>
           <Text b>{format(overrideDate.startTime, "MMMM d, yyyy")}</Text>
@@ -388,7 +383,7 @@ const AvailOverrideDateSection = ({
           >
             <Text u>edit</Text>
           </button>
-          <div className="w-2" />
+          <div className="w-2"></div>
           <button
             className="h-6 w-6 rounded p-1 hover:bg-tertiary cursor-pointer"
             onClick={() => {
@@ -426,23 +421,20 @@ const AvailOverrideDateSection = ({
           initOverrideDate={overrideDate}
           profileId={overrideDate.profileId}
           availWeeklys={availWeeklys}
-          onSave={onSave}
           onClose={() => {
             setModalOpen(false);
           }}
         />
       </Modal>
-      <div className="h-4" />
+      <div className="h-4"></div>
     </Fragment>
   );
 };
 
 type SetAvailabilityOverridesCardProps = {
-  onSave: () => void;
   profileId: string;
 };
 export const SetAvailabilityOverridesCard = ({
-  onSave,
   profileId,
 }: SetAvailabilityOverridesCardProps) => {
   const {
@@ -475,8 +467,8 @@ export const SetAvailabilityOverridesCard = ({
     !availOverrideDatesError &&
     availOverrideDatesData
   ) {
-    availOverrideDates = availOverrideDatesData.getAvailOverrideDates
-      .map((date) => {
+    availOverrideDates = availOverrideDatesData.getAvailOverrideDates.map(
+      (date) => {
         return {
           ...date,
           startTime: fromUTC(new Date(date.startTime)),
@@ -488,10 +480,8 @@ export const SetAvailabilityOverridesCard = ({
             })
           ),
         };
-      })
-      .sort((a, b) => {
-        return a.startTime.getTime() - b.startTime.getTime();
-      });
+      }
+    );
   }
 
   if (!availWeeklysLoading && !availWeeklysError && availWeeklysData) {
@@ -510,7 +500,7 @@ export const SetAvailabilityOverridesCard = ({
           Add date overrides
         </Text>
       </div>
-      <div className="h-2" />
+      <div className="h-2"></div>
       <div className="w-5/6 mx-auto">
         <Text className="text-secondary">
           Adjust your availability manually for certain dates.
@@ -523,7 +513,6 @@ export const SetAvailabilityOverridesCard = ({
             <React.Fragment key={idx}>
               <div className="w-full h-px bg-inactive" />
               <AvailOverrideDateSection
-                onSave={onSave}
                 overrideDate={overrideDate}
                 availWeeklys={availWeeklys}
               />
@@ -532,7 +521,7 @@ export const SetAvailabilityOverridesCard = ({
         })}
         <div className="w-full h-px bg-inactive" />
       </div>
-      <div className="h-4" />
+      <div className="h-4"></div>
       <div className="flex px-12">
         <Button
           variant="inverted"
@@ -553,7 +542,6 @@ export const SetAvailabilityOverridesCard = ({
         <EditAvailOverrideDayModalContents
           profileId={profileId}
           availWeeklys={availWeeklys}
-          onSave={onSave}
           onClose={() => {
             setEditAvailOverrideDayModalOpen(false);
           }}

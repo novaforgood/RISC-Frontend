@@ -1,8 +1,7 @@
-import classNames from "classnames";
 import dateFormat from "dateformat";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { Children, Fragment, ReactNode, useState } from "react";
+import React, { Fragment, useState } from "react";
 import { Button, Card, Modal, Text } from "../components/atomic";
 import Form from "../components/Form";
 import {
@@ -32,181 +31,6 @@ const BlobCircle = () => {
   );
 };
 
-interface CircledNumberProps {
-  number: number;
-}
-const CircledNumber = ({ number }: CircledNumberProps) => {
-  return (
-    <div className="select-none flex-shrink-0 h-8 w-8 rounded-full border border-white flex justify-center items-center">
-      {number}
-    </div>
-  );
-};
-
-interface CircledNumberListProps {
-  children: ReactNode;
-}
-const CircledNumberList = ({ children }: CircledNumberListProps) => {
-  if (!children) return <></>;
-
-  return (
-    <div className="flex flex-col items-start gap-6">
-      {Children.map(children, (child, i) => {
-        return (
-          <div className="flex flex-start gap-7" key={i}>
-            <CircledNumber number={i + 1} />
-            <div>{child}</div>
-          </div>
-        );
-      })}
-    </div>
-  );
-};
-
-enum Tab {
-  Admin = "Admins",
-  Mentor = "Mentors",
-  Mentee = "Mentees",
-}
-
-const ALL_TABS = [Tab.Admin, Tab.Mentor, Tab.Mentee];
-
-const AdminMentorMenteeSelect = () => {
-  const [selectedTab, setSelectedTab] = useState<Tab>(Tab.Admin);
-
-  const renderTabContents = () => {
-    switch (selectedTab) {
-      case Tab.Admin:
-        return (
-          <>
-            <Text h2 b className="text-center">
-              Personalize your platform
-            </Text>
-            <div className="h-8" />
-            <Text className="text-center">
-              Organization leaders and administrators can create and manage
-              mentorship programs directly on our platform.
-            </Text>
-            <div className="h-8" />
-            <CircledNumberList>
-              <Text>Customize your program to fit your needs. </Text>
-              <Text>
-                Create a homepage, set up applications, and control the
-                information on mentor profiles.
-              </Text>
-              <Text>
-                Keep track of your members and manage your program, all in one
-                place.
-              </Text>
-            </CircledNumberList>
-            <div className="h-10" />
-            <Link href="/signup" prefetch={true}>
-              <Button variant="outline inverted" className="w-max pl-4 pr-4">
-                <Text b>Manage your program for free</Text>
-              </Button>
-            </Link>
-          </>
-        );
-      case Tab.Mentor:
-        return (
-          <>
-            <Text h2 b className="text-center">
-              Share your experience
-            </Text>
-            <div className="h-8" />
-            <Text className="text-center">
-              Mentors are a powerful resource, and we make it easy for you to
-              make meaningful connections and support your community.
-            </Text>
-            <div className="h-8" />
-            <CircledNumberList>
-              <Text>
-                Fill out a profile so that mentees can learn more about you.
-              </Text>
-              <Text>
-                Set your availability and update your schedule with ease.
-              </Text>
-              <Text>Make a real impact on your mentees and peers.</Text>
-            </CircledNumberList>
-            <div className="h-10" />
-            <Link href="/signup" prefetch={true}>
-              <Button variant="outline inverted" className="w-max pl-4 pr-4">
-                <Text b>Get started today</Text>
-              </Button>
-            </Link>
-          </>
-        );
-
-      case Tab.Mentee:
-        return (
-          <>
-            <Text h2 b className="text-center">
-              Spark meaningful conversations
-            </Text>
-            <div className="h-8" />
-            <Text className="text-center">
-              Mentees can search for and connect with mentors they think would
-              be their best match.
-            </Text>
-            <div className="h-8" />
-            <CircledNumberList>
-              <Text>
-                Fill out a profile so that admins and your mentors know what
-                you're looking for.
-              </Text>
-              <Text>
-                Easy-to-use search functionality allows you to find your ideal
-                mentor.
-              </Text>
-              <Text>
-                Our 'Book a Chat' feature allows you to schedule a low-stakes
-                conversation with any mentor you choose.
-              </Text>
-            </CircledNumberList>
-            <div className="h-10" />
-            <Link href="/signup" prefetch={true}>
-              <Button variant="outline inverted" className="w-max pl-4 pr-4">
-                <Text b>Join your program and find a mentor</Text>
-              </Button>
-            </Link>
-          </>
-        );
-    }
-  };
-
-  return (
-    <div className="text-white bg-primary w-full h-200 flex flex-col">
-      <div className="flex flex-col items-start w-9/10 md:w-120 mx-auto pt-10 md:pt-24">
-        <div className="flex justify-between mx-auto w-72 md:w-96">
-          {ALL_TABS.map((tab, i) => {
-            const selected = selectedTab === tab;
-
-            const tabStyles = classNames({
-              "cursor-pointer p-2 border-b-2 select-none": true,
-              "border-primary": !selected,
-              "border-white": selected,
-            });
-
-            return (
-              <div
-                key={i}
-                className={tabStyles}
-                onClick={() => {
-                  setSelectedTab(tab);
-                }}
-              >
-                <Text b={selected}>{tab}</Text>
-              </div>
-            );
-          })}
-        </div>
-        <div className="pt-12 md:pt-20 flex flex-col items-center w-full">
-          {renderTabContents()}
-        </div>
-      </div>
-    </div>
-  );
-};
 const IndexPage: PageGetProgramBySlugComp = (_) => {
   const router = useRouter();
   const authorizationLevel = useAuthorizationLevel();
@@ -231,7 +55,7 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
               >
                 Login
               </Button>
-              <div className="w-4" />
+              <div className="w-4"></div>
               <Button
                 size="small"
                 onClick={() => {
@@ -245,22 +69,22 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
           <div className="flex justify-between px-36 pt-36 gap-8">
             <div className="w-160 flex-shrink-0">
               <BlobCircle />
-              <div className="h-4" />
+              <div className="h-4"></div>
 
               <div>
                 <Text h1 b>
                   Your mentorship program starts here
                 </Text>
               </div>
-              <div className="h-4" />
+              <div className="h-4"></div>
 
               <div>
                 <Text>
-                  Mentor Center makes mentorship accessible and manageable for
-                  any community.
+                  Mentor Center works to make mentorship accessible and
+                  manageable for any organization.
                 </Text>
               </div>
-              <div className="h-10" />
+              <div className="h-10"></div>
               <Button
                 size="auto"
                 className="h-14 w-80"
@@ -268,63 +92,72 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
                   router.push("/signup");
                 }}
               >
-                Join our beta for free
+                Get started for free
               </Button>
             </div>
-            <img src="/static/Laptop.svg" className="md:hidden"></img>
+            <img src="/static/Laptop.svg"></img>
           </div>
         </div>
 
-        <div className="w-5/6 mx-auto h-0.25 bg-inactive my-20" />
+        <div className="w-300 mx-auto h-0.25 bg-inactive my-20"></div>
         <div className="flex flex-col items-center justify-center">
           <Text h2 b className="w-120 text-center">
             Seamlessly connect mentors and mentees.
           </Text>
-          <div className="h-4" />
+          <div className="h-4"></div>
           <Text b2 className="w-200 text-center">
-            Our platform sparks mentor-mentee connections by empowering mentees
-            to learn about any mentor in your program and schedule conversations
-            with ease.
+            Our platform facilitates mentor-mentee matching, empowers mentees to
+            start conversations, and streamlines the scheduling process.
           </Text>
           <img src="/static/GuyOnVideoCall.svg" />
         </div>
-        <div className="h-20" />
-        <AdminMentorMenteeSelect />
-        <div className="w-5/6 flex flex-col mx-auto my-20">
-          <Text h2 b>
-            Designed alongside mentorship programs.
+        <div className="w-300 mx-auto h-0.25 bg-inactive my-20"></div>
+
+        <div className="flex flex-col items-start w-200 mx-auto">
+          <Text h2 b className="w-96">
+            Personalize your platform
           </Text>
-          <br />
-          <Text>
-            Mentor Center is a product of collaboration between the{" "}
-            <a
-              href="https://risc.uchicago.edu/"
-              className="text-darkblue font-bold hover:underline"
-            >
-              Center for RISC @ The University of Chicago
-            </a>{" "}
-            and{" "}
-            <a
-              href="https://www.novaforgood.org/"
-              className="text-darkblue font-bold hover:underline"
-            >
-              Nova, Tech for Good
-            </a>{" "}
-            @ UCLA. Along with dozens of peer mentorship organizations, we’re
-            trying to make mentorship more accessible.
+          <div className="h-4"></div>
+          <Text b2 className="w-1/2">
+            Organization leaders and administrators can manage mentorship
+            programs directly on our platform.
           </Text>
+          <div className="h-10"></div>
+          <div className="flex gap-4">
+            <div className="w-1/2 p-4 bg-beige rounded-lg flex flex-col">
+              <Text h3 b>
+                Tailored to Your Needs
+              </Text>
+              <div className="h-2"></div>
+              <Text b2>
+                Customize your program on our site to best fit your program’s
+                needs.
+              </Text>
+            </div>
+            <div className="w-1/2 p-4 bg-beige rounded-lg flex flex-col">
+              <Text h3 b>
+                A Centralized Platform
+              </Text>
+              <div className="h-2"></div>
+              <Text b2>
+                Keep track of your members on one centralized site and onboard
+                new mentors and mentees in an intuitive flow.
+              </Text>
+            </div>
+          </div>
+          <div className="h-10"></div>
+          <Button
+            size="auto"
+            className="h-14 w-80"
+            onClick={() => {
+              router.push("/create");
+            }}
+          >
+            Create your program today
+          </Button>
         </div>
-        <div className="w-full bg-primary p-2 space-x-6">
-          <button className="cursor-not-allowed rounded-md p-2 text-white">
-            Terms of Use
-          </button>
-          <button className="cursor-not-allowed rounded-md p-2 text-white">
-            Privacy Policy
-          </button>
-          <button className="cursor-pointer rounded-md p-2 hover:bg-black text-white">
-            <a href="mailto:mentorcenter.us@gmail.com">Contact Us</a>
-          </button>
-        </div>
+
+        <div className="w-300 mx-auto h-0.25 bg-inactive my-20"></div>
       </Fragment>
     );
   } else if (authorizationLevel === AuthorizationLevel.Unverified) {
@@ -416,7 +249,7 @@ const ApplicationRow = ({ application }: ApplicationRowProps) => {
       </div>
 
       <div className="flex items-center gap-8">
-        <div>{status()}</div>
+        <div className="">{status()}</div>
         <button
           onClick={() => {
             setAppModalOpen(true);
@@ -436,7 +269,7 @@ const ApplicationRow = ({ application }: ApplicationRowProps) => {
       >
         <div className="w-120">
           <Text h3>Application to {program.name}</Text>
-          <div className="h-4" />
+          <div className="h-4"></div>
           <Form
             questions={
               JSON.parse(
@@ -449,7 +282,7 @@ const ApplicationRow = ({ application }: ApplicationRowProps) => {
             readonly
             showDescriptions={false}
           />
-          <div className="h-8" />
+          <div className="h-8"></div>
           <div className="flex justify-end">
             <Button
               size="small"
@@ -515,7 +348,7 @@ const NoMentorshipHome: Page = () => {
                 router.push("/create");
               }}
             >
-              <Text>Create a New Program</Text>
+              <Text>Create a Mentorship Program</Text>
             </Button>
           </div>
           <img src="/static/HappyBlobs2.svg" className="w-40 h-40" />
