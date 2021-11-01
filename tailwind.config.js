@@ -34,6 +34,9 @@ module.exports = {
       bold: 700,
     },
     extend: {
+      animation: {
+        "border-pulse": "border-pulse 1s ease-in-out infinite",
+      },
       borderWidth: {
         1.5: "1.5px",
         3: "3px",
@@ -48,9 +51,25 @@ module.exports = {
         "se-resize": "se-resize",
         "sw-resize": "sw-resize",
       },
+      fill: {
+        none: "none",
+      },
       height: {
         "3/4-screen": "75vh",
         "9/10": "90%",
+      },
+      keyframes: {
+        "border-pulse": {
+          "0%": {
+            "-webkit-box-shadow": "0 0 4px 3px rgba(0,0,0, 0.3)",
+          },
+          "50%": {
+            "-webkit-box-shadow": "0 0 4px 6px rgba(0,0,0, 0.9)",
+          },
+          "100%": {
+            "-webkit-box-shadow": "0 0 4px 3px rgba(0,0,0, 0.3)",
+          },
+        },
       },
       maxHeight: {
         "3/4": "75%",
@@ -68,6 +87,9 @@ module.exports = {
         300: "75rem",
         400: "100rem",
       },
+      transitionDuration: {
+        3000: "3000ms",
+      },
       transitionProperty: {
         background: "background-color",
       },
@@ -82,9 +104,6 @@ module.exports = {
       stroke: (theme) => ({
         white: theme("colors.white"),
       }),
-      fill: {
-        none: "none",
-      },
     },
   },
   variants: {

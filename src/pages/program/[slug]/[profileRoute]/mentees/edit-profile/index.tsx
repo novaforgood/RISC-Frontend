@@ -26,7 +26,7 @@ const EditMenteeProfilePage: Page = (_) => {
   const [modified, setModified] = useState(false);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const { setSnackbarMessage } = useSnackbar();
-  isSavingProfile; // TODO: If is saving, set loading state of button to true.
+  // TODO: If is saving, set loading state of button to true.
 
   useEffect(() => {
     if (!currentProgram) return;
@@ -69,7 +69,7 @@ const EditMenteeProfilePage: Page = (_) => {
         <div className="flex">
           <Button
             size="small"
-            disabled={!modified || profileSchema.length == 0}
+            disabled={isSavingProfile || !modified || profileSchema.length == 0}
             onClick={() => {
               saveProfile();
             }}
@@ -103,7 +103,7 @@ const EditMenteeProfilePage: Page = (_) => {
             setModified(true);
             setProfileSchema(newQuestions);
           }}
-        ></FormSchemaEditor>
+        />
       </div>
     </div>
   );

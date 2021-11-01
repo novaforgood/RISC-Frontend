@@ -28,7 +28,7 @@ const PublishButton = ({ programId, ...props }: PublishButtonProps) => {
         setSnackbarMessage({ text: "Homepage saved!" });
       })
       .catch((err) => {
-        console.log("Fail: ", err);
+        console.error("Fail: ", err);
         setLoading(false);
       });
   };

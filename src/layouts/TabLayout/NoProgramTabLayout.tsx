@@ -18,7 +18,7 @@ const NoProgramTabLayout: React.FC<BaseTabLayoutProps> = ({ children }) => {
   }
 
   return (
-    <TabLayout currentPageChildren={children}>
+    <TabLayout onboarded={true} currentPageChildren={children}>
       <PageItem label="My Dashboard" Icon={Home} path="/" />
     </TabLayout>
   );

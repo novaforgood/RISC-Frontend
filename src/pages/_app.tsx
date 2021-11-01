@@ -11,10 +11,10 @@ import { AppProps } from "next/app";
 import { ReactElement } from "react";
 import "tailwindcss/tailwind.css";
 import AuthLoadingScreen from "../layouts/AuthLoadingScreen";
+import { AuthProvider } from "../utils/firebase/auth";
 import { SnackbarProvider } from "../notifications/SnackbarContext";
 import "../styles/globals.css";
 import Page from "../types/Page";
-import { AuthProvider } from "../utils/firebase/auth";
 import firebase from "../utils/firebase/firebase";
 
 const uploadLink = createUploadLink({ uri: process.env.NEXT_PUBLIC_API_URL });

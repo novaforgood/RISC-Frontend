@@ -17,7 +17,7 @@ const TabFooterMenu = () => {
   const myData = data.getMyUser;
 
   return (
-    <div className="w-full p-2 bg-white flex-shrink-0 border-t border-tertiary">
+    <div className="w-full p-2 flex-shrink-0 border-t border-tertiary">
       <DropdownMenu
         button={
           <div className="inline-flex items-center">

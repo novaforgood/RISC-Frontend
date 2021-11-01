@@ -28,7 +28,7 @@ const NoMatchingProfileLayout: React.FC<BaseTabLayoutProps> = ({
   });
 
   return (
-    <TabLayout currentPageChildren={children}>
+    <TabLayout onboarded={true} currentPageChildren={children}>
       <div
         className={pageItemStyles}
         onClick={() => {

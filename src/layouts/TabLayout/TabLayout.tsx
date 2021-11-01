@@ -46,6 +46,7 @@ const Arrow: React.FC<ArrowProps> = ({ down }) => {
 
 export interface BaseTabLayoutProps {
   children: React.ReactNode;
+  onboarded: boolean;
   basePath: string;
 }
 
@@ -64,6 +65,7 @@ export function joinPath(...args: string[]): string {
 }
 
 interface TabLayoutProps {
+  onboarded: boolean;
   currentPageChildren: ReactNode;
   footerChildren?: ReactNode;
 }
@@ -75,16 +77,24 @@ const TabLayout: React.FC<TabLayoutProps> & {
     label: string;
     Icon: React.FC<React.SVGProps<SVGSVGElement>>;
   }>;
-} = ({ children, currentPageChildren }) => {
+} = ({ children, onboarded, currentPageChildren }) => {
+  const tabLayoutStyles = classNames({
+    "flex flex-col flex-grow h-screen bg-white shadow-lg relative box-border":
+      true,
+    "pointer-events-none bg-black opacity-25": !onboarded,
+  });
+
   return (
     <div className="flex h-screen w-screen">
-      <div className="flex flex-col h-screen w-72 flex-shrink-0 bg-white shadow-lg relative">
+      <div className={tabLayoutStyles}>
         <ProgramDropdown />
         <div className="h-0.25 w-full bg-tertiary flex-shrink-0"></div>
         <div className="overflow-y-auto h-full">{children}</div>
         <TabFooterMenu />
       </div>
-      <div className="flex-grow overflow-x-hidden">{currentPageChildren}</div>
+      <div className="flex flex-col h-screen w-5/6 box-border overflow-hidden">
+        {currentPageChildren}
+      </div>
     </div>
   );
 };
