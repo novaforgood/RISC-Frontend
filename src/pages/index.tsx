@@ -3,7 +3,7 @@ import dateFormat from "dateformat";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { Children, Fragment, ReactNode, useState } from "react";
-import { Button, Card, Modal, Text } from "../components/atomic";
+import { Button, Card, Modal, Text, ExternalLink } from "../components/atomic";
 import Form from "../components/Form";
 import {
   ApplicationStatus,
@@ -314,16 +314,32 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
             trying to make mentorship more accessible.
           </Text>
         </div>
-        <div className="w-full bg-primary p-2 space-x-6">
-          <button className="cursor-not-allowed rounded-md p-2 text-white">
-            Terms of Use
-          </button>
-          <button className="cursor-not-allowed rounded-md p-2 text-white">
-            Privacy Policy
-          </button>
-          <button className="cursor-pointer rounded-md p-2 hover:bg-black text-white">
-            <a href="mailto:mentorcenter.us@gmail.com">Contact Us</a>
-          </button>
+        <div className="h-10" />
+        <div className="flex justify-between w-full p-10 bg-beige space-y-2">
+          <Text h3>Quick Links</Text>
+          <div className="grid gap-4 grid-cols-3">
+            <Text b>Legal Documents</Text>
+            <Text b>About the creators</Text>
+            <Text b>Socials</Text>
+            <ExternalLink href="https://drive.google.com/file/d/1Zp0PZkBWpUmxedtTCz1QrpgxJBC7zNWU/view?usp=sharing">
+              Terms of Use
+            </ExternalLink>
+            <ExternalLink href="https://risc.uchicago.edu/">
+              UChicago RISC
+            </ExternalLink>
+            <ExternalLink href="mailto:mentorcenter.us@gmail.com">
+              Email Us!
+            </ExternalLink>
+            <ExternalLink href="https://drive.google.com/file/d/1W54nQMgAmKs_9Qbcc02QwI7YepzhZxfB/view?usp=sharing">
+              Privacy Policy
+            </ExternalLink>
+            <ExternalLink href="https://www.novaforgood.org/">
+              Nova, Tech for Good
+            </ExternalLink>
+            <ExternalLink href="https://www.instagram.com/_mentorcenter/">
+              Instagram
+            </ExternalLink>
+          </div>
         </div>
       </Fragment>
     );

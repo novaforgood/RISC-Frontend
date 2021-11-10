@@ -6,7 +6,7 @@ import {
 import { AuthorizationLevel, useAuthorizationLevel } from "../../hooks";
 import { validateEmail } from "../../utils";
 import { useAuth } from "../../utils/firebase/auth";
-import { Text, Button, Checkbox } from "../atomic";
+import { Text, Button, Checkbox, ExternalLink } from "../atomic";
 import TitledInput from "../TitledInput";
 
 const getTimezone = (): string => {
@@ -125,27 +125,22 @@ const Signup = ({
               setTermsChecked(checked);
             }}
           />
+          <div className="w-2" />
           <Text className="text-secondary">
             I read and agree to the{" "}
-            <Text b u className="hover:text-primary">
-              {/* Noopener Noreferrer: https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/ */}
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://drive.google.com/file/d/1Zp0PZkBWpUmxedtTCz1QrpgxJBC7zNWU/view?usp=sharing"
-              >
-                Terms of Use
-              </a>
-            </Text>
+            <ExternalLink
+              className="hover:text-primary underline font-bold"
+              href="https://drive.google.com/file/d/1Zp0PZkBWpUmxedtTCz1QrpgxJBC7zNWU/view?usp=sharing"
+            >
+              Terms of Use
+            </ExternalLink>
             {" and "}
-            <Text b u className="hover:text-primary"></Text>
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
+            <ExternalLink
+              className="hover:text-primary underline font-bold"
               href="https://drive.google.com/file/d/1W54nQMgAmKs_9Qbcc02QwI7YepzhZxfB/view?usp=sharing"
             >
               Privacy Policy
-            </a>
+            </ExternalLink>
           </Text>
         </div>
         <div>
@@ -158,6 +153,9 @@ const Signup = ({
             e.preventDefault();
             if (!firstName || !lastName || !password) {
               setError("Please fill out all of the fields.");
+              return;
+            } else if (!termsChecked) {
+              setError("You must agree to the Terms of Use and Privacy Policy");
               return;
             } else if (!validateEmail(email)) {
               setError("Please use a proper email format.");
