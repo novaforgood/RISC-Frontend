@@ -127,9 +127,25 @@ const Signup = ({
           />
           <Text className="text-secondary">
             I read and agree to the{" "}
-            <Text b u className="hover:text-primary cursor-pointer">
-              Terms & Conditions
+            <Text b u className="hover:text-primary">
+              {/* Noopener Noreferrer: https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/ */}
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://drive.google.com/file/d/1Zp0PZkBWpUmxedtTCz1QrpgxJBC7zNWU/view?usp=sharing"
+              >
+                Terms of Use
+              </a>
             </Text>
+            {" and "}
+            <Text b u className="hover:text-primary"></Text>
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://drive.google.com/file/d/1W54nQMgAmKs_9Qbcc02QwI7YepzhZxfB/view?usp=sharing"
+            >
+              Privacy Policy
+            </a>
           </Text>
         </div>
         <div>
