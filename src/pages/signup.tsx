@@ -23,10 +23,12 @@ const SignUpPage: Page = () => {
   return (
     <div className="flex w-screen min-h-screen">
       <div className="hidden md:grid md:w-1/3 bg-primary min-h-screen relative">
-        <img
-          src="/static/TextLogo.svg"
-          className="absolute p-6 select-none pointer-events-none"
-        />
+        <Link href="/">
+          <img
+            src="/static/TextLogo.svg"
+            className="absolute p-6 select-none hover:cursor-pointer"
+          />
+        </Link>
         <div className="place-self-center">
           <BlobCircle />
         </div>
