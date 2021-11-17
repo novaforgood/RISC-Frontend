@@ -17,7 +17,7 @@ export enum AuthorizationLevel {
   Mentee = "MENTEE",
   Mentor = "MENTOR",
   Admin = "ADMIN",
-  Unverified = "UNVERIFIED",
+  Unverified = "UNVERIFIED", // User is logged in but email is not verified
 }
 
 const getAuthorizationLevel = (

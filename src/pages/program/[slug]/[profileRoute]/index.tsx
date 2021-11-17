@@ -171,7 +171,7 @@ const ReadOnlyHome = ({
           </Link>
         </div>
       )}
-      <Card className="box-border w-full px-16 py-10 ">
+      <Card className="box-border w-full px-4 md:px-16 py-10 ">
         <div className="relative -top-24 pointer-events-none">
           <div>
             <img className="w-28 h-28 rounded-md" src={iconUrl} />

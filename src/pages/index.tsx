@@ -3,7 +3,7 @@ import dateFormat from "dateformat";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { Children, Fragment, ReactNode, useState } from "react";
-import { Button, Card, Modal, Text, ExternalLink } from "../components/atomic";
+import { Button, Card, ExternalLink, Modal, Text } from "../components/atomic";
 import Form from "../components/Form";
 import {
   ApplicationStatus,
@@ -42,7 +42,6 @@ const CircledNumber = ({ number }: CircledNumberProps) => {
     </div>
   );
 };
-
 interface CircledNumberListProps {
   children: ReactNode;
 }
@@ -218,9 +217,10 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
       return <Fragment />;
     return (
       <Fragment>
-        <div className="h-screen w-full p-8">
-          <div className="w-full flex items-center justify-between">
+        <div className="md:h-screen w-full p-8">
+          <div className="w-full md:flex items-center justify-between">
             <img src="/static/DarkTextLogo.svg" />
+            <div className="h-4"></div>
             <div className="flex">
               <Button
                 variant="inverted"
@@ -242,8 +242,8 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
               </Button>
             </div>
           </div>
-          <div className="flex justify-between px-36 pt-36 gap-8">
-            <div className="w-160 flex-shrink-0">
+          <div className="flex justify-between md:px-36 pt-10 md:pt-36 gap-8">
+            <div className="md:w-160 md:flex-shrink-0">
               <BlobCircle />
               <div className="h-4" />
 
@@ -263,7 +263,7 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
               <div className="h-10" />
               <Button
                 size="auto"
-                className="h-14 w-80"
+                className="h-14 px-4 md:w-80"
                 onClick={() => {
                   router.push("/signup");
                 }}
@@ -271,17 +271,17 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
                 Join our beta for free
               </Button>
             </div>
-            <img src="/static/Laptop.svg" className="md:hidden"></img>
+            <img src="/static/Laptop.svg" className="hidden md:block"></img>
           </div>
         </div>
 
-        <div className="w-5/6 mx-auto h-0.25 bg-inactive my-20" />
+        <div className="h-40"></div>
         <div className="flex flex-col items-center justify-center">
-          <Text h2 b className="w-120 text-center">
+          <Text h2 b className="md:w-120 text-center">
             Seamlessly connect mentors and mentees.
           </Text>
           <div className="h-4" />
-          <Text b2 className="w-200 text-center">
+          <Text b2 className="md:w-200 text-center">
             Our platform sparks mentor-mentee connections by empowering mentees
             to learn about any mentor in your program and schedule conversations
             with ease.
@@ -315,8 +315,10 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
           </Text>
         </div>
         <div className="h-10" />
-        <div className="flex justify-between w-full p-10 bg-beige space-y-2">
-          <Text h3>Quick Links</Text>
+        <div className="flex justify-between w-full p-4 md:p-10 bg-beige space-y-2">
+          <Text h3 className="hidden md:block">
+            Quick Links
+          </Text>
           <div className="grid gap-4 grid-cols-3">
             <Text b>Legal Documents</Text>
             <Text b>About the creators</Text>
@@ -427,11 +429,11 @@ const ApplicationRow = ({ application }: ApplicationRowProps) => {
         <div className="flex-1 col-span-1">{program.name}</div>
       </div>
 
-      <div className="flex-1 text-center col-span-1">
+      <div className="hidden md:block flex-1 text-center col-span-1">
         {dateFormat(application.createdAt, "mmm d, yyyy | h:MMtt")}
       </div>
 
-      <div className="flex items-center gap-8">
+      <div className="flex items-center md:gap-8">
         <div>{status()}</div>
         <button
           onClick={() => {
@@ -450,7 +452,7 @@ const ApplicationRow = ({ application }: ApplicationRowProps) => {
           setAppModalOpen(false);
         }}
       >
-        <div className="w-120">
+        <div className="w-full md:w-120">
           <Text h3>Application to {program.name}</Text>
           <div className="h-4" />
           <Form
@@ -488,7 +490,7 @@ type TitledCardProps = {
 };
 const TitledCard = ({ title, children }: TitledCardProps) => {
   return (
-    <Card className="w-2/3 mx-auto p-6 space-y-4">
+    <Card className="w-full md:w-2/3 mx-auto p-2 md:p-6 space-y-4 overflow-x-auto">
       <span>
         <Text h3 b>
           {title}
@@ -521,8 +523,8 @@ const NoMentorshipHome: Page = () => {
 
   return (
     <NoProgramTabLayout basePath={router.asPath}>
-      <div className="h-screen bg-tertiary">
-        <div className="bg-white flex flex-col pt-12 pb-2 px-20 space-y-4">
+      <div className="md:h-screen bg-tertiary">
+        <div className="bg-white flex flex-col px-10 md:pt-12 md:pb-2 md:px-20 space-y-4">
           <div className="w-full flex justify-end">
             <Button
               size="small"
@@ -571,7 +573,7 @@ const NoMentorshipHome: Page = () => {
             />
           </div>
         </div>
-        <div className="p-6">
+        <div className="px-2 py-6 md:p-6">
           {showApplications ? (
             <TitledCard title="My Applications">
               {data?.getMyUser.applications.map((app, i) => {

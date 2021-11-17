@@ -34,7 +34,7 @@ const AuthenticationModal = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="flex flex-col w-144">
+      <div className="flex flex-col md:w-144">
         <button
           onClick={onClose}
           className="cursor-pointer focus:outline-none self-end"
