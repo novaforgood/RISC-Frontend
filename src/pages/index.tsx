@@ -206,7 +206,6 @@ const AdminMentorMenteeSelect = () => {
     </div>
   );
 };
-
 const IndexPage: PageGetProgramBySlugComp = (_) => {
   const router = useRouter();
   const authorizationLevel = useAuthorizationLevel();
@@ -232,7 +231,7 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
               >
                 Login
               </Button>
-              <div className="w-4"></div>
+              <div className="w-4" />
               <Button
                 size="small"
                 onClick={() => {
@@ -246,22 +245,22 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
           <div className="flex justify-between md:px-36 pt-10 md:pt-36 gap-8">
             <div className="md:w-160 md:flex-shrink-0">
               <BlobCircle />
-              <div className="h-4"></div>
+              <div className="h-4" />
 
               <div>
                 <Text h1 b>
                   Your mentorship program starts here
                 </Text>
               </div>
-              <div className="h-4"></div>
+              <div className="h-4" />
 
               <div>
                 <Text>
-                  Mentor Center works to make mentorship accessible and
-                  manageable for any organization.
+                  Mentor Center makes mentorship accessible and manageable for
+                  any community.
                 </Text>
               </div>
-              <div className="h-10"></div>
+              <div className="h-10" />
               <Button
                 size="auto"
                 className="h-14 px-4 md:w-80"
@@ -269,7 +268,7 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
                   router.push("/signup");
                 }}
               >
-                Get started for free
+                Join our beta for free
               </Button>
             </div>
             <img src="/static/Laptop.svg" className="hidden md:block"></img>
@@ -435,7 +434,7 @@ const ApplicationRow = ({ application }: ApplicationRowProps) => {
       </div>
 
       <div className="flex items-center gap-8">
-        <div className="">{status()}</div>
+        <div>{status()}</div>
         <button
           onClick={() => {
             setAppModalOpen(true);
@@ -455,7 +454,7 @@ const ApplicationRow = ({ application }: ApplicationRowProps) => {
       >
         <div className="w-full md:w-120">
           <Text h3>Application to {program.name}</Text>
-          <div className="h-4"></div>
+          <div className="h-4" />
           <Form
             questions={
               JSON.parse(
@@ -468,7 +467,7 @@ const ApplicationRow = ({ application }: ApplicationRowProps) => {
             readonly
             showDescriptions={false}
           />
-          <div className="h-8"></div>
+          <div className="h-8" />
           <div className="flex justify-end">
             <Button
               size="small"
@@ -534,7 +533,7 @@ const NoMentorshipHome: Page = () => {
                 router.push("/create");
               }}
             >
-              <Text>Create a Mentorship Program</Text>
+              <Text>Create a New Program</Text>
             </Button>
           </div>
           <img src="/static/HappyBlobs2.svg" className="w-40 h-40" />

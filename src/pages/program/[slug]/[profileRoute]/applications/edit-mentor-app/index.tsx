@@ -58,22 +58,19 @@ const EditMentorApplicationPage: Page = (_) => {
     <div className="flex flex-col items-center">
       <CatchUnsavedChangesModal unsavedChangesExist={modified === true} />
 
-      <div className="flex justify-between items-center w-full">
+      <div className="sticky -top-10 bg-tertiary flex justify-between items-center w-full pt-4 pb-4">
         <Text h2 b>
           Edit Mentor Application
         </Text>
-        <div className="w-12"></div>
-        <div className="flex">
-          <Button
-            size="small"
-            disabled={!modified || applicationSchema.length == 0}
-            onClick={() => {
-              saveMentorApplicationSchema();
-            }}
-          >
-            Save
-          </Button>
-        </div>
+        <Button
+          size="small"
+          disabled={!modified || applicationSchema.length == 0}
+          onClick={() => {
+            saveMentorApplicationSchema();
+          }}
+        >
+          Save
+        </Button>
       </div>
 
       <div className="h-8"></div>
