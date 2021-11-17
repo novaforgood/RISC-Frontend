@@ -87,8 +87,8 @@ const ProgramApplyPage: Page = (_) => {
   }
 
   return (
-    <div className="min-w-screen h-screen bg-tertiary">
-      <div className="max-w-4xl mx-auto p-10">
+    <div className="min-w-screen md:h-screen bg-tertiary">
+      <div className="max-w-4xl mx-auto p-2 md:p-10">
         <div className="mt-9">
           <Text h1 b>
             {currentProgram?.name}
@@ -102,7 +102,7 @@ const ProgramApplyPage: Page = (_) => {
               </Text>
             </div>
             <Text error>{error}</Text>
-            <div className="mt-6 mx-10">
+            <div className="mt-6 md:mx-10">
               <Form
                 questions={getApplicationSchemaFromJson(
                   applicationType == ApplicationType.Mentee
@@ -119,7 +119,7 @@ const ProgramApplyPage: Page = (_) => {
                 //   setResponses(response);
                 // }}
               ></Form>
-              <div className="flex justify-between mt-10">
+              <div className="flex justify-between mt-10 gap-2">
                 <Button variant="inverted" onClick={() => router.back()}>
                   Back
                 </Button>

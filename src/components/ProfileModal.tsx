@@ -113,7 +113,7 @@ const ProfileModal = ({
             <div className="h-6" />
 
             <div className="flex flex-col justify-items-center items-center space-y-4">
-              <Card className="p-6 w-full">
+              <Card className="p-2 md:p-6 w-full">
                 <div>
                   <Text b>A little bit about me</Text>
                 </div>
@@ -129,7 +129,7 @@ const ProfileModal = ({
                 </div>
               </Card>
 
-              <Card className="p-6 w-full">
+              <Card className="p-2 md:p-6 w-full">
                 <Text b>Tags</Text>
                 <div className="h-2"></div>
                 {profile.profileTags.length === 0 ? (

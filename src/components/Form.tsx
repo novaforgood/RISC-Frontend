@@ -191,7 +191,7 @@ const Form = ({
 
   return questions.length > 0 ? (
     readonly ? (
-      <Card className="p-6">
+      <Card className="p-2 md:p-6">
         <div className="space-y-6">
           {questions.map((question, i) => {
             switch (question.type) {
@@ -224,7 +224,7 @@ const Form = ({
         </div>
       </Card>
     ) : (
-      <Card className={"p-6 border-inactive rounded-xl " + className}>
+      <Card className={"p-2 md:p-6 border-inactive rounded-xl " + className}>
         <div className="space-y-6">
           {questions.map((question, i) => {
             switch (question.type) {
@@ -258,7 +258,7 @@ const Form = ({
       </Card>
     )
   ) : (
-    <Card className="p-6">
+    <Card className="p-2 md:p-6">
       <div className="space-y-6">
         This program does not currently have their application set up. If you
         know the administrator personally, contact them to let them know!

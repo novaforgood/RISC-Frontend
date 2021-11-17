@@ -80,7 +80,7 @@ const Modal = ({
               leaveTo="opacity-0 scale-95"
             >
               <div
-                className={`w-full md:w-auto inline-block p-6 md:my-8 overflow-hidden text-left align-middle transform shadow-xl rounded-2xl ${backgroundClassName}`}
+                className={`w-full overflow-x-scroll md:w-auto inline-block p-6 md:my-8 overflow-hidden text-left align-middle transform shadow-xl rounded-2xl ${backgroundClassName}`}
               >
                 {(isOpen || isOpenDelayed) && children}
               </div>

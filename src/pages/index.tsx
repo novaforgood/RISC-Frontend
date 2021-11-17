@@ -433,7 +433,7 @@ const ApplicationRow = ({ application }: ApplicationRowProps) => {
         {dateFormat(application.createdAt, "mmm d, yyyy | h:MMtt")}
       </div>
 
-      <div className="flex items-center gap-8">
+      <div className="flex items-center md:gap-8">
         <div>{status()}</div>
         <button
           onClick={() => {
@@ -490,7 +490,7 @@ type TitledCardProps = {
 };
 const TitledCard = ({ title, children }: TitledCardProps) => {
   return (
-    <Card className="w-full md:w-2/3 mx-auto p-6 space-y-4 overflow-x-auto">
+    <Card className="w-full md:w-2/3 mx-auto p-2 md:p-6 space-y-4 overflow-x-auto">
       <span>
         <Text h3 b>
           {title}
@@ -573,7 +573,7 @@ const NoMentorshipHome: Page = () => {
             />
           </div>
         </div>
-        <div className="p-6">
+        <div className="px-2 py-6 md:p-6">
           {showApplications ? (
             <TitledCard title="My Applications">
               {data?.getMyUser.applications.map((app, i) => {
