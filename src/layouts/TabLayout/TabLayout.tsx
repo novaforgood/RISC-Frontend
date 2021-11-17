@@ -2,7 +2,9 @@ import classNames from "classnames";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { ReactNode, useEffect, useState } from "react";
-import { Text } from "../../components/atomic";
+import { Button, Text } from "../../components/atomic";
+import Drawer from "../../components/Drawer";
+import { HamburgerMenu } from "../../components/icons";
 import TabFooterMenu from "../../components/TabFooterMenu";
 import LocalStorage from "../../utils/localstorage";
 import ProgramDropdown from "./ProgramDropdown";
@@ -76,16 +78,61 @@ const TabLayout: React.FC<TabLayoutProps> & {
     Icon: React.FC<React.SVGProps<SVGSVGElement>>;
   }>;
 } = ({ children, currentPageChildren }) => {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
-    <div className="flex h-screen w-screen">
-      <div className="flex flex-col h-screen w-72 flex-shrink-0 bg-white shadow-lg relative">
-        <ProgramDropdown />
-        <div className="h-0.25 w-full bg-tertiary flex-shrink-0"></div>
-        <div className="overflow-y-auto h-full">{children}</div>
-        <TabFooterMenu />
+    <>
+      <div className="hidden md:flex h-screen w-screen">
+        <div className="flex flex-col h-screen w-72 flex-shrink-0 bg-white shadow-lg relative">
+          <ProgramDropdown />
+          <div className="h-0.25 w-full bg-tertiary flex-shrink-0"></div>
+          <div className="overflow-y-auto h-full">{children}</div>
+          <TabFooterMenu />
+        </div>
+        <div className="flex-grow overflow-x-hidden">{currentPageChildren}</div>
       </div>
-      <div className="flex-grow overflow-x-hidden">{currentPageChildren}</div>
-    </div>
+      <div className="flex flex-col h-screen w-screen md:hidden relative">
+        <div className="p-4 flex gap-6 border-tertiary border-b-2">
+          <HamburgerMenu
+            className="h-6 w-6"
+            onClick={() => {
+              setMenuOpen(true);
+            }}
+          />
+          <Text b>Mentor Center</Text>
+        </div>
+
+        <div className="flex-grow overflow-x-hidden">{currentPageChildren}</div>
+
+        <Drawer
+          widthClassName="w-72"
+          closedClassName="-left-72"
+          openClassName="left-0"
+          isOpen={menuOpen}
+          onRequestClose={() => {
+            setMenuOpen(false);
+          }}
+        >
+          <div className="flex flex-col h-screen w-72 flex-shrink-0 bg-white shadow-lg relative">
+            <div className="absolute top-0 right-0 p-4 z-20">
+              <Button
+                size="auto"
+                className="px-2"
+                onClick={() => {
+                  setMenuOpen(false);
+                }}
+              >
+                Close
+              </Button>
+            </div>
+            <ProgramDropdown />
+            <div className="h-0.25 w-full bg-tertiary flex-shrink-0"></div>
+            <div className="overflow-y-auto h-full">{children}</div>
+            <TabFooterMenu />
+          </div>
+        </Drawer>
+      </div>
+    </>
   );
 };
 

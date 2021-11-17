@@ -41,10 +41,11 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
       // Logged in but myUserData has not been retrieved yet
       return <Fragment />;
     return (
-      <Fragment>
+      <div className="px-2">
         <div className="h-screen w-full p-8">
-          <div className="w-full flex items-center justify-between">
+          <div className="w-full md:flex items-center justify-between">
             <img src="/static/DarkTextLogo.svg" />
+            <div className="h-4"></div>
             <div className="flex">
               <Button
                 variant="inverted"
@@ -66,8 +67,8 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
               </Button>
             </div>
           </div>
-          <div className="flex justify-between px-36 pt-36 gap-8">
-            <div className="w-160 flex-shrink-0">
+          <div className="flex justify-between md:px-36 pt-10 md:pt-36 gap-8">
+            <div className="md:w-160 md:flex-shrink-0">
               <BlobCircle />
               <div className="h-4"></div>
 
@@ -87,7 +88,7 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
               <div className="h-10"></div>
               <Button
                 size="auto"
-                className="h-14 w-80"
+                className="h-14 px-4 md:w-80"
                 onClick={() => {
                   router.push("/signup");
                 }}
@@ -95,36 +96,36 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
                 Get started for free
               </Button>
             </div>
-            <img src="/static/Laptop.svg"></img>
+            <img src="/static/Laptop.svg" className="hidden md:block"></img>
           </div>
         </div>
 
-        <div className="w-300 mx-auto h-0.25 bg-inactive my-20"></div>
+        <div className="md:w-300 mx-auto h-0.25 bg-inactive my-20"></div>
         <div className="flex flex-col items-center justify-center">
-          <Text h2 b className="w-120 text-center">
+          <Text h2 b className="md:w-120 text-center">
             Seamlessly connect mentors and mentees.
           </Text>
           <div className="h-4"></div>
-          <Text b2 className="w-200 text-center">
+          <Text b2 className="md:w-200 text-center">
             Our platform facilitates mentor-mentee matching, empowers mentees to
             start conversations, and streamlines the scheduling process.
           </Text>
           <img src="/static/GuyOnVideoCall.svg" />
         </div>
-        <div className="w-300 mx-auto h-0.25 bg-inactive my-20"></div>
+        <div className="md:w-300 mx-auto h-0.25 bg-inactive my-20"></div>
 
-        <div className="flex flex-col items-start w-200 mx-auto">
-          <Text h2 b className="w-96">
+        <div className="flex flex-col items-center md:items-start md:w-200 mx-auto">
+          <Text h2 b className="md:w-96">
             Personalize your platform
           </Text>
           <div className="h-4"></div>
-          <Text b2 className="w-1/2">
+          <Text b2 className="md:w-1/2">
             Organization leaders and administrators can manage mentorship
             programs directly on our platform.
           </Text>
           <div className="h-10"></div>
-          <div className="flex gap-4">
-            <div className="w-1/2 p-4 bg-beige rounded-lg flex flex-col">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="md:w-1/2 p-4 bg-beige rounded-lg flex flex-col">
               <Text h3 b>
                 Tailored to Your Needs
               </Text>
@@ -134,7 +135,7 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
                 needs.
               </Text>
             </div>
-            <div className="w-1/2 p-4 bg-beige rounded-lg flex flex-col">
+            <div className="md:w-1/2 p-4 bg-beige rounded-lg flex flex-col">
               <Text h3 b>
                 A Centralized Platform
               </Text>
@@ -148,7 +149,7 @@ const IndexPage: PageGetProgramBySlugComp = (_) => {
           <div className="h-10"></div>
           <Button
             size="auto"
-            className="h-14 w-80"
+            className="h-14 md:w-80 px-4"
             onClick={() => {
               router.push("/create");
             }}
@@ -269,7 +270,7 @@ const ApplicationRow = ({ application }: ApplicationRowProps) => {
         <div className="flex-1 col-span-1">{program.name}</div>
       </div>
 
-      <div className="flex-1 text-center col-span-1">
+      <div className="hidden md:block flex-1 text-center col-span-1">
         {dateFormat(application.createdAt, "mmm d, yyyy | h:MMtt")}
       </div>
 
@@ -292,7 +293,7 @@ const ApplicationRow = ({ application }: ApplicationRowProps) => {
           setAppModalOpen(false);
         }}
       >
-        <div className="w-120">
+        <div className="w-full md:w-120">
           <Text h3>Application to {program.name}</Text>
           <div className="h-4"></div>
           <Form
@@ -330,7 +331,7 @@ type TitledCardProps = {
 };
 const TitledCard = ({ title, children }: TitledCardProps) => {
   return (
-    <Card className="w-2/3 mx-auto p-6 space-y-4">
+    <Card className="w-full md:w-2/3 mx-auto p-6 space-y-4 overflow-x-auto">
       <span>
         <Text h3 b>
           {title}
@@ -363,8 +364,8 @@ const NoMentorshipHome: Page = () => {
 
   return (
     <NoProgramTabLayout basePath={router.asPath}>
-      <div className="h-screen bg-tertiary">
-        <div className="bg-white flex flex-col pt-12 pb-2 px-20 space-y-4">
+      <div className="md:h-screen bg-tertiary">
+        <div className="bg-white flex flex-col px-10 md:pt-12 md:pb-2 md:px-20 space-y-4">
           <div className="w-full flex justify-end">
             <Button
               size="small"

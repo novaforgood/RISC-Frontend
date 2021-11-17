@@ -223,7 +223,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
       <div className="h-8"></div>
 
       <div className="flex">
-        <Card className="p-12">
+        <Card className="p-12 overflow-x-scroll">
           <Calendar
             onSelect={(newSelectedDate) => {
               setSelectedDate(newSelectedDate);

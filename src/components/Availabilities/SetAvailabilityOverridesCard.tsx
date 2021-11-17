@@ -188,7 +188,7 @@ const EditAvailOverrideDayModalContents = ({
   };
 
   return (
-    <div className="p-8">
+    <div className="md:p-8 overflow-x-scroll">
       <div>
         <Text h3 b>
           Set the date to override

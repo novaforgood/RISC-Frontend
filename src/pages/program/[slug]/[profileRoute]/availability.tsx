@@ -54,7 +54,7 @@ const SetAvailabilitiesPage: Page = () => {
 
   return (
     <div>
-      <div className="flex w-full items-center">
+      <div className="md:flex w-full items-center">
         <Text h2 b>
           My Availabilities
         </Text>
@@ -71,7 +71,7 @@ const SetAvailabilitiesPage: Page = () => {
       </div>
       <div className="h-4" />
       <div className="w-full flex-1">
-        <div className="flex space-x-10">
+        <div className="flex flex-col items-center md:flex-row md:items-start gap-10">
           <Card className="flex-1 py-4">
             <SetWeeklyAvailabilitiesCard profileId={currentProfile.profileId} />
           </Card>

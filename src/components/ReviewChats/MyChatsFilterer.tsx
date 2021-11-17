@@ -55,8 +55,8 @@ const DetailsModalButton = ({ chatRequest }: DetailsModalButtonProps) => {
           }}
           profile={chatRequest.mentorProfile as Profile}
         />
-        <div className="w-200 p-2 flex flex-col space-y-2 box-border">
-          <div className="flex w-full space-x-4">
+        <div className="w-full md:w-200 p-2 flex flex-col space-y-2 box-border">
+          <div className="md:flex items-baseline w-full gap-4">
             <Text h3>
               Chat with{" "}
               <Text h3 b>
@@ -65,10 +65,12 @@ const DetailsModalButton = ({ chatRequest }: DetailsModalButtonProps) => {
                   chatRequest.mentorProfile.user.lastName}
               </Text>
             </Text>
-            <Text i>
-              {chatRequestStatusToTextMap[chatRequest.chatRequestStatus]} chat
-              request
-            </Text>
+            <div>
+              <Text i>
+                {chatRequestStatusToTextMap[chatRequest.chatRequestStatus]} chat
+                request
+              </Text>
+            </div>
             <div className="flex-1" />
             <Button size="small" onClick={() => setProfileModalOpen(true)}>
               View Profile
@@ -150,7 +152,7 @@ type MyChatsListProps = {
 
 const MyChatsList = ({ title, chatRequests }: MyChatsListProps) => {
   return (
-    <div className="flex flex-col px-8 py-6">
+    <div className="flex flex-col px-8 py-6 overflow-x-scroll">
       <Text h3>{title}</Text>
       <div className="h-4"></div>
       {chatRequests.length > 0 ? (

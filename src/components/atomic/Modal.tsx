@@ -15,7 +15,7 @@ type ModalProps = HTMLAttributes<HTMLDivElement> & {
   onClose: () => void;
   children?: ReactNode;
   initialFocus?: MutableRefObject<HTMLElement | null>;
-  backgroundColor?: string | undefined;
+  backgroundClassName?: string;
 };
 
 const Modal = ({
@@ -23,7 +23,7 @@ const Modal = ({
   isOpen,
   onClose = () => {},
   initialFocus,
-  backgroundColor,
+  backgroundClassName = "bg-white",
 }: ModalProps) => {
   const [isOpenDelayed, setIsOpenDelayed] = useState(isOpen);
 
@@ -50,7 +50,7 @@ const Modal = ({
           onClose={onClose}
           initialFocus={initialFocus}
         >
-          <div className="min-h-screen px-4 text-center">
+          <div className="min-h-screen z-20 px-4 text-center">
             <Transition.Child
               as={Fragment}
               enter="transition-opacity duration-150"
@@ -80,10 +80,7 @@ const Modal = ({
               leaveTo="opacity-0 scale-95"
             >
               <div
-                className={`inline-block p-6 my-8 overflow-hidden
-                text-left align-middle transform bg-${
-                  backgroundColor || "white"
-                } shadow-xl rounded-2xl`}
+                className={`w-full md:w-auto inline-block p-6 md:my-8 overflow-hidden text-left align-middle transform shadow-xl rounded-2xl ${backgroundClassName}`}
               >
                 {(isOpen || isOpenDelayed) && children}
               </div>
