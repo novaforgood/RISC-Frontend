@@ -60,7 +60,7 @@ const ProfileModal = ({
       case ProfileModalStage.VIEW_PROFILE:
         return (
           <div className="w-full">
-            <div className="flex">
+            <div className="md:flex">
               <div className="flex flex-col items-center">
                 <ProfilePictureImg
                   src={profile.user.profilePictureUrl}
@@ -113,7 +113,7 @@ const ProfileModal = ({
             <div className="h-6" />
 
             <div className="flex flex-col justify-items-center items-center space-y-4">
-              <Card className="p-6 w-full">
+              <Card className="p-2 md:p-6 w-full">
                 <div>
                   <Text b>A little bit about me</Text>
                 </div>
@@ -129,7 +129,7 @@ const ProfileModal = ({
                 </div>
               </Card>
 
-              <Card className="p-6 w-full">
+              <Card className="p-2 md:p-6 w-full">
                 <Text b>Tags</Text>
                 <div className="h-2"></div>
                 {profile.profileTags.length === 0 ? (
@@ -182,15 +182,15 @@ const ProfileModal = ({
 
   return (
     <Modal
-      backgroundColor={
-        stage === ProfileModalStage.BOOK_CHAT ? "tertiary" : "white"
+      backgroundClassName={
+        stage === ProfileModalStage.BOOK_CHAT ? "bg-tertiary" : "bg-white"
       }
       isOpen={isOpen}
       onClose={() => {
         onClose();
       }}
     >
-      <div className="flex p-4 md:max-w-3xl lg:max-w-4xl">
+      <div className="flex md:p-4 md:max-w-3xl lg:max-w-4xl">
         {renderModalContents()}
       </div>
     </Modal>

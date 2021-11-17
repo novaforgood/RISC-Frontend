@@ -47,7 +47,7 @@ const GeneralProfile: Page = () => {
     <div className="h-screen bg-tertiary flex flex-col items-center py-10 overflow-y-auto">
       <CatchUnsavedChangesModal unsavedChangesExist={modified === true} />
 
-      <div className="w-3/4 grid grid-cols-10 gap-4">
+      <div className="w-11/12 md:w-3/4 grid grid-cols-10 gap-4">
         <button
           className="cursor-pointer w-max col-span-1"
           onClick={() => router.back()}
@@ -93,7 +93,7 @@ const GeneralProfile: Page = () => {
         </div>
         <div className="h-4" />
         {data?.getMyUser ? (
-          <Card className="p-10 space-y-4 col-span-7">
+          <Card className="p-4 md:p-10 space-y-4 col-span-7">
             <Text h3 b>
               Profile Picture
             </Text>

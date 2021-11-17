@@ -207,7 +207,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
   ]);
 
   return (
-    <div>
+    <div className="w-full">
       <div className="h-4"></div>
       <Text h2>
         Book a chat with{" "}
@@ -222,8 +222,8 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
       </Text>
       <div className="h-8"></div>
 
-      <div className="flex">
-        <Card className="p-12">
+      <div className="flex flex-col md:flex-row w-full">
+        <Card className="md:p-12">
           <Calendar
             onSelect={(newSelectedDate) => {
               setSelectedDate(newSelectedDate);
@@ -326,7 +326,7 @@ const BookAChat = ({ mentor }: BookAChatProps) => {
               const target = e.target as HTMLTextAreaElement;
               setChatRequestMessage(target.value);
             }}
-            className="p-2 w-96"
+            className="md:p-2 md:w-96"
             placeholder="Suggest a location (Zoom link, in person address, etc.) and leave an optional message."
           ></TextArea>
           <div className="h-8"></div>

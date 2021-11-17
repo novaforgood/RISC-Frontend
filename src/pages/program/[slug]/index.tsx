@@ -62,7 +62,7 @@ const ReadOnlyHome = ({
       {inProgram ? (
         <></>
       ) : (
-        <div className="flex transform -translate-y-14 lg:-translate-y-20 float-right z-10">
+        <div className="md:flex transform -translate-y-14 lg:-translate-y-20 float-right z-10">
           <Button
             variant="inverted"
             size="small"
@@ -81,7 +81,7 @@ const ReadOnlyHome = ({
             Apply as Mentor
           </Button>
 
-          <div className="w-4" />
+          <div className="h-2 w-4" />
 
           <Button
             size="small"
@@ -101,7 +101,7 @@ const ReadOnlyHome = ({
           </Button>
         </div>
       )}
-      <Card className="box-border w-full px-16 py-10 ">
+      <Card className="box-border w-full px-2 md:px-16 mt-32 md:mt-0 py-10 ">
         <div className="relative -top-24 pointer-events-none">
           <div>
             <img className="w-28 h-28 rounded-md" src={iconUrl} />

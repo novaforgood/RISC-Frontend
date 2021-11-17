@@ -170,17 +170,17 @@ const ApplicationReviewListItem = ({
   };
 
   return (
-    <div className="grid grid-cols-5 items-center gap-4 p-2 hover:bg-tertiary duration-150 rounded">
-      <div className="col-span-1 justify-start flex">
+    <div className="flex md:grid md:grid-cols-5 items-center gap-4 p-2 hover:bg-tertiary duration-150 rounded">
+      <div className="col-span-1 justify-start flex flex-shrink-0">
         {getStatusIcon(application)}
       </div>
-      <div className="col-span-2">
+      <div className="col-span-2 flex-shrink-0">
         <InlineProfileAvatar user={application.user} />
       </div>
-      <Text className="hidden xl:inline col-span-1">
+      <Text className="hidden xl:inline col-span-1 flex-shrink-0">
         {format(new Date(application.createdAt), "MMM d, yyyy | h:mma")}
       </Text>
-      <div className="col-span-1">
+      <div className="col-span-1 flex-shrink-0">
         <DetailsModalButton application={application} />
       </div>
     </div>
@@ -197,7 +197,7 @@ const ApplicationReviewList = ({
   applications,
 }: ApplicationReviewListProps) => {
   return (
-    <div className="flex flex-col px-8 py-6">
+    <div className="flex flex-col px-2 md:px-8 py-6 overflow-x-scroll">
       <Text h3>{title}</Text>
       <div className="h-4"></div>
       {applications.length > 0 ? (
