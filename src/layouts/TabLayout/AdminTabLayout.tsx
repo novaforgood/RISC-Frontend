@@ -2,6 +2,7 @@ import {
   Clipboard,
   Edit,
   Home,
+  Database,
   Settings,
   User,
   Users,
@@ -17,6 +18,11 @@ const AdminTabLayout: React.FC<BaseTabLayoutProps> = ({
   return (
     <TabLayout currentPageChildren={children}>
       <PageItem label="Homepage" Icon={Home} path={joinPath(basePath)} />
+      <PageItem
+        label="Dashboard"
+        Icon={Database}
+        path={joinPath(basePath, "dashboard")}
+      />
       <PageItem
         label="Settings"
         Icon={Settings}

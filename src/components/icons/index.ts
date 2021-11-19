@@ -4,6 +4,7 @@ export { default as CircledCheck } from "./CircledCheck.svg";
 export { default as CircledCheckSolid } from "./CircledCheckSolid.svg";
 export { default as CircledCross } from "./CircledCross.svg";
 export { default as Clipboard } from "./Clipboard.svg";
+export { default as Database } from "./Database.svg";
 export { default as Edit } from "./Edit.svg";
 export { default as Filter } from "./Filter.svg";
 export { default as Home } from "./Home.svg";
