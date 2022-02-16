@@ -143,8 +143,8 @@ const EditProfilePage: Page = (_) => {
       </div>
       <div className="h-4" />
       <Text className="w-full">
-        {isMentor
-          ? "Mentees will use your profile to learn more about you before booking a chat."
+       {isMentor
+          ?  "Mentees will use your profile to learn more about you before booking a chat."
           : "Mentors will use your profile to learn more about you after you book a chat with them. Your profile is only visible to admins and mentors you book chats with."}
       </Text>
       <div className="h-4" />

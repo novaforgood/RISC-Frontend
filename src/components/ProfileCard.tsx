@@ -3,10 +3,18 @@ import { GetProfilesQuery, ProfileType } from "../generated/graphql";
 import { Button, Card, Tag, Text } from "./atomic";
 import ProfileModal from "./ProfileModal";
 import ProfilePictureImg from "./ProfilePictureImg";
+import {
+  AuthorizationLevel,
+  useAuthorizationLevel,
+} from "../hooks";
+
+
+
+
 
 type Profile = GetProfilesQuery["getProfiles"][number];
-
 interface ProfileCardProps {
+  
   // TODO: Remove "any" and replace with proper fields
   profile: Profile;
 }
@@ -19,7 +27,16 @@ const ProfileCard = ({ profile }: ProfileCardProps) => {
   const moreTag = (
     <Tag variant="outline">+ {profile.profileTags.length - 3} more</Tag>
   );
+  const authorizationLevel = useAuthorizationLevel(); // changed here
 
+  // if (
+  //   ![AuthorizationLevel.Mentor, AuthorizationLevel.Mentee].includes(
+  //     authorizationLevel
+  //   )
+  // )
+  //   return <div>404</div>; // changed here
+    const isMentee = authorizationLevel === AuthorizationLevel.Mentee;
+    console.log(profile);
   return (
     <Card className="grid grid-rows-10 p-6 place-items-center border-0 gap-2">
       <ProfilePictureImg
@@ -53,6 +70,9 @@ const ProfileCard = ({ profile }: ProfileCardProps) => {
       >
         View Profile
       </Button>
+      {isMentee && profile.profileType == ProfileType.Mentor
+        ? <Button > Ask Me a Question </Button>
+        : <></>}
 
       <ProfileModal
         isOpen={profileModalOpen}
