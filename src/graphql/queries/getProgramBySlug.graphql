@@ -15,5 +15,6 @@ query getProgramBySlug($slug: String!) {
       name
       listIndex
     }
+    public
   }
 }

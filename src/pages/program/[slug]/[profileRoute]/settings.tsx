@@ -1,5 +1,11 @@
 import React, { ChangeEvent, Fragment, useEffect, useState } from "react";
-import { Button, Card, Input, Text } from "../../../../components/atomic";
+import {
+  Button,
+  Card,
+  Input,
+  Text,
+  Toggle,
+} from "../../../../components/atomic";
 import CatchUnsavedChangesModal from "../../../../components/CatchUnsavedChangesModal";
 import UploadIconWithPreview from "../../../../components/UploadIconWithPreview";
 import {
@@ -50,11 +56,19 @@ const AdminBox = (user: User) => {
 
 const SettingsPage: Page = () => {
   const { currentProgram, refetchCurrentProgram } = useCurrentProgram();
-  const { programId, name, description, iconUrl, slug } = currentProgram || {
+  const {
+    programId,
+    name,
+    description,
+    iconUrl,
+    public: programIsPublic,
+    slug,
+  } = currentProgram || {
     programId: "",
     name: "",
     description: "",
     iconUrl: "/static/DefaultLogo.svg",
+    public: false,
     slug: "",
   };
 
@@ -228,6 +242,44 @@ const SettingsPage: Page = () => {
         <Button disabled size="small">
           + add admin
         </Button>
+        <div className="h-4"></div>
+        <div className="grid gap-4 justify-center items-center">
+          <Text h3 b>
+            Program Privacy
+          </Text>
+          <div />
+          <div className="flex items-center">
+            <Text className="col-span-1" b secondary>
+              Turn {programIsPublic ? "on" : "off"} program privacy:
+            </Text>
+            <Toggle
+              enabled={programIsPublic}
+              onClick={async () => {
+                updateProgram({
+                  variables: {
+                    programId,
+                    data: {
+                      public: !programIsPublic,
+                    },
+                  },
+                })
+                  .then(() => {
+                    refetchCurrentProgram();
+                    console.log("refetch");
+                    setSnackbarMessage({ text: "Saved settings!" });
+                  })
+                  .catch((err) => setError(err));
+              }}
+            />
+          </div>
+          <div />
+          <Text b secondary>
+            Enabling program privacy means that those who are not part of your
+            mentorship cannot view the mentor directory. Toggling this feature
+            off allows anyone online to be able to view both the homepage and
+            the mentors under your mentorship.
+          </Text>
+        </div>
       </Card>
     </Fragment>
   );
