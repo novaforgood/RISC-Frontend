@@ -1,19 +1,16 @@
 import { useRouter } from "next/router";
-import React, { Fragment } from "react";
+import React from "react";
 import { AuthorizationLevel, useAuthorizationLevel } from "../hooks";
 import { parseParam } from "../utils";
 import { MAP_PROFILETYPE_TO_ROUTE } from "../utils/constants";
-import { AdminTabLayout, MenteeTabLayout, MentorTabLayout } from "./TabLayout";
+import {
+  AdminTabLayout,
+  MenteeTabLayout,
+  MentorTabLayout,
+  NotInProgramTabLayout,
+} from "./TabLayout";
 import NoMatchingProfileLayout from "./TabLayout/NoMatchingProfileTabLayout";
 import { BaseTabLayoutProps } from "./TabLayout/TabLayout";
-
-const NotInProgramTabLayout: React.FC<BaseTabLayoutProps> = ({
-  children,
-  basePath,
-}) => {
-  basePath;
-  return <Fragment>{children}</Fragment>;
-};
 
 function getTabLayout(
   authLevel: AuthorizationLevel
