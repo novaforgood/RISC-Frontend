@@ -1,5 +1,7 @@
 mutation updateProgram($programId: String!, $data: UpdateProgramInput!) {
   updateProgram(programId: $programId, data: $data) {
     programId
+    menteeProfileSchemaJson
+    mentorProfileSchemaJson
   }
 }
