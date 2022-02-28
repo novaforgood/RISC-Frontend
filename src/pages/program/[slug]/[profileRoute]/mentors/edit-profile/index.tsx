@@ -71,6 +71,7 @@ const EditMentorProfilePage: Page = (_) => {
 
     setIsSavingProfile(true);
 
+    console.log("Saving profile...", profileSchema);
     Promise.all([
       updateProgram({
         variables: {
