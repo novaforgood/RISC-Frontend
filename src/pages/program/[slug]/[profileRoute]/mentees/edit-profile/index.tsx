@@ -36,25 +36,23 @@ const EditMenteeProfilePage: Page = (_) => {
     // return () => {};
   }, [currentProgram]);
 
-  const saveProfile = () => {
+  const saveProfile = async () => {
     if (!currentProgram) return;
 
     setIsSavingProfile(true);
 
-    Promise.all([
-      updateProgram({
-        variables: {
-          programId: currentProgram.programId,
-          data: { menteeProfileSchemaJson: JSON.stringify(profileSchema) },
-        },
-      }),
-    ]).then(() => {
-      refetchCurrentProgram({ slug: currentProgram.slug });
-
-      setIsSavingProfile(false);
-      setModified(false);
-      setSnackbarMessage({ text: "Saved mentee profile format!" });
+    await updateProgram({
+      variables: {
+        programId: currentProgram.programId,
+        data: { menteeProfileSchemaJson: JSON.stringify(profileSchema) },
+      },
     });
+
+    await refetchCurrentProgram();
+
+    setIsSavingProfile(false);
+    setModified(false);
+    setSnackbarMessage({ text: "Saved mentee profile format!" });
   };
 
   return (

@@ -48,6 +48,8 @@ const EditMentorProfilePage: Page = (_) => {
   isSavingProfile; // TODO: If is saving, set loading state of button to true.
 
   useEffect(() => {
+    console.log("DINGDINGIDNG");
+
     if (!currentProgram) return;
     setProfileSchema(
       getQuestionsFromJson(currentProgram?.mentorProfileSchemaJson)
@@ -58,7 +60,10 @@ const EditMentorProfilePage: Page = (_) => {
       )
     );
     return () => {};
-  }, [currentProgram]);
+  }, [
+    currentProgram?.mentorProfileSchemaJson,
+    currentProgram?.profileTagCategories,
+  ]);
 
   useEffect(() => {
     if (!profileTagsData) return;
@@ -66,41 +71,41 @@ const EditMentorProfilePage: Page = (_) => {
     return () => {};
   }, [profileTagsData]);
 
-  const saveProfile = () => {
+  const saveProfile = async () => {
     if (!currentProgram) return;
 
     setIsSavingProfile(true);
 
     console.log("Saving profile...", profileSchema);
-    Promise.all([
-      updateProgram({
-        variables: {
-          programId: currentProgram.programId,
-          data: { mentorProfileSchemaJson: JSON.stringify(profileSchema) },
-        },
-      }),
-      updateProfileTagsOfProgram({
-        variables: {
-          programId: currentProgram.programId,
-          profileTags: profileTags.map((tag) => ({
-            profileTagId: tag.profileTagId,
-            name: tag.name,
-            profileTagCategoryId: tag.profileTagCategoryId,
-          })),
-          profileTagCategories: profileTagCategories.map((cat, idx) => ({
-            profileTagCategoryId: cat.profileTagCategoryId,
-            name: cat.name,
-            listIndex: idx,
-          })),
-        },
-      }),
-    ]).then(() => {
-      refetchCurrentProgram();
-      refetchProfileTagsByProgram();
-      setIsSavingProfile(false);
-      setModified(false);
-      setSnackbarMessage({ text: "Saved mentor profile format!" });
+    console.log(currentProgram);
+
+    await updateProgram({
+      variables: {
+        programId: currentProgram.programId,
+        data: { mentorProfileSchemaJson: JSON.stringify(profileSchema) },
+      },
     });
+    await updateProfileTagsOfProgram({
+      variables: {
+        programId: currentProgram.programId,
+        profileTags: profileTags.map((tag) => ({
+          profileTagId: tag.profileTagId,
+          name: tag.name,
+          profileTagCategoryId: tag.profileTagCategoryId,
+        })),
+        profileTagCategories: profileTagCategories.map((cat, idx) => ({
+          profileTagCategoryId: cat.profileTagCategoryId,
+          name: cat.name,
+          listIndex: idx,
+        })),
+      },
+    });
+    await refetchCurrentProgram();
+    await refetchProfileTagsByProgram();
+
+    setIsSavingProfile(false);
+    setModified(false);
+    setSnackbarMessage({ text: "Saved mentor profile format!" });
   };
 
   return (
