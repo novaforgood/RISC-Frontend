@@ -113,29 +113,26 @@ const EditProfilePage: Page = (_) => {
         <Button
           size="small"
           disabled={!modified}
-          onClick={() => {
+          onClick={async () => {
             const updateProfileInput: UpdateProfileInput = {
               profileJson: JSON.stringify(profileJson),
               bio: bio,
             };
 
-            Promise.all([
-              updateProfile({
-                variables: {
-                  profileId: profileId,
-                  data: updateProfileInput,
-                },
-              }),
-              updateProfileTagsOfProfile({
-                variables: {
-                  profileId: currentProfile.profileId,
-                  profileTagIds: selectedTagIds,
-                },
-              }),
-            ]).then(() => {
-              setModified(false);
-              setSnackbarMessage({ text: "Profile changes saved!" });
+            await updateProfile({
+              variables: {
+                profileId: profileId,
+                data: updateProfileInput,
+              },
             });
+            await updateProfileTagsOfProfile({
+              variables: {
+                profileId: currentProfile.profileId,
+                profileTagIds: selectedTagIds,
+              },
+            });
+            setModified(false);
+            setSnackbarMessage({ text: "Profile changes saved!" });
           }}
         >
           Save
