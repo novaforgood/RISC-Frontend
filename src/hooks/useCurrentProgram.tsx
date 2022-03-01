@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { useRouter } from "next/router";
 import { useGetProgramBySlugQuery } from "../generated/graphql";
 import { parseParam } from "../utils";
