@@ -1,3 +1,4 @@
+import { useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useGetProgramBySlugQuery } from "../generated/graphql";
 import { parseParam } from "../utils";
@@ -8,11 +9,17 @@ const useCurrentProgram = () => {
 
   const { data, refetch } = useGetProgramBySlugQuery({
     variables: { slug: slug },
+    fetchPolicy: "network-only",
+    nextFetchPolicy: "network-only",
   });
+
+  const refetchQuery = useCallback(() => {
+    return refetch({ slug: slug });
+  }, [slug]);
 
   return {
     currentProgram: data?.getProgramBySlug,
-    refetchCurrentProgram: refetch,
+    refetchCurrentProgram: refetchQuery,
   };
 };
 
