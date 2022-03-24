@@ -42,7 +42,7 @@ const ListFilterer = <T,>({
           onClick={() => setFilterOption(title)}
         >
           <Text b className={selected ? "text-primary" : "text-secondary"}>
-            {title}
+            {title} ({filterOptions[title](listToFilter).length})
           </Text>
         </button>
         <div className={underlineStyle} />
